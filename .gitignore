@@ -1,0 +1,15 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Large PDF reference files (book scans — not needed in repo)
+*.pdf
+
+# EPUB source
+*.epub
+
+# Editor
+.idea/
+.vscode/
+*.swp
