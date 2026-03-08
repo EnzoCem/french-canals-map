@@ -446,6 +446,47 @@
     color: #fff !important;
   }
 
+
+  /* ── Route highlight on map ─────────────────────────────────────────────── */
+  @keyframes routePulse {
+    0%   { stroke-opacity: 0.90; }
+    50%  { stroke-opacity: 0.55; }
+    100% { stroke-opacity: 0.90; }
+  }
+  .route-highlight-glow {
+    animation: routePulse 2.4s ease-in-out infinite;
+  }
+  .rp-map-btns {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+  }
+  .rp-map-btn {
+    flex: 1;
+    background: #0f2540;
+    border: 1px solid #1a5276;
+    border-radius: 6px;
+    color: #9bb8d4;
+    font-size: 12px;
+    padding: 8px;
+    cursor: pointer;
+    text-align: center;
+  }
+  .rp-map-btn:hover { background: #1a3a5c; color: #fff; }
+  .rp-map-btn.active {
+    background: linear-gradient(135deg, #145a32, #1e8449);
+    border-color: #1e8449;
+    color: #a9dfbf;
+  }
+  .rp-map-btn.clear-btn {
+    background: #2d1a00;
+    border-color: #7d4300;
+    color: #f0b27a;
+    flex: 0 0 auto;
+    padding: 8px 12px;
+  }
+  .rp-map-btn.clear-btn:hover { background: #4a2800; color: #fff; }
+
 </style>
 </head>
 <body>
@@ -1902,6 +1943,7 @@ function openRoutePlanner() {
 
 function closeRoutePlanner() {
   document.getElementById('route-planner-panel').style.display = 'none';
+  clearRouteHighlight(true);
 }
 
 function swapRoutePlannerEndpoints() {
@@ -1928,6 +1970,198 @@ function calculateRoute() {
 
   const plan = planRoute(fromId, toId);
   renderRouteResults(plan, fromWp, toWp);
+
+  // Add "Show on map" / "Clear" buttons below results
+  if (plan) {
+    const mapBtns = document.createElement('div');
+    mapBtns.className = 'rp-map-btns';
+    mapBtns.id = 'rp-map-btns';
+    mapBtns.innerHTML = `
+      <button class="rp-map-btn active" id="btn-show-on-map" onclick="toggleRouteOnMap(this)">
+        🗺 Highlight route on map
+      </button>
+      <button class="rp-map-btn clear-btn" onclick="clearRouteHighlight(true); document.getElementById('rp-map-btns') && (document.getElementById('btn-show-on-map').className='rp-map-btn')">
+        ✕ Clear
+      </button>`;
+    document.getElementById('rp-results').appendChild(mapBtns);
+    // Auto-highlight
+    highlightRouteOnMap(plan.segments);
+    document.getElementById('btn-show-on-map').classList.add('active');
+  }
+}
+
+function toggleRouteOnMap(btn) {
+  if (routeHighlightActive) {
+    clearRouteHighlight(true);
+    btn.textContent = '🗺 Highlight route on map';
+    btn.classList.remove('active');
+  } else {
+    const fromId = document.getElementById('rp-from').value;
+    const toId   = document.getElementById('rp-to').value;
+    const plan = planRoute(fromId, toId);
+    if (plan) {
+      highlightRouteOnMap(plan.segments);
+      btn.textContent = '✓ Route highlighted';
+      btn.classList.add('active');
+    }
+  }
+}
+
+
+// ============================================================
+//  ROUTE HIGHLIGHT ON MAP
+// ============================================================
+
+// Maps each route number to the GeoJSON waterway name(s) it uses.
+// Names must match keys in WATERWAY_COLORS exactly.
+const ROUTE_TO_WATERWAYS = {
+  1:  ['River Seine'],                          // Le Havre → Paris
+  2:  ['River Seine'],                          // Upper Seine (Paris → Montereau)
+  3:  ['River Seine'],                          // Petite Seine
+  4:  ['River Yonne'],                          // River Yonne
+  5:  ['River Marne', 'Canal latéral à la Marne'],
+  6:  [],                                       // Canal latéral à l'Aisne (no OSM data)
+  7:  [],                                       // Canal de l'Oise à l'Aisne
+  8:  ['River Oise'],                           // Canal latéral à l'Oise & Oise
+  9:  [],                                       // Canals of Paris
+  10: ['Canal latéral à la Loire', 'Canal de Briare', 'Canal du Centre'],
+  11: ['Canal du Nivernais'],
+  12: ['Canal de Bourgogne'],
+  13: ['River Saône'],                          // Petite Saône
+  14: ['Canal du Rhône au Rhin'],               // Branche Sud (Mulhouse → St-Jean)
+  15: ['River Saône'],                          // Saône (St-Jean → Lyon)
+  16: ['River Rhône'],                          // Rhône (Lyon → Port-St-Louis)
+  17: ['River Rhône'],                          // Petit Rhône (Arles → St-Gilles)
+  18: ['Canal du Rhône à Sète'],
+  19: [],
+  20: [],
+  21: [],
+  24: [],
+  28: ['Canal du Nord'],
+  29: ['Canal de Saint-Quentin'],
+  31: ['Canal de la Somme'],
+  32: [],
+  33: ['Canal de la Meuse'],
+  34: [],
+  35: ['Canal de la Marne au Rhin'],
+  36: ['Canal entre Champagne et Bourgogne'],
+  37: ['Canal des Vosges'],
+  38: ['Canal de la Marne au Rhin'],            // Canal de la Sarre shares the Marne-Rhine
+  39: ['Canal du Rhône au Rhin'],               // Branche Nord (Strasbourg)
+  40: [],                                       // Rhine / Grand Canal d'Alsace
+  41: ["Ille-et-Rance", 'Canal de Nantes à Brest'],
+  42: ['Canal de Nantes à Brest'],
+  44: ['Canal de Nantes à Brest'],
+  45: ['Canal de Nantes à Brest'],
+  46: [],
+  47: [],
+  48: [],
+  49: ['Canal du Midi', 'Canal de Garonne'],    // Canal des Deux Mers
+  50: ['Canal de la Robine'],
+  52: [],
+};
+
+let routeHighlightLayer = null;
+let routeHighlightActive = false;
+
+function highlightRouteOnMap(segments) {
+  clearRouteHighlight(false); // clear old, don't restore waterway styles yet
+
+  // Collect all waterway names for this journey
+  const waterwayNames = new Set();
+  segments.forEach(seg => {
+    (ROUTE_TO_WATERWAYS[seg.routeNum] || []).forEach(n => waterwayNames.add(n));
+  });
+
+  if (waterwayNames.size === 0) {
+    // No GeoJSON coverage — restore styles and bail
+    restoreWaterwayStyles();
+    return;
+  }
+
+  // Filter GeoJSON features that match
+  const matchingFeatures = WATERWAY_GEOJSON.features.filter(
+    f => f.properties && waterwayNames.has(f.properties.name)
+  );
+
+  if (matchingFeatures.length === 0) {
+    restoreWaterwayStyles();
+    return;
+  }
+
+  // Dim the main waterway layer
+  if (waterwayLayer && layerState.waterways) {
+    waterwayLayer.setStyle({ color: '#1a3a5c', opacity: 0.18, weight: 1.5 });
+  }
+
+  // Outer glow layer (wide, semi-transparent, animated via CSS)
+  const glowGeoJSON = { type: 'FeatureCollection', features: matchingFeatures };
+  const glowLayer = L.geoJSON(glowGeoJSON, {
+    style: () => ({
+      color: '#FFD700',
+      weight: 16,
+      opacity: 0.22,
+      lineCap: 'round',
+      lineJoin: 'round',
+    }),
+    onEachFeature: (feature, layer) => {
+      // Add pulse CSS class to the SVG path element
+      layer.on('add', () => {
+        const el = layer.getElement ? layer.getElement() : null;
+        if (el) el.classList.add('route-highlight-glow');
+      });
+    },
+  });
+
+  // Inner bright line layer
+  const lineLayer = L.geoJSON(glowGeoJSON, {
+    style: f => ({
+      color: WATERWAY_COLORS[f.properties.name] || '#5bc0de',
+      weight: 6,
+      opacity: 1.0,
+      lineCap: 'round',
+      lineJoin: 'round',
+    }),
+    onEachFeature: (feature, layer) => {
+      layer.bindTooltip(
+        `<strong>${feature.properties.name}</strong><br><span style="color:#aaa;font-size:11px">Route highlight</span>`,
+        { sticky: true, className: 'waterway-tooltip' }
+      );
+      layer.on('add', () => {
+        const el = layer.getElement ? layer.getElement() : null;
+        if (el) el.classList.add('route-highlight-glow');
+      });
+    },
+  });
+
+  routeHighlightLayer = L.layerGroup([glowLayer, lineLayer]).addTo(map);
+  routeHighlightActive = true;
+
+  // Fit map bounds to the highlighted route (with padding for the panel)
+  const bounds = L.geoJSON(glowGeoJSON).getBounds();
+  if (bounds.isValid()) {
+    map.fitBounds(bounds, { paddingTopLeft: [10, 70], paddingBottomRight: [10, 20] });
+  }
+}
+
+function restoreWaterwayStyles() {
+  if (waterwayLayer) {
+    waterwayLayer.eachLayer(layer => {
+      if (!layer.feature) return;
+      const name = layer.feature.properties && layer.feature.properties.name;
+      const color = WATERWAY_COLORS[name] || '#5bc0de';
+      layer.setStyle({ color, weight: 3, opacity: 0.85 });
+    });
+  }
+}
+
+function clearRouteHighlight(restoreStyles) {
+  if (routeHighlightLayer) {
+    map.removeLayer(routeHighlightLayer);
+    routeHighlightLayer = null;
+  }
+  routeHighlightActive = false;
+  if (restoreStyles !== false) restoreWaterwayStyles();
 }
 
 </script>
