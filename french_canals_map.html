@@ -175,42 +175,70 @@
   /* ── Route Planner Panel ───────────────────────────────────────────────── */
   #route-planner-panel {
     position: fixed;
-    top: 60px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 500px;
-    max-width: 96vw;
-    max-height: 84vh;
+    top: 52px;
+    left: 8px;
+    width: 380px;
+    max-width: calc(100vw - 16px);
+    max-height: calc(100vh - 64px);
     overflow-y: auto;
     background: #0d1b2a;
     border: 1px solid #1a5276;
     border-radius: 10px;
-    padding: 20px;
+    padding: 16px 18px;
     z-index: 2000;
     display: none;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+    box-shadow: 4px 4px 24px rgba(0,0,0,0.7);
     scrollbar-width: thin;
     scrollbar-color: #1a5276 transparent;
+    transition: max-height 0.25s ease;
+  }
+  #route-planner-panel.collapsed {
+    overflow: hidden;
+    max-height: 52px;
+    padding-bottom: 14px;
+  }
+  #route-planner-panel.collapsed #rp-body {
+    display: none;
   }
   #route-planner-panel h3 {
     color: #5bc0de;
-    margin: 0 0 16px 0;
-    font-size: 16px;
+    margin: 0;
+    font-size: 15px;
     display: flex;
     align-items: center;
     gap: 8px;
+    cursor: pointer;
+    user-select: none;
+    padding-bottom: 14px;
   }
-  #route-planner-panel h3 button {
+  #route-planner-panel.collapsed h3 {
+    padding-bottom: 0;
+  }
+  #route-planner-panel h3 .rp-title-text {
+    flex: 1;
+  }
+  #route-planner-panel h3 .rp-collapse-btn {
+    color: #5bc0de;
+    font-size: 13px;
+    background: #0f2540;
+    border: 1px solid #1a5276;
+    border-radius: 4px;
+    padding: 2px 7px;
+    cursor: pointer;
+    line-height: 1.6;
+  }
+  #route-planner-panel h3 .rp-collapse-btn:hover { background: #1a3a5c; }
+  #route-planner-panel h3 .rp-close-btn {
     margin-left: auto;
     cursor: pointer;
-    color: #888;
-    font-size: 20px;
+    color: #666;
+    font-size: 18px;
     line-height: 1;
     background: none;
     border: none;
     padding: 0 2px;
   }
-  #route-planner-panel h3 button:hover { color: #fff; }
+  #route-planner-panel h3 .rp-close-btn:hover { color: #fff; }
   .rp-row {
     display: flex;
     gap: 10px;
@@ -1935,9 +1963,19 @@ function populateRoutePlannerDropdowns() {
 function openRoutePlanner() {
   const panel = document.getElementById('route-planner-panel');
   const isVisible = panel.style.display === 'block';
-  panel.style.display = isVisible ? 'none' : 'block';
-  if (!isVisible && !document.getElementById('rp-from').options.length) {
-    populateRoutePlannerDropdowns();
+  if (isVisible) {
+    // If collapsed, expand on second click; if open, close
+    if (panel.classList.contains('collapsed')) {
+      expandRoutePlanner();
+    } else {
+      closeRoutePlanner();
+    }
+  } else {
+    panel.style.display = 'block';
+    expandRoutePlanner();
+    if (!document.getElementById('rp-from').options.length) {
+      populateRoutePlannerDropdowns();
+    }
   }
 }
 
@@ -1984,9 +2022,11 @@ function calculateRoute() {
         ✕ Clear
       </button>`;
     document.getElementById('rp-results').appendChild(mapBtns);
-    // Auto-highlight
+    // Auto-highlight and collapse panel so map is visible
     highlightRouteOnMap(plan.segments);
     document.getElementById('btn-show-on-map').classList.add('active');
+    // Small delay so results render before collapsing
+    setTimeout(() => toggleCollapseRoutePlanner(), 300);
   }
 }
 
@@ -1996,6 +2036,7 @@ function toggleRouteOnMap(btn) {
     btn.textContent = '🗺 Highlight route on map';
     btn.classList.remove('active');
   } else {
+    expandRoutePlanner();
     const fromId = document.getElementById('rp-from').value;
     const toId   = document.getElementById('rp-to').value;
     const plan = planRoute(fromId, toId);
@@ -2164,10 +2205,31 @@ function clearRouteHighlight(restoreStyles) {
   if (restoreStyles !== false) restoreWaterwayStyles();
 }
 
+
+function toggleCollapseRoutePlanner() {
+  const panel = document.getElementById('route-planner-panel');
+  const btn   = document.getElementById('rp-collapse-btn');
+  const collapsed = panel.classList.toggle('collapsed');
+  btn.textContent = collapsed ? '▼' : '▲';
+  btn.title = collapsed ? 'Expand' : 'Collapse';
+}
+
+function expandRoutePlanner() {
+  const panel = document.getElementById('route-planner-panel');
+  const btn   = document.getElementById('rp-collapse-btn');
+  panel.classList.remove('collapsed');
+  btn.textContent = '▲';
+}
+
 </script>
 
 <div id="route-planner-panel">
-  <h3>📍 Route Planner <button onclick="closeRoutePlanner()">✕</button></h3>
+  <h3 onclick="toggleCollapseRoutePlanner()">
+    <span class="rp-title-text">📍 Route Planner</span>
+    <button class="rp-collapse-btn" id="rp-collapse-btn" title="Collapse / expand">▲</button>
+    <button class="rp-close-btn" onclick="event.stopPropagation(); closeRoutePlanner()">✕</button>
+  </h3>
+  <div id="rp-body">
   <div class="rp-row">
     <label>From</label>
     <select class="rp-select" id="rp-from"></select>
@@ -2181,6 +2243,7 @@ function clearRouteHighlight(restoreStyles) {
   </div>
   <button class="rp-calc-btn" onclick="calculateRoute()">⚓ Calculate Route</button>
   <div id="rp-results"></div>
+  </div><!-- /#rp-body -->
 </div>
 
 </body>
