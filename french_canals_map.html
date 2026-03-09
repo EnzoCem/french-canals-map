@@ -2212,24 +2212,95 @@ const ROUTE_TO_WATERWAYS = {
 let routeHighlightLayer = null;
 let routeHighlightActive = false;
 
-function highlightRouteOnMap(segments) {
-  clearRouteHighlight(false); // clear old, don't restore waterway styles yet
+// ── Waypoint name fuzzy lookup (handles junction names like "St-Mammès") ───
+function findWpByName(name, routeNum) {
+  if (!name) return null;
+  const clean = s => s.toLowerCase().replace(/[^a-z0-9]/g, '');
+  // Exact match on route first
+  let wp = WAYPOINTS.find(w => w.route === routeNum && w.name === name);
+  if (wp) return wp;
+  // Partial / fuzzy on route
+  const key = clean(name.split(/[\s\/\-]/)[0]);
+  wp = WAYPOINTS.find(w => w.route === routeNum && clean(w.name).startsWith(key));
+  if (wp) return wp;
+  // Any route — useful for junction cities that appear on neighbouring routes
+  wp = WAYPOINTS.find(w => clean(w.name).startsWith(key));
+  return wp || null;
+}
 
-  // Collect all waterway names for this journey
+// ── Build a geographic bounding box for each plan segment ────────────────────
+// Returns [{minLat,maxLat,minLon,maxLon, routeNum}] — nulls skipped.
+// BUFFER: ~0.4° ≈ 40 km, keeps nearby parallel features without overshooting.
+function buildSegmentBoxes(segments) {
+  const BUFFER = 0.4;
+  const boxes = [];
+  segments.forEach(seg => {
+    const a = findWpByName(seg.from, seg.routeNum);
+    const b = findWpByName(seg.to,   seg.routeNum);
+    if (a && b) {
+      boxes.push({
+        minLat: Math.min(a.lat, b.lat) - BUFFER,
+        maxLat: Math.max(a.lat, b.lat) + BUFFER,
+        minLon: Math.min(a.lon, b.lon) - BUFFER,
+        maxLon: Math.max(a.lon, b.lon) + BUFFER,
+        routeNum: seg.routeNum,
+      });
+    } else {
+      // Fallback: no box constraint for this segment (include all its features)
+      boxes.push({ open: true, routeNum: seg.routeNum });
+    }
+  });
+  return boxes;
+}
+
+// ── Does a GeoJSON feature fall inside any of the segment boxes? ─────────────
+function featureInBoxes(feature, boxes) {
+  const coords = feature.geometry && feature.geometry.coordinates;
+  if (!coords || !coords.length) return false;
+  const pts = feature.geometry.type === 'LineString' ? coords : coords.flat(2);
+
+  // Which route numbers use this waterway?
+  const name = feature.properties.name;
+  const featureRoutes = Object.entries(ROUTE_TO_WATERWAYS)
+    .filter(([, names]) => names.includes(name))
+    .map(([rNum]) => parseInt(rNum));
+
+  // Only test boxes that belong to routes this waterway serves
+  const relevant = boxes.filter(b => featureRoutes.includes(b.routeNum));
+  if (!relevant.length) return false;
+
+  return relevant.some(b => {
+    if (b.open) return true; // no geographic constraint — include all
+    // Accept if ANY coordinate of the feature falls inside this box
+    return pts.some(([lon, lat]) =>
+      lat >= b.minLat && lat <= b.maxLat &&
+      lon >= b.minLon && lon <= b.maxLon
+    );
+  });
+}
+
+function highlightRouteOnMap(segments) {
+  clearRouteHighlight(false);
+
+  // Collect waterway names used in this journey
   const waterwayNames = new Set();
   segments.forEach(seg => {
     (ROUTE_TO_WATERWAYS[seg.routeNum] || []).forEach(n => waterwayNames.add(n));
   });
 
   if (waterwayNames.size === 0) {
-    // No GeoJSON coverage — restore styles and bail
     restoreWaterwayStyles();
     return;
   }
 
-  // Filter GeoJSON features that match
-  const matchingFeatures = WATERWAY_GEOJSON.features.filter(
-    f => f.properties && waterwayNames.has(f.properties.name)
+  // Build per-segment geographic corridors
+  const segBoxes = buildSegmentBoxes(segments);
+
+  // Filter features: correct waterway name AND inside a segment corridor
+  const matchingFeatures = WATERWAY_GEOJSON.features.filter(f =>
+    f.properties &&
+    waterwayNames.has(f.properties.name) &&
+    featureInBoxes(f, segBoxes)
   );
 
   if (matchingFeatures.length === 0) {
@@ -2237,23 +2308,20 @@ function highlightRouteOnMap(segments) {
     return;
   }
 
-  // Dim the main waterway layer
+  // Dim main waterway layer
   if (waterwayLayer && layerState.waterways) {
     waterwayLayer.setStyle({ color: '#1a3a5c', opacity: 0.18, weight: 1.5 });
   }
 
-  // Outer glow layer (wide, semi-transparent, animated via CSS)
   const glowGeoJSON = { type: 'FeatureCollection', features: matchingFeatures };
+
+  // Outer glow
   const glowLayer = L.geoJSON(glowGeoJSON, {
     style: () => ({
-      color: '#FFD700',
-      weight: 16,
-      opacity: 0.22,
-      lineCap: 'round',
-      lineJoin: 'round',
+      color: '#FFD700', weight: 16, opacity: 0.22,
+      lineCap: 'round', lineJoin: 'round',
     }),
-    onEachFeature: (feature, layer) => {
-      // Add pulse CSS class to the SVG path element
+    onEachFeature: (_, layer) => {
       layer.on('add', () => {
         const el = layer.getElement ? layer.getElement() : null;
         if (el) el.classList.add('route-highlight-glow');
@@ -2261,18 +2329,16 @@ function highlightRouteOnMap(segments) {
     },
   });
 
-  // Inner bright line layer
+  // Inner coloured line
   const lineLayer = L.geoJSON(glowGeoJSON, {
     style: f => ({
       color: WATERWAY_COLORS[f.properties.name] || '#5bc0de',
-      weight: 6,
-      opacity: 1.0,
-      lineCap: 'round',
-      lineJoin: 'round',
+      weight: 6, opacity: 1.0, lineCap: 'round', lineJoin: 'round',
     }),
     onEachFeature: (feature, layer) => {
       layer.bindTooltip(
-        `<strong>${feature.properties.name}</strong><br><span style="color:#aaa;font-size:11px">Route highlight</span>`,
+        `<strong>${feature.properties.name}</strong><br>
+         <span style="color:#aaa;font-size:11px">Route highlight</span>`,
         { sticky: true, className: 'waterway-tooltip' }
       );
       layer.on('add', () => {
@@ -2285,10 +2351,23 @@ function highlightRouteOnMap(segments) {
   routeHighlightLayer = L.layerGroup([glowLayer, lineLayer]).addTo(map);
   routeHighlightActive = true;
 
-  // Fit map bounds to the highlighted route (with padding for the panel)
-  const bounds = L.geoJSON(glowGeoJSON).getBounds();
-  if (bounds.isValid()) {
-    map.fitBounds(bounds, { paddingTopLeft: [10, 70], paddingBottomRight: [10, 20] });
+  // ── Fit map to the FROM and TO endpoint pins, not the full GeoJSON ──────────
+  // This keeps the zoom level centred on the journey the user actually selected.
+  const fromWp = routeFromId ? WAYPOINTS.find(w => w.id === routeFromId) : null;
+  const toWp   = routeToId   ? WAYPOINTS.find(w => w.id === routeToId)   : null;
+
+  if (fromWp && toWp) {
+    const bounds = L.latLngBounds(
+      [fromWp.lat, fromWp.lon],
+      [toWp.lat,   toWp.lon]
+    );
+    map.fitBounds(bounds, { padding: [60, 60] });
+  } else {
+    // Fallback: fit to the clipped GeoJSON (should be much smaller now)
+    const bounds = L.geoJSON(glowGeoJSON).getBounds();
+    if (bounds.isValid()) {
+      map.fitBounds(bounds, { paddingTopLeft: [10, 70], paddingBottomRight: [10, 20] });
+    }
   }
 }
 
