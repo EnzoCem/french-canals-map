@@ -1636,14 +1636,24 @@ const WATERWAY_COLORS = {
 let waterwayLayer = null;
 
 function buildWaterwayOverlay() {
+  // Dedicated pane sits below markers; drop-shadow gives a dark halo
+  // that makes coloured lines pop from roads, terrain and labels.
+  if (!map.getPane('waterwayPane')) {
+    map.createPane('waterwayPane');
+    map.getPane('waterwayPane').style.zIndex = 390; // below default overlayPane (400)
+    map.getPane('waterwayPane').style.filter =
+      'drop-shadow(0px 0px 2.5px rgba(0,0,0,0.85))';
+  }
+
   waterwayLayer = L.geoJSON(WATERWAY_GEOJSON, {
+    pane: 'waterwayPane',
     style: feature => {
       const name = feature.properties.name || '';
       const color = WATERWAY_COLORS[name] || '#5bc0de';
       return {
         color: color,
-        weight: 3,
-        opacity: 0.85,
+        weight: 5,
+        opacity: 1.0,
         lineCap: 'round',
         lineJoin: 'round',
       };
@@ -2324,7 +2334,7 @@ function highlightRouteOnMap(segments) {
 
   // Dim main waterway layer
   if (waterwayLayer && layerState.waterways) {
-    waterwayLayer.setStyle({ color: '#1a3a5c', opacity: 0.18, weight: 1.5 });
+    waterwayLayer.setStyle({ color: '#1a3a5c', opacity: 0.18, weight: 2 });
   }
 
   const glowGeoJSON = { type: 'FeatureCollection', features: matchingFeatures };
@@ -2391,7 +2401,7 @@ function restoreWaterwayStyles() {
       if (!layer.feature) return;
       const name = layer.feature.properties && layer.feature.properties.name;
       const color = WATERWAY_COLORS[name] || '#5bc0de';
-      layer.setStyle({ color, weight: 3, opacity: 0.85 });
+      layer.setStyle({ color, weight: 5, opacity: 1.0 });
     });
   }
 }
