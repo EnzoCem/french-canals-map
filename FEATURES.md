@@ -12,7 +12,7 @@ Planned and proposed enhancements for the French Canals Interactive Map.
 | IGN France base map | Best-quality French topo map as default layer |
 | Tile layer switcher | IGN France, OpenStreetMap, CartoDB, ESRI Topo |
 | OpenSeaMap overlay | Nautical marks as a toggleable overlay |
-| Real waterway geometry | 3,416 OSM canal/river segments covering 23 waterways |
+| Real waterway geometry | 4,622 OSM canal/river segments covering 37 waterways |
 | Town markers | 78 waypoints with detail sidebars |
 | Lock markers | Individual lock positions with PK data |
 | Haltes & Ports | VNF haltes and marinas as separate toggleable layers |
@@ -20,6 +20,8 @@ Planned and proposed enhancements for the French Canals Interactive Map.
 | My Notes | User pins with title/body text |
 | VNF integration | Links to VNF route calculator, notices, and regional pages |
 | Route planner | BFS pathfinding with distance, locks, vessel constraints, estimated days |
+| Map-click endpoint selection | Click any waterway or town marker to set From/To route endpoints; floating nudge bar triggers calculation |
+| Route highlight on map | Planned route glows with pulsing gold halo; corridor-clipped to journey extent; fits to endpoint pins |
 
 ---
 
@@ -129,10 +131,10 @@ Planned and proposed enhancements for the French Canals Interactive Map.
 | Item | Description |
 |------|-------------|
 | PK data gaps | Several routes (e.g. Route 3, 6, 7, 9, 17, 20, 21) have few or no intermediate waypoints — limits route planner precision for those segments |
-| Waterway geometry gaps | Upper Seine, Canal de Garonne, Somme have incomplete OSM geometry — Overpass API returned errors at time of generation |
+| Waterway geometry gaps | Upper Seine, Canal de Garonne, Canal de la Somme have incomplete OSM geometry; River Moselle has only 9 segments |
 | Lock count estimates | Multi-route planner uses proportional estimates for partial segments — would be more accurate with per-waypoint lock counts |
 | File size | At ~1.5 MB the HTML is large; the GeoJSON could be lazy-loaded to improve initial load time |
 
 ---
 
-*Last updated: March 2026*
+*Last updated: March 2026 — 37 waterways, 4,622 features*
