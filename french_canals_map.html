@@ -515,6 +515,104 @@
   }
   .rp-map-btn.clear-btn:hover { background: #4a2800; color: #fff; }
 
+
+  /* ── Map-click endpoint selection ───────────────────────────────────────── */
+  .endpoint-popup {
+    font-family: 'Segoe UI', sans-serif;
+    min-width: 180px;
+  }
+  .endpoint-popup .ep-town {
+    font-weight: bold;
+    font-size: 13px;
+    color: #1a3a5c;
+    margin-bottom: 4px;
+  }
+  .endpoint-popup .ep-route {
+    font-size: 11px;
+    color: #666;
+    margin-bottom: 10px;
+  }
+  .endpoint-popup .ep-btns {
+    display: flex;
+    gap: 6px;
+  }
+  .endpoint-popup .ep-btn {
+    flex: 1;
+    padding: 7px 6px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+    transition: opacity 0.15s;
+  }
+  .endpoint-popup .ep-btn:hover { opacity: 0.85; }
+  .endpoint-popup .ep-btn.from { background: #27ae60; color: #fff; }
+  .endpoint-popup .ep-btn.to   { background: #e74c3c; color: #fff; }
+
+  /* Sidebar From/To quick-set buttons */
+  .sidebar-endpoint-btns {
+    display: flex;
+    gap: 8px;
+    margin: 10px 0 14px 0;
+  }
+  .sep-btn {
+    flex: 1;
+    padding: 7px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+  }
+  .sep-btn.from { background: #1e8449; color: #fff; }
+  .sep-btn.from:hover { background: #27ae60; }
+  .sep-btn.to   { background: #922b21; color: #fff; }
+  .sep-btn.to:hover   { background: #e74c3c; }
+
+  /* Floating "Calculate" nudge bar */
+  #route-nudge-bar {
+    position: fixed;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #0d1b2a;
+    border: 1px solid #1a5276;
+    border-radius: 30px;
+    padding: 10px 20px;
+    display: none;
+    align-items: center;
+    gap: 12px;
+    z-index: 2100;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+    font-size: 13px;
+    color: #9bb8d4;
+    white-space: nowrap;
+  }
+  #route-nudge-bar .nudge-from { color: #2ecc71; font-weight: bold; }
+  #route-nudge-bar .nudge-to   { color: #e74c3c; font-weight: bold; }
+  #route-nudge-bar .nudge-calc-btn {
+    background: linear-gradient(135deg, #1a6b9a, #2980b9);
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    padding: 7px 16px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 13px;
+  }
+  #route-nudge-bar .nudge-calc-btn:hover { background: linear-gradient(135deg, #2471a3, #3498db); }
+  #route-nudge-bar .nudge-clear {
+    color: #555;
+    cursor: pointer;
+    font-size: 16px;
+    background: none;
+    border: none;
+    padding: 0 4px;
+    line-height: 1;
+  }
+  #route-nudge-bar .nudge-clear:hover { color: #fff; }
+
 </style>
 </head>
 <body>
@@ -1237,6 +1335,10 @@ function openSidebar(wid) {
 
   document.getElementById('sidebar-title').textContent = w.name;
   document.getElementById('place-info').innerHTML = `
+    <div class="sidebar-endpoint-btns">
+      <button class="sep-btn from" onclick="setRouteEndpoint('from','${w.id}')">🟢 Set as From</button>
+      <button class="sep-btn to"   onclick="setRouteEndpoint('to','${w.id}')">🔴 Set as To</button>
+    </div>
     <div class="info-name">${w.is_lock ? '🔒 ' : '🏘 '}${w.name}</div>
     <div class="info-route">Route ${w.route}${routeInfo ? ' · ' + routeInfo.canal : ''}</div>
     ${w.desc ? `<div class="info-desc">${w.desc}</div>` : ''}
@@ -1535,6 +1637,7 @@ function buildWaterwayOverlay() {
     onEachFeature: (feature, layer) => {
       const name = feature.properties.name || 'Waterway';
       layer.bindTooltip(name, {sticky: true, className: 'waterway-tooltip'});
+      layer.on('click', e => onWaterwayClick(feature, e));
     },
   });
 
@@ -1990,6 +2093,10 @@ function swapRoutePlannerEndpoints() {
   const tmp = fromSel.value;
   fromSel.value = toSel.value;
   toSel.value   = tmp;
+  // Also swap the map pins
+  const tmpId = routeFromId;
+  if (routeToId)   setRouteEndpoint('from', routeToId);
+  if (tmpId)       setRouteEndpoint('to', tmpId);
   // Re-run if results are showing
   if (document.getElementById('rp-results').innerHTML) calculateRoute();
 }
@@ -2221,6 +2328,165 @@ function expandRoutePlanner() {
   btn.textContent = '▲';
 }
 
+
+// ============================================================
+//  MAP-CLICK ENDPOINT SELECTION
+// ============================================================
+
+let routeFromId = null;
+let routeToId   = null;
+let fromPin     = null;
+let toPin       = null;
+
+// Inverted lookup: waterway name → [route numbers]
+function waterwayNameToRoutes(name) {
+  const routes = [];
+  Object.entries(ROUTE_TO_WATERWAYS).forEach(([rNum, names]) => {
+    if (names.includes(name)) routes.push(parseInt(rNum));
+  });
+  return routes;
+}
+
+// Find nearest non-lock waypoint to a latlng on a named waterway
+function nearestTownOnWaterway(waterwayName, clickLatLng) {
+  const routeNums = waterwayNameToRoutes(waterwayName);
+  if (!routeNums.length) return null;
+  const candidates = WAYPOINTS.filter(w => !w.is_lock && routeNums.includes(w.route));
+  if (!candidates.length) return null;
+  let nearest = null, minDist = Infinity;
+  candidates.forEach(w => {
+    const d = clickLatLng.distanceTo(L.latLng(w.lat, w.lon));
+    if (d < minDist) { minDist = d; nearest = w; }
+  });
+  return nearest;
+}
+
+// Teardrop pin icon  (A = green From, B = red To)
+function makeEndpointIcon(color, label) {
+  return L.divIcon({
+    className: '',
+    html: `<div style="position:relative;width:30px;height:42px;">
+      <div style="width:30px;height:30px;background:${color};border-radius:50% 50% 50% 0;
+           transform:rotate(-45deg);border:3px solid rgba(255,255,255,0.9);
+           box-shadow:0 3px 10px rgba(0,0,0,0.5);display:flex;align-items:center;
+           justify-content:center;">
+        <span style="transform:rotate(45deg);color:#fff;font-weight:900;font-size:13px;
+              line-height:1;">${label}</span>
+      </div>
+    </div>`,
+    iconSize: [30, 42],
+    iconAnchor: [15, 42],
+    popupAnchor: [0, -44],
+  });
+}
+
+// Drop/update a pin and store the waypoint id
+function setRouteEndpoint(type, waypointId) {
+  map.closePopup();
+  const wp = WAYPOINTS.find(w => w.id === waypointId);
+  if (!wp) return;
+
+  if (type === 'from') {
+    routeFromId = waypointId;
+    if (fromPin) map.removeLayer(fromPin);
+    fromPin = L.marker([wp.lat, wp.lon], {
+      icon: makeEndpointIcon('#27ae60', 'A'),
+      zIndexOffset: 1200,
+    }).addTo(map).bindTooltip(`From: ${wp.name}`, { direction: 'top' });
+  } else {
+    routeToId = waypointId;
+    if (toPin) map.removeLayer(toPin);
+    toPin = L.marker([wp.lat, wp.lon], {
+      icon: makeEndpointIcon('#e74c3c', 'B'),
+      zIndexOffset: 1100,
+    }).addTo(map).bindTooltip(`To: ${wp.name}`, { direction: 'top' });
+  }
+
+  // Sync dropdowns if planner is already populated
+  syncDropdownToPin(type, waypointId);
+  updateNudgeBar();
+}
+
+function syncDropdownToPin(type, waypointId) {
+  if (!document.getElementById('rp-from').options.length) return;
+  const sel = document.getElementById(type === 'from' ? 'rp-from' : 'rp-to');
+  if (sel.querySelector(`option[value="${waypointId}"]`)) sel.value = waypointId;
+}
+
+// Remove pins and reset state
+function clearEndpointPins(alsoCloseNudge) {
+  if (fromPin) { map.removeLayer(fromPin); fromPin = null; }
+  if (toPin)   { map.removeLayer(toPin);   toPin   = null; }
+  routeFromId = null;
+  routeToId   = null;
+  if (alsoCloseNudge) updateNudgeBar();
+}
+
+// Nudge bar: show/hide + update labels
+function updateNudgeBar() {
+  const bar = document.getElementById('route-nudge-bar');
+  if (!routeFromId && !routeToId) {
+    bar.style.display = 'none';
+    return;
+  }
+  const fromWp = routeFromId ? WAYPOINTS.find(w => w.id === routeFromId) : null;
+  const toWp   = routeToId   ? WAYPOINTS.find(w => w.id === routeToId)   : null;
+  document.getElementById('nudge-from-label').textContent = fromWp ? fromWp.name : '—';
+  document.getElementById('nudge-to-label').textContent   = toWp   ? toWp.name   : '—';
+  bar.style.display = 'flex';
+}
+
+// Nudge bar Calculate button
+function nudgeCalculate() {
+  if (!document.getElementById('rp-from').options.length) {
+    populateRoutePlannerDropdowns();
+  }
+  if (routeFromId) syncDropdownToPin('from', routeFromId);
+  if (routeToId)   syncDropdownToPin('to',   routeToId);
+
+  const panel = document.getElementById('route-planner-panel');
+  if (panel.style.display !== 'block') {
+    panel.style.display = 'block';
+    expandRoutePlanner();
+  }
+  calculateRoute();
+}
+
+// ── Waterway click handler ────────────────────────────────────────────────
+function onWaterwayClick(feature, e) {
+  L.DomEvent.stopPropagation(e);
+  const name = feature.properties && feature.properties.name;
+  const nearest = name ? nearestTownOnWaterway(name, e.latlng) : null;
+
+  if (!nearest) {
+    L.popup()
+      .setLatLng(e.latlng)
+      .setContent(`<div style="font-size:12px;color:#666;">No waypoints found on this waterway.</div>`)
+      .openOn(map);
+    return;
+  }
+
+  const routeInfo = ROUTES.find(r => r.num === nearest.route);
+  const routeLabel = routeInfo ? `Route ${nearest.route} · ${routeInfo.canal}` : `Route ${nearest.route}`;
+
+  L.popup({ maxWidth: 240 })
+    .setLatLng(e.latlng)
+    .setContent(`
+      <div class="endpoint-popup">
+        <div class="ep-town">📍 ${nearest.name}</div>
+        <div class="ep-route">${routeLabel}</div>
+        <div class="ep-btns">
+          <button class="ep-btn from" onclick="setRouteEndpoint('from','${nearest.id}')">
+            🟢 From here
+          </button>
+          <button class="ep-btn to" onclick="setRouteEndpoint('to','${nearest.id}')">
+            🔴 To here
+          </button>
+        </div>
+      </div>`)
+    .openOn(map);
+}
+
 </script>
 
 <div id="route-planner-panel">
@@ -2232,18 +2498,26 @@ function expandRoutePlanner() {
   <div id="rp-body">
   <div class="rp-row">
     <label>From</label>
-    <select class="rp-select" id="rp-from"></select>
+    <select class="rp-select" id="rp-from" onchange="setRouteEndpoint('from', this.value)"></select>
   </div>
   <div style="display:flex;justify-content:center;margin:-4px 0 4px 46px;">
     <button class="rp-swap-btn" onclick="swapRoutePlannerEndpoints()" title="Swap From / To">⇅</button>
   </div>
   <div class="rp-row">
     <label>To</label>
-    <select class="rp-select" id="rp-to"></select>
+    <select class="rp-select" id="rp-to" onchange="setRouteEndpoint('to', this.value)"></select>
   </div>
   <button class="rp-calc-btn" onclick="calculateRoute()">⚓ Calculate Route</button>
   <div id="rp-results"></div>
   </div><!-- /#rp-body -->
+</div>
+
+
+<div id="route-nudge-bar">
+  <span>📍 <span class="nudge-from" id="nudge-from-label">—</span>
+  → <span class="nudge-to" id="nudge-to-label">—</span></span>
+  <button class="nudge-calc-btn" onclick="nudgeCalculate()">⚓ Calculate Route</button>
+  <button class="nudge-clear" onclick="clearEndpointPins(true)" title="Clear endpoints">✕</button>
 </div>
 
 </body>
