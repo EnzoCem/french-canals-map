@@ -1322,9 +1322,26 @@ function buildMooringMarkers() {
     marker.bindPopup(popupHTML, {maxWidth: 300});
     marker.bindTooltip(m.name, {sticky: true});
 
-    // Attach drag handler to icon once the marker is on the map
-    marker.on('add', function() {
-      if (this._icon) _attachDragToIcon(this._icon, marker, 'moorings', m.id, m.name, m);
+    // Native Leaflet drag events (active only when dragging is enabled in edit mode)
+    marker.on('dragstart', function() {
+      map.closePopup();
+      _dragLabel.style.display = 'block';
+    });
+    marker.on('drag', function(e) {
+      const ll = e.target.getLatLng();
+      _dragLabel.textContent = `${ll.lat.toFixed(5)}, ${ll.lng.toFixed(5)}`;
+      const pt   = map.latLngToContainerPoint(ll);
+      const rect = map.getContainer().getBoundingClientRect();
+      _dragLabel.style.left = (rect.left + pt.x + 14) + 'px';
+      _dragLabel.style.top  = (rect.top  + pt.y - 34) + 'px';
+    });
+    marker.on('dragend', function(e) {
+      _dragLabel.style.display = 'none';
+      const pos = e.target.getLatLng();
+      m.lat = pos.lat;
+      m.lon = pos.lng;
+      saveLocationOverride('moorings', m.id, pos.lat, pos.lng);
+      showEditToast(`📍 ${m.name} repositioned`);
     });
 
     if (m.type === 'halte') {
@@ -1375,9 +1392,28 @@ function buildMarkers() {
     marker._isLock = w.is_lock;
     marker._name = w.name;
 
-    // Attach drag handler to icon once the marker is on the map
-    marker.on('add', function() {
-      if (this._icon) _attachDragToIcon(this._icon, marker, 'waypoints', w.id, w.name, w);
+    // Native Leaflet drag events (active only when dragging is enabled in edit mode)
+    marker.on('dragstart', function() {
+      map.closePopup();
+      _dragLabel.style.display = 'block';
+    });
+    marker.on('drag', function(e) {
+      const ll = e.target.getLatLng();
+      _dragLabel.textContent = `${ll.lat.toFixed(5)}, ${ll.lng.toFixed(5)}`;
+      const pt   = map.latLngToContainerPoint(ll);
+      const rect = map.getContainer().getBoundingClientRect();
+      _dragLabel.style.left = (rect.left + pt.x + 14) + 'px';
+      _dragLabel.style.top  = (rect.top  + pt.y - 34) + 'px';
+    });
+    marker.on('dragend', function(e) {
+      _dragLabel.style.display = 'none';
+      const pos = e.target.getLatLng();
+      w.lat = pos.lat;
+      w.lon = pos.lng;
+      if (routeFromId === w.id && fromPin) fromPin.setLatLng(pos);
+      if (routeToId   === w.id && toPin)   toPin.setLatLng(pos);
+      saveLocationOverride('waypoints', w.id, pos.lat, pos.lng);
+      showEditToast(`📍 ${w.name} repositioned`);
     });
 
     if (w.is_lock) {
@@ -2839,64 +2875,11 @@ function onWaterwayClick(feature, e) {
 // Shared drag-coordinate label element (defined in HTML)
 const _dragLabel = document.getElementById('drag-coord-label');
 
-// ── Custom drag implementation ───────────────────────────────────────────────
-// Uses Pointer Events + setPointerCapture on the marker icon DOM element.
-// setPointerCapture guarantees that every subsequent pointermove/pointerup goes
-// to the capturing element, even if the cursor leaves it — no event loss.
-// iconEl must be the marker's actual _icon DOM element (passed from 'add' handler).
-function _startCustomDrag(iconEl, marker, group, id, name, dataObj) {
-  map.closePopup();
-  map.dragging.disable();
-  _dragLabel.style.display = 'block';
-  document.getElementById('map').style.cursor = 'grabbing';
-
-  function onMove(e) {
-    const rect   = map.getContainer().getBoundingClientRect();
-    const point  = L.point(e.clientX - rect.left, e.clientY - rect.top);
-    const latlng = map.containerPointToLatLng(point);
-    marker.setLatLng(latlng);
-    _dragLabel.textContent = `${latlng.lat.toFixed(5)}, ${latlng.lng.toFixed(5)}`;
-    _dragLabel.style.left = (e.clientX + 14) + 'px';
-    _dragLabel.style.top  = (e.clientY - 34) + 'px';
-  }
-
-  function onUp(e) {
-    iconEl.removeEventListener('pointermove',  onMove);
-    iconEl.removeEventListener('pointerup',    onUp);
-    iconEl.removeEventListener('pointercancel', onUp);
-    try { iconEl.releasePointerCapture(e.pointerId); } catch (_) {}
-    map.dragging.enable();
-    _dragLabel.style.display = 'none';
-    document.getElementById('map').style.cursor = '';
-
-    const pos = marker.getLatLng();
-    dataObj.lat = pos.lat;
-    dataObj.lon = pos.lng;
-    if (group === 'waypoints') {
-      if (routeFromId === id && fromPin) fromPin.setLatLng(pos);
-      if (routeToId   === id && toPin)   toPin.setLatLng(pos);
-    }
-    saveLocationOverride(group, id, pos.lat, pos.lng);
-    showEditToast(`📍 ${name} repositioned`);
-  }
-
-  iconEl.addEventListener('pointermove',   onMove);
-  iconEl.addEventListener('pointerup',     onUp);
-  iconEl.addEventListener('pointercancel', onUp);
-}
-
-// Attach a pointerdown drag listener to a marker's icon once it exists on the map.
-// Called from marker.on('add', ...) so _icon is guaranteed to be set.
-function _attachDragToIcon(icon, marker, group, id, name, dataObj) {
-  icon.style.touchAction = 'none'; // prevent browser scroll/pan hijacking drag
-  icon.addEventListener('pointerdown', function(e) {
-    if (!editModeActive) return;
-    e.preventDefault();        // prevent mousedown fallback events
-    e.stopPropagation();       // prevent map-pan handler from also firing
-    icon.setPointerCapture(e.pointerId);
-    _startCustomDrag(icon, marker, group, id, name, dataObj);
-  });
-}
+// ── Drag uses Leaflet's native marker.dragging (L.Draggable) ────────────────
+// Markers are created with draggable:false.  _initInteraction still creates a
+// MarkerDrag handler (marker.dragging) that can be .enable()/.disable()'d.
+// activateEditMode() enables drag; deactivateEditMode() rebuilds markers
+// (drag off by default).  dragstart/drag/dragend handlers are on each marker.
 
 function toggleEditMode() {
   editModeActive ? deactivateEditMode() : activateEditMode();
@@ -2918,6 +2901,11 @@ function activateEditMode() {
     map.removeLayer(clusterGroup);
     map.addLayer(townGroup);
   }
+
+  // Enable Leaflet's native drag on every marker (including the fresh icons
+  // that _initInteraction just created during the addLayer calls above).
+  allMarkers.forEach(m => { if (m.dragging) m.dragging.enable(); });
+  allMooringMarkers.forEach(m => { if (m.dragging) m.dragging.enable(); });
 
   updateEditBannerCount();
 }
