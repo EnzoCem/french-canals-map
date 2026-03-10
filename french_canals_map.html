@@ -1301,7 +1301,14 @@ function buildMooringMarkers() {
 
   MOORINGS.forEach(m => {
     const icon = m.type === 'halte' ? createHalteIcon() : createPortIcon();
-    const marker = L.marker([m.lat, m.lon], {icon, draggable: false});
+    // draggable:true ensures Leaflet fully wires up L.Draggable in _initInteraction.
+    // We disable immediately via once('add') — which fires after onAdd() completes —
+    // so the marker isn't draggable in normal mode but enable() works reliably in edit mode.
+    const marker = L.marker([m.lat, m.lon], {icon, draggable: true});
+    // After onAdd fires, L.Draggable is wired up. Enable or disable based on current mode.
+    marker.once('add', function() {
+      if (this.dragging) { editModeActive ? this.dragging.enable() : this.dragging.disable(); }
+    });
 
     const typeLabel = m.type === 'halte' ? '⚓ Halte Fluviale' : '⛵ Port de Plaisance';
     const costColor = m.cost === 'free' ? '#52d68a' : '#7ad4ef';
@@ -1326,9 +1333,6 @@ function buildMooringMarkers() {
     marker.on('dragstart', _onMarkerDragStart);
     marker.on('drag',      _onMarkerDrag);
     marker.on('dragend',   function(e) { _onMarkerDragEnd(e, 'moorings', m.id, m.name, m); });
-    // Leaflet only initialises marker.dragging after onAdd fires.
-    // Re-enable drag immediately when the marker lands on the map if edit mode is already active.
-    marker.once('add', function() { if (editModeActive && this.dragging) this.dragging.enable(); });
 
     if (m.type === 'halte') {
       halteGroup.addLayer(marker);
@@ -1354,7 +1358,13 @@ function buildMarkers() {
     const hasNote = note.trim().length > 0;
 
     const icon = w.is_lock ? createLockIcon() : createTownIcon(w.section);
-    const marker = L.marker([w.lat, w.lon], {icon, draggable: false});
+    // draggable:true ensures Leaflet fully wires up L.Draggable in _initInteraction.
+    // Disabled immediately via once('add') so it's not draggable in normal mode.
+    const marker = L.marker([w.lat, w.lon], {icon, draggable: true});
+    // After onAdd fires, L.Draggable is wired up. Enable or disable based on current mode.
+    marker.once('add', function() {
+      if (this.dragging) { editModeActive ? this.dragging.enable() : this.dragging.disable(); }
+    });
 
     const routeLabel = routeInfo
       ? `Route ${w.route}: ${routeInfo.canal}`
@@ -1382,9 +1392,6 @@ function buildMarkers() {
     marker.on('dragstart', _onMarkerDragStart);
     marker.on('drag',      _onMarkerDrag);
     marker.on('dragend',   function(e) { _onMarkerDragEnd(e, 'waypoints', w.id, w.name, w); });
-    // Leaflet only initialises marker.dragging after onAdd fires.
-    // Re-enable drag immediately when the marker lands on the map if edit mode is already active.
-    marker.once('add', function() { if (editModeActive && this.dragging) this.dragging.enable(); });
 
     if (w.is_lock) {
       lockGroup.addLayer(marker);
