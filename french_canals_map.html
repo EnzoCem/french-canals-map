@@ -123,6 +123,71 @@
   #mooring-legend .ml-item { display:flex; align-items:center; gap:6px; margin:2px 0; }
   #mooring-legend .ml-dot { width:11px; height:11px; border-radius:50%; flex-shrink:0; }
 
+  /* ── Edit Locations mode ──────────────────────────────────────── */
+  #edit-mode-banner {
+    display: none; position: fixed; top: 0; left: 0; right: 0; z-index: 10000;
+    background: linear-gradient(90deg, #b36a00, #e8a100);
+    color: #1a0a00; font-size: 13px; font-weight: 600;
+    padding: 7px 14px; display: none;
+    align-items: center; justify-content: space-between;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+  }
+  #edit-mode-banner .eb-left  { display:flex; align-items:center; gap:10px; }
+  #edit-mode-banner .eb-right { display:flex; align-items:center; gap:8px; }
+  #edit-mode-banner button {
+    background: rgba(0,0,0,0.2); border: 1px solid rgba(0,0,0,0.35);
+    color: #1a0a00; font-weight:700; font-size:12px; padding:3px 10px;
+    border-radius:4px; cursor:pointer;
+  }
+  #edit-mode-banner button:hover { background: rgba(0,0,0,0.35); }
+  #edit-mode-banner .eb-done {
+    background: #1a0a00; color: #e8a100; border-color: #1a0a00;
+  }
+  #edit-mode-banner .eb-done:hover { background: #2a1500; }
+  #drag-coord-label {
+    display:none; position:fixed; z-index:10001; pointer-events:none;
+    background:#000d; border:1px solid #e8a100; color:#e8a100;
+    padding:3px 9px; border-radius:5px; font:12px monospace;
+    white-space:nowrap; box-shadow:0 2px 6px rgba(0,0,0,0.6);
+  }
+  .edit-mode-cursor .leaflet-container { cursor: crosshair !important; }
+  #edit-toast {
+    display:none; position:fixed; bottom:60px; left:50%; transform:translateX(-50%);
+    background:#1a1a2e; border:1px solid #e8a100; color:#e8a100;
+    padding:6px 16px; border-radius:20px; font-size:12px; z-index:9999;
+    pointer-events:none; transition:opacity 0.3s;
+  }
+
+  /* ── Data Backup panel ────────────────────────────────────────── */
+  #data-panel {
+    display:none; position:fixed; top:56px; right:10px; z-index:5000;
+    background:#0f1b2d; border:1px solid #0f3460; border-radius:8px;
+    padding:14px 16px; min-width:230px;
+    box-shadow:0 4px 20px rgba(0,0,0,0.6);
+  }
+  #data-panel h4 {
+    margin:0 0 10px; color:#e0c97f; font-size:13px; border-bottom:1px solid #0f3460; padding-bottom:6px;
+  }
+  #data-panel .dp-section { margin-bottom:12px; }
+  #data-panel .dp-label { font-size:11px; color:#7a9ab0; margin-bottom:5px; }
+  #data-panel .dp-row { display:flex; gap:6px; margin-bottom:5px; }
+  .dp-btn {
+    flex:1; padding:5px 8px; font-size:12px; font-weight:600; border-radius:5px;
+    cursor:pointer; border:1px solid;
+  }
+  .dp-btn.export { background:#0d3020; border-color:#52d68a; color:#52d68a; }
+  .dp-btn.export:hover { background:#144030; }
+  .dp-btn.import { background:#0d1f40; border-color:#5bc0de; color:#5bc0de; }
+  .dp-btn.import:hover { background:#1a2f55; }
+  .dp-btn.danger { background:#2a0a0a; border-color:#e74c3c; color:#e74c3c; }
+  .dp-btn.danger:hover { background:#3a1010; }
+  #data-panel .dp-stat { font-size:11px; color:#5bc0de; margin-top:6px; }
+  #data-panel .dp-close {
+    position:absolute; top:8px; right:10px; background:none; border:none;
+    color:#5a7a8a; font-size:16px; cursor:pointer; line-height:1;
+  }
+  #data-panel .dp-close:hover { color:#fff; }
+
   /* Popup styles */
   .leaflet-popup-content-wrapper { background: #16213e; color: #eee; border: 1px solid #0f3460; border-radius: 6px; }
   .leaflet-popup-tip { background: #16213e; }
@@ -651,6 +716,8 @@
     <button class="toggle-btn active" id="toggle-ports" onclick="toggleLayer('ports')">⛵ Ports</button>
     <button class="toggle-btn" id="btn-plan-route" onclick="openRoutePlanner()">📍 Plan Route</button>
     <button class="toggle-btn active" id="toggle-notes" onclick="toggleLayer('notes')">📌 My Notes</button>
+    <button class="toggle-btn" id="btn-edit-locations" onclick="toggleEditMode()" title="Drag markers to exact positions">✏️ Edit Locations</button>
+    <button class="toggle-btn" id="btn-data-panel" onclick="toggleDataPanel()" title="Backup &amp; restore your data">💾 Backup</button>
   </div>
   <input type="text" id="search-box" placeholder="🔍 Search place…" oninput="searchPlaces(this.value)">
   <div class="control-group">
@@ -1054,6 +1121,24 @@ const STORAGE_KEY = 'french_canals_notes_v1';
 let userNotes = {};
 try { userNotes = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch(e){}
 
+// ── Location overrides (drag-to-reposition) ──────────────────────────────────
+const OVERRIDES_KEY = 'french_canals_location_overrides_v1';
+let locationOverrides = { waypoints: {}, moorings: {} };
+try { locationOverrides = JSON.parse(localStorage.getItem(OVERRIDES_KEY) || '{"waypoints":{},"moorings":{}}'); } catch(e){}
+
+// Store original positions before applying any overrides
+const _origPositions = { waypoints: {}, moorings: {} };
+WAYPOINTS.forEach(w => {
+  _origPositions.waypoints[w.id] = { lat: w.lat, lon: w.lon };
+  const ov = locationOverrides.waypoints[w.id];
+  if (ov) { w.lat = ov.lat; w.lon = ov.lon; }
+});
+MOORINGS.forEach(m => {
+  _origPositions.moorings[m.id] = { lat: m.lat, lon: m.lon };
+  const ov = locationOverrides.moorings[m.id];
+  if (ov) { m.lat = ov.lat; m.lon = ov.lon; }
+});
+
 // Section colours for lines
 const SECTION_COLORS = {
   1: "#e74c3c", 2: "#e67e22", 3: "#9b59b6",
@@ -1140,6 +1225,8 @@ const clusterGroup = L.markerClusterGroup({
 });
 
 let allMarkers = [];
+let allMooringMarkers = [];
+let editModeActive = false;
 let visibleSections = new Set(['1','2','3','4','5','6','7','8','9']);
 
 function createTownIcon(section) {
@@ -1181,17 +1268,19 @@ function createPortIcon() {
 function buildMooringMarkers() {
   halteGroup.clearLayers();
   portGroup.clearLayers();
+  allMooringMarkers = [];
 
   MOORINGS.forEach(m => {
     const icon = m.type === 'halte' ? createHalteIcon() : createPortIcon();
-    const marker = L.marker([m.lat, m.lon], {icon});
+    const marker = L.marker([m.lat, m.lon], {icon, draggable: false});
 
     const typeLabel = m.type === 'halte' ? '⚓ Halte Fluviale' : '⛵ Port de Plaisance';
     const costColor = m.cost === 'free' ? '#52d68a' : '#7ad4ef';
+    const isOverridden = !!locationOverrides.moorings[m.id];
 
     const popupHTML = `
       <div style="min-width:200px;max-width:280px">
-        <div class="popup-title">${m.name}</div>
+        <div class="popup-title">${m.name}${isOverridden ? ' <span style="color:#e8a100;font-size:10px">✏️ repositioned</span>' : ''}</div>
         <div class="popup-canal">${typeLabel} · ${m.waterway}${m.pk ? ' · ' + m.pk : ''}</div>
         <div class="popup-cost" style="color:${costColor}">💶 ${m.cost}</div>
         ${m.facilities && m.facilities !== 'none' ? `<div class="popup-facilities">🔌 ${m.facilities.split('/').join(' · ')}</div>` : ''}
@@ -1199,14 +1288,22 @@ function buildMooringMarkers() {
         ${m.contact ? `<div style="font-size:11px;color:#5a7a8a;margin-top:3px">${m.contact}</div>` : ''}
       </div>`;
 
+    marker._mooringId = m.id;
+    marker._mooringName = m.name;
     marker.bindPopup(popupHTML, {maxWidth: 300});
     marker.bindTooltip(m.name, {sticky: true});
+
+    // Drag handlers for edit mode
+    marker.on('dragstart', _onMarkerDragStart);
+    marker.on('drag',      _onMarkerDrag);
+    marker.on('dragend',   function(e) { _onMarkerDragEnd(e, 'moorings', m.id, m.name, m); });
 
     if (m.type === 'halte') {
       halteGroup.addLayer(marker);
     } else {
       portGroup.addLayer(marker);
     }
+    allMooringMarkers.push(marker);
   });
 
   map.addLayer(halteGroup);
@@ -1225,15 +1322,16 @@ function buildMarkers() {
     const hasNote = note.trim().length > 0;
 
     const icon = w.is_lock ? createLockIcon() : createTownIcon(w.section);
-    const marker = L.marker([w.lat, w.lon], {icon});
+    const marker = L.marker([w.lat, w.lon], {icon, draggable: false});
 
     const routeLabel = routeInfo
       ? `Route ${w.route}: ${routeInfo.canal}`
       : `Route ${w.route}`;
+    const isOverridden = !!locationOverrides.waypoints[w.id];
 
     const popupHTML = `
       <div style="min-width:200px;max-width:260px">
-        <div class="popup-title">${w.name}</div>
+        <div class="popup-title">${w.name}${isOverridden ? ' <span style="color:#e8a100;font-size:10px">✏️ repositioned</span>' : ''}</div>
         <div class="popup-canal">${routeLabel}</div>
         ${w.is_lock ? `<div class="popup-lock">🔒 Lock${w.lock_number ? ' #'+w.lock_number : ''}</div>` : ''}
         ${w.desc ? `<div class="popup-desc">${w.desc.substring(0,180)}${w.desc.length>180?'…':''}</div>` : ''}
@@ -1247,6 +1345,11 @@ function buildMarkers() {
     marker._section = w.section;
     marker._isLock = w.is_lock;
     marker._name = w.name;
+
+    // Drag handlers for edit mode
+    marker.on('dragstart', _onMarkerDragStart);
+    marker.on('drag',      _onMarkerDrag);
+    marker.on('dragend',   function(e) { _onMarkerDragEnd(e, 'waypoints', w.id, w.name, w); });
 
     if (w.is_lock) {
       lockGroup.addLayer(marker);
@@ -2607,6 +2710,297 @@ function onWaterwayClick(feature, e) {
     .openOn(map);
 }
 
+// ============================================================
+//  EDIT LOCATIONS MODE
+// ============================================================
+
+// Shared drag-coordinate label element (defined in HTML)
+const _dragLabel = document.getElementById('drag-coord-label');
+
+function _onMarkerDragStart() {
+  _dragLabel.style.display = 'block';
+  map.closePopup();
+}
+
+function _onMarkerDrag(e) {
+  if (!editModeActive) return;
+  const pos = e.target.getLatLng();
+  _dragLabel.textContent = `${pos.lat.toFixed(5)}, ${pos.lng.toFixed(5)}`;
+  const pt = map.latLngToContainerPoint(pos);
+  const rect = map.getContainer().getBoundingClientRect();
+  _dragLabel.style.left = (rect.left + pt.x + 14) + 'px';
+  _dragLabel.style.top  = (rect.top  + pt.y - 34) + 'px';
+}
+
+function _onMarkerDragEnd(e, group, id, name, dataObj) {
+  _dragLabel.style.display = 'none';
+  if (!editModeActive) return;
+  const pos = e.target.getLatLng();
+  // Update in-memory data object
+  dataObj.lat = pos.lat;
+  dataObj.lon = pos.lng;
+  // Update route endpoint pins if they refer to this waypoint
+  if (group === 'waypoints') {
+    if (routeFromId === id && fromPin) fromPin.setLatLng(pos);
+    if (routeToId   === id && toPin)   toPin.setLatLng(pos);
+  }
+  saveLocationOverride(group, id, pos.lat, pos.lng);
+  showEditToast(`📍 ${name} repositioned`);
+}
+
+function toggleEditMode() {
+  editModeActive ? deactivateEditMode() : activateEditMode();
+}
+
+function activateEditMode() {
+  editModeActive = true;
+  document.getElementById('btn-edit-locations').classList.add('active');
+  const banner = document.getElementById('edit-mode-banner');
+  banner.style.display = 'flex';
+  // Push controls bar down to make room for banner
+  document.getElementById('controls').style.top = '42px';
+  document.getElementById('map').classList.add('edit-mode-cursor');
+
+  // Switch towns from cluster → individual so every dot is draggable
+  if (layerState.towns) {
+    map.removeLayer(clusterGroup);
+    map.addLayer(townGroup);
+  }
+
+  // Enable dragging on all markers
+  allMarkers.forEach(m => { if (m.dragging) m.dragging.enable(); });
+  allMooringMarkers.forEach(m => { if (m.dragging) m.dragging.enable(); });
+
+  updateEditBannerCount();
+}
+
+function deactivateEditMode() {
+  editModeActive = false;
+  document.getElementById('btn-edit-locations').classList.remove('active');
+  document.getElementById('edit-mode-banner').style.display = 'none';
+  document.getElementById('controls').style.top = '';
+  document.getElementById('map').classList.remove('edit-mode-cursor');
+  _dragLabel.style.display = 'none';
+
+  // Restore cluster mode for towns
+  if (layerState.towns) {
+    map.removeLayer(townGroup);
+    map.addLayer(clusterGroup);
+  }
+
+  // Disable dragging on all markers
+  allMarkers.forEach(m => { if (m.dragging) m.dragging.disable(); });
+  allMooringMarkers.forEach(m => { if (m.dragging) m.dragging.disable(); });
+
+  // Rebuild markers so popup badges ("✏️ repositioned") update
+  buildMarkers();
+  buildMooringMarkers();
+}
+
+function saveLocationOverride(group, id, lat, lon) {
+  if (!locationOverrides[group]) locationOverrides[group] = {};
+  locationOverrides[group][id] = { lat, lon };
+  localStorage.setItem(OVERRIDES_KEY, JSON.stringify(locationOverrides));
+  updateEditBannerCount();
+}
+
+function resetAllLocationOverrides() {
+  if (!confirm('Reset ALL location corrections? Markers will return to their original positions.')) return;
+  // Restore original positions in data arrays
+  WAYPOINTS.forEach(w => {
+    const orig = _origPositions.waypoints[w.id];
+    if (orig) { w.lat = orig.lat; w.lon = orig.lon; }
+  });
+  MOORINGS.forEach(m => {
+    const orig = _origPositions.moorings[m.id];
+    if (orig) { m.lat = orig.lat; m.lon = orig.lon; }
+  });
+  locationOverrides = { waypoints: {}, moorings: {} };
+  localStorage.setItem(OVERRIDES_KEY, JSON.stringify(locationOverrides));
+  buildMarkers();
+  buildMooringMarkers();
+  updateEditBannerCount();
+  showEditToast('↩ All location corrections cleared');
+}
+
+function updateEditBannerCount() {
+  const n = Object.keys(locationOverrides.waypoints || {}).length
+          + Object.keys(locationOverrides.moorings  || {}).length;
+  const el = document.getElementById('edit-banner-count');
+  if (el) el.textContent = n > 0 ? ` · ${n} correction${n > 1 ? 's' : ''} saved` : '';
+}
+
+function showEditToast(msg) {
+  const toast = document.getElementById('edit-toast');
+  if (!toast) return;
+  toast.textContent = msg;
+  toast.style.display = 'block';
+  toast.style.opacity = '1';
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => {
+    toast.style.opacity = '0';
+    setTimeout(() => { toast.style.display = 'none'; }, 300);
+  }, 2200);
+}
+
+function exportLocationOverrides() {
+  const entries = [];
+  Object.entries(locationOverrides.waypoints || {}).forEach(([id, pos]) => {
+    const w = WAYPOINTS.find(x => x.id === id);
+    const orig = _origPositions.waypoints[id];
+    entries.push({ type:'waypoint', id, name: w ? w.name : id,
+      lat: pos.lat, lon: pos.lon,
+      origLat: orig ? orig.lat : null, origLon: orig ? orig.lon : null });
+  });
+  Object.entries(locationOverrides.moorings || {}).forEach(([id, pos]) => {
+    const m = MOORINGS.find(x => x.id === id);
+    const orig = _origPositions.moorings[id];
+    entries.push({ type:'mooring', id, name: m ? m.name : id,
+      lat: pos.lat, lon: pos.lon,
+      origLat: orig ? orig.lat : null, origLon: orig ? orig.lon : null });
+  });
+  _downloadJSON({ locationCorrections: entries }, 'canal_location_corrections.json');
+}
+
+// ============================================================
+//  DATA BACKUP & RESTORE
+// ============================================================
+
+function toggleDataPanel() {
+  const panel = document.getElementById('data-panel');
+  const open  = panel.style.display === 'block';
+  panel.style.display = open ? 'none' : 'block';
+  document.getElementById('btn-data-panel').classList.toggle('active', !open);
+  if (!open) _refreshDataPanelStats();
+}
+
+function _refreshDataPanelStats() {
+  const noteCount = Object.keys(userNotes).length;
+  const locCount  = Object.keys(locationOverrides.waypoints || {}).length
+                  + Object.keys(locationOverrides.moorings  || {}).length;
+  const el = document.getElementById('data-panel-stats');
+  if (el) el.textContent =
+    `💬 ${noteCount} note${noteCount!==1?'s':''} · ✏️ ${locCount} location correction${locCount!==1?'s':''}`;
+}
+
+function exportFullBackup() {
+  const backup = {
+    version: 1,
+    exportDate: new Date().toISOString(),
+    notes: userNotes,
+    locationOverrides: locationOverrides,
+  };
+  _downloadJSON(backup, `canal_backup_${new Date().toISOString().slice(0,10)}.json`);
+}
+
+function importFullBackup(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (!data.notes && !data.locationOverrides) throw new Error('Unrecognised backup format');
+      if (data.notes) {
+        Object.assign(userNotes, data.notes);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(userNotes));
+      }
+      if (data.locationOverrides) {
+        // Merge overrides and apply to data arrays
+        Object.entries(data.locationOverrides.waypoints || {}).forEach(([id, pos]) => {
+          locationOverrides.waypoints[id] = pos;
+          const w = WAYPOINTS.find(x => x.id === id);
+          if (w) { w.lat = pos.lat; w.lon = pos.lon; }
+        });
+        Object.entries(data.locationOverrides.moorings || {}).forEach(([id, pos]) => {
+          locationOverrides.moorings[id] = pos;
+          const m = MOORINGS.find(x => x.id === id);
+          if (m) { m.lat = pos.lat; m.lon = pos.lon; }
+        });
+        localStorage.setItem(OVERRIDES_KEY, JSON.stringify(locationOverrides));
+      }
+      buildMarkers();
+      buildMooringMarkers();
+      updateEditBannerCount();
+      _refreshDataPanelStats();
+      alert(`✅ Backup imported:\n${Object.keys(data.notes||{}).length} notes\n${Object.keys((data.locationOverrides||{}).waypoints||{}).length + Object.keys((data.locationOverrides||{}).moorings||{}).length} location corrections`);
+    } catch(err) {
+      alert('❌ Import failed: ' + err.message);
+    }
+    input.value = '';
+  };
+  reader.readAsText(file);
+}
+
+function importLocationOverrides(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = JSON.parse(e.target.result);
+      const entries = data.locationCorrections || [];
+      if (!Array.isArray(entries)) throw new Error('Unrecognised format');
+      entries.forEach(entry => {
+        const group = entry.type === 'mooring' ? 'moorings' : 'waypoints';
+        locationOverrides[group][entry.id] = { lat: entry.lat, lon: entry.lon };
+        if (group === 'waypoints') {
+          const w = WAYPOINTS.find(x => x.id === entry.id);
+          if (w) { w.lat = entry.lat; w.lon = entry.lon; }
+        } else {
+          const m = MOORINGS.find(x => x.id === entry.id);
+          if (m) { m.lat = entry.lat; m.lon = entry.lon; }
+        }
+      });
+      localStorage.setItem(OVERRIDES_KEY, JSON.stringify(locationOverrides));
+      buildMarkers();
+      buildMooringMarkers();
+      updateEditBannerCount();
+      _refreshDataPanelStats();
+      alert(`✅ ${entries.length} location correction${entries.length!==1?'s':''} imported`);
+    } catch(err) {
+      alert('❌ Import failed: ' + err.message);
+    }
+    input.value = '';
+  };
+  reader.readAsText(file);
+}
+
+function exportNotes() {
+  _downloadJSON({ notes: userNotes, exportDate: new Date().toISOString() },
+    `canal_notes_${new Date().toISOString().slice(0,10)}.json`);
+}
+
+function importNotes(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = JSON.parse(e.target.result);
+      const notes = data.notes || data;
+      if (typeof notes !== 'object') throw new Error('Unrecognised notes format');
+      Object.assign(userNotes, notes);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(userNotes));
+      buildMarkers();
+      _refreshDataPanelStats();
+      alert(`✅ ${Object.keys(notes).length} note${Object.keys(notes).length!==1?'s':''} imported`);
+    } catch(err) {
+      alert('❌ Import failed: ' + err.message);
+    }
+    input.value = '';
+  };
+  reader.readAsText(file);
+}
+
+function _downloadJSON(obj, filename) {
+  const blob = new Blob([JSON.stringify(obj, null, 2)], { type: 'application/json' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url; a.download = filename; a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
 </script>
 
 <div id="route-planner-panel">
@@ -2638,6 +3032,61 @@ function onWaterwayClick(feature, e) {
   → <span class="nudge-to" id="nudge-to-label">—</span></span>
   <button class="nudge-calc-btn" onclick="nudgeCalculate()">⚓ Calculate Route</button>
   <button class="nudge-clear" onclick="clearEndpointPins(true)" title="Clear endpoints">✕</button>
+</div>
+
+<!-- Edit Locations mode banner -->
+<div id="edit-mode-banner">
+  <div class="eb-left">
+    ✏️ <strong>Edit Locations mode</strong>
+    &nbsp;·&nbsp; Drag any marker to its exact position
+    <span id="edit-banner-count" style="opacity:0.7"></span>
+  </div>
+  <div class="eb-right">
+    <button onclick="exportLocationOverrides()" title="Download corrections as JSON">⬇ Export</button>
+    <button onclick="resetAllLocationOverrides()" class="danger" title="Undo all corrections">↩ Reset all</button>
+    <button onclick="deactivateEditMode()" class="eb-done">✓ Done</button>
+  </div>
+</div>
+
+<!-- Drag coordinate label -->
+<div id="drag-coord-label"></div>
+
+<!-- Toast notification -->
+<div id="edit-toast"></div>
+
+<!-- Data backup panel -->
+<div id="data-panel">
+  <button class="dp-close" onclick="toggleDataPanel()" title="Close">✕</button>
+  <h4>💾 Data Backup</h4>
+
+  <div class="dp-section">
+    <div class="dp-label">Full backup (notes + location corrections)</div>
+    <div class="dp-row">
+      <button class="dp-btn export" onclick="exportFullBackup()">⬇ Export backup</button>
+      <button class="dp-btn import" onclick="document.getElementById('backup-file-input').click()">⬆ Import backup</button>
+    </div>
+    <input type="file" id="backup-file-input" accept=".json" style="display:none" onchange="importFullBackup(this)">
+  </div>
+
+  <div class="dp-section">
+    <div class="dp-label">Location corrections only</div>
+    <div class="dp-row">
+      <button class="dp-btn export" onclick="exportLocationOverrides()">⬇ Export</button>
+      <button class="dp-btn import" onclick="document.getElementById('loc-file-input').click()">⬆ Import</button>
+    </div>
+    <input type="file" id="loc-file-input" accept=".json" style="display:none" onchange="importLocationOverrides(this)">
+  </div>
+
+  <div class="dp-section">
+    <div class="dp-label">My Notes only</div>
+    <div class="dp-row">
+      <button class="dp-btn export" onclick="exportNotes()">⬇ Export</button>
+      <button class="dp-btn import" onclick="document.getElementById('notes-file-input').click()">⬆ Import</button>
+    </div>
+    <input type="file" id="notes-file-input" accept=".json" style="display:none" onchange="importNotes(this)">
+  </div>
+
+  <div id="data-panel-stats" class="dp-stat"></div>
 </div>
 
 </body>
