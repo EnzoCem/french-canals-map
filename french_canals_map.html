@@ -2083,8 +2083,14 @@ function populateRoutePlannerDropdowns() {
     const wp = WAYPOINTS.find(w => w.id === o.value);
     return wp && wp.name === 'Lyon';
   });
-  if (leHavreOpt) document.getElementById('rp-from').value = leHavreOpt.value;
-  if (lyonOpt)    document.getElementById('rp-to').value   = lyonOpt.value;
+  if (leHavreOpt) {
+    document.getElementById('rp-from').value = leHavreOpt.value;
+    setRouteEndpoint('from', leHavreOpt.value);
+  }
+  if (lyonOpt) {
+    document.getElementById('rp-to').value = lyonOpt.value;
+    setRouteEndpoint('to', lyonOpt.value);
+  }
 }
 
 function openRoutePlanner() {
@@ -2130,6 +2136,11 @@ function calculateRoute() {
   const toId   = document.getElementById('rp-to').value;
   const fromWp = WAYPOINTS.find(w => w.id === fromId);
   const toWp   = WAYPOINTS.find(w => w.id === toId);
+
+  // Ensure map pins always reflect the current dropdown selection
+  // (setting select.value programmatically doesn't fire onchange)
+  if (fromId && fromId !== routeFromId) setRouteEndpoint('from', fromId);
+  if (toId   && toId   !== routeToId)   setRouteEndpoint('to',   toId);
 
   if (fromId === toId) {
     document.getElementById('rp-results').innerHTML =
