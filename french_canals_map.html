@@ -1301,14 +1301,7 @@ function buildMooringMarkers() {
 
   MOORINGS.forEach(m => {
     const icon = m.type === 'halte' ? createHalteIcon() : createPortIcon();
-    // draggable:true ensures Leaflet fully wires up L.Draggable in _initInteraction.
-    // We disable immediately via once('add') — which fires after onAdd() completes —
-    // so the marker isn't draggable in normal mode but enable() works reliably in edit mode.
-    const marker = L.marker([m.lat, m.lon], {icon, draggable: true});
-    // After onAdd fires, L.Draggable is wired up. Enable or disable based on current mode.
-    marker.once('add', function() {
-      if (this.dragging) { editModeActive ? this.dragging.enable() : this.dragging.disable(); }
-    });
+    const marker = L.marker([m.lat, m.lon], {icon, draggable: false});
 
     const typeLabel = m.type === 'halte' ? '⚓ Halte Fluviale' : '⛵ Port de Plaisance';
     const costColor = m.cost === 'free' ? '#52d68a' : '#7ad4ef';
@@ -1329,10 +1322,13 @@ function buildMooringMarkers() {
     marker.bindPopup(popupHTML, {maxWidth: 300});
     marker.bindTooltip(m.name, {sticky: true});
 
-    // Drag handlers for edit mode
-    marker.on('dragstart', _onMarkerDragStart);
-    marker.on('drag',      _onMarkerDrag);
-    marker.on('dragend',   function(e) { _onMarkerDragEnd(e, 'moorings', m.id, m.name, m); });
+    // Custom drag handler — fires on mousedown in edit mode
+    marker.on('mousedown', function(e) {
+      if (!editModeActive) return;
+      L.DomEvent.preventDefault(e.originalEvent);
+      L.DomEvent.stopPropagation(e);
+      _startCustomDrag(marker, 'moorings', m.id, m.name, m);
+    });
 
     if (m.type === 'halte') {
       halteGroup.addLayer(marker);
@@ -1358,13 +1354,7 @@ function buildMarkers() {
     const hasNote = note.trim().length > 0;
 
     const icon = w.is_lock ? createLockIcon() : createTownIcon(w.section);
-    // draggable:true ensures Leaflet fully wires up L.Draggable in _initInteraction.
-    // Disabled immediately via once('add') so it's not draggable in normal mode.
-    const marker = L.marker([w.lat, w.lon], {icon, draggable: true});
-    // After onAdd fires, L.Draggable is wired up. Enable or disable based on current mode.
-    marker.once('add', function() {
-      if (this.dragging) { editModeActive ? this.dragging.enable() : this.dragging.disable(); }
-    });
+    const marker = L.marker([w.lat, w.lon], {icon, draggable: false});
 
     const routeLabel = routeInfo
       ? `Route ${w.route}: ${routeInfo.canal}`
@@ -1388,10 +1378,13 @@ function buildMarkers() {
     marker._isLock = w.is_lock;
     marker._name = w.name;
 
-    // Drag handlers for edit mode
-    marker.on('dragstart', _onMarkerDragStart);
-    marker.on('drag',      _onMarkerDrag);
-    marker.on('dragend',   function(e) { _onMarkerDragEnd(e, 'waypoints', w.id, w.name, w); });
+    // Custom drag handler for edit mode (bypasses Leaflet's marker.dragging internals)
+    marker.on('mousedown', function(e) {
+      if (!editModeActive) return;
+      L.DomEvent.preventDefault(e.originalEvent);
+      L.DomEvent.stopPropagation(e);
+      _startCustomDrag(marker, 'waypoints', w.id, w.name, w);
+    });
 
     if (w.is_lock) {
       lockGroup.addLayer(marker);
@@ -2852,35 +2845,44 @@ function onWaterwayClick(feature, e) {
 // Shared drag-coordinate label element (defined in HTML)
 const _dragLabel = document.getElementById('drag-coord-label');
 
-function _onMarkerDragStart() {
-  _dragLabel.style.display = 'block';
+// ── Custom drag implementation ───────────────────────────────────────────────
+// Bypasses Leaflet's marker.dragging (unreliable via LayerGroup) and instead
+// listens to map-level mousemove/mouseup events to reposition markers.
+function _startCustomDrag(marker, group, id, name, dataObj) {
   map.closePopup();
-}
+  map.dragging.disable();       // prevent map pan while dragging a marker
+  _dragLabel.style.display = 'block';
+  document.getElementById('map').style.cursor = 'grabbing';
 
-function _onMarkerDrag(e) {
-  if (!editModeActive) return;
-  const pos = e.target.getLatLng();
-  _dragLabel.textContent = `${pos.lat.toFixed(5)}, ${pos.lng.toFixed(5)}`;
-  const pt = map.latLngToContainerPoint(pos);
-  const rect = map.getContainer().getBoundingClientRect();
-  _dragLabel.style.left = (rect.left + pt.x + 14) + 'px';
-  _dragLabel.style.top  = (rect.top  + pt.y - 34) + 'px';
-}
-
-function _onMarkerDragEnd(e, group, id, name, dataObj) {
-  _dragLabel.style.display = 'none';
-  if (!editModeActive) return;
-  const pos = e.target.getLatLng();
-  // Update in-memory data object
-  dataObj.lat = pos.lat;
-  dataObj.lon = pos.lng;
-  // Update route endpoint pins if they refer to this waypoint
-  if (group === 'waypoints') {
-    if (routeFromId === id && fromPin) fromPin.setLatLng(pos);
-    if (routeToId   === id && toPin)   toPin.setLatLng(pos);
+  function onMove(e) {
+    marker.setLatLng(e.latlng);
+    _dragLabel.textContent = `${e.latlng.lat.toFixed(5)}, ${e.latlng.lng.toFixed(5)}`;
+    const pt   = map.latLngToContainerPoint(e.latlng);
+    const rect = map.getContainer().getBoundingClientRect();
+    _dragLabel.style.left = (rect.left + pt.x + 14) + 'px';
+    _dragLabel.style.top  = (rect.top  + pt.y - 34) + 'px';
   }
-  saveLocationOverride(group, id, pos.lat, pos.lng);
-  showEditToast(`📍 ${name} repositioned`);
+
+  function onUp() {
+    map.off('mousemove', onMove);
+    document.removeEventListener('mouseup', onUp);
+    map.dragging.enable();
+    _dragLabel.style.display = 'none';
+    document.getElementById('map').style.cursor = '';
+
+    const pos = marker.getLatLng();
+    dataObj.lat = pos.lat;
+    dataObj.lon = pos.lng;
+    if (group === 'waypoints') {
+      if (routeFromId === id && fromPin) fromPin.setLatLng(pos);
+      if (routeToId   === id && toPin)   toPin.setLatLng(pos);
+    }
+    saveLocationOverride(group, id, pos.lat, pos.lng);
+    showEditToast(`📍 ${name} repositioned`);
+  }
+
+  map.on('mousemove', onMove);
+  document.addEventListener('mouseup', onUp);
 }
 
 function toggleEditMode() {
@@ -2898,15 +2900,11 @@ function activateEditMode() {
   document.getElementById('controls').style.top = '42px';
   document.getElementById('map').classList.add('edit-mode-cursor');
 
-  // Switch towns from cluster → individual so every dot is draggable
+  // Switch towns from cluster → individual so every dot is clickable/draggable
   if (layerState.towns) {
     map.removeLayer(clusterGroup);
     map.addLayer(townGroup);
   }
-
-  // Enable dragging on all markers
-  allMarkers.forEach(m => { if (m.dragging) m.dragging.enable(); });
-  allMooringMarkers.forEach(m => { if (m.dragging) m.dragging.enable(); });
 
   updateEditBannerCount();
 }
@@ -2924,10 +2922,6 @@ function deactivateEditMode() {
     map.removeLayer(townGroup);
     map.addLayer(clusterGroup);
   }
-
-  // Disable dragging on all markers
-  allMarkers.forEach(m => { if (m.dragging) m.dragging.disable(); });
-  allMooringMarkers.forEach(m => { if (m.dragging) m.dragging.disable(); });
 
   // Rebuild markers so popup badges ("✏️ repositioned") update
   buildMarkers();
