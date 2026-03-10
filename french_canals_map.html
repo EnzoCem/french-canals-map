@@ -1322,12 +1322,9 @@ function buildMooringMarkers() {
     marker.bindPopup(popupHTML, {maxWidth: 300});
     marker.bindTooltip(m.name, {sticky: true});
 
-    // Custom drag handler — fires on mousedown in edit mode
-    marker.on('mousedown', function(e) {
-      if (!editModeActive) return;
-      L.DomEvent.preventDefault(e.originalEvent);
-      L.DomEvent.stopPropagation(e);
-      _startCustomDrag(marker, 'moorings', m.id, m.name, m);
+    // Attach drag handler to icon once the marker is on the map
+    marker.on('add', function() {
+      if (this._icon) _attachDragToIcon(this._icon, marker, 'moorings', m.id, m.name, m);
     });
 
     if (m.type === 'halte') {
@@ -1378,12 +1375,9 @@ function buildMarkers() {
     marker._isLock = w.is_lock;
     marker._name = w.name;
 
-    // Custom drag handler for edit mode (bypasses Leaflet's marker.dragging internals)
-    marker.on('mousedown', function(e) {
-      if (!editModeActive) return;
-      L.DomEvent.preventDefault(e.originalEvent);
-      L.DomEvent.stopPropagation(e);
-      _startCustomDrag(marker, 'waypoints', w.id, w.name, w);
+    // Attach drag handler to icon once the marker is on the map
+    marker.on('add', function() {
+      if (this._icon) _attachDragToIcon(this._icon, marker, 'waypoints', w.id, w.name, w);
     });
 
     if (w.is_lock) {
@@ -2846,16 +2840,17 @@ function onWaterwayClick(feature, e) {
 const _dragLabel = document.getElementById('drag-coord-label');
 
 // ── Custom drag implementation ───────────────────────────────────────────────
-// Uses raw document-level mousemove/mouseup so events are captured regardless
-// of whether the mouse is over a marker icon, cluster, or empty map area.
-function _startCustomDrag(marker, group, id, name, dataObj) {
+// Uses Pointer Events + setPointerCapture on the marker icon DOM element.
+// setPointerCapture guarantees that every subsequent pointermove/pointerup goes
+// to the capturing element, even if the cursor leaves it — no event loss.
+// iconEl must be the marker's actual _icon DOM element (passed from 'add' handler).
+function _startCustomDrag(iconEl, marker, group, id, name, dataObj) {
   map.closePopup();
-  map.dragging.disable();       // prevent map pan while dragging a marker
+  map.dragging.disable();
   _dragLabel.style.display = 'block';
   document.getElementById('map').style.cursor = 'grabbing';
 
   function onMove(e) {
-    // Convert raw DOM coordinates to map LatLng
     const rect   = map.getContainer().getBoundingClientRect();
     const point  = L.point(e.clientX - rect.left, e.clientY - rect.top);
     const latlng = map.containerPointToLatLng(point);
@@ -2865,9 +2860,11 @@ function _startCustomDrag(marker, group, id, name, dataObj) {
     _dragLabel.style.top  = (e.clientY - 34) + 'px';
   }
 
-  function onUp() {
-    document.removeEventListener('mousemove', onMove);
-    document.removeEventListener('mouseup',   onUp);
+  function onUp(e) {
+    iconEl.removeEventListener('pointermove',  onMove);
+    iconEl.removeEventListener('pointerup',    onUp);
+    iconEl.removeEventListener('pointercancel', onUp);
+    try { iconEl.releasePointerCapture(e.pointerId); } catch (_) {}
     map.dragging.enable();
     _dragLabel.style.display = 'none';
     document.getElementById('map').style.cursor = '';
@@ -2883,8 +2880,22 @@ function _startCustomDrag(marker, group, id, name, dataObj) {
     showEditToast(`📍 ${name} repositioned`);
   }
 
-  document.addEventListener('mousemove', onMove);
-  document.addEventListener('mouseup',   onUp);
+  iconEl.addEventListener('pointermove',   onMove);
+  iconEl.addEventListener('pointerup',     onUp);
+  iconEl.addEventListener('pointercancel', onUp);
+}
+
+// Attach a pointerdown drag listener to a marker's icon once it exists on the map.
+// Called from marker.on('add', ...) so _icon is guaranteed to be set.
+function _attachDragToIcon(icon, marker, group, id, name, dataObj) {
+  icon.style.touchAction = 'none'; // prevent browser scroll/pan hijacking drag
+  icon.addEventListener('pointerdown', function(e) {
+    if (!editModeActive) return;
+    e.preventDefault();        // prevent mousedown fallback events
+    e.stopPropagation();       // prevent map-pan handler from also firing
+    icon.setPointerCapture(e.pointerId);
+    _startCustomDrag(icon, marker, group, id, name, dataObj);
+  });
 }
 
 function toggleEditMode() {
