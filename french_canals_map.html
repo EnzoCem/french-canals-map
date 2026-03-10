@@ -1208,6 +1208,11 @@ const esriLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/servi
 // Start with IGN France (best for French canals — shows waterway detail)
 ignLayer.addTo(map);
 
+// ── In Edit Locations mode, prevent popups from blocking drag ────────────
+map.on('popupopen', function() {
+  if (editModeActive) map.closePopup();
+});
+
 // ── OpenSeaMap nautical overlay ───────────────────────────────────────────
 const seamarkLayer = L.tileLayer('https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png', {
   attribution: '© <a href="https://www.openseamap.org">OpenSeaMap</a>',
@@ -1296,7 +1301,8 @@ function buildMooringMarkers() {
 
   MOORINGS.forEach(m => {
     const icon = m.type === 'halte' ? createHalteIcon() : createPortIcon();
-    const marker = L.marker([m.lat, m.lon], {icon, draggable: false});
+    const marker = L.marker([m.lat, m.lon], {icon, draggable: true});
+    marker.dragging.disable();
 
     const typeLabel = m.type === 'halte' ? '⚓ Halte Fluviale' : '⛵ Port de Plaisance';
     const costColor = m.cost === 'free' ? '#52d68a' : '#7ad4ef';
@@ -1346,7 +1352,8 @@ function buildMarkers() {
     const hasNote = note.trim().length > 0;
 
     const icon = w.is_lock ? createLockIcon() : createTownIcon(w.section);
-    const marker = L.marker([w.lat, w.lon], {icon, draggable: false});
+    const marker = L.marker([w.lat, w.lon], {icon, draggable: true});
+    marker.dragging.disable();
 
     const routeLabel = routeInfo
       ? `Route ${w.route}: ${routeInfo.canal}`
@@ -2871,6 +2878,8 @@ function toggleEditMode() {
 
 function activateEditMode() {
   editModeActive = true;
+  // Close any open popup immediately — open popups intercept mousedown and prevent drag from starting
+  map.closePopup();
   document.getElementById('btn-edit-locations').classList.add('active');
   const banner = document.getElementById('edit-mode-banner');
   banner.style.display = 'flex';
