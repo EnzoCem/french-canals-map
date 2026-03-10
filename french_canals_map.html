@@ -2846,8 +2846,8 @@ function onWaterwayClick(feature, e) {
 const _dragLabel = document.getElementById('drag-coord-label');
 
 // ── Custom drag implementation ───────────────────────────────────────────────
-// Bypasses Leaflet's marker.dragging (unreliable via LayerGroup) and instead
-// listens to map-level mousemove/mouseup events to reposition markers.
+// Uses raw document-level mousemove/mouseup so events are captured regardless
+// of whether the mouse is over a marker icon, cluster, or empty map area.
 function _startCustomDrag(marker, group, id, name, dataObj) {
   map.closePopup();
   map.dragging.disable();       // prevent map pan while dragging a marker
@@ -2855,17 +2855,19 @@ function _startCustomDrag(marker, group, id, name, dataObj) {
   document.getElementById('map').style.cursor = 'grabbing';
 
   function onMove(e) {
-    marker.setLatLng(e.latlng);
-    _dragLabel.textContent = `${e.latlng.lat.toFixed(5)}, ${e.latlng.lng.toFixed(5)}`;
-    const pt   = map.latLngToContainerPoint(e.latlng);
-    const rect = map.getContainer().getBoundingClientRect();
-    _dragLabel.style.left = (rect.left + pt.x + 14) + 'px';
-    _dragLabel.style.top  = (rect.top  + pt.y - 34) + 'px';
+    // Convert raw DOM coordinates to map LatLng
+    const rect   = map.getContainer().getBoundingClientRect();
+    const point  = L.point(e.clientX - rect.left, e.clientY - rect.top);
+    const latlng = map.containerPointToLatLng(point);
+    marker.setLatLng(latlng);
+    _dragLabel.textContent = `${latlng.lat.toFixed(5)}, ${latlng.lng.toFixed(5)}`;
+    _dragLabel.style.left = (e.clientX + 14) + 'px';
+    _dragLabel.style.top  = (e.clientY - 34) + 'px';
   }
 
   function onUp() {
-    map.off('mousemove', onMove);
-    document.removeEventListener('mouseup', onUp);
+    document.removeEventListener('mousemove', onMove);
+    document.removeEventListener('mouseup',   onUp);
     map.dragging.enable();
     _dragLabel.style.display = 'none';
     document.getElementById('map').style.cursor = '';
@@ -2881,8 +2883,8 @@ function _startCustomDrag(marker, group, id, name, dataObj) {
     showEditToast(`📍 ${name} repositioned`);
   }
 
-  map.on('mousemove', onMove);
-  document.addEventListener('mouseup', onUp);
+  document.addEventListener('mousemove', onMove);
+  document.addEventListener('mouseup',   onUp);
 }
 
 function toggleEditMode() {
@@ -2911,6 +2913,8 @@ function activateEditMode() {
 
 function deactivateEditMode() {
   editModeActive = false;
+  // Safety net: re-enable map panning in case a drag was interrupted mid-flight
+  map.dragging.enable();
   document.getElementById('btn-edit-locations').classList.remove('active');
   document.getElementById('edit-mode-banner').style.display = 'none';
   document.getElementById('controls').style.top = '';
