@@ -2842,8 +2842,10 @@ function onWaterwayClick(feature, e) {
 //  EDIT LOCATIONS MODE
 // ============================================================
 
-// Shared drag-coordinate label element (defined in HTML)
-const _dragLabel = document.getElementById('drag-coord-label');
+// _dragLabel is fetched lazily inside functions because the element is defined
+// *after* </script> in the HTML, so document.getElementById returns null if
+// called at module-level during script execution.
+function _getLbl() { return document.getElementById('drag-coord-label'); }
 
 // ── Click-to-place location editing ─────────────────────────────────────────
 // In Edit Locations mode, clicking a marker "selects" it (highlighted ring).
@@ -2880,11 +2882,14 @@ function selectForReposition(marker, data, type) {
   }
 
   // Show the "click to place" label centred at the top of the map
-  _dragLabel.textContent   = `📍 ${data.name} — click map to place  ·  Esc to cancel`;
-  _dragLabel.style.display = 'block';
-  _dragLabel.style.top     = '60px';
-  _dragLabel.style.left    = '50%';
-  _dragLabel.style.transform = 'translateX(-50%)';
+  const lbl = _getLbl();
+  if (lbl) {
+    lbl.textContent   = `📍 ${data.name} selected — now click the map where you want to place it`;
+    lbl.style.display = 'block';
+    lbl.style.top     = '60px';
+    lbl.style.left    = '50%';
+    lbl.style.transform = 'translateX(-50%)';
+  }
 }
 
 function deselectForReposition() {
@@ -2899,8 +2904,8 @@ function deselectForReposition() {
   _selectedEditMarker = null;
   _selectedEditData   = null;
   _selectedEditType   = null;
-  _dragLabel.style.display   = 'none';
-  _dragLabel.style.transform = '';
+  const lbl = _getLbl();
+  if (lbl) { lbl.style.display = 'none'; lbl.style.transform = ''; }
 }
 
 // Map click → place the selected marker at the clicked position
@@ -2964,11 +2969,13 @@ function activateEditMode() {
 
 function deactivateEditMode() {
   editModeActive = false;
-  deselectForReposition(); // clear any in-flight selection
+  // Hide UI elements first — deselectForReposition() runs after so any error
+  // there cannot prevent the banner from disappearing.
   document.getElementById('btn-edit-locations').classList.remove('active');
   document.getElementById('edit-mode-banner').style.display = 'none';
   document.getElementById('controls').style.top = '';
   document.getElementById('map').classList.remove('edit-mode-cursor');
+  deselectForReposition(); // clear any in-flight selection (resets label + icon ring)
 
   // Restore cluster mode for towns
   if (layerState.towns) {
@@ -3222,7 +3229,7 @@ function _downloadJSON(obj, filename) {
 <div id="edit-mode-banner">
   <div class="eb-left">
     ✏️ <strong>Edit Locations mode</strong>
-    &nbsp;·&nbsp; Click a marker to select it, then click the map to place it
+    &nbsp;·&nbsp; <strong>Click</strong> (don't drag) a marker to select it → then <strong>click the map</strong> to place it
     <span id="edit-banner-count" style="opacity:0.7"></span>
   </div>
   <div class="eb-right">
