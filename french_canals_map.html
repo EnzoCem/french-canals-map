@@ -1322,26 +1322,12 @@ function buildMooringMarkers() {
     marker.bindPopup(popupHTML, {maxWidth: 300});
     marker.bindTooltip(m.name, {sticky: true});
 
-    // Native Leaflet drag events (active only when dragging is enabled in edit mode)
-    marker.on('dragstart', function() {
+    // Click-to-place in Edit Locations mode
+    marker.on('click', function() {
+      if (!editModeActive) return;
+      _suppressMapClick = true;
       map.closePopup();
-      _dragLabel.style.display = 'block';
-    });
-    marker.on('drag', function(e) {
-      const ll = e.target.getLatLng();
-      _dragLabel.textContent = `${ll.lat.toFixed(5)}, ${ll.lng.toFixed(5)}`;
-      const pt   = map.latLngToContainerPoint(ll);
-      const rect = map.getContainer().getBoundingClientRect();
-      _dragLabel.style.left = (rect.left + pt.x + 14) + 'px';
-      _dragLabel.style.top  = (rect.top  + pt.y - 34) + 'px';
-    });
-    marker.on('dragend', function(e) {
-      _dragLabel.style.display = 'none';
-      const pos = e.target.getLatLng();
-      m.lat = pos.lat;
-      m.lon = pos.lng;
-      saveLocationOverride('moorings', m.id, pos.lat, pos.lng);
-      showEditToast(`📍 ${m.name} repositioned`);
+      selectForReposition(marker, m, 'mooring');
     });
 
     if (m.type === 'halte') {
@@ -1392,28 +1378,12 @@ function buildMarkers() {
     marker._isLock = w.is_lock;
     marker._name = w.name;
 
-    // Native Leaflet drag events (active only when dragging is enabled in edit mode)
-    marker.on('dragstart', function() {
+    // Click-to-place in Edit Locations mode
+    marker.on('click', function() {
+      if (!editModeActive) return;
+      _suppressMapClick = true;
       map.closePopup();
-      _dragLabel.style.display = 'block';
-    });
-    marker.on('drag', function(e) {
-      const ll = e.target.getLatLng();
-      _dragLabel.textContent = `${ll.lat.toFixed(5)}, ${ll.lng.toFixed(5)}`;
-      const pt   = map.latLngToContainerPoint(ll);
-      const rect = map.getContainer().getBoundingClientRect();
-      _dragLabel.style.left = (rect.left + pt.x + 14) + 'px';
-      _dragLabel.style.top  = (rect.top  + pt.y - 34) + 'px';
-    });
-    marker.on('dragend', function(e) {
-      _dragLabel.style.display = 'none';
-      const pos = e.target.getLatLng();
-      w.lat = pos.lat;
-      w.lon = pos.lng;
-      if (routeFromId === w.id && fromPin) fromPin.setLatLng(pos);
-      if (routeToId   === w.id && toPin)   toPin.setLatLng(pos);
-      saveLocationOverride('waypoints', w.id, pos.lat, pos.lng);
-      showEditToast(`📍 ${w.name} repositioned`);
+      selectForReposition(marker, w, 'waypoint');
     });
 
     if (w.is_lock) {
@@ -2875,11 +2845,98 @@ function onWaterwayClick(feature, e) {
 // Shared drag-coordinate label element (defined in HTML)
 const _dragLabel = document.getElementById('drag-coord-label');
 
-// ── Drag uses Leaflet's native marker.dragging (L.Draggable) ────────────────
-// Markers are created with draggable:false.  _initInteraction still creates a
-// MarkerDrag handler (marker.dragging) that can be .enable()/.disable()'d.
-// activateEditMode() enables drag; deactivateEditMode() rebuilds markers
-// (drag off by default).  dragstart/drag/dragend handlers are on each marker.
+// ── Click-to-place location editing ─────────────────────────────────────────
+// In Edit Locations mode, clicking a marker "selects" it (highlighted ring).
+// Clicking anywhere on the map then teleports the marker to that position.
+// Clicking the same marker again, or pressing Escape, cancels the move.
+// This approach uses Leaflet's rock-solid 'click' event — no drag required.
+
+let _suppressMapClick   = false; // prevents map click from firing when a marker is clicked
+let _selectedEditMarker = null;  // L.Marker currently selected for repositioning
+let _selectedEditData   = null;  // raw data object { id, lat, lon, name, ... }
+let _selectedEditType   = null;  // 'waypoint' | 'mooring'
+
+function selectForReposition(marker, data, type) {
+  // Clicking the already-selected marker cancels the move
+  if (_selectedEditMarker === marker) {
+    deselectForReposition();
+    showEditToast('Move cancelled');
+    return;
+  }
+  // Deselect any previously selected marker first
+  deselectForReposition();
+
+  _selectedEditMarker = marker;
+  _selectedEditData   = data;
+  _selectedEditType   = type;
+
+  // Highlight the icon with an orange ring
+  const icon = marker._icon;
+  if (icon) {
+    icon.style.outline       = '3px solid #ff6600';
+    icon.style.outlineOffset = '3px';
+    icon.style.borderRadius  = '50%';
+    icon.style.zIndex        = '9999';
+  }
+
+  // Show the "click to place" label centred at the top of the map
+  _dragLabel.textContent   = `📍 ${data.name} — click map to place  ·  Esc to cancel`;
+  _dragLabel.style.display = 'block';
+  _dragLabel.style.top     = '60px';
+  _dragLabel.style.left    = '50%';
+  _dragLabel.style.transform = 'translateX(-50%)';
+}
+
+function deselectForReposition() {
+  if (_selectedEditMarker) {
+    const icon = _selectedEditMarker._icon;
+    if (icon) {
+      icon.style.outline       = '';
+      icon.style.outlineOffset = '';
+      icon.style.zIndex        = '';
+    }
+  }
+  _selectedEditMarker = null;
+  _selectedEditData   = null;
+  _selectedEditType   = null;
+  _dragLabel.style.display   = 'none';
+  _dragLabel.style.transform = '';
+}
+
+// Map click → place the selected marker at the clicked position
+map.on('click', function(e) {
+  if (!editModeActive || !_selectedEditMarker) return;
+  if (_suppressMapClick) { _suppressMapClick = false; return; }
+
+  const pos    = e.latlng;
+  const marker = _selectedEditMarker;
+  const data   = _selectedEditData;
+  const type   = _selectedEditType;
+
+  deselectForReposition();
+
+  marker.setLatLng(pos);
+  data.lat = pos.lat;
+  data.lon = pos.lng;
+
+  if (type === 'waypoint') {
+    if (routeFromId === data.id && fromPin) fromPin.setLatLng(pos);
+    if (routeToId   === data.id && toPin)   toPin.setLatLng(pos);
+    saveLocationOverride('waypoints', data.id, pos.lat, pos.lng);
+  } else {
+    saveLocationOverride('moorings', data.id, pos.lat, pos.lng);
+  }
+
+  showEditToast(`📍 ${data.name} repositioned`);
+});
+
+// Escape key cancels an in-progress selection
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape' && editModeActive && _selectedEditMarker) {
+    deselectForReposition();
+    showEditToast('Move cancelled');
+  }
+});
 
 function toggleEditMode() {
   editModeActive ? deactivateEditMode() : activateEditMode();
@@ -2902,23 +2959,16 @@ function activateEditMode() {
     map.addLayer(townGroup);
   }
 
-  // Enable Leaflet's native drag on every marker (including the fresh icons
-  // that _initInteraction just created during the addLayer calls above).
-  allMarkers.forEach(m => { if (m.dragging) m.dragging.enable(); });
-  allMooringMarkers.forEach(m => { if (m.dragging) m.dragging.enable(); });
-
   updateEditBannerCount();
 }
 
 function deactivateEditMode() {
   editModeActive = false;
-  // Safety net: re-enable map panning in case a drag was interrupted mid-flight
-  map.dragging.enable();
+  deselectForReposition(); // clear any in-flight selection
   document.getElementById('btn-edit-locations').classList.remove('active');
   document.getElementById('edit-mode-banner').style.display = 'none';
   document.getElementById('controls').style.top = '';
   document.getElementById('map').classList.remove('edit-mode-cursor');
-  _dragLabel.style.display = 'none';
 
   // Restore cluster mode for towns
   if (layerState.towns) {
@@ -3172,7 +3222,7 @@ function _downloadJSON(obj, filename) {
 <div id="edit-mode-banner">
   <div class="eb-left">
     ✏️ <strong>Edit Locations mode</strong>
-    &nbsp;·&nbsp; Drag any marker to its exact position
+    &nbsp;·&nbsp; Click a marker to select it, then click the map to place it
     <span id="edit-banner-count" style="opacity:0.7"></span>
   </div>
   <div class="eb-right">
