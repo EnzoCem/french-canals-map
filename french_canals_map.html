@@ -2949,16 +2949,22 @@ function toggleEditMode() {
 
 function activateEditMode() {
   editModeActive = true;
-  // Close any open popup immediately — open popups intercept mousedown and prevent drag from starting
   map.closePopup();
   document.getElementById('btn-edit-locations').classList.add('active');
   const banner = document.getElementById('edit-mode-banner');
   banner.style.display = 'flex';
-  // Push controls bar down to make room for banner
   document.getElementById('controls').style.top = '42px';
   document.getElementById('map').classList.add('edit-mode-cursor');
 
-  // Switch towns from cluster → individual so every dot is clickable/draggable
+  // Disable map panning in edit mode. This solves two problems:
+  // 1. The map won't pan when the user clicks (or drags on) a marker.
+  // 2. Leaflet suppresses marker clicks whenever map.dragging.moved() is
+  //    true — i.e. whenever the map was panned since the last mousedown.
+  //    Disabling drag AND resetting _moved lets marker clicks always fire.
+  map.dragging.disable();
+  if (map.dragging._draggable) map.dragging._draggable._moved = false;
+
+  // Switch towns from cluster → individual so every dot is visible/clickable
   if (layerState.towns) {
     map.removeLayer(clusterGroup);
     map.addLayer(townGroup);
@@ -2969,23 +2975,30 @@ function activateEditMode() {
 
 function deactivateEditMode() {
   editModeActive = false;
-  // Hide UI elements first — deselectForReposition() runs after so any error
-  // there cannot prevent the banner from disappearing.
-  document.getElementById('btn-edit-locations').classList.remove('active');
-  document.getElementById('edit-mode-banner').style.display = 'none';
-  document.getElementById('controls').style.top = '';
-  document.getElementById('map').classList.remove('edit-mode-cursor');
-  deselectForReposition(); // clear any in-flight selection (resets label + icon ring)
+
+  // ── Hide UI first so the banner disappears even if something below throws ──
+  try { document.getElementById('btn-edit-locations').classList.remove('active'); } catch(e) {}
+  try { document.getElementById('edit-mode-banner').style.display = 'none'; } catch(e) {}
+  try { document.getElementById('controls').style.top = ''; } catch(e) {}
+  try { document.getElementById('map').classList.remove('edit-mode-cursor'); } catch(e) {}
+
+  // Re-enable map panning
+  try { map.dragging.enable(); } catch(e) {}
+
+  // Clear any in-flight marker selection
+  try { deselectForReposition(); } catch(e) {}
 
   // Restore cluster mode for towns
-  if (layerState.towns) {
-    map.removeLayer(townGroup);
-    map.addLayer(clusterGroup);
-  }
+  try {
+    if (layerState.towns) {
+      map.removeLayer(townGroup);
+      map.addLayer(clusterGroup);
+    }
+  } catch(e) {}
 
   // Rebuild markers so popup badges ("✏️ repositioned") update
-  buildMarkers();
-  buildMooringMarkers();
+  try { buildMarkers(); } catch(e) {}
+  try { buildMooringMarkers(); } catch(e) {}
 }
 
 function saveLocationOverride(group, id, lat, lon) {
@@ -3229,7 +3242,7 @@ function _downloadJSON(obj, filename) {
 <div id="edit-mode-banner">
   <div class="eb-left">
     ✏️ <strong>Edit Locations mode</strong>
-    &nbsp;·&nbsp; <strong>Click</strong> (don't drag) a marker to select it → then <strong>click the map</strong> to place it
+    &nbsp;·&nbsp; <strong>Click</strong> a marker to select it → <strong>click the map</strong> to place it &nbsp;(scroll to zoom/navigate)
     <span id="edit-banner-count" style="opacity:0.7"></span>
   </div>
   <div class="eb-right">
