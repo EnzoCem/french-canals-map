@@ -2843,8 +2843,8 @@ function onWaterwayClick(feature, e) {
 // ============================================================
 
 // _dragLabel is fetched lazily inside functions because the element is defined
-// *after* </script> in the HTML, so document.getElementById returns null if
-// called at module-level during script execution.
+// after the closing script tag in the HTML, so document.getElementById returns
+// null if called at module-level during script execution.
 function _getLbl() { return document.getElementById('drag-coord-label'); }
 
 // ── Click-to-place location editing ─────────────────────────────────────────
