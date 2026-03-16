@@ -1619,6 +1619,7 @@ function searchPlaces(query) {
   });
 
   // Update map: show only matching markers
+<<<<<<< Updated upstream
   clusterGroup.clearLayers();
   const matchIds = new Set(matches.map(w => w.id));
   allMarkers.forEach(m => { if (matchIds.has(m._waypointId)) clusterGroup.addLayer(m); });
@@ -1668,6 +1669,57 @@ function selectSearchResult(waypointId) {
   // Re-add all markers to cluster first (without full rebuild that creates new objects)
   // We need all markers visible so the target isn't missing from the cluster
   clusterGroup.clearLayers();
+=======
+  clusterGroup.clearLayers();
+  const matchIds = new Set(matches.map(w => w.id));
+  allMarkers.forEach(m => { if (matchIds.has(m._waypointId)) clusterGroup.addLayer(m); });
+  document.getElementById('stats').textContent =
+    matches.length ? `${matches.length} result${matches.length>1?'s':''} for "${query}"` : `No results for "${query}"`;
+
+  // Build dropdown (max 8 + overflow note)
+  const MAX = 8;
+  const routeMap = {};
+  ROUTES.forEach(r => { routeMap[r.num] = r.canal; });
+
+  dd.innerHTML = '';
+  const shown = matches.slice(0, MAX);
+  shown.forEach((w, i) => {
+    const item = document.createElement('div');
+    item.className = 'sd-item';
+    item.dataset.id = w.id;
+    item.innerHTML = `<span class="sd-name">${w.name}</span>
+      <span class="sd-sub">${routeMap[w.route]||'Route '+w.route}${w.is_lock?' · 🔒 Lock':''}</span>`;
+    item.addEventListener('mousedown', (e) => { e.preventDefault(); selectSearchResult(w.id); });
+    dd.appendChild(item);
+  });
+  if (matches.length > MAX) {
+    const more = document.createElement('div');
+    more.className = 'sd-more';
+    more.textContent = `+ ${matches.length - MAX} more — keep typing to narrow down`;
+    dd.appendChild(more);
+  }
+  dd.style.display = matches.length ? 'block' : 'none';
+
+  // Auto-pan: fit all matches if ≤ 20, or just the first if 1
+  const markerList = shown.map(w => allMarkers.find(m => m._waypointId === w.id)).filter(Boolean);
+  if (markerList.length === 1) {
+    map.flyTo(markerList[0].getLatLng(), Math.max(map.getZoom(), 12), {duration:0.8});
+  } else if (markerList.length > 1) {
+    const bounds = L.featureGroup(markerList).getBounds();
+    if (bounds.isValid()) map.fitBounds(bounds, {padding:[60,60], maxZoom:13});
+  }
+}
+
+function selectSearchResult(waypointId) {
+  const w = WAYPOINTS.find(x => x.id === waypointId);
+  if (!w) return;
+  // Close dropdown & clear search
+  document.getElementById('search-dropdown').style.display = 'none';
+  document.getElementById('search-box').value = '';
+  // Re-add all markers to cluster first (without full rebuild that creates new objects)
+  // We need all markers visible so the target isn't missing from the cluster
+  clusterGroup.clearLayers();
+>>>>>>> Stashed changes
   allMarkers.forEach(m => { if (!m._isLock) clusterGroup.addLayer(m); });
   updateStats();
   // Fly to zoom 15 — high enough that the marker won't be clustered
@@ -2395,11 +2447,15 @@ function calculateRoute() {
         ✕ Clear
       </button>`;
     document.getElementById('rp-results').appendChild(mapBtns);
-    // Auto-highlight and collapse panel so map is visible
+    // Auto-highlight route on map
     highlightRouteOnMap(plan.segments);
     document.getElementById('btn-show-on-map').classList.add('active');
-    // Small delay so results render before collapsing
-    setTimeout(() => toggleCollapseRoutePlanner(), 300);
+    // Collapse panel only if triggered manually (not from nudge bar)
+    // so the user always sees their results without an extra click
+    if (!_nudgeTriggered) {
+      setTimeout(() => toggleCollapseRoutePlanner(), 300);
+    }
+    _nudgeTriggered = false;
   }
 }
 
@@ -2792,10 +2848,12 @@ function nudgeCalculate() {
   const panel = document.getElementById('route-planner-panel');
   if (panel.style.display !== 'block') {
     panel.style.display = 'block';
-    expandRoutePlanner();
   }
+  expandRoutePlanner();   // always expand so results are visible
+  _nudgeTriggered = true; // flag: skip auto-collapse after this calculate
   calculateRoute();
 }
+let _nudgeTriggered = false;
 
 // ── Waterway click handler ────────────────────────────────────────────────
 function onWaterwayClick(feature, e) {
