@@ -2395,15 +2395,11 @@ function calculateRoute() {
         ✕ Clear
       </button>`;
     document.getElementById('rp-results').appendChild(mapBtns);
-    // Auto-highlight route on map
+    // Auto-highlight and collapse panel so map is visible
     highlightRouteOnMap(plan.segments);
     document.getElementById('btn-show-on-map').classList.add('active');
-    // Collapse panel only if triggered manually (not from nudge bar)
-    // so the user always sees their results without an extra click
-    if (!_nudgeTriggered) {
-      setTimeout(() => toggleCollapseRoutePlanner(), 300);
-    }
-    _nudgeTriggered = false;
+    // Small delay so results render before collapsing
+    setTimeout(() => toggleCollapseRoutePlanner(), 300);
   }
 }
 
@@ -2796,12 +2792,10 @@ function nudgeCalculate() {
   const panel = document.getElementById('route-planner-panel');
   if (panel.style.display !== 'block') {
     panel.style.display = 'block';
+    expandRoutePlanner();
   }
-  expandRoutePlanner();   // always expand so results are visible
-  _nudgeTriggered = true; // flag: skip auto-collapse after this calculate
   calculateRoute();
 }
-let _nudgeTriggered = false;
 
 // ── Waterway click handler ────────────────────────────────────────────────
 function onWaterwayClick(feature, e) {
