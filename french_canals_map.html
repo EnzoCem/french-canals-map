@@ -206,6 +206,31 @@
   }
   #data-panel .dp-close:hover { color:#fff; }
 
+  /* ── Notes panel ─────────────────────────────────────────────── */
+  #notes-panel {
+    display:none; position:fixed; top:56px; right:10px; z-index:5000;
+    background:#0f1b2d; border:1px solid #0f3460; border-radius:8px;
+    padding:14px 16px; width:290px;
+    box-shadow:0 4px 20px rgba(0,0,0,0.6);
+  }
+  #notes-panel h4 {
+    margin:0 0 8px; color:#e0c97f; font-size:13px;
+    border-bottom:1px solid #0f3460; padding-bottom:6px;
+  }
+  #notes-list { max-height:52vh; overflow-y:auto; }
+  .note-list-item { padding:8px 0; border-bottom:1px solid #1a2a40; }
+  .note-list-item:last-child { border-bottom:none; }
+  .note-item-name { font-size:12px; font-weight:600; color:#8ab4c2; margin-bottom:2px; }
+  .note-item-preview { font-size:11px; color:#bbb; margin-bottom:5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .note-item-fly { font-size:11px; padding:3px 8px; background:#1a3a5c; border:1px solid #2a5a8c; color:#7ad4ef; border-radius:4px; cursor:pointer; }
+  .note-item-fly:hover { background:#2a4a6c; }
+  .np-close { position:absolute; top:8px; right:10px; background:none; border:none; color:#5a7a8a; font-size:16px; cursor:pointer; line-height:1; }
+  .np-close:hover { color:#fff; }
+  .np-empty { color:#5a7a8a; font-size:12px; text-align:center; padding:14px 0; }
+  .np-toolbar { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; font-size:12px; }
+  .np-pin-toggle { color:#8ab4c2; cursor:pointer; user-select:none; }
+  .np-pin-toggle input { margin-right:4px; cursor:pointer; }
+
   /* Popup styles */
   .leaflet-popup-content-wrapper { background: #16213e; color: #eee; border: 1px solid #0f3460; border-radius: 6px; }
   .leaflet-popup-tip { background: #16213e; }
@@ -733,7 +758,7 @@
     <button class="toggle-btn active" id="toggle-haltes" onclick="toggleLayer('haltes')">⚓ Haltes</button>
     <button class="toggle-btn active" id="toggle-ports" onclick="toggleLayer('ports')">⛵ Ports</button>
     <button class="toggle-btn" id="btn-plan-route" onclick="openRoutePlanner()">📍 Plan Route</button>
-    <button class="toggle-btn active" id="toggle-notes" onclick="toggleLayer('notes')">📌 My Notes</button>
+    <button class="toggle-btn" id="toggle-notes" onclick="toggleNotesPanel()">📌 My Notes</button>
     <button class="toggle-btn" id="btn-edit-locations" onclick="toggleEditMode()" title="Drag markers to exact positions">✏️ Edit Locations</button>
     <button class="toggle-btn" id="btn-data-panel" onclick="toggleDataPanel()" title="Backup &amp; restore your data">💾 Backup</button>
   </div>
@@ -879,11 +904,11 @@ const WAYPOINTS = [
     desc:"Famous for the Briare aqueduct – a 662m canal bridge carrying the Canal Latéral over the Loire, built by Gustave Eiffel. Remarkable spectacle. Good port de plaisance." },
   { id:"w032", route:10, section:3, lat:47.0000, lon:3.1572,  name:"Nevers", is_lock:false, pk:240,
     desc:"Capital of the Nièvre. Cathedral and ducal palace. Famous for its pottery (faïence). Good moorings. Motor racing circuit is here." },
-  { id:"w033", route:10, section:3, lat:46.8977, lon:3.9933,  name:"Digoin", is_lock:false, pk:140,
+  { id:"w033", route:10, section:3, lat:46.4833, lon:3.9776,  name:"Digoin", is_lock:false, pk:140,
     desc:"Junction of three canals – Canal du Centre, Canal Latéral à la Loire, and Canal de Roanne à Digoin. Splendid views of the Loire. Good facilities." },
   { id:"w034", route:10, section:3, lat:46.7803, lon:4.8541,  name:"Chalon-sur-Saône", is_lock:false, pk:0,
     desc:"Pleasant Burgundy town. End of the Bourbonnais route. Good port de plaisance facilities, fuel available. Nice old town to explore. Junction with the Saône." },
-  { id:"w035", route:11, section:3, lat:47.3333, lon:3.7333,  name:"Clamecy", is_lock:false, pk:104,
+  { id:"w035", route:11, section:3, lat:47.4596, lon:3.5158,  name:"Clamecy", is_lock:false, pk:104,
     desc:"Attractive medieval town on the Yonne and Nivernais canal. Good moorings. The floating timber trade that once made the Nivernais famous started here." },
   { id:"w036", route:11, section:3, lat:46.5613, lon:3.4620,  name:"Decize", is_lock:false, pk:0,
     desc:"Southern terminus of the Canal de Nivernais at the Loire. Old town with 7th century crypt. Good moorings." },
@@ -1038,6 +1063,96 @@ const WAYPOINTS = [
     desc:"Lock on the Canal de la Meuse in the deep Ardennes forest. Very scenic — the river is flanked by wooded hills. The Meuse is one of the most beautiful rivers in France. Stenay has the famous Musée Européen de la Bière (European Beer Museum).", lock_number:null },
   { id:"lk015", route:10, section:3, lat:46.7590, lon:4.8680,  name:"Écluse de la Presque'île (Chalon junction)", is_lock:true, pk:3,
     desc:"The final lock of the Canal du Centre entering the Saône at Chalon-sur-Saône. End of the Bourbonnais route (414km, 149 locks from St-Mammès). A moment worth marking. The lock is directly above the Saône marina at Chalon.", lock_number:34 },
+
+  // ── SECTION 2 ADDITIONAL: UPPER SEINE, PETITE SEINE, YONNE ──────────────
+  { id:"w011", route:2,  section:2, lat:48.5396, lon:2.6592,  name:"Melun", is_lock:false, pk:62,
+    desc:"Historic town on a Seine island. 11th century church of Notre-Dame. Good port de plaisance. Vaux-le-Vicomte château — said to have inspired Versailles — is 6km away." },
+  { id:"w012", route:2,  section:2, lat:48.3724, lon:2.8145,  name:"Moret-sur-Loing", is_lock:false, pk:82,
+    desc:"Perfectly preserved medieval walled town where the Loing meets the Seine. The painter Sisley lived and worked here. Good moorings. Junction with the Canal du Loing heading south (Route 10)." },
+  { id:"w013", route:3,  section:2, lat:48.4083, lon:3.2361,  name:"Bray-sur-Seine", is_lock:false, pk:47,
+    desc:"Pleasant small town on the Petite Seine. Pontoon moorings available. Good provisioning. The valley here is unspoilt and quiet — typical of the Petite Seine character." },
+  { id:"w014", route:3,  section:2, lat:48.4929, lon:3.5033,  name:"Nogent-sur-Seine", is_lock:false, pk:18,
+    desc:"The principal town of the upper Seine between Montereau and Marcilly. Good moorings and provisioning. Birthplace of Paul Dubois the sculptor. The town is near the end of the navigable Petite Seine." },
+  { id:"w015", route:4,  section:2, lat:48.1975, lon:3.2841,  name:"Sens", is_lock:false, pk:167,
+    desc:"The first Gothic cathedral in France — St-Étienne, begun c.1135. Its Treasury contains Thomas Becket's robes. Good port de plaisance on the Yonne. Fine 16th century timbered houses in the old town." },
+  { id:"w016", route:4,  section:2, lat:48.0744, lon:3.3026,  name:"Villeneuve-sur-Yonne", is_lock:false, pk:145,
+    desc:"Charming walled town with two medieval gateways still standing. The church has a fine Renaissance portal. Comfortable moorings. A pleasant overnight stop on the Yonne between Sens and Joigny." },
+  { id:"w017", route:9,  section:2, lat:48.8848, lon:2.3738,  name:"Bassin de la Villette (Paris)", is_lock:false, pk:8,
+    desc:"The largest artificial lake in Paris, connecting Canal Saint-Martin and Canal de l'Ourcq. Lively waterside cafés and restaurants. Good temporary moorings. The Parc de la Villette and Cité des Sciences are right here." },
+
+  // ── SECTION 3 ADDITIONAL: BOURBONNAIS ────────────────────────────────────
+  { id:"w042", route:10, section:3, lat:48.2651, lon:2.6941,  name:"Nemours", is_lock:false, pk:378,
+    desc:"Attractive medieval town on the Canal du Loing. Château de Nemours houses a good local museum. The forest of Fontainebleau extends nearby. Good moorings — a pleasant overnight stop on the Bourbonnais route south." },
+  { id:"w043", route:10, section:3, lat:47.6930, lon:2.6287,  name:"Gien", is_lock:false, pk:314,
+    desc:"Famous for fine faïence pottery (visit the château museum and factory). The 15th century château overlooks the Loire. Good moorings on the canal quay. Excellent local wines — Coteaux du Giennois." },
+  { id:"w044", route:10, section:3, lat:47.4121, lon:2.9258,  name:"Cosne-Cours-sur-Loire", is_lock:false, pk:275,
+    desc:"Important Loire Valley town — once a major ironworking centre supplying the French navy. The Loire is wide and impressive here. Good moorings on the canal. The local Coteaux du Giennois wines are worth trying." },
+  { id:"w045", route:10, section:3, lat:47.1773, lon:3.0162,  name:"La Charité-sur-Loire", is_lock:false, pk:258,
+    desc:"Medieval pilgrimage town with a magnificent Romanesque priory (UNESCO World Heritage). The old bridge and riverside promenade are beautiful. Good moorings on the canal latéral. Famous as a 'Cité du Livre' (book town)." },
+
+  // ── CANAL DU NIVERNAIS ADDITIONAL ────────────────────────────────────────
+  { id:"w200", route:11, section:3, lat:47.7145, lon:3.7377,  name:"Vermenton", is_lock:false, pk:152,
+    desc:"Pleasant village on the Yonne with good moorings. Gateway to the spectacular Cure river gorge. The canal follows the Cure through wooded limestone cliffs. Canoe hire available. Good restaurant by the lock." },
+  { id:"w201", route:11, section:3, lat:47.6044, lon:3.7592,  name:"Arcy-sur-Cure", is_lock:false, pk:134,
+    desc:"Famous for the Grottes d'Arcy — prehistoric caves with ancient paintings (28,000 years old). The canal passes through beautiful gorge scenery here. A small quay allows a visit to the caves. One of the most scenic sections of the Nivernais." },
+  { id:"w202", route:11, section:3, lat:47.5530, lon:3.8294,  name:"Châtel-Censoir", is_lock:false, pk:118,
+    desc:"Attractive hilltop village above the Yonne. The 12th century collegiate church of St Potentien looks down on the canal. Good moorings. The canal leaves the Yonne valley shortly south of here into quieter countryside." },
+  { id:"w203", route:11, section:3, lat:47.2530, lon:3.6750,  name:"Corbigny", is_lock:false, pk:56,
+    desc:"Quiet Burgundian market town accessible from the canal. Good provisioning and moorings. The surrounding Morvan hills offer excellent walking. A good base for exploring quieter Burgundy away from the tourist routes." },
+  { id:"w204", route:11, section:3, lat:47.0245, lon:3.6403,  name:"Châtillon-en-Bazois", is_lock:false, pk:30,
+    desc:"Delightful small town on the Canal du Nivernais. The château overlooks the canal. One of the most charming stops on the quieter southern section of the Nivernais. Free moorings. Rich cattle-farming countryside." },
+
+  // ── CANAL DE BOURGOGNE ADDITIONAL ────────────────────────────────────────
+  { id:"w210", route:12, section:3, lat:47.8517, lon:3.9123,  name:"Tanlay", is_lock:false, pk:217,
+    desc:"Worth stopping for the magnificent Château de Tanlay — one of the finest Renaissance châteaux in Burgundy. Free moorings at the nearby lock. The 17th century château has exceptional frescoes and is open to visitors. Not to be missed." },
+  { id:"w211", route:12, section:3, lat:47.7776, lon:4.1612,  name:"Ancy-le-Franc", is_lock:false, pk:198,
+    desc:"The Château d'Ancy-le-Franc is a masterpiece of French Renaissance architecture, built 1544. Its interior decoration is exceptional. Port de plaisance right by the château. A major highlight of the Canal de Bourgogne." },
+  { id:"w212", route:12, section:3, lat:47.2653, lon:4.5495,  name:"Pouilly-en-Auxois", is_lock:false, pk:80,
+    desc:"The summit town above the 3,333m Pouilly tunnel (see lk001). The summit pound at 378m altitude is beautiful. Boat tow through the tunnel must be booked in advance. A memorable high point of the Canal de Bourgogne." },
+  { id:"w213", route:12, section:3, lat:47.1981, lon:5.3893,  name:"Auxonne", is_lock:false, pk:14,
+    desc:"Historic garrison town where a young Napoleon Bonaparte was first posted as artillery officer in 1788 — the Musée Bonaparte tells the story. Good port de plaisance. Fine fortified town gates. A pleasant stop before joining the Saône." },
+
+  // ── PETITE SAÔNE & SAÔNE ADDITIONAL ──────────────────────────────────────
+  { id:"w220", route:13, section:4, lat:47.6884, lon:6.0482,  name:"Port-sur-Saône", is_lock:false, pk:155,
+    desc:"Small town on the Petite Saône between Corre and Gray. Comfortable moorings. The château and church are worth a brief visit. The Saône valley here is quiet and unspoilt — typical of the peaceful northern Petite Saône." },
+  { id:"w221", route:13, section:4, lat:47.2980, lon:5.4101,  name:"Pontailler-sur-Saône", is_lock:false, pk:40,
+    desc:"Small town between Gray and Auxonne on the Saône. Good moorings. Convenient overnight stop between the Petite Saône and the boating hub of St-Jean-de-Losne. The surrounding region produces excellent Burgundy wines." },
+  { id:"w222", route:15, section:4, lat:46.8975, lon:5.0267,  name:"Verdun-sur-le-Doubs", is_lock:false, pk:113,
+    desc:"Junction of the Saône and Doubs rivers. Famous fish stew town — the Poche (a local Saône fish stew) was allegedly invented here. Excellent moorings at the river junction. Access to the Canal du Centre. Worth a meal stop." },
+  { id:"w223", route:15, section:4, lat:47.0018, lon:5.1448,  name:"Seurre", is_lock:false, pk:90,
+    desc:"Pleasant Saône town with good moorings. Excellent local fish restaurants — perch, pike and bream from the Saône. The area produces fine Burgundy wines. Good provisioning. A classic peaceful Saône overnight stop." },
+  { id:"w224", route:15, section:4, lat:46.1122, lon:4.7468,  name:"Belleville-en-Beaujolais", is_lock:false, pk:28,
+    desc:"Gateway to the Beaujolais wine region. The cave cooperative on the quay offers wine tasting. Good moorings. Fine 12th century church. Excellent local restaurants. A great stop before or after Lyon on the Saône." },
+
+  // ── RHÔNE ADDITIONAL ─────────────────────────────────────────────────────
+  { id:"w225", route:16, section:4, lat:45.0694, lon:4.8425,  name:"Tournon-sur-Rhône", is_lock:false, pk:263,
+    desc:"Attractive town facing Tain-l'Hermitage across the Rhône. The Hermitage vineyards are among the greatest in France. Renaissance château overlooks the river. Port de plaisance below the town. Outstanding wine tasting (Hermitage, Crozes-Hermitage). A highlight of the Rhône." },
+  { id:"w226", route:16, section:4, lat:44.5567, lon:4.7533,  name:"Montélimar", is_lock:false, pk:168,
+    desc:"Famous for its nougat made from local lavender honey and almonds. Good moorings at the capitainerie. The old town has a fine château. Strong current in the Rhône here. Excellent provisioning and nougat shopping." },
+  { id:"w227", route:16, section:4, lat:44.2557, lon:4.6524,  name:"Pont-Saint-Esprit", is_lock:false, pk:136,
+    desc:"Named for the magnificent 13th century stone bridge, one of the oldest on the Rhône. Good moorings. Interesting old quarter and fine museum. Just north of the dramatic Bollène lock (26m rise) — a good overnight stop before the ascent." },
+  { id:"w228", route:16, section:4, lat:44.1440, lon:4.8062,  name:"Orange", is_lock:false, pk:115,
+    desc:"The Roman theatre of Orange is the best-preserved in the world (UNESCO World Heritage). The Arc de Triomphe is equally impressive. Good moorings. Châteauneuf-du-Pape vineyards are just 12km south — unmissable for wine lovers." },
+
+  // ── NORTHERN FRANCE ADDITIONAL ───────────────────────────────────────────
+  { id:"w230", route:19, section:5, lat:50.6292, lon:3.0573,  name:"Lille", is_lock:false, pk:115,
+    desc:"Capital of French Flanders. The Grand'Place and Vieux Lille are beautiful. Exceptional Flemish art in the Palais des Beaux-Arts. France's best Sunday market (Marché de Wazemmes). Good moorings on the Canal de la Deûle through the city." },
+  { id:"w231", route:19, section:5, lat:50.3713, lon:3.0802,  name:"Douai", is_lock:false, pk:65,
+    desc:"Famous for its carillon of 62 bells — concerts every Saturday. The Musée de la Chartreuse has outstanding French paintings. Belfry is a UNESCO World Heritage site. Good moorings. The coalfields history of the surrounding area is visible throughout." },
+  { id:"w232", route:19, section:5, lat:50.3577, lon:3.5241,  name:"Valenciennes", is_lock:false, pk:0,
+    desc:"Important cultural city — the Musée des Beaux-Arts has paintings by Rubens and Van Dyck (the city produced the sculptor Carpeaux). End of the Liaison Dunkerque-Escaut navigation. Good moorings at the southern end of the canal." },
+  { id:"w233", route:24, section:5, lat:50.5317, lon:2.6404,  name:"Aire-sur-la-Lys", is_lock:false, pk:65,
+    desc:"Attractive Flemish town on the River Lys. 17th century Town Hall with fine belfry (UNESCO World Heritage). Good moorings. Junction of the Canal d'Aire and the Lys navigation. An authentic Flemish market town off the main tourist trail." },
+
+  // ── BRITTANY ADDITIONAL ───────────────────────────────────────────────────
+  { id:"w240", route:41, section:8, lat:47.8218, lon:-1.8325,  name:"Messac-Guipry", is_lock:false, pk:87,
+    desc:"Twin villages on opposite banks of the Vilaine connected by a suspension bridge. One of the best haltes on the Liaison Manche-Océan. Excellent restaurants and provisioning. Very popular overnight stop on the Brittany canals." },
+  { id:"w241", route:42, section:8, lat:47.4787, lon:-1.7625,  name:"Blain", is_lock:false, pk:68,
+    desc:"Pleasant town on the Canal de Nantes à Brest. The ruined Château de la Groulais dominates. Good moorings. The surrounding countryside is typical Breton bocage. An authentic town away from the tourist circuit." },
+  { id:"w242", route:47, section:8, lat:47.9739, lon:-0.7727,  name:"Laval", is_lock:false, pk:80,
+    desc:"Capital of Mayenne. The medieval old town and castle above the river are impressive. Birthplace of the Douanier Rousseau — good museum. Good moorings on the Mayenne. The river navigation through Laval is particularly scenic." },
+  { id:"w243", route:48, section:8, lat:47.9958, lon:0.1975,   name:"Le Mans", is_lock:false, pk:133,
+    desc:"Famous for the 24-hour motor race, but the old city (Le Vieux Mans) with its Gallo-Roman walls and medieval streets is equally remarkable. The Cathedral has a superb nave. End of the River Sarthe navigation. Good moorings below the old town." },
 ];
 
 // ============================================================
@@ -1094,6 +1209,69 @@ const MOORINGS = [
   // ── ALSACE / EASTERN FRANCE ──────────────────────────────────────────────
   { id:"m070", type:"port",  waterway:"Canal de la Marne au Rhin", pk:"", name:"Nancy – Port de Plaisance", lat:48.692, lon:6.184, cost:"varies", facilities:"E/W/T/S", max_vessel:"all", contact:"Below Place Stanislas" },
   { id:"m071", type:"port",  waterway:"Canal de la Marne au Rhin", pk:"", name:"Strasbourg – Port de Plaisance", lat:48.573, lon:7.752, cost:"varies", facilities:"E/W/T/S/L/F", max_vessel:"all", contact:"Central Strasbourg, below cathedral" },
+
+  // ── CANAL DU NIVERNAIS ───────────────────────────────────────────────────
+  { id:"m080", type:"halte", waterway:"Canal du Nivernais",     pk:"PK 152",  name:"Vermenton – Halte Nautique",        lat:47.714, lon:3.738,  cost:"free",           facilities:"E/W",         max_vessel:"<25m", contact:"Mairie: Tel 03 86 81 50 08" },
+  { id:"m081", type:"halte", waterway:"Canal du Nivernais",     pk:"PK 131",  name:"Arcy-sur-Cure – Halte",             lat:47.605, lon:3.760,  cost:"free",           facilities:"E/W",         max_vessel:"<20m", contact:"" },
+  { id:"m082", type:"halte", waterway:"Canal du Nivernais",     pk:"PK 118",  name:"Châtel-Censoir – Halte",            lat:47.553, lon:3.829,  cost:"free",           facilities:"W",           max_vessel:"<25m", contact:"Tel 03 86 81 00 09" },
+  { id:"m083", type:"halte", waterway:"Canal du Nivernais",     pk:"PK 99",   name:"Coulanges-sur-Yonne – Halte",       lat:47.527, lon:3.536,  cost:"free",           facilities:"E/W",         max_vessel:"<20m", contact:"" },
+  { id:"m084", type:"port",  waterway:"Canal du Nivernais",     pk:"PK 90",   name:"Clamecy – Port de Plaisance",       lat:47.460, lon:3.516,  cost:"€10.00/night",   facilities:"E/W/T/S",     max_vessel:"<30m", contact:"Tel 03 86 27 35 28" },
+  { id:"m085", type:"halte", waterway:"Canal du Nivernais",     pk:"PK 56",   name:"Corbigny – Halte Nautique",         lat:47.253, lon:3.675,  cost:"free",           facilities:"E/W",         max_vessel:"<25m", contact:"Office de tourisme: Tel 03 86 20 02 53" },
+  { id:"m086", type:"halte", waterway:"Canal du Nivernais",     pk:"PK 30",   name:"Châtillon-en-Bazois – Halte",       lat:47.025, lon:3.640,  cost:"free",           facilities:"E/W",         max_vessel:"<20m", contact:"" },
+  { id:"m087", type:"halte", waterway:"Canal du Nivernais",     pk:"PK 12",   name:"Cercy-la-Tour – Halte",             lat:46.862, lon:3.643,  cost:"free",           facilities:"E/W",         max_vessel:"<20m", contact:"" },
+
+  // ── RIVER YONNE ──────────────────────────────────────────────────────────
+  { id:"m090", type:"port",  waterway:"River Yonne",            pk:"PK 167",  name:"Sens – Port de Plaisance",          lat:48.197, lon:3.285,  cost:"€12.00/night",   facilities:"E/W/T/S",     max_vessel:"all",  contact:"Tel 03 86 64 06 40" },
+  { id:"m091", type:"halte", waterway:"River Yonne",            pk:"PK 145",  name:"Villeneuve-sur-Yonne – Halte",      lat:48.074, lon:3.302,  cost:"free",           facilities:"E/W",         max_vessel:"<30m", contact:"Tel 03 86 87 00 26" },
+  { id:"m092", type:"port",  waterway:"River Yonne",            pk:"PK 120",  name:"Joigny – Port de Plaisance",        lat:47.983, lon:3.406,  cost:"€14.00/night",   facilities:"E/W/T/S/L",   max_vessel:"all",  contact:"Tel 03 86 91 34 00" },
+
+  // ── UPPER SEINE & CANAL DU LOING ─────────────────────────────────────────
+  { id:"m100", type:"port",  waterway:"River Seine",            pk:"PK 62",   name:"Melun – Port de Plaisance",         lat:48.540, lon:2.660,  cost:"€14.00/night",   facilities:"E/W/T/S",     max_vessel:"all",  contact:"Tel 01 64 39 82 31" },
+  { id:"m101", type:"halte", waterway:"Canal du Loing",         pk:"PK 5",    name:"Moret-sur-Loing – Halte Nautique",  lat:48.372, lon:2.815,  cost:"€8.00/night",    facilities:"E/W",         max_vessel:"<25m", contact:"Tel 01 60 70 41 51" },
+  { id:"m102", type:"halte", waterway:"Canal du Loing",         pk:"PK 25",   name:"Nemours – Halte Nautique",          lat:48.265, lon:2.694,  cost:"free",           facilities:"E/W",         max_vessel:"<25m", contact:"Tel 01 64 45 00 19" },
+  { id:"m103", type:"halte", waterway:"River Seine",            pk:"PK 200",  name:"Montereau – Halte",                 lat:48.386, lon:2.957,  cost:"free",           facilities:"W",           max_vessel:"<25m", contact:"" },
+  { id:"m104", type:"halte", waterway:"River Yonne",            pk:"PK 148",  name:"Auxerre – Halte Nautique",          lat:47.799, lon:3.568,  cost:"€16.00/night",   facilities:"E/W/T/S",     max_vessel:"all",  contact:"Tel 03 86 51 05 09" },
+
+  // ── CANAL DE BOURGOGNE ADDITIONAL ────────────────────────────────────────
+  { id:"m110", type:"halte", waterway:"Canal de Bourgogne",     pk:"PK 242",  name:"Laroche-Migennes – Port",           lat:47.762, lon:3.512,  cost:"€10.00/night",   facilities:"E/W/T/S",     max_vessel:"all",  contact:"Tel 03 86 80 92 01" },
+  { id:"m111", type:"halte", waterway:"Canal de Bourgogne",     pk:"PK 217",  name:"Tanlay – Halte",                    lat:47.852, lon:3.912,  cost:"free",           facilities:"E/W",         max_vessel:"<25m", contact:"" },
+  { id:"m112", type:"port",  waterway:"Canal de Bourgogne",     pk:"PK 198",  name:"Ancy-le-Franc – Port de Plaisance", lat:47.778, lon:4.161,  cost:"€12.00/night",   facilities:"E/W/T/S",     max_vessel:"<30m", contact:"Tel 03 86 75 14 20" },
+  { id:"m113", type:"halte", waterway:"Canal de Bourgogne",     pk:"PK 80",   name:"Pouilly-en-Auxois – Halte",         lat:47.265, lon:4.550,  cost:"free",           facilities:"E/W",         max_vessel:"<30m", contact:"Tunnel tow booking: Tel 03 80 90 74 80" },
+  { id:"m114", type:"port",  waterway:"Canal de Bourgogne",     pk:"PK 52",   name:"Dijon – Port du Canal",             lat:47.322, lon:5.041,  cost:"€18.00/night",   facilities:"E/W/T/S/L/F", max_vessel:"all",  contact:"Tel 03 80 65 91 45" },
+  { id:"m115", type:"halte", waterway:"Canal de Bourgogne",     pk:"PK 162",  name:"Tonnerre – Halte Nautique",         lat:47.487, lon:4.056,  cost:"€10.00/night",   facilities:"E/W/T/S",     max_vessel:"<30m", contact:"Tel 03 86 55 14 48. Visit the Fosse Dionne spring nearby." },
+  { id:"m116", type:"halte", waterway:"Canal de Bourgogne",     pk:"PK 132",  name:"Montbard – Halte Nautique",         lat:47.620, lon:4.340,  cost:"€8.00/night",    facilities:"E/W/T",       max_vessel:"<25m", contact:"Near Fontenay Abbey (UNESCO). Tel 03 80 92 03 75" },
+
+  // ── PETITE SAÔNE / SAÔNE ─────────────────────────────────────────────────
+  { id:"m120", type:"halte", waterway:"Petite Saône",           pk:"PK 155",  name:"Port-sur-Saône – Halte",            lat:47.688, lon:6.048,  cost:"free",           facilities:"E/W",         max_vessel:"<25m", contact:"" },
+  { id:"m121", type:"port",  waterway:"Saône",                  pk:"PK 120",  name:"Gray – Port de Plaisance",          lat:47.438, lon:5.590,  cost:"€12.00/night",   facilities:"E/W/T/S/L",   max_vessel:"all",  contact:"Tel 03 84 64 90 65" },
+  { id:"m122", type:"halte", waterway:"Saône",                  pk:"PK 40",   name:"Pontailler-sur-Saône – Halte",      lat:47.298, lon:5.410,  cost:"€9.00/night",    facilities:"E/W/T/S",     max_vessel:"all",  contact:"Tel 03 80 47 41 03" },
+  { id:"m123", type:"halte", waterway:"Saône",                  pk:"PK 90",   name:"Seurre – Halte Nautique",           lat:47.002, lon:5.145,  cost:"€8.00/night",    facilities:"E/W/T",       max_vessel:"<30m", contact:"Tel 03 80 21 08 40" },
+  { id:"m124", type:"port",  waterway:"Saône",                  pk:"PK 113",  name:"Verdun-sur-le-Doubs – Port",        lat:46.897, lon:5.027,  cost:"€10.00/night",   facilities:"E/W/T/S/L/F", max_vessel:"all",  contact:"Tel 03 85 91 58 34" },
+  { id:"m125", type:"port",  waterway:"Saône",                  pk:"PK 28",   name:"Belleville-en-Beaujolais – Port",   lat:46.112, lon:4.747,  cost:"€12.00/night",   facilities:"E/W/T/S",     max_vessel:"all",  contact:"Tel 04 74 69 69 69" },
+
+  // ── RHÔNE ADDITIONAL ─────────────────────────────────────────────────────
+  { id:"m126", type:"halte", waterway:"Rhône",                  pk:"PK 136R", name:"Pont-Saint-Esprit – Halte",         lat:44.256, lon:4.652,  cost:"free",           facilities:"E/W",         max_vessel:"<20m", contact:"" },
+  { id:"m127", type:"halte", waterway:"Rhône",                  pk:"PK 168R", name:"Montélimar – Halte Nautique",       lat:44.557, lon:4.753,  cost:"€10.00/night",   facilities:"E/W/T/S",     max_vessel:"<25m", contact:"Tel 04 75 53 78 60" },
+
+  // ── NORTHERN FRANCE ───────────────────────────────────────────────────────
+  { id:"m130", type:"port",  waterway:"Canal de la Scarpe",     pk:"",        name:"Arras – Port de Plaisance",         lat:50.292, lon:2.779,  cost:"€12.00/night",   facilities:"E/W/T/S",     max_vessel:"all",  contact:"Tel 03 21 51 26 95" },
+  { id:"m131", type:"port",  waterway:"Canal de la Deûle",      pk:"",        name:"Lille – Port de Plaisance",         lat:50.630, lon:3.057,  cost:"€15.00/night",   facilities:"E/W/T/S/L",   max_vessel:"<30m", contact:"Tel 03 20 53 13 86" },
+  { id:"m132", type:"port",  waterway:"River Aa",               pk:"",        name:"Saint-Omer – Port de Plaisance",    lat:50.746, lon:2.256,  cost:"€12.00/night",   facilities:"E/W/T/S",     max_vessel:"all",  contact:"Tel 03 21 38 00 23" },
+  { id:"m133", type:"port",  waterway:"Canal de la Sensée",     pk:"",        name:"Douai – Port de Plaisance",         lat:50.371, lon:3.080,  cost:"€11.00/night",   facilities:"E/W/T/S",     max_vessel:"all",  contact:"Tel 03 27 87 93 15. 62-bell carillon in the belfry." },
+
+  // ── BRITTANY ──────────────────────────────────────────────────────────────
+  { id:"m140", type:"port",  waterway:"Canal d'Ille-et-Rance",  pk:"PK 345",  name:"Dinan – Port de Plaisance",         lat:48.458, lon:-2.048, cost:"€14.00/night",   facilities:"E/W/T/S/L",   max_vessel:"<30m", contact:"Tel 02 96 39 09 13" },
+  { id:"m141", type:"port",  waterway:"Canal d'Ille-et-Rance",  pk:"PK 264",  name:"Rennes – Port de Plaisance",        lat:48.113, lon:-1.680, cost:"€12.00/night",   facilities:"E/W/T/S",     max_vessel:"<25m", contact:"Tel 02 99 30 58 22" },
+  { id:"m142", type:"halte", waterway:"Canal d'Ille-et-Rance",  pk:"PK 87",   name:"Messac-Guipry – Halte Nautique",    lat:47.822, lon:-1.832, cost:"€8.00/night",    facilities:"E/W/T/S",     max_vessel:"<30m", contact:"One of the best haltes in Brittany. Tel 02 99 34 62 90" },
+  { id:"m143", type:"port",  waterway:"Canal de Vilaine",        pk:"PK 42",   name:"Redon – Port de Plaisance",         lat:47.650, lon:-2.085, cost:"€12.00/night",   facilities:"E/W/T/S/L",   max_vessel:"all",  contact:"Tel 02 99 71 24 15. Major junction — Vilaine, Ille-et-Rance and Nantes-Brest." },
+  { id:"m144", type:"halte", waterway:"Canal de Nantes à Brest", pk:"PK 68",  name:"Blain – Halte Nautique",            lat:47.479, lon:-1.762, cost:"free",           facilities:"E/W",         max_vessel:"<20m", contact:"" },
+
+  // ── CANAL DU MIDI ADDITIONAL ──────────────────────────────────────────────
+  { id:"m150", type:"port",  waterway:"Canal du Midi",          pk:"PK 241",  name:"Castelnaudary – Grand Bassin",      lat:43.317, lon:1.957,  cost:"€14.00/night",   facilities:"E/W/T/S/L",   max_vessel:"all",  contact:"Tel 04 68 23 02 73. Cassoulet capital — eat here." },
+  { id:"m151", type:"halte", waterway:"Canal du Midi",          pk:"PK 182",  name:"Homps – Halte Nautique",            lat:43.255, lon:2.742,  cost:"€12.00/night",   facilities:"E/W/T/S",     max_vessel:"all",  contact:"Tel 04 68 91 13 46. Wine cooperative on the quay." },
+  { id:"m152", type:"halte", waterway:"Canal du Midi",          pk:"PK 155",  name:"Capestang – Halte Nautique",        lat:43.326, lon:3.046,  cost:"free",           facilities:"E/W/T",       max_vessel:"all",  contact:"" },
+  { id:"m153", type:"port",  waterway:"Canal de Garonne",       pk:"PK 380",  name:"Moissac – Port de Plaisance",       lat:44.107, lon:1.083,  cost:"€12.00/night",   facilities:"E/W/T/S",     max_vessel:"all",  contact:"Tel 05 63 04 01 55. Below the famous Romanesque cloisters." },
+  { id:"m154", type:"halte", waterway:"Canal du Midi",          pk:"PK 209",  name:"Trèbes – Halte Nautique",           lat:43.213, lon:2.435,  cost:"€10.00/night",   facilities:"E/W/T/S",     max_vessel:"all",  contact:"Tel 04 68 78 73 93. Pleasant village 5km east of Carcassonne." },
 ];
 
 // ── EUROCANALALS WATERWAY DIMENSIONS TABLE ──────────────────────────────────
@@ -1223,10 +1401,11 @@ const seamarkLayer = L.tileLayer('https://tiles.openseamap.org/seamark/{z}/{x}/{
 // ── Tile layer switcher (base maps + overlays) ───────────────────────────
 const baseMaps = {
   '🗺 IGN France (recommended)': ignLayer,
-  '🗺 OpenStreetMap': osmLayer,
-  '🗺 CartoDB Voyager': cartoLayer,
+  '🗺 CartoDB Voyager (OSM-based)': cartoLayer,
   '🗺 ESRI Topo': esriLayer,
 };
+// Note: raw OpenStreetMap tiles are omitted — they require an HTTP Referer
+// header and return 403 when the file is opened via file://
 // Overlays will be added after waterwayLayer is created
 
 // Route polylines removed — actual canal/river geometry is now drawn
@@ -1542,6 +1721,9 @@ function saveNote(wid) {
   }
   localStorage.setItem(STORAGE_KEY, JSON.stringify(userNotes));
   buildMarkers();
+  updateStats();
+  const panel = document.getElementById('notes-panel');
+  if (panel && panel.style.display === 'block') _buildNotesList();
   const btn = document.querySelector('.save-note-btn');
   btn.textContent = '✓ Saved!';
   btn.style.background = '#27ae60';
@@ -1573,6 +1755,71 @@ function toggleLayer(type) {
       layerState[type] ? map.addLayer(waterwayLayer) : map.removeLayer(waterwayLayer);
     }
   }
+}
+
+// ============================================================
+//  NOTES PANEL
+// ============================================================
+let _notePinsVisible = true;
+
+function toggleNotesPanel() {
+  // Close data panel if open
+  const dp = document.getElementById('data-panel');
+  if (dp && dp.style.display === 'block') toggleDataPanel();
+
+  const panel = document.getElementById('notes-panel');
+  const open = panel.style.display === 'block';
+  panel.style.display = open ? 'none' : 'block';
+  document.getElementById('toggle-notes').classList.toggle('active', !open);
+  if (!open) _buildNotesList();
+}
+
+function _buildNotesList() {
+  const list = document.getElementById('notes-list');
+  const countEl = document.getElementById('np-count');
+  const pinCb = document.getElementById('np-pin-cb');
+  if (pinCb) pinCb.checked = _notePinsVisible;
+
+  const ids = Object.keys(userNotes);
+  if (countEl) countEl.textContent = ids.length + ' note' + (ids.length !== 1 ? 's' : '');
+
+  if (!ids.length) {
+    list.innerHTML = '<div class="np-empty">No notes yet.<br>Click a marker → Details &amp; Notes.</div>';
+    return;
+  }
+  list.innerHTML = ids.map(id => {
+    const w = WAYPOINTS.find(x => x.id === id);
+    const name = w ? w.name : id;
+    const text = userNotes[id] || '';
+    const preview = text.length > 70 ? text.substring(0, 70) + '…' : text;
+    return `<div class="note-list-item">
+      <div class="note-item-name">${name}</div>
+      <div class="note-item-preview">${preview}</div>
+      <button class="note-item-fly" onclick="flyToNote('${id}')">📍 Fly to · Open →</button>
+    </div>`;
+  }).join('');
+}
+
+function _toggleNotePins(cb) {
+  _notePinsVisible = cb.checked;
+  _notePinsVisible ? map.addLayer(notesGroup) : map.removeLayer(notesGroup);
+}
+
+function flyToNote(wid) {
+  const w = WAYPOINTS.find(x => x.id === wid);
+  if (!w) return;
+  // Close the notes panel
+  document.getElementById('notes-panel').style.display = 'none';
+  document.getElementById('toggle-notes').classList.remove('active');
+  // Ensure towns layer is visible
+  if (!layerState.towns) toggleLayer('towns');
+  // Fly and open
+  map.flyTo([w.lat, w.lon], 15, { duration: 1.0 });
+  map.once('moveend', () => {
+    openSidebar(w.id);
+    const marker = allMarkers.find(m => m._waypointId === w.id);
+    if (marker) marker.openPopup();
+  });
 }
 
 // ============================================================
@@ -1619,7 +1866,6 @@ function searchPlaces(query) {
   });
 
   // Update map: show only matching markers
-<<<<<<< Updated upstream
   clusterGroup.clearLayers();
   const matchIds = new Set(matches.map(w => w.id));
   allMarkers.forEach(m => { if (matchIds.has(m._waypointId)) clusterGroup.addLayer(m); });
@@ -1669,57 +1915,6 @@ function selectSearchResult(waypointId) {
   // Re-add all markers to cluster first (without full rebuild that creates new objects)
   // We need all markers visible so the target isn't missing from the cluster
   clusterGroup.clearLayers();
-=======
-  clusterGroup.clearLayers();
-  const matchIds = new Set(matches.map(w => w.id));
-  allMarkers.forEach(m => { if (matchIds.has(m._waypointId)) clusterGroup.addLayer(m); });
-  document.getElementById('stats').textContent =
-    matches.length ? `${matches.length} result${matches.length>1?'s':''} for "${query}"` : `No results for "${query}"`;
-
-  // Build dropdown (max 8 + overflow note)
-  const MAX = 8;
-  const routeMap = {};
-  ROUTES.forEach(r => { routeMap[r.num] = r.canal; });
-
-  dd.innerHTML = '';
-  const shown = matches.slice(0, MAX);
-  shown.forEach((w, i) => {
-    const item = document.createElement('div');
-    item.className = 'sd-item';
-    item.dataset.id = w.id;
-    item.innerHTML = `<span class="sd-name">${w.name}</span>
-      <span class="sd-sub">${routeMap[w.route]||'Route '+w.route}${w.is_lock?' · 🔒 Lock':''}</span>`;
-    item.addEventListener('mousedown', (e) => { e.preventDefault(); selectSearchResult(w.id); });
-    dd.appendChild(item);
-  });
-  if (matches.length > MAX) {
-    const more = document.createElement('div');
-    more.className = 'sd-more';
-    more.textContent = `+ ${matches.length - MAX} more — keep typing to narrow down`;
-    dd.appendChild(more);
-  }
-  dd.style.display = matches.length ? 'block' : 'none';
-
-  // Auto-pan: fit all matches if ≤ 20, or just the first if 1
-  const markerList = shown.map(w => allMarkers.find(m => m._waypointId === w.id)).filter(Boolean);
-  if (markerList.length === 1) {
-    map.flyTo(markerList[0].getLatLng(), Math.max(map.getZoom(), 12), {duration:0.8});
-  } else if (markerList.length > 1) {
-    const bounds = L.featureGroup(markerList).getBounds();
-    if (bounds.isValid()) map.fitBounds(bounds, {padding:[60,60], maxZoom:13});
-  }
-}
-
-function selectSearchResult(waypointId) {
-  const w = WAYPOINTS.find(x => x.id === waypointId);
-  if (!w) return;
-  // Close dropdown & clear search
-  document.getElementById('search-dropdown').style.display = 'none';
-  document.getElementById('search-box').value = '';
-  // Re-add all markers to cluster first (without full rebuild that creates new objects)
-  // We need all markers visible so the target isn't missing from the cluster
-  clusterGroup.clearLayers();
->>>>>>> Stashed changes
   allMarkers.forEach(m => { if (!m._isLock) clusterGroup.addLayer(m); });
   updateStats();
   // Fly to zoom 15 — high enough that the marker won't be clustered
@@ -3123,6 +3318,10 @@ function exportLocationOverrides() {
 // ============================================================
 
 function toggleDataPanel() {
+  // Close notes panel if open
+  const np = document.getElementById('notes-panel');
+  if (np && np.style.display === 'block') toggleNotesPanel();
+
   const panel = document.getElementById('data-panel');
   const open  = panel.style.display === 'block';
   panel.style.display = open ? 'none' : 'block';
@@ -3343,6 +3542,17 @@ function _downloadJSON(obj, filename) {
   </div>
 
   <div id="data-panel-stats" class="dp-stat"></div>
+</div>
+
+<!-- Notes panel -->
+<div id="notes-panel">
+  <button class="np-close" onclick="toggleNotesPanel()" title="Close">✕</button>
+  <h4>📌 My Notes</h4>
+  <div class="np-toolbar">
+    <span id="np-count" style="color:#5bc0de;font-size:11px"></span>
+    <label class="np-pin-toggle"><input type="checkbox" id="np-pin-cb" checked onchange="_toggleNotePins(this)"> Show pins</label>
+  </div>
+  <div id="notes-list"></div>
 </div>
 
 </body>
