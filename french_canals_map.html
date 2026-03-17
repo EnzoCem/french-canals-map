@@ -623,6 +623,50 @@
   }
   .rp-map-btn.clear-btn:hover { background: #4a2800; color: #fff; }
 
+  /* ── Multi-stop route planner ────────────────────────────────────────────── */
+  .rp-stop-row {
+    display: flex; align-items: center; gap: 6px; margin-bottom: 2px;
+  }
+  .rp-stop-badge {
+    width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 900; color: #fff;
+  }
+  .rp-stop-row .rp-select { flex: 1; margin: 0; }
+  .rp-via-connector {
+    text-align: left; padding-left: 29px; color: #5bc0de;
+    font-size: 13px; line-height: 1; margin: 1px 0;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .rp-via-connector .rp-via-remove {
+    background: none; border: none; color: #e74c3c;
+    font-size: 13px; cursor: pointer; padding: 0 2px;
+    line-height: 1; opacity: 0.65;
+  }
+  .rp-via-connector .rp-via-remove:hover { opacity: 1; }
+  .rp-add-stop-btn {
+    width: 100%; background: none;
+    border: 1px dashed rgba(91,192,222,0.45);
+    color: #5bc0de; font-size: 12px; padding: 5px;
+    border-radius: 4px; cursor: pointer; margin: 5px 0 8px;
+    transition: background 0.15s;
+  }
+  .rp-add-stop-btn:hover { background: rgba(91,192,222,0.08); }
+  .rp-add-stop-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+  .rp-leg-header {
+    font-size: 11px; font-weight: 700; color: #7f8c8d;
+    text-transform: uppercase; letter-spacing: 0.05em;
+    padding: 8px 0 3px; margin-top: 4px;
+    border-top: 1px solid #1e3a5f; display: flex; align-items: center; gap: 8px;
+  }
+  .rp-leg-header:first-child { border-top: none; padding-top: 0; }
+  .rp-leg-subtotal {
+    background: rgba(26,58,92,0.5); border-radius: 4px;
+    padding: 4px 8px; margin-bottom: 6px;
+    font-size: 11px; color: #aaa; display: flex; gap: 12px; flex-wrap: wrap;
+  }
+  .rp-leg-subtotal strong { color: #ddd; }
+
 
   /* ── Map-click endpoint selection ───────────────────────────────────────── */
   .endpoint-popup {
@@ -2897,6 +2941,270 @@ function populateRoutePlannerDropdowns() {
     document.getElementById('rp-to').value = lyonOpt.value;
     setRouteEndpoint('to', lyonOpt.value);
   }
+  _stopOptionsHTML = document.getElementById('rp-from').innerHTML;
+  renderViaStops();
+}
+
+// ── Via stop colour helper ────────────────────────────────────────────────
+function _viaStopColor(idx, total) {
+  if (idx === 0) return '#27ae60';
+  if (idx === total - 1) return '#e74c3c';
+  return '#e67e22';
+}
+
+// ── Rebuild all pins with correct letters/colours ─────────────────────────
+function _rebuildAllPins() {
+  if (fromPin) { map.removeLayer(fromPin); fromPin = null; }
+  if (toPin)   { map.removeLayer(toPin);   toPin   = null; }
+  viaPins.forEach(p => { if (p) map.removeLayer(p); });
+  viaPins = [];
+
+  const total = 2 + routeViaIds.length;
+
+  if (routeFromId) {
+    const wp = WAYPOINTS.find(w => w.id === routeFromId);
+    if (wp) fromPin = L.marker([wp.lat, wp.lon], {
+      icon: makeEndpointIcon('#27ae60', 'A'), zIndexOffset: 1200,
+    }).addTo(map).bindTooltip(`A: ${wp.name}`, { direction: 'top' });
+  }
+
+  routeViaIds.forEach((id, i) => {
+    const wp = WAYPOINTS.find(w => w.id === id);
+    if (wp) {
+      const lbl = String.fromCharCode(66 + i);
+      viaPins.push(L.marker([wp.lat, wp.lon], {
+        icon: makeEndpointIcon('#e67e22', lbl), zIndexOffset: 1150 - i * 10,
+      }).addTo(map).bindTooltip(`${lbl}: ${wp.name}`, { direction: 'top' }));
+    } else {
+      viaPins.push(null);
+    }
+  });
+
+  if (routeToId) {
+    const wp = WAYPOINTS.find(w => w.id === routeToId);
+    const lbl = String.fromCharCode(65 + routeViaIds.length + 1);
+    if (wp) toPin = L.marker([wp.lat, wp.lon], {
+      icon: makeEndpointIcon('#e74c3c', lbl), zIndexOffset: 1100,
+    }).addTo(map).bindTooltip(`${lbl}: ${wp.name}`, { direction: 'top' });
+    const badge = document.getElementById('rp-to-badge');
+    if (badge) badge.textContent = lbl;
+  }
+}
+
+// ── Add / remove via stops ────────────────────────────────────────────────
+function addViaStop(defaultId) {
+  const MAX_STOPS = 7; // A through G
+  if (2 + routeViaIds.length >= MAX_STOPS) return;
+  if (!_stopOptionsHTML && document.getElementById('rp-from').options.length) {
+    _stopOptionsHTML = document.getElementById('rp-from').innerHTML;
+  }
+  // Default: first option that's not already used
+  if (!defaultId) {
+    const used = new Set([routeFromId, ...routeViaIds, routeToId]);
+    for (const opt of document.getElementById('rp-from').options) {
+      if (!used.has(opt.value)) { defaultId = opt.value; break; }
+    }
+  }
+  const idx = routeViaIds.length;
+  routeViaIds.push(defaultId || '');
+  if (defaultId) {
+    const wp = WAYPOINTS.find(w => w.id === defaultId);
+    if (wp) {
+      const lbl = String.fromCharCode(66 + idx);
+      viaPins.push(L.marker([wp.lat, wp.lon], {
+        icon: makeEndpointIcon('#e67e22', lbl), zIndexOffset: 1150 - idx * 10,
+      }).addTo(map).bindTooltip(`${lbl}: ${wp.name}`, { direction: 'top' }));
+    } else { viaPins.push(null); }
+  } else { viaPins.push(null); }
+
+  // Refresh to-pin label
+  if (routeToId) {
+    if (toPin) { map.removeLayer(toPin); toPin = null; }
+    const wp = WAYPOINTS.find(w => w.id === routeToId);
+    const lbl = String.fromCharCode(65 + routeViaIds.length + 1);
+    if (wp) toPin = L.marker([wp.lat, wp.lon], {
+      icon: makeEndpointIcon('#e74c3c', lbl), zIndexOffset: 1100,
+    }).addTo(map).bindTooltip(`${lbl}: ${wp.name}`, { direction: 'top' });
+    const badge = document.getElementById('rp-to-badge');
+    if (badge) badge.textContent = lbl;
+  }
+
+  renderViaStops();
+  updateNudgeBar();
+}
+
+function removeViaStop(idx) {
+  routeViaIds.splice(idx, 1);
+  if (viaPins[idx]) map.removeLayer(viaPins[idx]);
+  viaPins.splice(idx, 1);
+  // Refresh to-pin label
+  if (routeToId) {
+    if (toPin) { map.removeLayer(toPin); toPin = null; }
+    const wp = WAYPOINTS.find(w => w.id === routeToId);
+    const lbl = String.fromCharCode(65 + routeViaIds.length + 1);
+    if (wp) toPin = L.marker([wp.lat, wp.lon], {
+      icon: makeEndpointIcon('#e74c3c', lbl), zIndexOffset: 1100,
+    }).addTo(map).bindTooltip(`${lbl}: ${wp.name}`, { direction: 'top' });
+    const badge = document.getElementById('rp-to-badge');
+    if (badge) badge.textContent = lbl;
+  }
+  renderViaStops();
+  updateNudgeBar();
+}
+
+function setViaStop(idx, waypointId) {
+  routeViaIds[idx] = waypointId;
+  if (viaPins[idx]) { map.removeLayer(viaPins[idx]); viaPins[idx] = null; }
+  const wp = WAYPOINTS.find(w => w.id === waypointId);
+  if (wp) {
+    const lbl = String.fromCharCode(66 + idx);
+    viaPins[idx] = L.marker([wp.lat, wp.lon], {
+      icon: makeEndpointIcon('#e67e22', lbl), zIndexOffset: 1150 - idx * 10,
+    }).addTo(map).bindTooltip(`${lbl}: ${wp.name}`, { direction: 'top' });
+  }
+  updateNudgeBar();
+}
+
+// ── Render the via stops list in the panel ────────────────────────────────
+function renderViaStops() {
+  const container = document.getElementById('rp-via-list');
+  if (!container) return;
+
+  const total = 2 + routeViaIds.length;
+  const opts  = _stopOptionsHTML || (document.getElementById('rp-from') ? document.getElementById('rp-from').innerHTML : '');
+
+  container.innerHTML = routeViaIds.map((id, i) => {
+    const lbl = String.fromCharCode(66 + i);
+    return `<div class="rp-via-connector">
+      <span style="color:#5bc0de;font-size:14px">↕</span>
+      <button class="rp-via-remove" onclick="removeViaStop(${i})" title="Remove stop">✕ Remove</button>
+    </div>
+    <div class="rp-stop-row">
+      <span class="rp-stop-badge" style="background:#e67e22">${lbl}</span>
+      <select class="rp-select rp-via-sel" onchange="setViaStop(${i},this.value)">${opts}</select>
+    </div>`;
+  }).join('');
+
+  // Update to-badge
+  const toLbl = String.fromCharCode(65 + routeViaIds.length + 1);
+  const toBadge = document.getElementById('rp-to-badge');
+  if (toBadge) toBadge.textContent = toLbl;
+
+  // Show/hide swap button (hidden when via stops exist)
+  const swapBtn = document.getElementById('rp-swap-btn');
+  if (swapBtn) swapBtn.style.display = routeViaIds.length > 0 ? 'none' : '';
+
+  // Disable add button at max
+  const addBtn = document.getElementById('rp-add-stop-btn');
+  if (addBtn) addBtn.disabled = total >= 7;
+
+  // Set via select values
+  routeViaIds.forEach((id, i) => {
+    const sel = container.querySelectorAll('.rp-via-sel')[i];
+    if (sel && id) sel.value = id;
+  });
+}
+
+// ── Render multi-stop results ─────────────────────────────────────────────
+function renderMultiStopResults(legs) {
+  const el = document.getElementById('rp-results');
+  if (!legs || !legs.length) { el.innerHTML = ''; return; }
+
+  const allSegs    = legs.flatMap(l => l.plan.segments);
+  const totalDist  = allSegs.reduce((s, x) => s + x.dist_km, 0);
+  const totalLocks = allSegs.reduce((s, x) => s + x.locks,   0);
+  const hasPartial = allSegs.some(s => s.partial);
+  const estDays    = Math.ceil(totalDist / 35);
+
+  const heights  = allSegs.map(s => s.max_height).filter(h => h != null);
+  const draughts = allSegs.map(s => s.max_draught).filter(d => d != null);
+  const minH = heights.length  ? Math.min(...heights)  : null;
+  const minD = draughts.length ? Math.min(...draughts) : null;
+  const bottleneckH = allSegs.find(s => s.max_height  != null && s.max_height  === minH);
+  const bottleneckD = allSegs.find(s => s.max_draught != null && s.max_draught === minD);
+
+  const stopNames = legs.map((l, i) => i === 0 ? l.fromWp.name : null)
+    .concat([legs[legs.length - 1].toWp.name])
+    .filter(Boolean);
+
+  // Build names list for title
+  const allNames = [legs[0].fromWp.name, ...legs.map(l => l.toWp.name)];
+
+  let html = '';
+
+  // ── Summary ──
+  html += `<div class="rp-summary">
+    <div class="rp-summary-title">📊 Journey: ${allNames.join(' → ')}</div>
+    <div class="rp-stat-grid">
+      <div class="rp-stat"><span class="val">~${totalDist}<small style="font-size:11px"> km</small></span><div class="lbl">Distance</div></div>
+      <div class="rp-stat"><span class="val">${totalLocks}</span><div class="lbl">Locks</div></div>
+      <div class="rp-stat"><span class="val">${estDays}</span><div class="lbl">Est. Days</div></div>
+      <div class="rp-stat"><span class="val">${legs.length}</span><div class="lbl">${legs.length === 1 ? 'Leg' : 'Legs'}</div></div>
+    </div>
+  </div>`;
+
+  // ── Vessel constraints ──
+  if (minH !== null || minD !== null) {
+    html += `<div class="rp-constraints">
+      <div class="cons-title">🚢 Maximum Vessel Size</div>
+      <div class="cons-grid">`;
+    if (minH !== null) html += `<div>📏 Air draught: <strong>${minH.toFixed(1)} m</strong>${bottleneckH ? ` <small>(${bottleneckH.routeName.replace(/\(.*\)/,'').trim()})</small>` : ''}</div>`;
+    if (minD !== null) html += `<div>⚓ Water draught: <strong>${minD.toFixed(1)} m</strong>${bottleneckD ? ` <small>(${bottleneckD.routeName.replace(/\(.*\)/,'').trim()})</small>` : ''}</div>`;
+    html += `</div></div>`;
+  }
+
+  // ── Legs ──
+  legs.forEach((leg, li) => {
+    const segs    = leg.plan.segments;
+    const legDist = segs.reduce((s, x) => s + x.dist_km, 0);
+    const legLocks= segs.reduce((s, x) => s + x.locks,   0);
+    const fromLbl = String.fromCharCode(65 + li);
+    const toLbl   = String.fromCharCode(65 + li + 1);
+
+    if (legs.length > 1) {
+      html += `<div class="rp-leg-header">Leg ${li + 1}: ${fromLbl} ${leg.fromWp.name} → ${toLbl} ${leg.toWp.name}</div>`;
+      html += `<div class="rp-leg-subtotal">
+        <span>📏 <strong>~${legDist} km</strong></span>
+        <span>🔒 <strong>${legLocks}</strong> locks</span>
+        <span>⏱ ~${Math.ceil(legDist/35)} days</span>
+      </div>`;
+    } else {
+      html += `<div class="rp-segments-title">🗺 Route Segments</div>`;
+    }
+
+    const sectionNames = {1:'Seine',2:'Bassin de la Seine',3:'Centre-Est',4:'Rhône–Saône',5:'Northern',6:'Nord-Est',7:'Rhine',8:'Brittany',9:'Entre Deux Mers'};
+    segs.forEach((seg, si) => {
+      html += `<div class="rp-segment" style="border-left-color:${seg.color||'#1a5276'}">
+        <div class="seg-header"><span class="seg-badge">Route ${seg.routeNum} · §${seg.section} ${sectionNames[seg.section]||''}</span></div>
+        <div class="seg-name">${seg.routeName}</div>
+        <div class="seg-path"><span>${seg.from}</span> → <span>${seg.to}</span></div>
+        <div class="seg-stats">
+          <span>📏 <strong>~${seg.dist_km} km</strong></span>
+          <span>🔒 <strong>${seg.locks}</strong> locks</span>
+          ${seg.max_height  != null ? `<span>↕ <strong>${seg.max_height.toFixed(1)}m</strong></span>` : ''}
+          ${seg.max_draught != null ? `<span>⚓ <strong>${seg.max_draught.toFixed(1)}m</strong></span>` : ''}
+        </div>
+        ${seg.partial ? '<div class="seg-constraint warn">⚠ partial segment – distance approximate</div>' : ''}
+      </div>`;
+      if (si < segs.length - 1) {
+        html += `<div class="rp-junction-arrow">⇩ transfer at ${seg.to}</div>`;
+      }
+    });
+  });
+
+  // ── VNF links ──
+  html += `<div class="rp-vnf-strip">
+    <a class="rp-vnf-btn" href="https://www.vnf.fr/calculitinerairefluvial/app/Main.html" target="_blank">🗺 VNF Route Calculator</a>
+    <a class="rp-vnf-btn" href="https://www.vnf.fr/vnf/services/avisbat/" target="_blank">⚠️ VNF Notices</a>
+  </div>`;
+
+  if (hasPartial) {
+    html += `<div class="rp-note">* Distances are approximate for cross-route legs.</div>`;
+  } else {
+    html += `<div class="rp-note">Estimated at ~35 km/day (7 km/h cruise, locks included).</div>`;
+  }
+
+  el.innerHTML = html;
 }
 
 function openRoutePlanner() {
@@ -2924,16 +3232,30 @@ function closeRoutePlanner() {
 }
 
 function swapRoutePlannerEndpoints() {
+  if (routeViaIds.length > 0) {
+    // With via stops: reverse the full stop order
+    const allIds = [routeFromId, ...routeViaIds, routeToId];
+    allIds.reverse();
+    routeFromId  = allIds[0]   || null;
+    routeViaIds  = allIds.slice(1, -1);
+    routeToId    = allIds[allIds.length - 1] || null;
+    _rebuildAllPins();
+    renderViaStops();
+    if (document.getElementById('rp-from').options.length) {
+      if (routeFromId) syncDropdownToPin('from', routeFromId);
+      if (routeToId)   syncDropdownToPin('to',   routeToId);
+    }
+    if (document.getElementById('rp-results').innerHTML) calculateRoute();
+    return;
+  }
   const fromSel = document.getElementById('rp-from');
   const toSel   = document.getElementById('rp-to');
   const tmp = fromSel.value;
   fromSel.value = toSel.value;
   toSel.value   = tmp;
-  // Also swap the map pins
   const tmpId = routeFromId;
-  if (routeToId)   setRouteEndpoint('from', routeToId);
-  if (tmpId)       setRouteEndpoint('to', tmpId);
-  // Re-run if results are showing
+  if (routeToId) setRouteEndpoint('from', routeToId);
+  if (tmpId)     setRouteEndpoint('to',   tmpId);
   if (document.getElementById('rp-results').innerHTML) calculateRoute();
 }
 
@@ -2943,43 +3265,65 @@ function calculateRoute() {
   const fromWp = WAYPOINTS.find(w => w.id === fromId);
   const toWp   = WAYPOINTS.find(w => w.id === toId);
 
-  // Ensure map pins always reflect the current dropdown selection
-  // (setting select.value programmatically doesn't fire onchange)
   if (fromId && fromId !== routeFromId) setRouteEndpoint('from', fromId);
   if (toId   && toId   !== routeToId)   setRouteEndpoint('to',   toId);
 
-  if (fromId === toId) {
+  // Sync via dropdowns → routeViaIds
+  document.querySelectorAll('.rp-via-sel').forEach((sel, i) => {
+    if (sel.value) routeViaIds[i] = sel.value;
+  });
+
+  const allIds = [routeFromId, ...routeViaIds, routeToId].filter(Boolean);
+  if (allIds.length < 2) {
     document.getElementById('rp-results').innerHTML =
-      '<div class="rp-no-path">⚠️ Please select two different locations.</div>';
+      '<div class="rp-no-path">⚠️ Please select at least two locations.</div>';
     return;
   }
-
-  const plan = planRoute(fromId, toId);
-  renderRouteResults(plan, fromWp, toWp);
-
-  // Add "Show on map" / "Clear" buttons below results
-  if (plan) {
-    const mapBtns = document.createElement('div');
-    mapBtns.className = 'rp-map-btns';
-    mapBtns.id = 'rp-map-btns';
-    mapBtns.innerHTML = `
-      <button class="rp-map-btn active" id="btn-show-on-map" onclick="toggleRouteOnMap(this)">
-        🗺 Highlight route on map
-      </button>
-      <button class="rp-map-btn clear-btn" onclick="clearRouteHighlight(true); document.getElementById('rp-map-btns') && (document.getElementById('btn-show-on-map').className='rp-map-btn')">
-        ✕ Clear
-      </button>`;
-    document.getElementById('rp-results').appendChild(mapBtns);
-    // Auto-highlight route on map
-    highlightRouteOnMap(plan.segments);
-    document.getElementById('btn-show-on-map').classList.add('active');
-    // Collapse panel only if triggered manually (not from nudge bar)
-    // so the user always sees their results without an extra click
-    if (!_nudgeTriggered) {
-      setTimeout(() => toggleCollapseRoutePlanner(), 300);
+  for (let i = 0; i < allIds.length - 1; i++) {
+    if (allIds[i] === allIds[i + 1]) {
+      document.getElementById('rp-results').innerHTML =
+        '<div class="rp-no-path">⚠️ Two consecutive stops are the same location.</div>';
+      return;
     }
-    _nudgeTriggered = false;
   }
+
+  const legs = [];
+  let allSegments = [];
+  for (let i = 0; i < allIds.length - 1; i++) {
+    const plan = planRoute(allIds[i], allIds[i + 1]);
+    if (!plan) {
+      const a = WAYPOINTS.find(w => w.id === allIds[i]);
+      const b = WAYPOINTS.find(w => w.id === allIds[i + 1]);
+      document.getElementById('rp-results').innerHTML =
+        `<div class="rp-no-path">⚠️ No route found between ${a ? a.name : '?'} and ${b ? b.name : '?'}.</div>`;
+      return;
+    }
+    const legFrom = WAYPOINTS.find(w => w.id === allIds[i]);
+    const legTo   = WAYPOINTS.find(w => w.id === allIds[i + 1]);
+    legs.push({ plan, fromWp: legFrom, toWp: legTo, legNum: i + 1 });
+    allSegments = allSegments.concat(plan.segments);
+  }
+
+  _lastRouteSegments = allSegments;
+  renderMultiStopResults(legs);
+
+  const mapBtns = document.createElement('div');
+  mapBtns.className = 'rp-map-btns';
+  mapBtns.id = 'rp-map-btns';
+  mapBtns.innerHTML = `
+    <button class="rp-map-btn active" id="btn-show-on-map" onclick="toggleRouteOnMap(this)">
+      🗺 Highlight route on map
+    </button>
+    <button class="rp-map-btn clear-btn" onclick="clearRouteHighlight(true); document.getElementById('btn-show-on-map').className='rp-map-btn'">
+      ✕ Clear
+    </button>`;
+  document.getElementById('rp-results').appendChild(mapBtns);
+  highlightRouteOnMap(allSegments);
+  document.getElementById('btn-show-on-map').classList.add('active');
+  if (!_nudgeTriggered) {
+    setTimeout(() => toggleCollapseRoutePlanner(), 300);
+  }
+  _nudgeTriggered = false;
 }
 
 function toggleRouteOnMap(btn) {
@@ -2989,11 +3333,8 @@ function toggleRouteOnMap(btn) {
     btn.classList.remove('active');
   } else {
     expandRoutePlanner();
-    const fromId = document.getElementById('rp-from').value;
-    const toId   = document.getElementById('rp-to').value;
-    const plan = planRoute(fromId, toId);
-    if (plan) {
-      highlightRouteOnMap(plan.segments);
+    if (_lastRouteSegments && _lastRouteSegments.length) {
+      highlightRouteOnMap(_lastRouteSegments);
       btn.textContent = '✓ Route highlighted';
       btn.classList.add('active');
     }
@@ -3196,19 +3537,13 @@ function highlightRouteOnMap(segments) {
   routeHighlightLayer = L.layerGroup([glowLayer, lineLayer]).addTo(map);
   routeHighlightActive = true;
 
-  // ── Fit map to the FROM and TO endpoint pins, not the full GeoJSON ──────────
-  // This keeps the zoom level centred on the journey the user actually selected.
-  const fromWp = routeFromId ? WAYPOINTS.find(w => w.id === routeFromId) : null;
-  const toWp   = routeToId   ? WAYPOINTS.find(w => w.id === routeToId)   : null;
-
-  if (fromWp && toWp) {
-    const bounds = L.latLngBounds(
-      [fromWp.lat, fromWp.lon],
-      [toWp.lat,   toWp.lon]
-    );
+  // ── Fit map to all stop pins ─────────────────────────────────────────────────
+  const allStopIds = [routeFromId, ...routeViaIds, routeToId].filter(Boolean);
+  const stopWps = allStopIds.map(id => WAYPOINTS.find(w => w.id === id)).filter(Boolean);
+  if (stopWps.length >= 2) {
+    const bounds = L.latLngBounds(stopWps.map(w => [w.lat, w.lon]));
     map.fitBounds(bounds, { padding: [60, 60] });
   } else {
-    // Fallback: fit to the clipped GeoJSON (should be much smaller now)
     const bounds = L.geoJSON(glowGeoJSON).getBounds();
     if (bounds.isValid()) {
       map.fitBounds(bounds, { paddingTopLeft: [10, 70], paddingBottomRight: [10, 20] });
@@ -3320,10 +3655,13 @@ function setRouteEndpoint(type, waypointId) {
   } else {
     routeToId = waypointId;
     if (toPin) map.removeLayer(toPin);
+    const toLetter = String.fromCharCode(65 + routeViaIds.length + 1);
     toPin = L.marker([wp.lat, wp.lon], {
-      icon: makeEndpointIcon('#e74c3c', 'B'),
+      icon: makeEndpointIcon('#e74c3c', toLetter),
       zIndexOffset: 1100,
-    }).addTo(map).bindTooltip(`To: ${wp.name}`, { direction: 'top' });
+    }).addTo(map).bindTooltip(`${toLetter}: ${wp.name}`, { direction: 'top' });
+    const toBadge = document.getElementById('rp-to-badge');
+    if (toBadge) toBadge.textContent = toLetter;
   }
 
   // Sync dropdowns if planner is already populated
@@ -3341,22 +3679,30 @@ function syncDropdownToPin(type, waypointId) {
 function clearEndpointPins(alsoCloseNudge) {
   if (fromPin) { map.removeLayer(fromPin); fromPin = null; }
   if (toPin)   { map.removeLayer(toPin);   toPin   = null; }
+  viaPins.forEach(p => { if (p) map.removeLayer(p); });
+  viaPins = [];
   routeFromId = null;
   routeToId   = null;
+  routeViaIds = [];
+  _lastRouteSegments = null;
+  renderViaStops();
   if (alsoCloseNudge) updateNudgeBar();
 }
 
 // Nudge bar: show/hide + update labels
 function updateNudgeBar() {
   const bar = document.getElementById('route-nudge-bar');
-  if (!routeFromId && !routeToId) {
+  const allIds = [routeFromId, ...routeViaIds, routeToId].filter(Boolean);
+  if (allIds.length < 2) {
     bar.style.display = 'none';
     return;
   }
-  const fromWp = routeFromId ? WAYPOINTS.find(w => w.id === routeFromId) : null;
-  const toWp   = routeToId   ? WAYPOINTS.find(w => w.id === routeToId)   : null;
-  document.getElementById('nudge-from-label').textContent = fromWp ? fromWp.name : '—';
-  document.getElementById('nudge-to-label').textContent   = toWp   ? toWp.name   : '—';
+  const names = allIds.map(id => {
+    const wp = WAYPOINTS.find(w => w.id === id);
+    return wp ? wp.name : '—';
+  });
+  document.getElementById('nudge-from-label').textContent = names[0];
+  document.getElementById('nudge-to-label').textContent   = names[names.length - 1];
   bar.style.display = 'flex';
 }
 
@@ -3377,6 +3723,10 @@ function nudgeCalculate() {
   calculateRoute();
 }
 let _nudgeTriggered = false;
+let routeViaIds = [];        // waypoint IDs for intermediate via stops
+let viaPins     = [];        // L.Marker for each via stop  
+let _lastRouteSegments = null; // cached segments for highlight toggle
+let _stopOptionsHTML   = '';   // cached <option> HTML for via selects
 
 // ── Waterway click handler ────────────────────────────────────────────────
 function onWaterwayClick(feature, e) {
@@ -3793,18 +4143,23 @@ function _downloadJSON(obj, filename) {
     <button class="rp-close-btn" onclick="event.stopPropagation(); closeRoutePlanner()">✕</button>
   </h3>
   <div id="rp-body">
-  <div class="rp-row">
-    <label>From</label>
-    <select class="rp-select" id="rp-from" onchange="setRouteEndpoint('from', this.value)"></select>
+  <!-- Stop A (From) -->
+  <div class="rp-stop-row">
+    <span class="rp-stop-badge" id="rp-from-badge" style="background:#27ae60">A</span>
+    <select class="rp-select" id="rp-from" onchange="setRouteEndpoint('from',this.value)"></select>
   </div>
-  <div style="display:flex;justify-content:center;margin:-4px 0 4px 46px;">
-    <button class="rp-swap-btn" onclick="swapRoutePlannerEndpoints()" title="Swap From / To">⇅</button>
+  <!-- Via stops are injected here by renderViaStops() -->
+  <div id="rp-via-list"></div>
+  <!-- Stop Z (To) -->
+  <div class="rp-stop-row" id="rp-to-row" style="margin-top:2px">
+    <span class="rp-stop-badge" id="rp-to-badge" style="background:#e74c3c">B</span>
+    <select class="rp-select" id="rp-to" onchange="setRouteEndpoint('to',this.value)"></select>
   </div>
-  <div class="rp-row">
-    <label>To</label>
-    <select class="rp-select" id="rp-to" onchange="setRouteEndpoint('to', this.value)"></select>
+  <div style="display:flex;align-items:center;gap:8px;margin-top:4px">
+    <button class="rp-add-stop-btn" id="rp-add-stop-btn" onclick="addViaStop()" style="margin:0;flex:1">+ Add Stop</button>
+    <button class="rp-swap-btn" id="rp-swap-btn" onclick="swapRoutePlannerEndpoints()" title="Swap From / To" style="flex-shrink:0">⇅</button>
   </div>
-  <button class="rp-calc-btn" onclick="calculateRoute()">⚓ Calculate Route</button>
+  <button class="rp-calc-btn" onclick="calculateRoute()" style="margin-top:8px">⚓ Calculate Route</button>
   <div id="rp-results"></div>
   </div><!-- /#rp-body -->
 </div>
