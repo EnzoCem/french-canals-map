@@ -3415,20 +3415,28 @@ function findWpByName(name, routeNum) {
 }
 
 // ── Build a geographic bounding box for each plan segment ────────────────────
-// Returns [{minLat,maxLat,minLon,maxLon, routeNum}] — nulls skipped.
-// BUFFER: ~0.4° ≈ 40 km, keeps nearby parallel features without overshooting.
+// Returns [{minLat,maxLat,minLon,maxLon,aLat,aLon,bLat,bLon,routeNum}]
+// Direction-aware: generous BUFFER at the "from" end (upstream/start),
+// tight END_BUF at the "to" end (destination) to avoid highlighting
+// waterway features that continue past the destination waypoint.
 function buildSegmentBoxes(segments) {
-  const BUFFER = 0.4;
+  const BUFFER  = 0.15;  // ~17 km — from-end and lateral tolerance
+  const END_BUF = 0.07;  // ~8 km  — to-end clamp (prevents past-destination bleed)
   const boxes = [];
   segments.forEach(seg => {
     const a = findWpByName(seg.from, seg.routeNum);
     const b = findWpByName(seg.to,   seg.routeNum);
     if (a && b) {
+      // Longitude: tight clamp at the destination end
+      const minLon = a.lon <= b.lon ? a.lon - BUFFER  : b.lon - END_BUF;
+      const maxLon = a.lon <= b.lon ? b.lon + END_BUF : a.lon + BUFFER;
+      // Latitude: tight clamp at the destination end
+      const minLat = a.lat <= b.lat ? a.lat - BUFFER  : b.lat - END_BUF;
+      const maxLat = a.lat <= b.lat ? b.lat + END_BUF : a.lat + BUFFER;
       boxes.push({
-        minLat: Math.min(a.lat, b.lat) - BUFFER,
-        maxLat: Math.max(a.lat, b.lat) + BUFFER,
-        minLon: Math.min(a.lon, b.lon) - BUFFER,
-        maxLon: Math.max(a.lon, b.lon) + BUFFER,
+        minLat, maxLat, minLon, maxLon,
+        // Store endpoint coords for the centroid projection check
+        aLat: a.lat, aLon: a.lon, bLat: b.lat, bLon: b.lon,
         routeNum: seg.routeNum,
       });
     } else {
@@ -3457,11 +3465,28 @@ function featureInBoxes(feature, boxes) {
 
   return relevant.some(b => {
     if (b.open) return true; // no geographic constraint — include all
-    // Accept if ANY coordinate of the feature falls inside this box
-    return pts.some(([lon, lat]) =>
-      lat >= b.minLat && lat <= b.maxLat &&
-      lon >= b.minLon && lon <= b.maxLon
-    );
+
+    // Step 1: quick bounding-box pre-filter using the feature centroid.
+    // Using centroid (not "any point") prevents features that only touch the
+    // box edge from being included when their bulk lies past the destination.
+    const centLon = pts.reduce((s, p) => s + p[0], 0) / pts.length;
+    const centLat = pts.reduce((s, p) => s + p[1], 0) / pts.length;
+    if (centLon < b.minLon || centLon > b.maxLon ||
+        centLat < b.minLat || centLat > b.maxLat) return false;
+
+    // Step 2: projection test — reject features whose centroid projects
+    // beyond the destination endpoint on the from→to axis.
+    // t ∈ [–0.1, 1.08] allows a small overshoot for features very close to
+    // either endpoint (lock chambers, basins, etc.)
+    const dLon = b.bLon - b.aLon;
+    const dLat = b.bLat - b.aLat;
+    const lenSq = dLon * dLon + dLat * dLat;
+    if (lenSq > 0.0001) {
+      const t = ((centLon - b.aLon) * dLon + (centLat - b.aLat) * dLat) / lenSq;
+      if (t < -0.10 || t > 1.02) return false;
+    }
+
+    return true;
   });
 }
 
