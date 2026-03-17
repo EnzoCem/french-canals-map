@@ -528,6 +528,67 @@
     padding: 20px;
     font-size: 13px;
   }
+
+  /* ── Vessel profile ───────────────────────────────────────────────── */
+  .rp-vessel-section {
+    margin: 10px 0 6px; border: 1px solid #1a3a5c;
+    border-radius: 6px; overflow: hidden; font-size: 12px;
+  }
+  .rp-vessel-header {
+    display: flex; align-items: center; gap: 6px;
+    padding: 7px 10px; background: #0d2137; cursor: pointer; user-select: none;
+  }
+  .rp-vessel-header:hover { background: #112840; }
+  .rp-vessel-hdr-title { flex: 1; color: #7ad4ef; font-size: 12px; }
+  .rp-vessel-hdr-summary {
+    font-size: 10px; color: #5a8fa0; white-space: nowrap;
+    overflow: hidden; text-overflow: ellipsis; max-width: 140px;
+  }
+  .rp-vessel-arrow { color: #5a8fa0; font-size: 10px; flex-shrink: 0; }
+  .rp-vessel-form {
+    display: none; padding: 10px; background: #091825;
+    border-top: 1px solid #1a3a5c;
+  }
+  .rp-vessel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .rp-vf-label { display: block; font-size: 10px; color: #5a8fa0; margin-bottom: 2px; }
+  .rp-vf-input {
+    width: 100%; background: #0f2535; border: 1px solid #1a4a6a;
+    border-radius: 3px; color: #e0e8f0; padding: 4px 6px;
+    font-size: 12px; box-sizing: border-box;
+  }
+  .rp-vf-input:focus { outline: none; border-color: #4a9bc7; }
+  .rp-vf-fullrow { grid-column: 1 / -1; }
+  .rp-vessel-save {
+    width: 100%; margin-top: 8px; padding: 6px; background: #1a5276;
+    border: none; border-radius: 4px; color: #e0e8f0;
+    cursor: pointer; font-size: 12px;
+  }
+  .rp-vessel-save:hover { background: #2a6a8a; color: #fff; }
+  /* compatibility results */
+  .rp-compat-banner {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 10px; border-radius: 5px; margin: 8px 0; font-size: 12px;
+  }
+  .rp-compat-ok   { background: #0a2218; border: 1px solid #1e6640; color: #5bd48a; }
+  .rp-compat-warn { background: #251a08; border: 1px solid #6a4a10; color: #e6a030; }
+  .rp-compat-fail { background: #250808; border: 1px solid #6a1a1a; color: #e74c3c; }
+  .rp-compat-icon { font-size: 16px; flex-shrink: 0; }
+  .rp-compat-msg  { flex: 1; }
+  .rp-compat-msg strong { display: block; }
+  .rp-compat-msg small  { opacity: 0.8; }
+  .rp-time-personal {
+    padding: 8px 10px; background: #0d1f30;
+    border: 1px solid #1a3a5c; border-radius: 5px;
+    margin: 8px 0; font-size: 12px; color: #8ab4c2;
+  }
+  .rp-time-personal strong { color: #e0c97f; }
+  .seg-compat-badge {
+    display: inline-block; font-size: 10px; padding: 1px 5px;
+    border-radius: 3px; margin-left: 5px; vertical-align: middle;
+  }
+  .seg-compat-ok   { background: #0a2218; color: #5bd48a; }
+  .seg-compat-warn { background: #251a08; color: #e6a030; }
+  .seg-compat-fail { background: #250808; color: #e74c3c; }
   .rp-vnf-strip {
     margin-top: 12px;
     padding-top: 10px;
@@ -2354,6 +2415,92 @@ function planRoute(fromWpId, toWpId) {
 }
 
 // ── Render results ────────────────────────────────────────────────────────
+
+// ── Vessel profile ──────────────────────────────────────────────────────
+const VESSEL_KEY = 'french_canals_vessel_v1';
+let _vessel = null;
+(function _loadVessel() {
+  try { _vessel = JSON.parse(localStorage.getItem(VESSEL_KEY) || 'null'); } catch(e){}
+})();
+
+function _initVesselUI() {
+  _updateVesselSummary();
+}
+// Run after DOM ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', _initVesselUI);
+} else {
+  setTimeout(_initVesselUI, 0);
+}
+
+function toggleVesselForm() {
+  const form  = document.getElementById('vsl-form');
+  const arrow = document.getElementById('vsl-arrow');
+  const open  = form.style.display !== 'none';
+  form.style.display = open ? 'none' : 'block';
+  arrow.textContent  = open ? '▶' : '▼';
+  if (!open && _vessel) {
+    ['name','length','beam','height','draught','speed','hours'].forEach(k => {
+      const el = document.getElementById('vsl-' + k);
+      if (el && _vessel[k] != null) el.value = _vessel[k];
+    });
+  }
+}
+
+function saveVessel() {
+  const g = id => document.getElementById('vsl-' + id);
+  const v = {
+    name:    g('name').value.trim()   || 'My Boat',
+    length:  parseFloat(g('length').value)  || 0,
+    beam:    parseFloat(g('beam').value)    || 0,
+    height:  parseFloat(g('height').value)  || 0,
+    draught: parseFloat(g('draught').value) || 0,
+    speed:   parseFloat(g('speed').value)   || 7,
+    hours:   parseFloat(g('hours').value)   || 6,
+  };
+  _vessel = v;
+  localStorage.setItem(VESSEL_KEY, JSON.stringify(v));
+  _updateVesselSummary();
+  document.getElementById('vsl-form').style.display = 'none';
+  document.getElementById('vsl-arrow').textContent = '▶';
+  if (document.getElementById('rp-results').innerHTML) calculateRoute();
+}
+
+function _updateVesselSummary() {
+  const el = document.getElementById('vsl-summary');
+  if (!el) return;
+  if (!_vessel || (!_vessel.height && !_vessel.draught)) {
+    el.textContent = 'Not set · add for compatibility check';
+    return;
+  }
+  el.textContent = `${_vessel.name} · ${_vessel.length}m × ${_vessel.beam}m · ↕${_vessel.height}m · ⚓${_vessel.draught}m`;
+}
+
+function _vesselCompatSeg(seg) {
+  if (!_vessel || (!_vessel.height && !_vessel.draught)) return null;
+  const TIGHT = 0.15;
+  let status = 'ok', issues = [];
+  if (_vessel.height && seg.max_height != null) {
+    if (_vessel.height > seg.max_height) {
+      status = 'fail';
+      issues.push(`Air draught ${_vessel.height}m exceeds limit ${seg.max_height}m`);
+    } else if (_vessel.height > seg.max_height - TIGHT) {
+      if (status !== 'fail') status = 'warn';
+      issues.push(`Air draught ${_vessel.height}m is close to limit ${seg.max_height}m`);
+    }
+  }
+  if (_vessel.draught && seg.max_draught != null) {
+    if (_vessel.draught > seg.max_draught) {
+      status = 'fail';
+      issues.push(`Water draught ${_vessel.draught}m exceeds limit ${seg.max_draught}m`);
+    } else if (_vessel.draught > seg.max_draught - TIGHT) {
+      if (status !== 'fail') status = 'warn';
+      issues.push(`Water draught ${_vessel.draught}m is close to limit ${seg.max_draught}m`);
+    }
+  }
+  return { status, issues };
+}
+
 function renderRouteResults(plan, fromWp, toWp) {
   const el = document.getElementById('rp-results');
   if (!plan) {
@@ -2377,8 +2524,13 @@ function renderRouteResults(plan, fromWp, toWp) {
   const bottleneckD = segs.find(s => s.max_draught != null && s.max_draught === minD);
 
   // Estimated days at ~35 km/day average (accounting for lock time)
-  const estDays = Math.ceil(totalDist / 35);
-  const estHours = Math.round(totalDist / 7); // 7 km/h average progress
+  // Use vessel profile speed if available, otherwise 7 km/h default
+  const _cruiseSpeed = (_vessel && _vessel.speed) ? _vessel.speed : 7;
+  const _hoursPerDay = (_vessel && _vessel.hours) ? _vessel.hours : 6;
+  const _lockTimeHrs = totalLocks * 0.5;
+  const _cruiseHrs   = totalDist / _cruiseSpeed;
+  const _totalHrs    = _cruiseHrs + _lockTimeHrs;
+  const estDays      = Math.ceil(_totalHrs / _hoursPerDay);
 
   let html = '';
 
@@ -2405,6 +2557,42 @@ function renderRouteResults(plan, fromWp, toWp) {
     </div>
   </div>`;
 
+  // ── Vessel compatibility banner ─────────────────────────────────────────
+  if (_vessel && (_vessel.height || _vessel.draught)) {
+    const segCompats = segs.map(s => _vesselCompatSeg(s));
+    const overall = segCompats.reduce((worst, c) => {
+      if (!c) return worst;
+      if (c.status === 'fail') return 'fail';
+      if (c.status === 'warn' && worst !== 'fail') return 'warn';
+      return worst;
+    }, 'ok');
+    const failN = segCompats.filter(c => c && c.status === 'fail').length;
+    const warnN = segCompats.filter(c => c && c.status === 'warn').length;
+    let icon, msg, sub;
+    if (overall === 'ok') {
+      icon = '✅'; msg = 'Vessel compatible on all segments';
+      sub = `${_vessel.name} fits within all route constraints`;
+    } else if (overall === 'warn') {
+      icon = '⚠️'; msg = `Tight clearance on ${warnN} segment${warnN > 1 ? 's' : ''}`;
+      sub = 'Headroom or draught is very close to the limit — proceed with care';
+    } else {
+      icon = '🚫'; msg = `Over limit on ${failN} segment${failN > 1 ? 's' : ''}`;
+      sub = 'Your vessel exceeds size constraints — this route is not navigable as configured';
+    }
+    html += `<div class="rp-compat-banner rp-compat-${overall}">
+      <span class="rp-compat-icon">${icon}</span>
+      <span class="rp-compat-msg"><strong>${msg}</strong><small>${sub}</small></span>
+    </div>`;
+    // Personalised time estimate
+    html += `<div class="rp-time-personal">
+      🚢 <strong>${_vessel.name}:</strong> ~${Math.round(_totalHrs)}h total ·
+      <strong>~${estDays} days</strong> at ${_vessel.speed} km/h, ${_vessel.hours}h/day
+      <small style="display:block;margin-top:2px;opacity:0.7">
+        ${Math.round(_cruiseHrs)}h cruising + ${Math.round(_lockTimeHrs)}h in locks (est. 30 min each)
+      </small>
+    </div>`;
+  }
+
   // ── Vessel constraints ─────────────────────────────────────────────────
   if (minH !== null || minD !== null) {
     html += `<div class="rp-constraints">
@@ -2422,6 +2610,7 @@ function renderRouteResults(plan, fromWp, toWp) {
     html += `<div class="rp-segment" style="border-left-color:${seg.color||'#1a5276'}">
       <div class="seg-header">
         <span class="seg-badge">Route ${seg.routeNum} · §${seg.section} ${sectionNames[seg.section]||''}</span>
+        ${(() => { const c = _vesselCompatSeg(seg); if (!c) return ''; const labels = {ok:'✅ Clear',warn:'⚠ Tight',fail:'🚫 Over limit'}; return `<span class="seg-compat-badge seg-compat-${c.status}" title="${c.issues.join('; ')}">${labels[c.status]}</span>`; })()}
       </div>
       <div class="seg-name">${seg.routeName}</div>
       <div class="seg-path"><span>${seg.from}</span> → <span>${seg.to}</span></div>
@@ -2440,14 +2629,14 @@ function renderRouteResults(plan, fromWp, toWp) {
 
   // ── VNF links ──────────────────────────────────────────────────────────
   html += `<div class="rp-vnf-strip">
-    <a class="rp-vnf-btn" href="https://www.vnf.fr/calculitinerairefluvial/app/Main.html" target="_blank">🗺 VNF Route Calculator</a>
-    <a class="rp-vnf-btn" href="https://www.vnf.fr/vnf/services/avisbat/" target="_blank">⚠️ VNF Notices</a>
+    <a class="rp-vnf-btn" href="https://www.vnf.fr/calculitinerairefluvial/app/Main.html" target="_blank">🔗 Verify on VNF<strong style="display:block;font-size:10px;color:#5a8fa0;font-weight:normal">Official route calculator</strong></a>
+    <a class="rp-vnf-btn" href="https://www.vnf.fr/vnf/services/avisbat/" target="_blank">⚠️ VNF Notices<strong style="display:block;font-size:10px;color:#5a8fa0;font-weight:normal">Live closures & works</strong></a>
   </div>`;
 
   if (hasPartial) {
     html += `<div class="rp-note">* Distances are approximate. Multi-route journeys show full-route distances for connecting routes.</div>`;
   } else {
-    html += `<div class="rp-note">Estimated at ~35 km/day (7 km/h cruise, locks included). Actual times vary.</div>`;
+    html += `<div class="rp-note">${_vessel && _vessel.speed ? `Estimated for ${_vessel.name} at ${_vessel.speed} km/h, ${_vessel.hours}h/day, 30 min per lock.` : 'Estimated at 7 km/h, 6 h/day, 30 min per lock. Set your vessel above for a personalised estimate.'}</div>`;
   }
 
   el.innerHTML = html;
@@ -3402,6 +3591,47 @@ function _downloadJSON(obj, filename) {
   <div class="rp-row">
     <label>To</label>
     <select class="rp-select" id="rp-to" onchange="setRouteEndpoint('to', this.value)"></select>
+  </div>
+  <!-- Vessel profile -->
+  <div class="rp-vessel-section">
+    <div class="rp-vessel-header" onclick="toggleVesselForm()">
+      <span class="rp-vessel-hdr-title">🚢 My Vessel</span>
+      <span class="rp-vessel-hdr-summary" id="vsl-summary">Not set · add for compatibility check</span>
+      <span class="rp-vessel-arrow" id="vsl-arrow">▶</span>
+    </div>
+    <div class="rp-vessel-form" id="vsl-form">
+      <div class="rp-vessel-grid">
+        <div class="rp-vf-fullrow">
+          <label class="rp-vf-label">Boat name</label>
+          <input class="rp-vf-input" id="vsl-name" type="text" placeholder="e.g. My Barge">
+        </div>
+        <div>
+          <label class="rp-vf-label">Length (m)</label>
+          <input class="rp-vf-input" id="vsl-length" type="number" min="1" max="120" step="0.1" placeholder="e.g. 15">
+        </div>
+        <div>
+          <label class="rp-vf-label">Beam / width (m)</label>
+          <input class="rp-vf-input" id="vsl-beam" type="number" min="1" max="10" step="0.1" placeholder="e.g. 3.8">
+        </div>
+        <div>
+          <label class="rp-vf-label">Air draught / height (m)</label>
+          <input class="rp-vf-input" id="vsl-height" type="number" min="0.5" max="15" step="0.1" placeholder="e.g. 3.5">
+        </div>
+        <div>
+          <label class="rp-vf-label">Water draught (m)</label>
+          <input class="rp-vf-input" id="vsl-draught" type="number" min="0.1" max="5" step="0.05" placeholder="e.g. 1.2">
+        </div>
+        <div>
+          <label class="rp-vf-label">Cruising speed (km/h)</label>
+          <input class="rp-vf-input" id="vsl-speed" type="number" min="1" max="30" step="0.5" placeholder="e.g. 7" value="7">
+        </div>
+        <div>
+          <label class="rp-vf-label">Cruising hours / day</label>
+          <input class="rp-vf-input" id="vsl-hours" type="number" min="1" max="16" step="0.5" placeholder="e.g. 6" value="6">
+        </div>
+      </div>
+      <button class="rp-vessel-save" onclick="saveVessel()">💾 Save & recalculate</button>
+    </div>
   </div>
   <button class="rp-calc-btn" onclick="calculateRoute()">⚓ Calculate Route</button>
   <div id="rp-results"></div>
