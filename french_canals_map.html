@@ -722,48 +722,6 @@
   .sep-btn.to   { background: #922b21; color: #fff; }
   .sep-btn.to:hover   { background: #e74c3c; }
 
-  /* Floating "Calculate" nudge bar */
-  #route-nudge-bar {
-    position: fixed;
-    bottom: 28px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #0d1b2a;
-    border: 1px solid #1a5276;
-    border-radius: 30px;
-    padding: 10px 20px;
-    display: none;
-    align-items: center;
-    gap: 12px;
-    z-index: 2100;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.6);
-    font-size: 13px;
-    color: #9bb8d4;
-    white-space: nowrap;
-  }
-  #route-nudge-bar .nudge-from { color: #2ecc71; font-weight: bold; }
-  #route-nudge-bar .nudge-to   { color: #e74c3c; font-weight: bold; }
-  #route-nudge-bar .nudge-calc-btn {
-    background: linear-gradient(135deg, #1a6b9a, #2980b9);
-    color: #fff;
-    border: none;
-    border-radius: 20px;
-    padding: 7px 16px;
-    cursor: pointer;
-    font-weight: bold;
-    font-size: 13px;
-  }
-  #route-nudge-bar .nudge-calc-btn:hover { background: linear-gradient(135deg, #2471a3, #3498db); }
-  #route-nudge-bar .nudge-clear {
-    color: #555;
-    cursor: pointer;
-    font-size: 16px;
-    background: none;
-    border: none;
-    padding: 0 4px;
-    line-height: 1;
-  }
-  #route-nudge-bar .nudge-clear:hover { color: #fff; }
 
 </style>
 </head>
@@ -3030,7 +2988,6 @@ function addViaStop(defaultId) {
   }
 
   renderViaStops();
-  updateNudgeBar();
 }
 
 function removeViaStop(idx) {
@@ -3049,7 +3006,6 @@ function removeViaStop(idx) {
     if (badge) badge.textContent = lbl;
   }
   renderViaStops();
-  updateNudgeBar();
 }
 
 function setViaStop(idx, waypointId) {
@@ -3062,7 +3018,6 @@ function setViaStop(idx, waypointId) {
       icon: makeEndpointIcon('#e67e22', lbl), zIndexOffset: 1150 - idx * 10,
     }).addTo(map).bindTooltip(`${lbl}: ${wp.name}`, { direction: 'top' });
   }
-  updateNudgeBar();
 }
 
 // ── Render the via stops list in the panel ────────────────────────────────
@@ -3320,10 +3275,7 @@ function calculateRoute() {
   document.getElementById('rp-results').appendChild(mapBtns);
   highlightRouteOnMap(allSegments);
   document.getElementById('btn-show-on-map').classList.add('active');
-  if (!_nudgeTriggered) {
-    setTimeout(() => toggleCollapseRoutePlanner(), 300);
-  }
-  _nudgeTriggered = false;
+  setTimeout(() => toggleCollapseRoutePlanner(), 300);
 }
 
 function toggleRouteOnMap(btn) {
@@ -3689,9 +3641,17 @@ function setRouteEndpoint(type, waypointId) {
     if (toBadge) toBadge.textContent = toLetter;
   }
 
-  // Sync dropdowns if planner is already populated
+  // Auto-open the Route Planner panel so the user can see their selection
+  // and hit Calculate Route — no separate bottom bar needed.
+  const panel = document.getElementById('route-planner-panel');
+  if (panel.style.display !== 'block') {
+    panel.style.display = 'block';
+    expandRoutePlanner();
+    if (!document.getElementById('rp-from').options.length) {
+      populateRoutePlannerDropdowns();
+    }
+  }
   syncDropdownToPin(type, waypointId);
-  updateNudgeBar();
 }
 
 function syncDropdownToPin(type, waypointId) {
@@ -3701,7 +3661,7 @@ function syncDropdownToPin(type, waypointId) {
 }
 
 // Remove pins and reset state
-function clearEndpointPins(alsoCloseNudge) {
+function clearEndpointPins() {
   if (fromPin) { map.removeLayer(fromPin); fromPin = null; }
   if (toPin)   { map.removeLayer(toPin);   toPin   = null; }
   viaPins.forEach(p => { if (p) map.removeLayer(p); });
@@ -3711,43 +3671,8 @@ function clearEndpointPins(alsoCloseNudge) {
   routeViaIds = [];
   _lastRouteSegments = null;
   renderViaStops();
-  if (alsoCloseNudge) updateNudgeBar();
 }
 
-// Nudge bar: show/hide + update labels
-function updateNudgeBar() {
-  const bar = document.getElementById('route-nudge-bar');
-  const allIds = [routeFromId, ...routeViaIds, routeToId].filter(Boolean);
-  if (allIds.length < 2) {
-    bar.style.display = 'none';
-    return;
-  }
-  const names = allIds.map(id => {
-    const wp = WAYPOINTS.find(w => w.id === id);
-    return wp ? wp.name : '—';
-  });
-  document.getElementById('nudge-from-label').textContent = names[0];
-  document.getElementById('nudge-to-label').textContent   = names[names.length - 1];
-  bar.style.display = 'flex';
-}
-
-// Nudge bar Calculate button
-function nudgeCalculate() {
-  if (!document.getElementById('rp-from').options.length) {
-    populateRoutePlannerDropdowns();
-  }
-  if (routeFromId) syncDropdownToPin('from', routeFromId);
-  if (routeToId)   syncDropdownToPin('to',   routeToId);
-
-  const panel = document.getElementById('route-planner-panel');
-  if (panel.style.display !== 'block') {
-    panel.style.display = 'block';
-  }
-  expandRoutePlanner();   // always expand so results are visible
-  _nudgeTriggered = true; // flag: skip auto-collapse after this calculate
-  calculateRoute();
-}
-let _nudgeTriggered = false;
 let routeViaIds = [];        // waypoint IDs for intermediate via stops
 let viaPins     = [];        // L.Marker for each via stop  
 let _lastRouteSegments = null; // cached segments for highlight toggle
@@ -4190,12 +4115,6 @@ function _downloadJSON(obj, filename) {
 </div>
 
 
-<div id="route-nudge-bar">
-  <span>📍 <span class="nudge-from" id="nudge-from-label">—</span>
-  → <span class="nudge-to" id="nudge-to-label">—</span></span>
-  <button class="nudge-calc-btn" onclick="nudgeCalculate()">⚓ Calculate Route</button>
-  <button class="nudge-clear" onclick="clearEndpointPins(true)" title="Clear endpoints">✕</button>
-</div>
 
 <!-- Edit Locations mode banner -->
 <div id="edit-mode-banner">
