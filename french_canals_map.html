@@ -9,7 +9,8 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"/>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Segoe UI', sans-serif; background: #1a1a2e; color: #eee; height: 100vh; display: flex; flex-direction: column; }
+  html, body { height: 100%; }
+  body { font-family: 'Segoe UI', sans-serif; background: #1a1a2e; color: #eee; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
 
   #header {
     background: linear-gradient(135deg, #0f3460 0%, #16213e 100%);
@@ -71,7 +72,7 @@
     margin-left: auto; font-size: 11px; color: #5a7a8a;
   }
 
-  #main { display: flex; flex: 1; overflow: hidden; }
+  #main { display: flex; flex: 1; min-height: 0; overflow: hidden; }
 
   #map { flex: 1; }
 
