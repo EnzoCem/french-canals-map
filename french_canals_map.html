@@ -723,6 +723,39 @@
   .sep-btn.to   { background: #922b21; color: #fff; }
   .sep-btn.to:hover   { background: #e74c3c; }
 
+/* ── Saved Routes ──────────────────────────────────────────── */
+#rp-save-btn {
+  width: 100%; margin-top: 8px; padding: 7px;
+  border-radius: 6px; background: #0d3d2a;
+  border: 1px solid #1a6b4a; color: #52d68a;
+  font-size: 12px; font-weight: 600; cursor: pointer;
+  transition: background 0.2s;
+}
+#rp-save-btn:hover:not(:disabled) { background: #1a5c3a; }
+#rp-save-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+#rp-saved-section {
+  margin-top: 14px; border-top: 1px solid #1a5276; padding-top: 10px;
+}
+#rp-saved-section h4 {
+  font-size: 12px; color: #5bc0de; margin-bottom: 8px;
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+.saved-route-item {
+  background: #0f2540; border: 1px solid #1a4a7a;
+  border-radius: 6px; padding: 8px 10px; margin-bottom: 6px;
+}
+.saved-route-name { font-weight: 600; color: #e0c97f; font-size: 12px; margin-bottom: 3px; }
+.saved-route-meta { color: #8ab4c2; font-size: 11px; margin-bottom: 6px; line-height: 1.4; }
+.saved-route-actions { display: flex; gap: 6px; }
+.saved-route-actions button {
+  padding: 3px 9px; font-size: 11px; border-radius: 4px;
+  border: 1px solid; cursor: pointer; transition: background 0.15s;
+}
+.sr-load-btn { background: #1a3a5c; border-color: #2a5a8c; color: #7ad4ef; }
+.sr-load-btn:hover { background: #2a4a6c; }
+.sr-del-btn  { background: #3a1a1a; border-color: #7a2a2a; color: #e87a7a; }
+.sr-del-btn:hover  { background: #4a2222; }
+.sr-empty { color: #5a7a8a; font-size: 12px; text-align: center; padding: 8px 0; font-style: italic; }
 
 </style>
 </head>
@@ -1658,6 +1691,10 @@ try { userNotes = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch
 const OVERRIDES_KEY = 'french_canals_location_overrides_v1';
 let locationOverrides = { waypoints: {}, moorings: {} };
 try { locationOverrides = JSON.parse(localStorage.getItem(OVERRIDES_KEY) || '{"waypoints":{},"moorings":{}}'); } catch(e){}
+
+const SAVED_ROUTES_KEY = 'french_canals_saved_routes_v1';
+let savedRoutes = JSON.parse(localStorage.getItem(SAVED_ROUTES_KEY) || '[]');
+let _loadedSavedRouteId = null; // ID of currently loaded saved route
 
 // Store original positions before applying any overrides
 const _origPositions = { waypoints: {}, moorings: {} };
@@ -2902,6 +2939,7 @@ function populateRoutePlannerDropdowns() {
   }
   _stopOptionsHTML = document.getElementById('rp-from').innerHTML;
   renderViaStops();
+  renderSavedRoutesList();
 }
 
 // ── Via stop colour helper ────────────────────────────────────────────────
@@ -3262,6 +3300,7 @@ function calculateRoute() {
 
   _lastRouteSegments = allSegments;
   renderMultiStopResults(legs);
+  const sb = document.getElementById('rp-save-btn'); if (sb) sb.disabled = false;
 
   const mapBtns = document.createElement('div');
   mapBtns.className = 'rp-map-btns';
@@ -3672,6 +3711,106 @@ function clearEndpointPins() {
   routeViaIds = [];
   _lastRouteSegments = null;
   renderViaStops();
+  _loadedSavedRouteId = null;
+  const sb = document.getElementById('rp-save-btn'); if (sb) sb.disabled = true;
+}
+
+function saveCurrentRoute() {
+  if (!routeFromId || !routeToId || !_lastRouteSegments) return;
+  const fromWp = WAYPOINTS.find(w => w.id === routeFromId);
+  const toWp   = WAYPOINTS.find(w => w.id === routeToId);
+  if (!fromWp || !toWp) return;
+
+  // Compute totals from last calculated segments
+  let totalKm = 0, totalLocks = 0;
+  _lastRouteSegments.forEach(s => { totalKm += s.dist_km || 0; totalLocks += s.locks || 0; });
+
+  const defaultName = fromWp.name + ' \u2192 ' + toWp.name;
+
+  if (_loadedSavedRouteId) {
+    // Offer to update the existing entry or save as new
+    const existing = savedRoutes.find(r => r.id === _loadedSavedRouteId);
+    if (existing) {
+      const doUpdate = confirm('Update "' + existing.name + '"?\n\nOK = update existing   Cancel = save as new copy');
+      if (doUpdate) {
+        existing.stats = { totalKm: Math.round(totalKm), totalLocks };
+        existing.fromId = routeFromId;
+        existing.toId   = routeToId;
+        existing.viaIds = [...routeViaIds];
+        existing.savedAt = new Date().toISOString();
+        localStorage.setItem(SAVED_ROUTES_KEY, JSON.stringify(savedRoutes));
+        renderSavedRoutesList();
+        showEditToast('Route updated \u2713');
+        return;
+      }
+    }
+  }
+
+  const name = prompt('Name this route:', defaultName);
+  if (name === null) return; // cancelled
+  const entry = {
+    id: 'sr_' + Date.now(),
+    name: name.trim() || defaultName,
+    savedAt: new Date().toISOString(),
+    fromId: routeFromId,
+    toId:   routeToId,
+    viaIds: [...routeViaIds],
+    stats:  { totalKm: Math.round(totalKm), totalLocks }
+  };
+  savedRoutes.push(entry);
+  _loadedSavedRouteId = entry.id;
+  localStorage.setItem(SAVED_ROUTES_KEY, JSON.stringify(savedRoutes));
+  renderSavedRoutesList();
+  showEditToast('Route "' + entry.name + '" saved \u2713');
+}
+
+function deleteSavedRoute(id) {
+  const entry = savedRoutes.find(r => r.id === id);
+  if (!entry) return;
+  if (!confirm('Delete route "' + entry.name + '"?')) return;
+  savedRoutes = savedRoutes.filter(r => r.id !== id);
+  if (_loadedSavedRouteId === id) _loadedSavedRouteId = null;
+  localStorage.setItem(SAVED_ROUTES_KEY, JSON.stringify(savedRoutes));
+  renderSavedRoutesList();
+}
+
+function loadSavedRoute(id) {
+  const entry = savedRoutes.find(r => r.id === id);
+  if (!entry) return;
+  openRoutePlanner();
+  clearEndpointPins();
+  _loadedSavedRouteId = id;
+  setRouteEndpoint('from', entry.fromId);
+  entry.viaIds.forEach(vid => addViaStop(vid));
+  setRouteEndpoint('to', entry.toId);
+  calculateRoute();
+}
+
+function renderSavedRoutesList() {
+  const container = document.getElementById('rp-saved-list');
+  if (!container) return;
+  if (savedRoutes.length === 0) {
+    container.innerHTML = '<div class="sr-empty">No saved routes yet</div>';
+    return;
+  }
+  container.innerHTML = savedRoutes.map(function(r) {
+    const fromWp = WAYPOINTS.find(w => w.id === r.fromId);
+    const toWp   = WAYPOINTS.find(w => w.id === r.toId);
+    const fromName = fromWp ? fromWp.name : '?';
+    const toName   = toWp   ? toWp.name   : '?';
+    const via  = r.viaIds.length ? ' \u00b7 ' + r.viaIds.length + ' stop' + (r.viaIds.length > 1 ? 's' : '') : '';
+    const date = new Date(r.savedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+    const active = (r.id === _loadedSavedRouteId) ? ' style="border-color:#52d68a"' : '';
+    return '<div class="saved-route-item"' + active + '>' +
+      '<div class="saved-route-name">' + r.name + '</div>' +
+      '<div class="saved-route-meta">' + fromName + ' \u2192 ' + toName + via +
+        ' \u00a0\u00b7\u00a0 ~' + r.stats.totalKm + ' km \u00a0\u00b7\u00a0 ' + r.stats.totalLocks + ' locks' +
+        '<br>' + date + '</div>' +
+      '<div class="saved-route-actions">' +
+        '<button class="sr-load-btn" onclick="loadSavedRoute(\'' + r.id + '\')">&#128194; Load</button>' +
+        '<button class="sr-del-btn"  onclick="deleteSavedRoute(\'' + r.id + '\')">&#128465; Delete</button>' +
+      '</div></div>';
+  }).join('');
 }
 
 let routeViaIds = [];        // waypoint IDs for intermediate via stops
@@ -4112,6 +4251,11 @@ function _downloadJSON(obj, filename) {
   </div>
   <button class="rp-calc-btn" onclick="calculateRoute()" style="margin-top:8px">⚓ Calculate Route</button>
   <div id="rp-results"></div>
+    <button id="rp-save-btn" onclick="saveCurrentRoute()" disabled>&#128190; Save Route</button>
+    <div id="rp-saved-section">
+      <h4>&#128194; Saved Routes</h4>
+      <div id="rp-saved-list"><div class="sr-empty">No saved routes yet</div></div>
+    </div>
   </div><!-- /#rp-body -->
 </div>
 
