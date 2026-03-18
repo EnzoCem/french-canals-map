@@ -775,6 +775,54 @@
 .mich-popup-link { display:inline-block; padding:4px 10px; background:#8B0000; color:#fff; border-radius:4px; font-size:11px; text-decoration:none; }
 .mich-popup-link:hover { background:#a00; }
 
+/* ── Explore Nearby POIs ─────────────────────────────────── */
+#explore-section {
+  margin-top: 14px;
+  border-top: 1px solid #0f3460;
+  padding-top: 10px;
+  flex-shrink: 0;
+}
+.explore-header {
+  display: flex; align-items: center; justify-content: space-between;
+  cursor: pointer; padding: 4px 0;
+  font-size: 12px; font-weight: 700; color: #5bc0de;
+  text-transform: uppercase; letter-spacing: 0.6px;
+  user-select: none;
+}
+.explore-header:hover { color: #7ad4ef; }
+.explore-toggle { font-size: 11px; transition: transform 0.2s; }
+.explore-toggle.open { transform: rotate(180deg); }
+.explore-body { margin-top: 8px; }
+.explore-cats {
+  display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px;
+}
+.exp-cat {
+  padding: 2px 8px; border-radius: 10px; font-size: 10px;
+  border: 1px solid #1a4a7a; background: #0f2540; color: #8ab4c2;
+  cursor: pointer; transition: all 0.15s; white-space: nowrap;
+}
+.exp-cat.active { background: #1a5276; color: #fff; border-color: #5bc0de; }
+.exp-cat:hover:not(.active) { background: #1a3a5c; }
+.poi-item {
+  display: flex; align-items: flex-start; gap: 6px;
+  padding: 6px 0; border-bottom: 1px solid #0d1e33;
+}
+.poi-item:last-child { border-bottom: none; }
+.poi-icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+.poi-body { flex: 1; min-width: 0; }
+.poi-name { color: #dde; font-size: 12px; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.poi-meta { font-size: 10px; color: #5a7a8a; margin-top: 1px; }
+.poi-fly {
+  font-size: 10px; padding: 2px 7px; flex-shrink: 0;
+  background: #1a3a5c; border: 1px solid #2a5a8c;
+  color: #7ad4ef; border-radius: 3px; cursor: pointer;
+  align-self: center;
+}
+.poi-fly:hover { background: #2a4a6c; }
+.exp-loading { color: #5a7a8a; font-size: 12px; text-align: center; padding: 14px 0; }
+.exp-empty   { color: #5a7a8a; font-size: 12px; font-style: italic; text-align: center; padding: 10px 0; }
+.exp-error   { color: #e87a7a; font-size: 12px; text-align: center; padding: 10px 0; }
+
 </style>
 </head>
 <body>
@@ -2833,6 +2881,7 @@ const clusterGroup = L.markerClusterGroup({
 let allMarkers = [];
 let allMooringMarkers = [];
 let editModeActive = false;
+const _poiCache = {}; // keyed by waypoint id → array of POI elements
 let visibleSections = new Set(['1','2','3','4','5','6','7','8','9']);
 
 function createTownIcon(section) {
@@ -3155,6 +3204,18 @@ function openSidebar(wid) {
     mhtml += '</div>';
     document.getElementById('place-info').insertAdjacentHTML('beforeend', mhtml);
   }
+
+  // ── Explore Nearby (Phase 2) ────────────────────────────────────────────
+  const _wpForExplore = w; // w is the waypoint object in openSidebar
+  document.getElementById('place-info').insertAdjacentHTML('beforeend',
+    '<div id="explore-section">' +
+      '<div class="explore-header" onclick="expandExplore(\'' + _wpForExplore.id + '\',' + _wpForExplore.lat + ',' + _wpForExplore.lon + ')">' +
+        '<span>🔍 Explore Nearby</span>' +
+        '<span class="explore-toggle" id="explore-toggle-' + _wpForExplore.id + '">▼</span>' +
+      '</div>' +
+      '<div class="explore-body" id="explore-body-' + _wpForExplore.id + '" style="display:none"></div>' +
+    '</div>'
+  );
 }
 
 function closeSidebar() {
@@ -4899,8 +4960,146 @@ function renderSavedRoutesList() {
   }).join('');
 }
 
+// ── Phase 2: Explore Nearby POIs via Overpass ─────────────────────────────
+
+function _poiDistKm(lat1, lon1, lat2, lon2) {
+  const dlat = (lat2 - lat1) * 111;
+  const dlon = (lon2 - lon1) * 111 * Math.cos(lat1 * Math.PI / 180);
+  return Math.sqrt(dlat * dlat + dlon * dlon);
+}
+
+function _poiCategoryOf(el) {
+  const t = el.tags || {};
+  if (t.craft === 'winery' || t.amenity === 'winery') return 'winery';
+  if (t.tourism === 'viewpoint') return 'viewpoint';
+  if (t.tourism === 'museum' || t.tourism === 'gallery') return 'museum';
+  if (t.tourism === 'attraction') return 'attraction';
+  const h = t.historic || '';
+  if (h === 'castle' || h === 'manor' || h === 'palace' || h === 'fort' || h === 'fortress') return 'castle';
+  if (h === 'church' || h === 'cathedral' || h === 'abbey' || h === 'monastery' || h === 'chapel') return 'church';
+  if (h) return 'historic';
+  return 'other';
+}
+
+function _poiIconOf(cat) {
+  return { castle:'🏰', church:'⛪', historic:'🏛', museum:'🖼', attraction:'🎭', viewpoint:'🏔', winery:'🍷', other:'📌' }[cat] || '📌';
+}
+
+function _poiLabelOf(cat) {
+  return { castle:'Castles & Châteaux', church:'Abbeys & Churches', historic:'Historic Sites', museum:'Museums & Galleries', attraction:'Attractions', viewpoint:'Viewpoints', winery:'Wineries', other:'Other' }[cat] || 'Other';
+}
+
+async function _fetchPOIsNearby(lat, lon) {
+  const r = 15000;
+  const q = '[out:json][timeout:25];(' +
+    'node["tourism"~"^(museum|attraction|viewpoint|gallery)$"](around:' + r + ',' + lat + ',' + lon + ');' +
+    'node["historic"~"^(castle|monument|memorial|ruins|church|cathedral|abbey|monastery|chapel|fort|fortress|manor|palace|battlefield|archaeological_site)$"](around:' + r + ',' + lat + ',' + lon + ');' +
+    'node["craft"="winery"](around:' + r + ',' + lat + ',' + lon + ');' +
+    'way["tourism"~"^(museum|attraction|viewpoint|castle)$"](around:' + r + ',' + lat + ',' + lon + ');' +
+    'way["historic"~"^(castle|ruins|church|cathedral|abbey|monastery|fort|fortress|manor|palace|archaeological_site)$"](around:' + r + ',' + lat + ',' + lon + ');' +
+    'way["craft"="winery"](around:' + r + ',' + lat + ',' + lon + ');' +
+    ');out center tags;';
+  const resp = await fetch('https://overpass-api.de/api/interpreter', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: 'data=' + encodeURIComponent(q)
+  });
+  if (!resp.ok) throw new Error('Overpass HTTP ' + resp.status);
+  const json = await resp.json();
+  return (json.elements || []).filter(function(el) {
+    return el.tags && el.tags.name;
+  });
+}
+
+function _renderPOIList(wpId, wpLat, wpLon, activeCat) {
+  const body = document.getElementById('explore-body-' + wpId);
+  if (!body) return;
+  const els = _poiCache[wpId];
+  if (!els) return;
+
+  // Category counts
+  const cats = ['castle','church','historic','museum','attraction','viewpoint','winery'];
+  const counts = {};
+  els.forEach(function(el) { const c = _poiCategoryOf(el); counts[c] = (counts[c]||0) + 1; });
+  const available = cats.filter(function(c) { return counts[c]; });
+
+  // If activeCat not set or not available, default to 'all'
+  if (!activeCat || (activeCat !== 'all' && !counts[activeCat])) activeCat = 'all';
+
+  // Filter elements
+  const filtered = (activeCat === 'all' ? els : els.filter(function(el) { return _poiCategoryOf(el) === activeCat; }))
+    .map(function(el) {
+      const elLat = el.lat || (el.center && el.center.lat);
+      const elLon = el.lon || (el.center && el.center.lon);
+      return Object.assign({}, el, { _dist: (elLat && elLon) ? _poiDistKm(wpLat, wpLon, elLat, elLon) : 999, _elLat: elLat, _elLon: elLon });
+    })
+    .filter(function(el) { return el._dist < 16; })
+    .sort(function(a, b) { return a._dist - b._dist; })
+    .slice(0, 25);
+
+  // Build category chips
+  let html = '<div class="explore-cats"><button class="exp-cat' + (activeCat==='all'?' active':'') + '" onclick="_renderPOIList(\'' + wpId + '\',' + wpLat + ',' + wpLon + ',\'all\')">All (' + els.filter(function(e){return (_poiDistKm(wpLat,wpLon,e.lat||(e.center&&e.center.lat)||0,e.lon||(e.center&&e.center.lon)||0))<16;}).length + ')</button>';
+  available.forEach(function(c) {
+    html += '<button class="exp-cat' + (activeCat===c?' active':'') + '" onclick="_renderPOIList(\'' + wpId + '\',' + wpLat + ',' + wpLon + ',\'' + c + '\')">' + _poiIconOf(c) + ' ' + _poiLabelOf(c).split(' ')[0] + ' (' + counts[c] + ')</button>';
+  });
+  html += '</div>';
+
+  if (filtered.length === 0) {
+    html += '<div class="exp-empty">Nothing found in this category nearby.</div>';
+  } else {
+    filtered.forEach(function(el) {
+      const cat  = _poiCategoryOf(el);
+      const icon = _poiIconOf(cat);
+      const name = (el.tags.name || '').replace(/'/g, '&#39;');
+      const nameDisplay = el.tags.name || '';
+      const dist = el._dist < 1 ? Math.round(el._dist * 1000) + ' m' : el._dist.toFixed(1) + ' km';
+      const flyFn = (el._elLat && el._elLon)
+        ? 'map.setView([' + el._elLat + ',' + el._elLon + '],15);map.closePopup();'
+        : '';
+      html += '<div class="poi-item">' +
+        '<div class="poi-icon">' + icon + '</div>' +
+        '<div class="poi-body">' +
+          '<div class="poi-name" title="' + name.replace(/"/g,'&quot;') + '">' + nameDisplay + '</div>' +
+          '<div class="poi-meta">' + _poiLabelOf(cat) + ' · ' + dist + '</div>' +
+        '</div>' +
+        (flyFn ? '<button class="poi-fly" onclick="' + flyFn + '">📍</button>' : '') +
+        '</div>';
+    });
+  }
+
+  body.innerHTML = html;
+}
+
+function expandExplore(wpId, wpLat, wpLon) {
+  const body   = document.getElementById('explore-body-' + wpId);
+  const toggle = document.getElementById('explore-toggle-' + wpId);
+  if (!body) return;
+
+  const isOpen = body.style.display !== 'none';
+  if (isOpen) {
+    body.style.display = 'none';
+    if (toggle) toggle.classList.remove('open');
+    return;
+  }
+  body.style.display = 'block';
+  if (toggle) toggle.classList.add('open');
+
+  // Already cached?
+  if (_poiCache[wpId]) { _renderPOIList(wpId, wpLat, wpLon, 'all'); return; }
+
+  // Show loading, then fetch
+  body.innerHTML = '<div class="exp-loading">🔍 Fetching nearby attractions…</div>';
+  _fetchPOIsNearby(wpLat, wpLon).then(function(els) {
+    _poiCache[wpId] = els;
+    _renderPOIList(wpId, wpLat, wpLon, 'all');
+  }).catch(function(err) {
+    body.innerHTML = '<div class="exp-error">⚠ Could not load data. Check your internet connection.</div>';
+    console.warn('Overpass POI error:', err);
+  });
+}
+
 let routeViaIds = [];        // waypoint IDs for intermediate via stops
-let viaPins     = [];        // L.Marker for each via stop  
+let viaPins     = [];        // L.Marker for each via stop
 let _lastRouteSegments = null; // cached segments for highlight toggle
 let _stopOptionsHTML   = '';   // cached <option> HTML for via selects
 
