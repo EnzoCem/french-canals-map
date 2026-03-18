@@ -3223,6 +3223,7 @@ function openRoutePlanner() {
 function closeRoutePlanner() {
   document.getElementById('route-planner-panel').style.display = 'none';
   clearRouteHighlight(true);
+  clearEndpointPins();
 }
 
 function swapRoutePlannerEndpoints() {
