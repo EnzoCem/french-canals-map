@@ -823,6 +823,51 @@
 .exp-empty   { color: #5a7a8a; font-size: 12px; font-style: italic; text-align: center; padding: 10px 0; }
 .exp-error   { color: #e87a7a; font-size: 12px; text-align: center; padding: 10px 0; }
 
+/* ── Phase 3: Places Along Route ─────────────────────────── */
+#rp-poi-section {
+  margin-top: 14px;
+  border-top: 1px solid #1a5276;
+  padding-top: 10px;
+}
+.rp-poi-header {
+  font-size: 12px; color: #5bc0de;
+  text-transform: uppercase; letter-spacing: 0.6px;
+  font-weight: 700; margin-bottom: 8px;
+}
+.rp-stop-pills {
+  display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 10px;
+}
+.rp-stop-pill {
+  padding: 3px 10px; border-radius: 12px; font-size: 11px;
+  border: 1px solid #1a4a7a; background: #0f2540; color: #8ab4c2;
+  cursor: pointer; transition: all 0.15s;
+}
+.rp-stop-pill.active { background: #1a5276; color: #fff; border-color: #5bc0de; }
+.rp-stop-pill:hover:not(.active) { background: #1a3a5c; }
+.rp-poi-sub { margin-top: 8px; margin-bottom: 4px; }
+.rp-poi-sublabel {
+  font-size: 10px; color: #8ab4c2; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 4px;
+}
+.rp-poi-row {
+  display: flex; align-items: center; gap: 6px;
+  padding: 4px 0; border-bottom: 1px solid #0d1e33;
+  cursor: pointer; font-size: 12px;
+}
+.rp-poi-row:last-child { border-bottom: none; }
+.rp-poi-row:hover { background: rgba(255,255,255,0.03); }
+.rp-poi-badge { font-weight: 700; flex-shrink: 0; font-size: 12px; }
+.rp-poi-name  { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rp-poi-km    { font-size: 10px; color: #5a7a8a; flex-shrink: 0; }
+.rp-load-btn  {
+  width: 100%; margin-top: 6px; padding: 5px 8px;
+  border-radius: 4px; background: #0f2540;
+  border: 1px solid #1a4a7a; color: #8ab4c2;
+  font-size: 11px; cursor: pointer; text-align: left;
+}
+.rp-load-btn:hover { background: #1a3a5c; border-color: #5bc0de; color: #fff; }
+.rp-poi-none  { font-size: 11px; color: #5a7a8a; font-style: italic; padding: 3px 0; }
+
 </style>
 </head>
 <body>
@@ -2772,6 +2817,8 @@ try { locationOverrides = JSON.parse(localStorage.getItem(OVERRIDES_KEY) || '{"w
 const SAVED_ROUTES_KEY = 'french_canals_saved_routes_v1';
 let savedRoutes = JSON.parse(localStorage.getItem(SAVED_ROUTES_KEY) || '[]');
 let _loadedSavedRouteId = null; // ID of currently loaded saved route
+let _routePOIStops      = []; // waypoint objects for current route stops
+let _routePOIActiveStop = 0;  // index of selected stop in the pills
 
 // Store original positions before applying any overrides
 const _origPositions = { waypoints: {}, moorings: {} };
@@ -4449,6 +4496,10 @@ function calculateRoute() {
   renderMultiStopResults(legs);
   const sb = document.getElementById('rp-save-btn'); if (sb) sb.disabled = false;
 
+  // Phase 3: populate Places Along Route section
+  var _poiRouteStops = allIds.map(function(id) { return WAYPOINTS.find(function(w) { return w.id === id; }); }).filter(Boolean);
+  renderRoutePOIsSection(_poiRouteStops);
+
   const mapBtns = document.createElement('div');
   mapBtns.className = 'rp-map-btns';
   mapBtns.id = 'rp-map-btns';
@@ -4860,6 +4911,9 @@ function clearEndpointPins() {
   renderViaStops();
   _loadedSavedRouteId = null;
   const sb = document.getElementById('rp-save-btn'); if (sb) sb.disabled = true;
+  _routePOIStops = [];
+  var poiSec = document.getElementById('rp-poi-section');
+  if (poiSec) poiSec.innerHTML = '';
 }
 
 function saveCurrentRoute() {
@@ -4958,6 +5012,122 @@ function renderSavedRoutesList() {
         '<button class="sr-del-btn"  onclick="deleteSavedRoute(\'' + r.id + '\')">&#128465; Delete</button>' +
       '</div></div>';
   }).join('');
+}
+
+// ── Phase 3: Places Along Route ───────────────────────────────────────────
+
+function _buildMichelinSnippet(stopLat, stopLon) {
+  var nearby = MICHELIN_RESTAURANTS
+    .map(function(r) { return { r: r, d: _poiDistKm(stopLat, stopLon, r.lat, r.lon) }; })
+    .filter(function(x) { return x.d < 15; })
+    .sort(function(a, b) { return (b.r.stars - a.r.stars) || (a.d - b.d); })
+    .slice(0, 5);
+  if (nearby.length === 0) return '<div class="rp-poi-none">No Michelin restaurants within 15 km.</div>';
+  return nearby.map(function(x) {
+    var r = x.r;
+    var lbl = r.stars === 3 ? '★★★' : r.stars === 2 ? '★★' : r.stars === 1 ? '★' : 'Ⓑ';
+    var col = r.stars >= 2 ? '#e74c3c' : r.stars === 1 ? '#e67e22' : '#27ae60';
+    var dist = x.d < 1 ? Math.round(x.d * 1000) + ' m' : x.d.toFixed(1) + ' km';
+    return '<div class="rp-poi-row" onclick="map.setView([' + r.lat + ',' + r.lon + '],15)">' +
+      '<span class="rp-poi-badge" style="color:' + col + '">' + lbl + '</span>' +
+      '<span class="rp-poi-name" style="color:#e0c97f">' + r.name + '</span>' +
+      '<span class="rp-poi-km">' + dist + '</span>' +
+    '</div>';
+  }).join('');
+}
+
+function _buildExploreSnippet(cachedEls, stopLat, stopLon) {
+  var items = cachedEls
+    .map(function(el) {
+      var elLat = el.lat || (el.center && el.center.lat);
+      var elLon = el.lon || (el.center && el.center.lon);
+      return { el: el, elLat: elLat, elLon: elLon, d: _poiDistKm(stopLat, stopLon, elLat || 0, elLon || 0) };
+    })
+    .filter(function(x) { return x.d < 16; })
+    .sort(function(a, b) { return a.d - b.d; })
+    .slice(0, 5);
+  if (items.length === 0) return '<div class="rp-poi-none">No attractions found nearby.</div>';
+  return items.map(function(x) {
+    var cat  = _poiCategoryOf(x.el);
+    var icon = _poiIconOf(cat);
+    var name = x.el.tags.name;
+    var dist = x.d < 1 ? Math.round(x.d * 1000) + ' m' : x.d.toFixed(1) + ' km';
+    var click = (x.elLat && x.elLon) ? ' onclick="map.setView([' + x.elLat + ',' + x.elLon + '],15)"' : '';
+    return '<div class="rp-poi-row"' + click + '>' +
+      '<span class="rp-poi-badge">' + icon + '</span>' +
+      '<span class="rp-poi-name" style="color:#dde">' + name + '</span>' +
+      '<span class="rp-poi-km">' + dist + '</span>' +
+    '</div>';
+  }).join('');
+}
+
+function showRoutePOIStop(idx) {
+  _routePOIActiveStop = idx;
+  var stops = _routePOIStops;
+  if (!stops.length || idx >= stops.length) return;
+  var stop = stops[idx];
+
+  // Highlight active pill
+  var pills = document.querySelectorAll('.rp-stop-pill');
+  pills.forEach(function(p, i) { p.classList.toggle('active', i === idx); });
+
+  var content = document.getElementById('rp-poi-content');
+  if (!content) return;
+
+  // Michelin block
+  var html = '<div class="rp-poi-sub"><div class="rp-poi-sublabel">⭐ Michelin</div>' +
+    _buildMichelinSnippet(stop.lat, stop.lon) + '</div>';
+
+  // Explore / attractions block
+  html += '<div class="rp-poi-sub" id="rp-poi-exp-' + idx + '">' +
+    '<div class="rp-poi-sublabel">🔍 Attractions</div>';
+  if (_poiCache[stop.id]) {
+    html += _buildExploreSnippet(_poiCache[stop.id], stop.lat, stop.lon);
+  } else {
+    html += '<button class="rp-load-btn" onclick="loadRoutePOIExplore(' + idx + ')">🔍 Load attractions near ' + stop.name + '</button>';
+  }
+  html += '</div>';
+
+  content.innerHTML = html;
+}
+
+function renderRoutePOIsSection(stops) {
+  _routePOIStops      = stops;
+  _routePOIActiveStop = 0;
+  var container = document.getElementById('rp-poi-section');
+  if (!container) return;
+  if (!stops || stops.length === 0) { container.innerHTML = ''; return; }
+
+  var pillsHtml = stops.map(function(s, i) {
+    var letter = String.fromCharCode(65 + i);
+    return '<button class="rp-stop-pill' + (i === 0 ? ' active' : '') + '" onclick="showRoutePOIStop(' + i + ')">' +
+      letter + ' ' + s.name + '</button>';
+  }).join('');
+
+  container.innerHTML =
+    '<div class="rp-poi-header">📍 Places Along Your Route</div>' +
+    '<div class="rp-stop-pills">' + pillsHtml + '</div>' +
+    '<div id="rp-poi-content"></div>';
+
+  showRoutePOIStop(0);
+}
+
+async function loadRoutePOIExplore(idx) {
+  var stops = _routePOIStops;
+  if (!stops.length || idx >= stops.length) return;
+  var stop  = stops[idx];
+  var block = document.getElementById('rp-poi-exp-' + idx);
+  if (!block) return;
+  var btn = block.querySelector('.rp-load-btn');
+  if (btn) btn.textContent = '🔍 Loading…';
+  try {
+    var els = await _fetchPOIsNearby(stop.lat, stop.lon);
+    _poiCache[stop.id] = els;
+    block.innerHTML = '<div class="rp-poi-sublabel">🔍 Attractions</div>' +
+      _buildExploreSnippet(els, stop.lat, stop.lon);
+  } catch (e) {
+    if (btn) { btn.textContent = '⚠ Failed — tap to retry'; }
+  }
 }
 
 // ── Phase 2: Explore Nearby POIs via Overpass ─────────────────────────────
@@ -5537,6 +5707,7 @@ function _downloadJSON(obj, filename) {
   <button class="rp-calc-btn" onclick="calculateRoute()" style="margin-top:8px">⚓ Calculate Route</button>
   <div id="rp-results"></div>
     <button id="rp-save-btn" onclick="saveCurrentRoute()" disabled>&#128190; Save Route</button>
+    <div id="rp-poi-section"></div>
     <div id="rp-saved-section">
       <h4>&#128194; Saved Routes</h4>
       <div id="rp-saved-list"><div class="sr-empty">No saved routes yet</div></div>
