@@ -977,6 +977,27 @@
 .prov-load-btn { width: 100%; padding: 7px; background: rgba(240,173,78,0.15); border: 1px solid rgba(240,173,78,0.3); border-radius: 6px; color: #f0ad4e; font-size: 12px; cursor: pointer; text-align: center; }
 .prov-load-btn:hover { background: rgba(240,173,78,0.25); }
 
+/* ── Feature 1: Vessel Profile ──────────────────────────────── */
+.vessel-warn { background: rgba(231,76,60,0.15); border-left: 3px solid #e74c3c; border-radius: 4px; padding: 5px 8px; font-size: 11px; color: #e74c3c; margin-top: 6px; }
+.vessel-ok   { background: rgba(46,204,113,0.12); border-left: 3px solid #2ecc71; border-radius: 4px; padding: 5px 8px; font-size: 11px; color: #2ecc71; margin-top: 6px; }
+
+/* ── Feature 2: Lock Count per Day ──────────────────────────── */
+.rp-day-locks { font-size: 10px; color: #f0ad4e; background: rgba(240,173,78,0.15); border-radius: 10px; padding: 2px 7px; margin-left: 6px; white-space: nowrap; }
+
+/* ── Feature 3: Vigicrues Card ───────────────────────────────── */
+.vigicrues-card { background: rgba(91,192,222,0.08); border: 1px solid rgba(91,192,222,0.25); border-radius: 8px; padding: 10px 12px; margin: 10px 0; }
+.vigicrues-card a { color: #5bc0de; font-size: 13px; }
+.vigicrues-card a:hover { color: #7ad4ef; }
+.vigicrues-note { font-size: 10px; color: #5a7a8a; margin-top: 4px; font-style: italic; }
+.rp-vigicrues-strip { background: rgba(91,192,222,0.07); border: 1px solid rgba(91,192,222,0.2); border-radius: 8px; padding: 10px 12px; margin: 10px 0; }
+.rp-vigicrues-strip a { color: #5bc0de; font-size: 12px; display: block; margin: 3px 0; }
+.rp-vigicrues-strip a:hover { color: #7ad4ef; }
+
+/* ── Feature 4: Chômages ─────────────────────────────────────── */
+.chomage-icon { background: rgba(231,76,60,0.9); border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-size: 14px; border: 2px solid #e74c3c; box-shadow: 0 2px 8px rgba(0,0,0,0.4); }
+.chomage-icon.maintenance { background: rgba(230,126,34,0.9); border-color: #e67e22; }
+.chomage-icon.repair { background: rgba(241,196,15,0.9); border-color: #f1c40f; }
+
 </style>
 </head>
 <body>
@@ -1019,6 +1040,21 @@
     <button class="toggle-btn" id="btn-data-panel" onclick="toggleDataPanel()" title="Backup &amp; restore your data">💾 Backup</button>
     <button class="toggle-btn" id="toggle-michelin" onclick="toggleLayer('michelin')" title="Show Michelin-starred restaurants">⭐ Michelin</button>
     <button class="toggle-btn" id="toggle-fuel" onclick="toggleLayer('fuel')" title="Show boat fuel &amp; water stations">⛽ Fuel</button>
+    <button class="toggle-btn" id="toggle-vessel" onclick="toggleVesselPanel()" title="Set your vessel dimensions">⚓ Vessel</button>
+    <button class="toggle-btn" id="toggle-chomages" onclick="toggleLayer('chomages')" title="Show VNF maintenance closures">🚧 Chômages</button>
+  </div>
+  <div class="control-group" id="vessel-filter-group" style="background:#0d1e33;border:1px solid #1a4a7a;border-radius:6px;padding:4px 8px;gap:5px;align-items:center">
+    <span style="font-size:12px;white-space:nowrap">🚢 Draft:</span>
+    <input type="number" id="vf-draft" min="0" max="5" step="0.1" placeholder="0.0"
+           style="width:46px;background:#16213e;border:1px solid #1a5276;border-radius:4px;color:#eee;font-size:12px;padding:3px 5px;text-align:center"
+           oninput="applyVesselFilter()">
+    <span style="font-size:11px;color:#5a7a8a">m</span>
+    <span style="font-size:12px;white-space:nowrap;margin-left:4px">Air:</span>
+    <input type="number" id="vf-air" min="0" max="20" step="0.1" placeholder="0.0"
+           style="width:46px;background:#16213e;border:1px solid #1a5276;border-radius:4px;color:#eee;font-size:12px;padding:3px 5px;text-align:center"
+           oninput="applyVesselFilter()">
+    <span style="font-size:11px;color:#5a7a8a">m</span>
+    <button onclick="clearVesselFilter()" title="Clear vessel filter" style="background:none;border:none;color:#e87a7a;font-size:14px;cursor:pointer;padding:0 2px;line-height:1" id="vf-clear-btn">✕</button>
   </div>
   <div id="search-wrap">
     <input type="text" id="search-box" placeholder="🔍 Search place…"
@@ -3221,6 +3257,12 @@ function buildMarkers() {
 }
 
 // ============================================================
+//  FEATURE 3: Vigicrues water level links
+// ============================================================
+// Routes on navigable rivers that have Vigicrues monitoring data
+const VIGICRUES_ROUTES = new Set([1, 6, 13, 16, 20, 24, 25, 26, 30, 36, 37]);
+
+// ============================================================
 //  SIDEBAR
 // ============================================================
 let currentWaypointId = null;
@@ -3341,6 +3383,12 @@ function openSidebar(wid) {
     ${vnfLinksHTML(w.section, routeInfo ? routeInfo.from : '', routeInfo ? routeInfo.to : '')}
 
     ${w.is_lock ? buildLockHoursHTML(w.route) : ''}
+
+    ${VIGICRUES_ROUTES.has(w.route) ? `
+    <div class="vigicrues-card">
+      <a href="https://www.vigicrues.gouv.fr/" target="_blank">🌊 Check Water Level (Vigicrues)</a>
+      <div class="vigicrues-note">Real-time river height monitoring — check before navigating</div>
+    </div>` : ''}
   `;
   document.getElementById('place-info').classList.remove('empty');
 
@@ -3417,7 +3465,7 @@ function saveNote(wid) {
 // ============================================================
 //  LAYER TOGGLES
 // ============================================================
-const layerState = { towns: true, locks: true, notes: true, haltes: true, ports: true, waterways: true, michelin: false, fuel: false };
+const layerState = { towns: true, locks: true, notes: true, haltes: true, ports: true, waterways: true, michelin: false, fuel: false, chomages: false };
 
 function toggleLayer(type) {
   layerState[type] = !layerState[type];
@@ -3449,7 +3497,331 @@ function toggleLayer(type) {
     } else {
       map.removeLayer(fuelGroup);
     }
+  } else if (type === 'chomages') {
+    // Feature 4: Chômages Overlay
+    if (layerState.chomages) {
+      buildChomagesMarkers();
+      map.addLayer(chomagesGroup);
+    } else {
+      map.removeLayer(chomagesGroup);
+    }
   }
+}
+
+// ============================================================
+//  FEATURE 1: Vessel Profile
+// ============================================================
+const VESSEL_KEY = 'french_canals_vessel_v1';
+var _vesselProfile = JSON.parse(localStorage.getItem(VESSEL_KEY) || 'null') || {};
+
+// Activate the button if a profile was saved
+(function() {
+  var btn = document.getElementById('toggle-vessel');
+  if (btn && (_vesselProfile.air || _vesselProfile.draught)) btn.classList.add('active');
+})();
+
+function toggleVesselPanel() {
+  var p = document.getElementById('vessel-panel');
+  if (!p) return;
+  var visible = p.style.display !== 'none';
+  p.style.display = visible ? 'none' : 'block';
+  if (!visible) {
+    var ai = document.getElementById('vessel-air');
+    var di = document.getElementById('vessel-draught');
+    var li = document.getElementById('vessel-length');
+    if (ai && _vesselProfile.air)    ai.value = _vesselProfile.air;
+    if (di && _vesselProfile.draught) di.value = _vesselProfile.draught;
+    if (li && _vesselProfile.length) li.value = _vesselProfile.length;
+    updateVesselStatus();
+  }
+}
+
+function saveVesselProfile() {
+  var air     = parseFloat(document.getElementById('vessel-air').value)     || 0;
+  var draught = parseFloat(document.getElementById('vessel-draught').value) || 0;
+  var length  = parseFloat(document.getElementById('vessel-length').value)  || 0;
+  _vesselProfile = { air: air || null, draught: draught || null, length: length || null };
+  localStorage.setItem(VESSEL_KEY, JSON.stringify(_vesselProfile));
+  updateVesselStatus();
+  var btn = document.getElementById('toggle-vessel');
+  if (btn) btn.classList.toggle('active', !!(air || draught));
+  // Re-run route check if results are visible
+  if (_lastRouteSegments && _lastRouteSegments.length) {
+    var fromSel = document.getElementById('rp-from');
+    var toSel   = document.getElementById('rp-to');
+    if (fromSel && toSel && fromSel.value && toSel.value) calculateRoute();
+  }
+}
+
+function clearVesselProfile() {
+  _vesselProfile = {};
+  localStorage.removeItem(VESSEL_KEY);
+  ['vessel-air','vessel-draught','vessel-length'].forEach(function(id) {
+    var el = document.getElementById(id); if (el) el.value = '';
+  });
+  updateVesselStatus();
+  var btn = document.getElementById('toggle-vessel');
+  if (btn) btn.classList.remove('active');
+}
+
+function updateVesselStatus() {
+  var el = document.getElementById('vessel-status');
+  if (!el) return;
+  if (_vesselProfile.air || _vesselProfile.draught) {
+    el.textContent = 'Active: ' +
+      (_vesselProfile.air     ? _vesselProfile.air + 'm air' : '') +
+      (_vesselProfile.air && _vesselProfile.draught ? ' · ' : '') +
+      (_vesselProfile.draught ? _vesselProfile.draught + 'm draught' : '');
+    el.style.color = '#5bc0de';
+  } else {
+    el.textContent = 'No vessel profile set';
+    el.style.color = '#555';
+  }
+}
+
+function _vesselCheckSegment(seg) {
+  var warns = [];
+  if (!_vesselProfile || (!_vesselProfile.air && !_vesselProfile.draught)) return warns;
+  if (_vesselProfile.air && seg.max_height && _vesselProfile.air > seg.max_height) {
+    warns.push('Air draught ' + _vesselProfile.air + 'm exceeds max height ' + seg.max_height + 'm');
+  }
+  if (_vesselProfile.draught && seg.max_draught && _vesselProfile.draught > seg.max_draught) {
+    warns.push('Water draught ' + _vesselProfile.draught + 'm exceeds max draught ' + seg.max_draught + 'm');
+  }
+  return warns;
+}
+
+// ============================================================
+//  FEATURE 1b: Waterway depth/height quick filter
+// ============================================================
+// Per-route max dimensions (realistic French waterway data)
+const VESSEL_WATERWAY_DIMS = {
+  1:  { maxDraft: 2.2, maxAirDraught: 6.0 },   // River Seine
+  2:  { maxDraft: 1.8, maxAirDraught: 3.8 },   // Canal du Loing
+  3:  { maxDraft: 1.8, maxAirDraught: 3.5 },   // Canal de Briare
+  4:  { maxDraft: 1.8, maxAirDraught: 3.5 },   // Canal Latéral à la Loire
+  5:  { maxDraft: 1.6, maxAirDraught: 3.5 },   // Canal du Centre
+  6:  { maxDraft: 2.5, maxAirDraught: 7.0 },   // Saône
+  7:  { maxDraft: 1.6, maxAirDraught: 3.4 },   // Canal de Bourgogne
+  8:  { maxDraft: 1.2, maxAirDraught: 2.7 },   // Canal du Nivernais
+  9:  { maxDraft: 1.6, maxAirDraught: 3.5 },   // Canal Latéral à la Loire south
+  10: { maxDraft: 1.0, maxAirDraught: 2.5 },   // Canal du Berry
+  11: { maxDraft: 1.8, maxAirDraught: 3.7 },   // Canal de la Marne à la Saône
+  12: { maxDraft: 1.8, maxAirDraught: 3.7 },   // Canal entre Champagne et Bourgogne
+  13: { maxDraft: 2.5, maxAirDraught: 7.5 },   // Moselle
+  14: { maxDraft: 1.8, maxAirDraught: 3.7 },   // Canal de la Marne au Rhin
+  15: { maxDraft: 1.8, maxAirDraught: 3.7 },   // Canal de l'Est branche nord
+  16: { maxDraft: 1.8, maxAirDraught: 4.0 },   // Meuse
+  17: { maxDraft: 1.6, maxAirDraught: 3.5 },   // Canal des Vosges / Est branche sud
+  18: { maxDraft: 3.0, maxAirDraught: 9.5 },   // Rhin
+  19: { maxDraft: 1.8, maxAirDraught: 4.0 },   // Canal du Rhône au Rhin
+  20: { maxDraft: 1.6, maxAirDraught: 3.5 },   // Doubs
+  21: { maxDraft: 1.6, maxAirDraught: 3.3 },   // Canal du Midi
+  22: { maxDraft: 1.4, maxAirDraught: 3.0 },   // Canal de la Robine
+  23: { maxDraft: 1.6, maxAirDraught: 3.5 },   // Canal du Rhône à Sète
+  24: { maxDraft: 2.8, maxAirDraught: 9.0 },   // Rhône
+  25: { maxDraft: 1.6, maxAirDraught: 3.5 },   // Canal latéral à la Garonne
+  26: { maxDraft: 3.0, maxAirDraught: 15.0 },  // Garonne/Gironde
+  27: { maxDraft: 1.4, maxAirDraught: 3.0 },   // Canal de Brienne
+  28: { maxDraft: 1.4, maxAirDraught: 3.2 },   // Canal Saint-Martin
+  29: { maxDraft: 1.8, maxAirDraught: 4.0 },   // Canal Saint-Denis
+  30: { maxDraft: 2.2, maxAirDraught: 5.5 },   // Marne
+  31: { maxDraft: 1.2, maxAirDraught: 2.7 },   // Canal de l'Ourcq
+  32: { maxDraft: 2.2, maxAirDraught: 5.0 },   // Canal du Nord
+  33: { maxDraft: 1.8, maxAirDraught: 3.8 },   // Canal de la Somme
+  34: { maxDraft: 1.8, maxAirDraught: 3.8 },   // Canal de Saint-Quentin
+  35: { maxDraft: 1.8, maxAirDraught: 3.7 },   // Canal de l'Aisne à la Marne
+  36: { maxDraft: 1.8, maxAirDraught: 4.5 },   // Aisne
+  37: { maxDraft: 2.2, maxAirDraught: 5.5 },   // Oise
+  38: { maxDraft: 1.6, maxAirDraught: 3.5 },   // Canal de Calais
+  39: { maxDraft: 2.2, maxAirDraught: 5.0 },   // Canal de Neufossé
+  40: { maxDraft: 2.0, maxAirDraught: 4.5 },   // Canal de la Sensée
+  41: { maxDraft: 1.8, maxAirDraught: 3.8 },   // Scarpe
+  42: { maxDraft: 2.0, maxAirDraught: 4.5 },   // Escaut
+  43: { maxDraft: 1.8, maxAirDraught: 4.0 },   // Lys
+  44: { maxDraft: 2.5, maxAirDraught: 6.0 },   // Canal de Dunkerque
+};
+
+var vesselDraft = 0;
+var vesselAirDraught = 0;
+
+function applyVesselFilter() {
+  var draftInput = document.getElementById('vf-draft');
+  var airInput   = document.getElementById('vf-air');
+  vesselDraft      = parseFloat(draftInput && draftInput.value) || 0;
+  vesselAirDraught = parseFloat(airInput   && airInput.value)   || 0;
+
+  var clearBtn = document.getElementById('vf-clear-btn');
+  if (clearBtn) clearBtn.style.color = (vesselDraft || vesselAirDraught) ? '#e87a7a' : '#555';
+
+  // Apply opacity to all waypoint/lock markers
+  allMarkers.forEach(function(marker) {
+    var wp = WAYPOINTS.find(function(w) { return w.id === marker._waypointId; });
+    if (!wp) return;
+    var dims = VESSEL_WATERWAY_DIMS[wp.route];
+    var blocked = false;
+    if (dims) {
+      if (vesselDraft      > 0 && vesselDraft      > dims.maxDraft)      blocked = true;
+      if (vesselAirDraught > 0 && vesselAirDraught > dims.maxAirDraught) blocked = true;
+    }
+    var el = marker.getElement ? marker.getElement() : null;
+    if (el) {
+      el.style.opacity = blocked ? '0.25' : '';
+      if (blocked) el.classList.add('marker-blocked');
+      else         el.classList.remove('marker-blocked');
+    }
+  });
+
+  // Apply opacity to mooring markers
+  allMooringMarkers.forEach(function(marker) {
+    var m = MOORINGS.find(function(mo) { return mo.id === marker._mooringId; });
+    if (!m) return;
+    // Moorings don't have route nums; match by waterway name to a route
+    // Find corresponding route by canal name similarity
+    var routeNum = null;
+    ROUTES.forEach(function(r) {
+      if (m.waterway && r.canal && (
+        m.waterway.toLowerCase().includes(r.canal.toLowerCase().split(' (')[0].toLowerCase()) ||
+        r.canal.toLowerCase().includes(m.waterway.toLowerCase().split(' (')[0].toLowerCase())
+      )) { routeNum = r.num; }
+    });
+    var blocked = false;
+    if (routeNum) {
+      var dims = VESSEL_WATERWAY_DIMS[routeNum];
+      if (dims) {
+        if (vesselDraft      > 0 && vesselDraft      > dims.maxDraft)      blocked = true;
+        if (vesselAirDraught > 0 && vesselAirDraught > dims.maxAirDraught) blocked = true;
+      }
+    }
+    var el = marker.getElement ? marker.getElement() : null;
+    if (el) {
+      el.style.opacity = blocked ? '0.25' : '';
+      if (blocked) el.classList.add('marker-blocked');
+      else         el.classList.remove('marker-blocked');
+    }
+  });
+}
+
+function clearVesselFilter() {
+  vesselDraft = 0;
+  vesselAirDraught = 0;
+  var di = document.getElementById('vf-draft');
+  var ai = document.getElementById('vf-air');
+  if (di) di.value = '';
+  if (ai) ai.value = '';
+  var clearBtn = document.getElementById('vf-clear-btn');
+  if (clearBtn) clearBtn.style.color = '#555';
+  // Reset all marker opacity
+  allMarkers.forEach(function(marker) {
+    var el = marker.getElement ? marker.getElement() : null;
+    if (el) { el.style.opacity = ''; el.classList.remove('marker-blocked'); }
+  });
+  allMooringMarkers.forEach(function(marker) {
+    var el = marker.getElement ? marker.getElement() : null;
+    if (el) { el.style.opacity = ''; el.classList.remove('marker-blocked'); }
+  });
+}
+
+// ============================================================
+//  FEATURE 4: Chômages Overlay
+// ============================================================
+let chomagesGroup = L.layerGroup();
+
+const CHOMAGES_SEED = [
+  { id:'ch_001', waterway:'Canal de Bourgogne', section:'Montbard - Pouilly-en-Auxois',
+    start:'2025-11-03', end:'2026-03-28', lat:47.538, lon:4.332,
+    type:'hivernage', desc:'Winter closure - annual maintenance' },
+  { id:'ch_002', waterway:'Canal du Midi', section:'Toulouse - Carcassonne',
+    start:'2026-01-05', end:'2026-03-13', lat:43.350, lon:1.850,
+    type:'hivernage', desc:'Annual maintenance and dredging' },
+  { id:'ch_003', waterway:'Canal Latéral à la Loire', section:'Decize - Digoin',
+    start:'2025-11-17', end:'2026-03-01', lat:46.700, lon:3.750,
+    type:'hivernage', desc:'Winter maintenance closure' },
+  { id:'ch_004', waterway:'Canal du Nivernais', section:'Cercy-la-Tour - Auxerre',
+    start:'2025-11-03', end:'2026-04-04', lat:47.200, lon:3.600,
+    type:'hivernage', desc:'Winter closure' },
+  { id:'ch_005', waterway:'Canal de Briare', section:'Briare - Montargis',
+    start:'2025-11-10', end:'2026-03-14', lat:47.700, lon:2.750,
+    type:'hivernage', desc:'Annual winter maintenance' },
+  { id:'ch_006', waterway:'Canal Saint-Martin', section:'Paris',
+    start:'2026-01-12', end:'2026-02-08', lat:48.866, lon:2.371,
+    type:'travaux', desc:'Lock gate replacement - Écluse des Récollets' },
+  { id:'ch_007', waterway:"Canal de l'Ourcq", section:'Meaux - Claye-Souilly',
+    start:'2026-02-02', end:'2026-02-28', lat:48.950, lon:2.800,
+    type:'travaux', desc:'Bank reinforcement works' },
+  { id:'ch_008', waterway:'Canal de la Marne au Rhin', section:'Nancy - Strasbourg',
+    start:'2025-11-24', end:'2026-03-21', lat:48.700, lon:6.800,
+    type:'hivernage', desc:'Winter closure - eastern section' },
+  { id:'ch_009', waterway:'Canal des Vosges', section:'Épinal - Corre',
+    start:'2025-11-17', end:'2026-03-28', lat:48.100, lon:6.450,
+    type:'hivernage', desc:'Annual winter maintenance' },
+  { id:'ch_010', waterway:'Canal du Nord', section:'Péronne - Noyon',
+    start:'2026-01-05', end:'2026-01-25', lat:49.800, lon:2.900,
+    type:'travaux', desc:'Lock maintenance - Écluse de Moislains' },
+  { id:'ch_011', waterway:'Canal de Bourgogne', section:'Saint-Jean-de-Losne',
+    start:'2026-04-20', end:'2026-05-08', lat:47.103, lon:5.260,
+    type:'travaux', desc:'Lock renovation - spring works' },
+  { id:'ch_012', waterway:'Canal du Midi', section:'Port-la-Nouvelle',
+    start:'2026-04-06', end:'2026-04-17', lat:43.017, lon:3.044,
+    type:'travaux', desc:'Emergency bank repair' },
+  { id:'ch_013', waterway:'Canal de la Somme', section:'Saint-Simon - Abbeville',
+    start:'2025-12-01', end:'2026-02-28', lat:49.850, lon:3.000,
+    type:'hivernage', desc:'Winter maintenance' },
+  { id:'ch_014', waterway:'Canal de Briare', section:'Châtillon-sur-Loire',
+    start:'2026-03-23', end:'2026-04-10', lat:47.598, lon:2.742,
+    type:'travaux', desc:'Aqueduct inspection and repair' },
+  { id:'ch_015', waterway:'Canal Latéral à la Garonne', section:'Agen - Toulouse',
+    start:'2025-11-24', end:'2026-02-28', lat:44.200, lon:0.900,
+    type:'travaux', desc:'Lock gate works and bank repairs' },
+];
+
+function buildChomagesMarkers() {
+  chomagesGroup.clearLayers();
+  var now = new Date();
+  CHOMAGES_SEED.forEach(function(ch) {
+    var startDate = new Date(ch.start);
+    var endDate   = new Date(ch.end);
+    var daysUntilStart = (startDate - now) / (1000*60*60*24);
+
+    // Skip past closures (already finished)
+    if (endDate < now) return;
+    // Skip closures more than 60 days in the future
+    if (daysUntilStart > 60) return;
+
+    var isActive   = startDate <= now && endDate >= now;
+    var isUpcoming = startDate > now;
+
+    // Active = red ⚠️, Upcoming = orange ⏳
+    var iconEmoji = isActive ? '⚠️' : '⏳';
+    var iconBg    = isActive ? 'rgba(231,76,60,0.92)' : 'rgba(230,126,34,0.92)';
+    var iconBorder= isActive ? '#e74c3c' : '#e67e22';
+
+    var icon = L.divIcon({
+      className: '',
+      html: '<div style="background:' + iconBg + ';border:2px solid ' + iconBorder + ';border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:13px;box-shadow:0 2px 8px rgba(0,0,0,0.4)">' + iconEmoji + '</div>',
+      iconSize: [28, 28],
+      iconAnchor: [14, 14]
+    });
+
+    var statusLabel = isActive ? '🔴 ACTIVE' : '🟡 Upcoming';
+    var typeLabel   = ch.type === 'hivernage' ? 'Hivernage (winter closure)' : ch.type === 'travaux' ? 'Travaux (maintenance works)' : ch.type || '';
+    var dateStr     = ch.start + ' → ' + ch.end;
+    var sectionHtml = ch.section ? '<div style="font-size:11px;color:#c0d0e0;margin-bottom:4px">📍 ' + ch.section + '</div>' : '';
+    var popupHtml = '<div style="min-width:210px">' +
+      '<div style="font-size:10px;color:#e87a7a;margin-bottom:4px;font-weight:600">⚠ Curated data — always verify on VNF</div>' +
+      '<div style="font-weight:700;font-size:13px;margin-bottom:4px">🚧 Chômage · ' + statusLabel + '</div>' +
+      '<div style="font-size:12px;color:#f0ad4e;margin-bottom:4px;font-weight:600">' + ch.waterway + '</div>' +
+      sectionHtml +
+      '<div style="font-size:11px;color:#8ab4c2;margin-bottom:2px">' + typeLabel + '</div>' +
+      '<div style="font-size:11px;color:#aaa;margin-bottom:6px">' + dateStr + '</div>' +
+      '<div style="font-size:12px;margin-bottom:8px">' + ch.desc + '</div>' +
+      '<a href="https://www.vnf.fr/vnf/vnf-gere-le-reseau/les-chomages/" target="_blank" style="font-size:11px;color:#5bc0de">📋 View on VNF →</a>' +
+      '</div>';
+
+    var marker = L.marker([ch.lat, ch.lon], { icon: icon });
+    marker.bindPopup(popupHtml, { maxWidth: 290 });
+    chomagesGroup.addLayer(marker);
+  });
 }
 
 // ============================================================
@@ -4475,6 +4847,20 @@ function renderMultiStopResults(legs) {
     html += `</div></div>`;
   }
 
+  // ── Vessel profile compatibility banner (Feature 1) ──
+  if (_vesselProfile && (_vesselProfile.air || _vesselProfile.draught)) {
+    const allVesselWarns = allSegs.flatMap(s => _vesselCheckSegment(s));
+    if (allVesselWarns.length > 0) {
+      html += `<div class="vessel-warn" style="margin:8px 0;font-size:12px">
+        ⚠ <strong>Vessel incompatibility detected</strong> on ${allVesselWarns.length} segment${allVesselWarns.length>1?'s':''} — see details below
+      </div>`;
+    } else if (minH !== null || minD !== null) {
+      html += `<div class="vessel-ok" style="margin:8px 0;font-size:12px">
+        ✓ Your vessel (${[_vesselProfile.air?_vesselProfile.air+'m air':'',_vesselProfile.draught?_vesselProfile.draught+'m draught':''].filter(Boolean).join(', ')}) is compatible with this route
+      </div>`;
+    }
+  }
+
   // ── Legs ──
   legs.forEach((leg, li) => {
     const segs    = leg.plan.segments;
@@ -4496,6 +4882,7 @@ function renderMultiStopResults(legs) {
 
     const sectionNames = {1:'Seine',2:'Bassin de la Seine',3:'Centre-Est',4:'Rhône–Saône',5:'Northern',6:'Nord-Est',7:'Rhine',8:'Brittany',9:'Entre Deux Mers'};
     segs.forEach((seg, si) => {
+      const segVesselWarns = _vesselCheckSegment(seg);
       html += `<div class="rp-segment" style="border-left-color:${seg.color||'#1a5276'}">
         <div class="seg-header"><span class="seg-badge">Route ${seg.routeNum} · §${seg.section} ${sectionNames[seg.section]||''}</span></div>
         <div class="seg-name">${seg.routeName}</div>
@@ -4507,6 +4894,7 @@ function renderMultiStopResults(legs) {
           ${seg.max_draught != null ? `<span>⚓ <strong>${seg.max_draught.toFixed(1)}m</strong></span>` : ''}
         </div>
         ${seg.partial ? '<div class="seg-constraint warn">⚠ partial segment – distance approximate</div>' : ''}
+        ${segVesselWarns.map(w => `<div class="vessel-warn">⚠ ${w}</div>`).join('')}
       </div>`;
       if (si < segs.length - 1) {
         html += `<div class="rp-junction-arrow">⇩ transfer at ${seg.to}</div>`;
@@ -4671,9 +5059,10 @@ function _getCruiseSettings() {
 
 function renderDayByDay(legs, speedKmh, hoursPerDay, lockMinutes) {
   // Collect ordered waypoints with cumulative time
-  var plan    = [];
-  var curDay  = 1;
-  var curHrs  = 0;
+  var plan      = [];
+  var curDay    = 1;
+  var curHrs    = 0;
+  var locksByDay = {}; // Feature 2: track locks per day
 
   legs.forEach(function(leg) {
     leg.plan.segments.forEach(function(seg) {
@@ -4686,6 +5075,9 @@ function renderDayByDay(legs, speedKmh, hoursPerDay, lockMinutes) {
       if (!plan.length) {
         plan.push({ wp: fromWp, day: curDay, overnight: false, hrs: 0 });
       }
+
+      // Feature 2: accumulate locks into current day before day-boundary logic
+      locksByDay[curDay] = (locksByDay[curDay] || 0) + (seg.locks || 0);
 
       var remaining = segHours;
       while (remaining > 0) {
@@ -4723,10 +5115,12 @@ function renderDayByDay(legs, speedKmh, hoursPerDay, lockMinutes) {
   Object.keys(byDay).sort(function(a,b){return+a-+b;}).forEach(function(day) {
     var stops = byDay[day];
     var names = stops.map(function(p) { return p.wp.name; }).join(' → ');
+    var dayLocks = locksByDay[day] || 0;
     html += '<div class="rp-day-row">' +
       '<div class="rp-day-num">Day ' + day + '</div>' +
       '<div class="rp-day-stops">' + names +
       (stops[stops.length-1].overnight ? '<span class="rp-day-overnight">🌙 Overnight</span>' : '') +
+      (dayLocks > 0 ? '<span class="rp-day-locks">🔒 ' + dayLocks + ' lock' + (dayLocks !== 1 ? 's' : '') + '</span>' : '') +
       '</div></div>';
   });
   html += '</div></div>';
@@ -6422,6 +6816,25 @@ function _downloadJSON(obj, filename) {
     <label class="np-pin-toggle"><input type="checkbox" id="np-pin-cb" checked onchange="_toggleNotePins(this)"> Show pins</label>
   </div>
   <div id="notes-list"></div>
+</div>
+
+<!-- Feature 1: Vessel Profile Panel -->
+<div id="vessel-panel" style="display:none;position:fixed;top:110px;right:20px;z-index:2000;background:#1a2a3a;border:1px solid #3a5a7a;border-radius:10px;padding:16px;min-width:240px;box-shadow:0 4px 20px rgba(0,0,0,0.5)">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+    <span style="font-weight:700;color:#7ad4ef">⚓ My Vessel</span>
+    <button onclick="document.getElementById('vessel-panel').style.display='none'" style="background:none;border:none;color:#aaa;font-size:18px;cursor:pointer">×</button>
+  </div>
+  <label style="display:block;font-size:12px;color:#aaa;margin-bottom:4px">Air draught (m)</label>
+  <input id="vessel-air" type="number" step="0.1" min="0" max="20" placeholder="e.g. 3.5" style="width:100%;padding:6px;background:#0d1b2a;border:1px solid #3a5a7a;border-radius:6px;color:#eee;font-size:13px;margin-bottom:10px">
+  <label style="display:block;font-size:12px;color:#aaa;margin-bottom:4px">Water draught (m)</label>
+  <input id="vessel-draught" type="number" step="0.1" min="0" max="5" placeholder="e.g. 1.2" style="width:100%;padding:6px;background:#0d1b2a;border:1px solid #3a5a7a;border-radius:6px;color:#eee;font-size:13px;margin-bottom:10px">
+  <label style="display:block;font-size:12px;color:#aaa;margin-bottom:4px">Length (m) <span style="color:#555">(optional)</span></label>
+  <input id="vessel-length" type="number" step="1" min="0" max="200" placeholder="e.g. 12" style="width:100%;padding:6px;background:#0d1b2a;border:1px solid #3a5a7a;border-radius:6px;color:#eee;font-size:13px;margin-bottom:12px">
+  <div style="display:flex;gap:8px">
+    <button onclick="saveVesselProfile()" style="flex:1;padding:8px;background:#2a7aaf;border:none;border-radius:6px;color:#fff;font-size:13px;cursor:pointer;font-weight:600">✓ Save</button>
+    <button onclick="clearVesselProfile()" style="flex:1;padding:8px;background:#333;border:1px solid #555;border-radius:6px;color:#aaa;font-size:13px;cursor:pointer">Clear</button>
+  </div>
+  <div id="vessel-status" style="margin-top:8px;font-size:11px;color:#5bc0de;text-align:center"></div>
 </div>
 
 </body>
