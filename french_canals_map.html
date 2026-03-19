@@ -868,6 +868,100 @@
 .rp-load-btn:hover { background: #1a3a5c; border-color: #5bc0de; color: #fff; }
 .rp-poi-none  { font-size: 11px; color: #5a7a8a; font-style: italic; padding: 3px 0; }
 
+/* ── Feature 1: Reverse button ───────────────────────────────── */
+.rp-reverse-btn {
+  background: #16213e;
+  border: 1px solid #1a5276;
+  border-radius: 5px;
+  color: #9bb8d4;
+  font-size: 15px;
+  cursor: pointer;
+  padding: 6px 9px;
+}
+.rp-reverse-btn:hover { background: #1a3a5c; color: #fff; }
+
+/* ── Feature 2: GPX Export button ───────────────────────────── */
+.rp-gpx-btn {
+  display: inline-block; margin-top: 8px;
+  padding: 6px 12px; border-radius: 5px;
+  background: #0f3a20; border: 1px solid #27ae60;
+  color: #27ae60; font-size: 12px; cursor: pointer;
+  font-weight: 600;
+}
+.rp-gpx-btn:hover { background: #1a5230; color: #fff; }
+
+/* ── Feature 3: Cruise Speed Calculator ─────────────────────── */
+.rp-speed-row {
+  display: flex; align-items: center; gap: 8px;
+  margin-top: 8px; padding: 7px 9px;
+  background: #0d1e33; border: 1px solid #1a4a7a;
+  border-radius: 5px; flex-wrap: wrap;
+}
+.rp-speed-row label { font-size: 11px; color: #8ab4c2; white-space: nowrap; }
+.rp-speed-input {
+  width: 44px; background: #16213e; border: 1px solid #1a5276;
+  border-radius: 4px; color: #eee; font-size: 12px;
+  padding: 3px 5px; text-align: center;
+}
+.rp-speed-input:focus { outline: 1px solid #5bc0de; }
+.rp-speed-unit { font-size: 10px; color: #5a7a8a; }
+.rp-daybyday {
+  margin-top: 10px; border-top: 1px solid #1a4a7a; padding-top: 8px;
+}
+.rp-daybyday-title {
+  font-size: 12px; font-weight: 700; color: #5bc0de;
+  text-transform: uppercase; letter-spacing: 0.5px;
+  margin-bottom: 6px; cursor: pointer; user-select: none;
+}
+.rp-day-row {
+  display: flex; align-items: flex-start; gap: 6px;
+  padding: 5px 0; border-bottom: 1px solid #0d1e33;
+  font-size: 12px;
+}
+.rp-day-num { min-width: 42px; font-weight: 700; color: #5bc0de; flex-shrink: 0; }
+.rp-day-stops { flex: 1; color: #c0d0e0; }
+.rp-day-overnight {
+  display: inline-block; margin-left: 4px;
+  background: #1a3a5c; border-radius: 3px;
+  padding: 1px 5px; font-size: 10px; color: #7ad4ef;
+}
+.rp-day-hours { min-width: 52px; color: #5a7a8a; font-size: 10px; text-align: right; flex-shrink: 0; }
+
+/* ── Feature 4: Weather ─────────────────────────────────────── */
+.rp-weather-block {
+  margin-bottom: 10px; padding: 8px;
+  background: #0d1e33; border: 1px solid #1a4a7a; border-radius: 5px;
+}
+.rp-weather-title { font-size: 11px; color: #5bc0de; font-weight: 700; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.4px; }
+.rp-weather-days { display: flex; gap: 6px; overflow-x: auto; }
+.rp-weather-day { flex: 1; min-width: 46px; text-align: center; }
+.rp-weather-dname { font-size: 10px; color: #5a7a8a; margin-bottom: 2px; }
+.rp-weather-icon { font-size: 18px; line-height: 1; }
+.rp-weather-temps { font-size: 10px; color: #c0d0e0; margin-top: 2px; }
+.rp-weather-rain { font-size: 10px; color: #7ad4ef; }
+.rp-weather-loading { font-size: 11px; color: #5a7a8a; font-style: italic; }
+.rp-weather-err { font-size: 11px; color: #e87a7a; }
+
+/* ── Feature 5: Fuel layer marker ───────────────────────────── */
+.fuel-marker-icon {
+  background: #1a4a2a; border: 2px solid #27ae60; border-radius: 50%;
+  width: 24px; height: 24px; display: flex; align-items: center;
+  justify-content: center; font-size: 13px; box-shadow: 0 0 5px rgba(39,174,96,0.5);
+}
+
+/* ── Feature 6: Lock Hours ──────────────────────────────────── */
+.lock-hours-block {
+  margin-top: 10px; padding: 8px 10px;
+  background: #0d1e2e; border: 1px solid #1a4a7a; border-radius: 5px;
+}
+.lock-hours-title { font-size: 12px; font-weight: 700; color: #f0ad4e; margin-bottom: 6px; }
+.lock-hours-season { font-size: 11px; color: #c0d0e0; margin-bottom: 2px; }
+.lock-hours-season strong { color: #7ad4ef; }
+.lock-hours-note { font-size: 10px; color: #5a7a8a; margin-top: 6px; font-style: italic; }
+.lock-hours-vnf { font-size: 11px; color: #5bc0de; margin-top: 4px; }
+.lock-hours-vnf a { color: #5bc0de; }
+.lock-hours-vnf a:hover { color: #7ad4ef; }
+
 </style>
 </head>
 <body>
@@ -909,6 +1003,7 @@
     <button class="toggle-btn" id="btn-edit-locations" onclick="toggleEditMode()" title="Drag markers to exact positions">✏️ Edit Locations</button>
     <button class="toggle-btn" id="btn-data-panel" onclick="toggleDataPanel()" title="Backup &amp; restore your data">💾 Backup</button>
     <button class="toggle-btn" id="toggle-michelin" onclick="toggleLayer('michelin')" title="Show Michelin-starred restaurants">⭐ Michelin</button>
+    <button class="toggle-btn" id="toggle-fuel" onclick="toggleLayer('fuel')" title="Show boat fuel &amp; water stations">⛽ Fuel</button>
   </div>
   <div id="search-wrap">
     <input type="text" id="search-box" placeholder="🔍 Search place…"
@@ -2912,6 +3007,7 @@ const notesGroup   = L.layerGroup();
 const halteGroup   = L.layerGroup();
 const portGroup    = L.layerGroup();
 let michelinGroup  = L.layerGroup();
+let fuelGroup      = L.layerGroup(); // Feature 5: fuel/water stations
 
 const clusterGroup = L.markerClusterGroup({
   chunkedLoading: true,
@@ -2929,6 +3025,8 @@ let allMarkers = [];
 let allMooringMarkers = [];
 let editModeActive = false;
 const _poiCache = {}; // keyed by waypoint id → array of POI elements
+const _weatherCache = {}; // Feature 4: keyed by "lat,lon" → weather data
+let _fuelLoaded = false; // Feature 5: whether fuel stops have been fetched
 let visibleSections = new Set(['1','2','3','4','5','6','7','8','9']);
 
 function createTownIcon(section) {
@@ -3226,6 +3324,8 @@ function openSidebar(wid) {
     </div>
 
     ${vnfLinksHTML(w.section, routeInfo ? routeInfo.from : '', routeInfo ? routeInfo.to : '')}
+
+    ${w.is_lock ? buildLockHoursHTML(w.route) : ''}
   `;
   document.getElementById('place-info').classList.remove('empty');
 
@@ -3290,12 +3390,12 @@ function saveNote(wid) {
 // ============================================================
 //  LAYER TOGGLES
 // ============================================================
-const layerState = { towns: true, locks: true, notes: true, haltes: true, ports: true, waterways: true, michelin: false };
+const layerState = { towns: true, locks: true, notes: true, haltes: true, ports: true, waterways: true, michelin: false, fuel: false };
 
 function toggleLayer(type) {
   layerState[type] = !layerState[type];
   const btn = document.getElementById(`toggle-${type}`);
-  btn.classList.toggle('active', layerState[type]);
+  if (btn) btn.classList.toggle('active', layerState[type]);
 
   if (type === 'towns') {
     layerState[type] ? map.addLayer(clusterGroup) : map.removeLayer(clusterGroup);
@@ -3314,6 +3414,14 @@ function toggleLayer(type) {
   } else if (type === 'michelin') {
     if (layerState.michelin) map.addLayer(michelinGroup); else map.removeLayer(michelinGroup);
     document.getElementById('toggle-michelin').classList.toggle('active', layerState.michelin);
+  } else if (type === 'fuel') {
+    // Feature 5: Fuel & Water Stops
+    if (layerState.fuel) {
+      map.addLayer(fuelGroup);
+      loadFuelStops();
+    } else {
+      map.removeLayer(fuelGroup);
+    }
   }
 }
 
@@ -4391,6 +4499,13 @@ function renderMultiStopResults(legs) {
     html += `<div class="rp-note">Estimated at ~35 km/day (7 km/h cruise, locks included).</div>`;
   }
 
+  // Feature 2: GPX Export button
+  html += '<button class="rp-gpx-btn" onclick="exportRouteAsGPX()">⬇ Export GPX</button>';
+
+  // Feature 3: Day-by-day itinerary
+  var s = _getCruiseSettings();
+  html += renderDayByDay(legs, s.speed, s.hours, s.lockMin);
+
   el.innerHTML = html;
 }
 
@@ -4445,6 +4560,327 @@ function swapRoutePlannerEndpoints() {
   if (routeToId) setRouteEndpoint('from', routeToId);
   if (tmpId)     setRouteEndpoint('to',   tmpId);
   if (document.getElementById('rp-results').innerHTML) calculateRoute();
+}
+
+// ============================================================
+//  FEATURE 1: Reverse Route
+// ============================================================
+function reverseRoute() {
+  var tmp = routeFromId;
+  routeFromId = routeToId;
+  routeToId = tmp;
+  routeViaIds = routeViaIds.slice().reverse();
+  _rebuildAllPins();
+  renderViaStops();
+  var fromSel = document.getElementById('rp-from');
+  var toSel   = document.getElementById('rp-to');
+  if (fromSel && routeFromId) syncDropdownToPin('from', routeFromId);
+  if (toSel   && routeToId)   syncDropdownToPin('to',   routeToId);
+  if (document.getElementById('rp-results').innerHTML) calculateRoute();
+}
+
+// ============================================================
+//  FEATURE 2: GPX Export
+// ============================================================
+function _escXml(s) {
+  return (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function exportRouteAsGPX() {
+  if (!routeFromId || !routeToId || !_lastRouteSegments) return;
+  var allIds = [routeFromId].concat(routeViaIds).concat([routeToId]).filter(Boolean);
+  var stops  = allIds.map(function(id) { return WAYPOINTS.find(function(w) { return w.id === id; }); }).filter(Boolean);
+  if (stops.length < 2) return;
+
+  var wpts = stops.map(function(w) {
+    return '  <wpt lat="' + w.lat + '" lon="' + w.lon + '">\n' +
+           '    <name>' + _escXml(w.name) + '</name>\n' +
+           '    <type>' + (w.is_lock ? 'Lock' : 'Waypoint') + '</type>\n' +
+           '  </wpt>';
+  }).join('\n');
+
+  var trkpts = '';
+  var seen = new Set();
+  _lastRouteSegments.forEach(function(seg) {
+    var a = WAYPOINTS.find(function(w) { return w.id === seg.from; });
+    var b = WAYPOINTS.find(function(w) { return w.id === seg.to; });
+    if (a && !seen.has(a.id)) {
+      trkpts += '      <trkpt lat="' + a.lat + '" lon="' + a.lon + '"><name>' + _escXml(a.name) + '</name></trkpt>\n';
+      seen.add(a.id);
+    }
+    if (b && !seen.has(b.id)) {
+      trkpts += '      <trkpt lat="' + b.lat + '" lon="' + b.lon + '"><name>' + _escXml(b.name) + '</name></trkpt>\n';
+      seen.add(b.id);
+    }
+  });
+
+  var fromWp = stops[0], toWp = stops[stops.length - 1];
+  var title  = _escXml(fromWp.name + ' \u2192 ' + toWp.name);
+  var gpx = '<?xml version="1.0" encoding="UTF-8"?>\n' +
+    '<gpx version="1.1" creator="French Canals Map" xmlns="http://www.topografix.com/GPX/1/1">\n' +
+    '  <metadata><name>' + title + '</name></metadata>\n' +
+    wpts + '\n' +
+    '  <trk>\n' +
+    '    <name>' + title + '</name>\n' +
+    '    <trkseg>\n' + trkpts + '    </trkseg>\n' +
+    '  </trk>\n</gpx>';
+
+  var blob = new Blob([gpx], { type: 'application/gpx+xml' });
+  var a    = document.createElement('a');
+  a.href   = URL.createObjectURL(blob);
+  a.download = (fromWp.name + '-to-' + toWp.name).replace(/[^a-z0-9]/gi, '_') + '.gpx';
+  a.click();
+}
+
+// ============================================================
+//  FEATURE 3: Cruise Speed Calculator — day-by-day itinerary
+// ============================================================
+function _getCruiseSettings() {
+  var speed   = parseFloat((document.getElementById('rp-speed-val')   || {}).value) || 8;
+  var hours   = parseFloat((document.getElementById('rp-hours-val')   || {}).value) || 8;
+  var lockMin = parseFloat((document.getElementById('rp-lock-val')    || {}).value) || 30;
+  return { speed: speed, hours: hours, lockMin: lockMin };
+}
+
+function renderDayByDay(legs, speedKmh, hoursPerDay, lockMinutes) {
+  // Collect ordered waypoints with cumulative time
+  var plan    = [];
+  var curDay  = 1;
+  var curHrs  = 0;
+
+  legs.forEach(function(leg) {
+    leg.plan.segments.forEach(function(seg) {
+      var fromWp = WAYPOINTS.find(function(w) { return w.name === seg.from; });
+      var toWp   = WAYPOINTS.find(function(w) { return w.name === seg.to;   });
+      if (!fromWp || !toWp) return;
+
+      var segHours = (seg.dist_km / speedKmh) + (seg.locks * lockMinutes / 60);
+
+      if (!plan.length) {
+        plan.push({ wp: fromWp, day: curDay, overnight: false, hrs: 0 });
+      }
+
+      var remaining = segHours;
+      while (remaining > 0) {
+        var avail = hoursPerDay - curHrs;
+        if (remaining <= avail) {
+          curHrs += remaining;
+          remaining = 0;
+        } else {
+          // Day boundary hit mid-segment
+          curHrs = 0;
+          curDay++;
+          remaining -= avail;
+        }
+      }
+
+      // Mark last stop of each day as overnight
+      if (plan.length > 0) plan[plan.length - 1].overnight = (curHrs >= hoursPerDay * 0.9);
+      plan.push({ wp: toWp, day: curDay, overnight: false, hrs: curHrs });
+      if (curHrs >= hoursPerDay) { curHrs = 0; curDay++; }
+    });
+  });
+
+  if (!plan.length) return '';
+
+  // Group by day
+  var byDay = {};
+  plan.forEach(function(p) {
+    if (!byDay[p.day]) byDay[p.day] = [];
+    byDay[p.day].push(p);
+  });
+
+  var html = '<div class="rp-daybyday">';
+  html += '<div class="rp-daybyday-title" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display===\'none\'?\'block\':\'none\'">📅 Day-by-Day Itinerary ▼</div>';
+  html += '<div>';
+  Object.keys(byDay).sort(function(a,b){return+a-+b;}).forEach(function(day) {
+    var stops = byDay[day];
+    var names = stops.map(function(p) { return p.wp.name; }).join(' → ');
+    html += '<div class="rp-day-row">' +
+      '<div class="rp-day-num">Day ' + day + '</div>' +
+      '<div class="rp-day-stops">' + names +
+      (stops[stops.length-1].overnight ? '<span class="rp-day-overnight">🌙 Overnight</span>' : '') +
+      '</div></div>';
+  });
+  html += '</div></div>';
+  return html;
+}
+
+// ============================================================
+//  FEATURE 4: Weather Along Route (Open-Meteo)
+// ============================================================
+var _WMO_EMOJI = {
+  0:'☀️', 1:'🌤', 2:'🌤', 3:'☁️',
+  45:'🌫', 48:'🌫',
+  51:'🌧', 53:'🌧', 55:'🌧', 56:'🌧', 57:'🌧',
+  61:'🌧', 63:'🌧', 65:'🌧', 66:'🌧', 67:'🌧',
+  71:'❄️', 73:'❄️', 75:'❄️', 77:'❄️',
+  80:'🌦', 81:'🌦', 82:'🌦',
+  85:'🌨', 86:'🌨',
+  95:'⛈', 96:'⛈', 99:'⛈'
+};
+
+function _wmoEmoji(code) {
+  return _WMO_EMOJI[code] || '🌡';
+}
+
+async function _fetchWeather(lat, lon) {
+  var key = lat.toFixed(3) + ',' + lon.toFixed(3);
+  if (_weatherCache[key]) return _weatherCache[key];
+  var url = 'https://api.open-meteo.com/v1/forecast?latitude=' + lat +
+    '&longitude=' + lon +
+    '&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_sum,windspeed_10m_max' +
+    '&timezone=Europe%2FParis&forecast_days=5';
+  var resp = await fetch(url);
+  if (!resp.ok) throw new Error('Weather fetch failed');
+  var data = await resp.json();
+  _weatherCache[key] = data;
+  return data;
+}
+
+function _buildWeatherSnippet(weatherData) {
+  var daily = weatherData.daily;
+  if (!daily || !daily.time) return '<div class="rp-weather-err">No forecast data</div>';
+  var days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  var html = '<div class="rp-weather-days">';
+  for (var i = 0; i < daily.time.length && i < 5; i++) {
+    var d   = new Date(daily.time[i] + 'T12:00:00');
+    var dname = days[d.getDay()];
+    var icon  = _wmoEmoji(daily.weathercode[i]);
+    var tmax  = Math.round(daily.temperature_2m_max[i]);
+    var tmin  = Math.round(daily.temperature_2m_min[i]);
+    var rain  = (daily.precipitation_sum[i] || 0).toFixed(1);
+    html += '<div class="rp-weather-day">' +
+      '<div class="rp-weather-dname">' + dname + '</div>' +
+      '<div class="rp-weather-icon">' + icon + '</div>' +
+      '<div class="rp-weather-temps">' + tmax + '°/' + tmin + '°</div>' +
+      (parseFloat(rain) > 0 ? '<div class="rp-weather-rain">💧' + rain + 'mm</div>' : '') +
+      '</div>';
+  }
+  html += '</div>';
+  return html;
+}
+
+// ============================================================
+//  FEATURE 5: Fuel & Water Stops (Overpass API + seed data)
+// ============================================================
+
+// Seed dataset of known French canal fuel/water stations
+var _FUEL_SEED = [
+  { name:'Capitainerie Auxerre', lat:47.800, lon:3.567, services:'Fuel, Water, Electric' },
+  { name:'Port de Plaisance Migennes', lat:47.762, lon:3.512, services:'Fuel, Water' },
+  { name:'Halte de Briare', lat:47.637, lon:2.739, services:'Fuel, Water' },
+  { name:'Capitainerie Digoin', lat:46.480, lon:3.977, services:'Fuel, Water, Pump-out' },
+  { name:'St-Jean-de-Losne – Grand Bassin', lat:47.112, lon:5.270, services:'Fuel, Water, Gas' },
+  { name:'Chalon-sur-Saône Port', lat:46.780, lon:4.854, services:'Fuel, Water' },
+  { name:'Mâcon Port', lat:46.305, lon:4.831, services:'Fuel, Water' },
+  { name:'Lyon – Confluence', lat:45.745, lon:4.816, services:'Fuel, Water' },
+  { name:'Port Carnon (Canal du Rhône à Sète)', lat:43.549, lon:4.002, services:'Fuel, Water' },
+  { name:'Castelnaudary Grand Bassin', lat:43.317, lon:1.957, services:'Fuel, Water, Gas' },
+  { name:'Port Carcassonne (Canal du Midi)', lat:43.213, lon:2.372, services:'Fuel, Water' },
+  { name:'Capestang Halte', lat:43.326, lon:3.046, services:'Water only' },
+  { name:'Le Somail (Canal du Midi)', lat:43.271, lon:2.870, services:'Fuel, Water' },
+  { name:'Agde – Port Fluvial', lat:43.309, lon:3.472, services:'Fuel, Water, Pump-out' },
+  { name:'Redon Port', lat:47.650, lon:-2.085, services:'Fuel, Water' },
+  { name:'Dinan Port', lat:48.458, lon:-2.048, services:'Water, Electric' },
+  { name:'Nancy Port', lat:48.692, lon:6.184, services:'Fuel, Water' },
+  { name:'Strasbourg Port', lat:48.573, lon:7.752, services:'Fuel, Water, Gas, Pump-out' },
+  { name:'Paris Arsenal', lat:48.851, lon:2.366, services:'Fuel, Water, Pump-out' },
+  { name:'Gray Port de Plaisance', lat:47.438, lon:5.590, services:'Fuel, Water' }
+];
+
+function createFuelIcon() {
+  return L.divIcon({
+    html: '<div class="fuel-marker-icon">⛽</div>',
+    className: '', iconSize: [24, 24], iconAnchor: [12, 12]
+  });
+}
+
+var _fuelQueryBounds = null; // last bounds queried
+
+async function loadFuelStops() {
+  fuelGroup.clearLayers();
+
+  // Add seed data immediately
+  _FUEL_SEED.forEach(function(s) {
+    var popup = '<strong>' + s.name + '</strong><br>' +
+                '<span style="color:#27ae60;font-size:11px">⛽ ' + s.services + '</span>';
+    L.marker([s.lat, s.lon], { icon: createFuelIcon() })
+      .bindPopup(popup)
+      .addTo(fuelGroup);
+  });
+
+  // Try Overpass query for current viewport
+  try {
+    var bounds = map.getBounds();
+    var s2 = bounds.getSouth().toFixed(4), w2 = bounds.getWest().toFixed(4);
+    var n2 = bounds.getNorth().toFixed(4), e2 = bounds.getEast().toFixed(4);
+    var bbox = '(' + s2 + ',' + w2 + ',' + n2 + ',' + e2 + ')';
+    var query = '[out:json][timeout:15];(node["seamark:type"="fuel_station"]' + bbox + ';node["amenity"="fuel"]["fuel:boat"="yes"]' + bbox + ';);out body;';
+    var url = 'https://overpass-api.de/api/interpreter?data=' + encodeURIComponent(query);
+    var resp = await fetch(url);
+    if (resp.ok) {
+      var data = await resp.json();
+      (data.elements || []).forEach(function(el) {
+        var nm  = (el.tags && (el.tags.name || el.tags['seamark:name'])) || 'Fuel Station';
+        var svc = 'Boat fuel';
+        if (el.tags && el.tags['seamark:type'] === 'fuel_station') svc = 'Marine fuel station';
+        var popup = '<strong>' + nm + '</strong><br><span style="color:#27ae60;font-size:11px">⛽ ' + svc + '</span>';
+        L.marker([el.lat, el.lon], { icon: createFuelIcon() })
+          .bindPopup(popup)
+          .addTo(fuelGroup);
+      });
+    }
+  } catch(e) {
+    // Overpass query failed — seed data still shown
+  }
+
+  if (!map.hasLayer(fuelGroup)) map.addLayer(fuelGroup);
+}
+
+// Auto-refresh fuel stops on map move
+map.on('moveend', function() {
+  if (layerState.fuel) loadFuelStops();
+});
+
+// ============================================================
+//  FEATURE 6: Lock Opening Hours data
+// ============================================================
+var LOCK_HOURS = {
+  'default': { peak: '7:30–19:30', shoulder: '8:00–18:00', offseason: '8:30–17:00', season: 'Apr–Nov' },
+  11: { peak: '8:00–19:00', shoulder: '8:00–18:00', offseason: 'Seasonal closures vary', season: 'Apr–Oct' },
+  12: { peak: '7:30–19:30', shoulder: '8:00–18:00', offseason: '9:00–17:00', season: 'Mar–Nov' },
+  16: { peak: '24h (commercial)', shoulder: '24h (commercial)', offseason: '24h (commercial)', season: 'Year-round' },
+  35: { peak: '7:30–19:30', shoulder: '8:00–18:00', offseason: 'Limited', season: 'Apr–Nov' },
+  49: { peak: '7:30–19:30', shoulder: '8:30–18:30', offseason: '9:00–17:30', season: 'Mar–Nov' }
+};
+
+function getLockHours(routeNum) {
+  return LOCK_HOURS[routeNum] || LOCK_HOURS['default'];
+}
+
+function _currentLockSeason() {
+  var m = new Date().getMonth() + 1; // 1-12
+  if (m >= 6 && m <= 8)  return 'peak';
+  if ((m >= 4 && m <= 5) || (m >= 9 && m <= 10)) return 'shoulder';
+  return 'offseason';
+}
+
+function buildLockHoursHTML(routeNum) {
+  var h    = getLockHours(routeNum);
+  var season = _currentLockSeason();
+  var seasonLabels = { peak: 'Peak (Jun–Aug)', shoulder: 'Shoulder (Apr–May, Sep–Oct)', offseason: 'Off-season (Nov–Mar)' };
+  var html = '<div class="lock-hours-block">' +
+    '<div class="lock-hours-title">🕐 Lock Opening Hours</div>' +
+    '<div class="lock-hours-season"><strong>Season:</strong> ' + h.season + '</div>' +
+    '<div class="lock-hours-season"><strong>Peak hours:</strong> <strong>' + h.peak + '</strong></div>' +
+    '<div class="lock-hours-season"><strong>Shoulder hours:</strong> ' + h.shoulder + '</div>' +
+    '<div class="lock-hours-season"><strong>Off-season hours:</strong> ' + h.offseason + '</div>' +
+    '<div class="lock-hours-season" style="margin-top:4px;color:#f0ad4e">▶ Currently: <strong>' + seasonLabels[season] + '</strong> → <strong>' + h[season] + '</strong></div>' +
+    '<div class="lock-hours-vnf"><a href="https://www.vnf.fr/vnf/accueil/les-voies-navigables/informations-pratiques/les-chomages/" target="_blank">📋 VNF Chômages (closures)</a></div>' +
+    '<div class="lock-hours-note">Hours subject to change — verify with VNF before travel</div>' +
+    '</div>';
+  return html;
 }
 
 function calculateRoute() {
@@ -5074,8 +5510,15 @@ function showRoutePOIStop(idx) {
   var content = document.getElementById('rp-poi-content');
   if (!content) return;
 
+  // Feature 4: Weather block (async — show loading first, then update)
+  var weatherId = 'rp-weather-' + idx;
+  var html = '<div class="rp-weather-block" id="' + weatherId + '">' +
+    '<div class="rp-weather-title">🌤 5-Day Forecast</div>' +
+    '<div class="rp-weather-loading">Loading forecast…</div>' +
+    '</div>';
+
   // Michelin block
-  var html = '<div class="rp-poi-sub"><div class="rp-poi-sublabel">⭐ Michelin</div>' +
+  html += '<div class="rp-poi-sub"><div class="rp-poi-sublabel">⭐ Michelin</div>' +
     _buildMichelinSnippet(stop.lat, stop.lon) + '</div>';
 
   // Explore / attractions block
@@ -5089,6 +5532,17 @@ function showRoutePOIStop(idx) {
   html += '</div>';
 
   content.innerHTML = html;
+
+  // Fetch weather async and update block
+  _fetchWeather(stop.lat, stop.lon).then(function(data) {
+    var wEl = document.getElementById(weatherId);
+    if (wEl) {
+      wEl.innerHTML = '<div class="rp-weather-title">🌤 5-Day Forecast</div>' + _buildWeatherSnippet(data);
+    }
+  }).catch(function() {
+    var wEl = document.getElementById(weatherId);
+    if (wEl) wEl.innerHTML = '<div class="rp-weather-err">⚠ Forecast unavailable</div>';
+  });
 }
 
 function renderRoutePOIsSection(stops) {
@@ -5703,7 +6157,20 @@ function _downloadJSON(obj, filename) {
   <div style="display:flex;align-items:center;gap:8px;margin-top:4px">
     <button class="rp-add-stop-btn" id="rp-add-stop-btn" onclick="addViaStop()" style="margin:0;flex:1">+ Add Stop</button>
     <button class="rp-swap-btn" id="rp-swap-btn" onclick="swapRoutePlannerEndpoints()" title="Swap From / To" style="flex-shrink:0">⇅</button>
+    <button class="rp-reverse-btn" onclick="reverseRoute()" title="Reverse entire route (A→B→C becomes C→B→A)" style="flex-shrink:0">🔄</button>
   </div>
+  <!-- Feature 3: Cruise Speed Calculator inputs -->
+  <div class="rp-speed-row">
+    <label>Speed:</label>
+    <input class="rp-speed-input" id="rp-speed-val" type="number" value="8" min="1" max="30" step="0.5">
+    <span class="rp-speed-unit">km/h</span>
+    <label style="margin-left:8px">Hours/day:</label>
+    <input class="rp-speed-input" id="rp-hours-val" type="number" value="8" min="1" max="16" step="0.5">
+    <label style="margin-left:8px">Lock time:</label>
+    <input class="rp-speed-input" id="rp-lock-val" type="number" value="30" min="5" max="90" step="5">
+    <span class="rp-speed-unit">min</span>
+  </div>
+  <!-- Feature 1: Reverse button added to the swap/add row -->
   <button class="rp-calc-btn" onclick="calculateRoute()" style="margin-top:8px">⚓ Calculate Route</button>
   <div id="rp-results"></div>
     <button id="rp-save-btn" onclick="saveCurrentRoute()" disabled>&#128190; Save Route</button>
