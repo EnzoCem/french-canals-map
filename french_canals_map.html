@@ -962,6 +962,21 @@
 .lock-hours-vnf a { color: #5bc0de; }
 .lock-hours-vnf a:hover { color: #7ad4ef; }
 
+/* ── Provisions & Services ──────────────────────────────────── */
+.rp-prov-group { margin-bottom: 10px; }
+.rp-prov-label { font-size: 11px; font-weight: 700; color: #f0ad4e; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+.rp-prov-item { display: flex; justify-content: space-between; align-items: baseline; padding: 3px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 12px; }
+.rp-prov-name { color: #d0e8f0; flex: 1; margin-right: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rp-prov-dist { color: #7ad4ef; font-size: 11px; white-space: nowrap; }
+.rp-prov-hours { color: #7a9aaa; font-size: 10px; display: block; }
+/* Sidebar provisions section */
+.prov-section { margin-top: 14px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px; }
+.prov-header { display: flex; justify-content: space-between; align-items: center; cursor: pointer; padding: 6px 8px; background: rgba(240,173,78,0.1); border-radius: 6px; margin-bottom: 6px; }
+.prov-header-title { font-size: 13px; font-weight: 700; color: #f0ad4e; }
+.prov-body { font-size: 12px; }
+.prov-load-btn { width: 100%; padding: 7px; background: rgba(240,173,78,0.15); border: 1px solid rgba(240,173,78,0.3); border-radius: 6px; color: #f0ad4e; font-size: 12px; cursor: pointer; text-align: center; }
+.prov-load-btn:hover { background: rgba(240,173,78,0.25); }
+
 </style>
 </head>
 <body>
@@ -3363,6 +3378,18 @@ function openSidebar(wid) {
       '<div class="explore-body" id="explore-body-' + _wpForExplore.id + '" style="display:none"></div>' +
     '</div>'
   );
+
+  // ── Provisions & Services (Phase 3) ────────────────────────────────────
+  const provSection = document.createElement('div');
+  provSection.id = 'prov-section-' + w.id;
+  provSection.className = 'prov-section';
+  provSection.innerHTML = '<div class="prov-header" onclick="expandProvisions(\'' + w.id + '\',' + w.lat + ',' + w.lon + ')">' +
+    '<span class="prov-header-title">🛒 Provisions & Services</span>' +
+    '<span id="prov-arrow-' + w.id + '">▶</span></div>' +
+    '<div id="prov-body-' + w.id + '" style="display:none"><div class="prov-body">' +
+    '<button class="prov-load-btn" onclick="loadProvisionsFor(\'' + w.id + '\',' + w.lat + ',' + w.lon + ')">🛒 Load nearby shops, markets & services</button>' +
+    '</div></div>';
+  document.getElementById('place-info').appendChild(provSection);
 }
 
 function closeSidebar() {
@@ -5531,6 +5558,16 @@ function showRoutePOIStop(idx) {
   }
   html += '</div>';
 
+  // Provisions block
+  html += '<div class="rp-poi-sub" id="rp-prov-' + idx + '">' +
+    '<div class="rp-poi-sublabel">🛒 Provisions</div>';
+  if (_provCache[stop.id]) {
+    html += _buildProvisionsSnippet(_provCache[stop.id], stop.lat, stop.lon);
+  } else {
+    html += '<button class="rp-load-btn" onclick="loadRouteProvisions(' + idx + ')">🛒 Load shops & services near ' + stop.name + '</button>';
+  }
+  html += '</div>';
+
   content.innerHTML = html;
 
   // Fetch weather async and update block
@@ -5633,6 +5670,143 @@ async function _fetchPOIsNearby(lat, lon) {
   return (json.elements || []).filter(function(el) {
     return el.tags && el.tags.name;
   });
+}
+
+// ── Provisions & Services (markets, supermarkets, pharmacies, bakeries) ───────
+
+const _provCache = {};
+
+async function _fetchProvisionsNearby(lat, lon) {
+  const r = 3000;
+  const q = '[out:json][timeout:20];(' +
+    'node["amenity"="marketplace"](around:' + r + ',' + lat + ',' + lon + ');' +
+    'node["amenity"="market"](around:' + r + ',' + lat + ',' + lon + ');' +
+    'node["shop"="supermarket"](around:' + r + ',' + lat + ',' + lon + ');' +
+    'node["shop"="grocery"](around:' + r + ',' + lat + ',' + lon + ');' +
+    'node["shop"="convenience"](around:' + r + ',' + lat + ',' + lon + ');' +
+    'node["amenity"="pharmacy"](around:' + r + ',' + lat + ',' + lon + ');' +
+    'node["amenity"="doctors"](around:' + r + ',' + lat + ',' + lon + ');' +
+    'node["amenity"="clinic"](around:' + r + ',' + lat + ',' + lon + ');' +
+    'node["healthcare"="doctor"](around:' + r + ',' + lat + ',' + lon + ');' +
+    'node["shop"="bakery"](around:' + r + ',' + lat + ',' + lon + ');' +
+    ');out tags;';
+  const resp = await fetch('https://overpass-api.de/api/interpreter', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: 'data=' + encodeURIComponent(q)
+  });
+  if (!resp.ok) throw new Error('Overpass ' + resp.status);
+  const json = await resp.json();
+  return (json.elements || []).filter(function(el) { return el.tags && el.tags.name; });
+}
+
+function _provCategoryOf(el) {
+  const t = el.tags || {};
+  if (t.amenity === 'marketplace' || t.amenity === 'market') return 'market';
+  if (t.shop === 'supermarket' || t.shop === 'grocery') return 'supermarket';
+  if (t.shop === 'convenience') return 'convenience';
+  if (t.amenity === 'pharmacy') return 'pharmacy';
+  if (t.amenity === 'doctors' || t.amenity === 'clinic' || t.healthcare === 'doctor') return 'doctor';
+  if (t.shop === 'bakery') return 'bakery';
+  return 'other';
+}
+
+function _provIconOf(cat) {
+  return { market:'🏪', supermarket:'🛒', convenience:'🏬', pharmacy:'💊', doctor:'🏥', bakery:'🥐', other:'📦' }[cat] || '📦';
+}
+
+function _provLabelOf(cat) {
+  return { market:'Weekly Markets', supermarket:'Supermarkets', convenience:'Convenience Stores', pharmacy:'Pharmacies', doctor:'Doctors & Clinics', bakery:'Boulangeries', other:'Other' }[cat] || 'Other';
+}
+
+function _buildProvisionsSnippet(els, stopLat, stopLon) {
+  if (!els || !els.length) return '<div class="rp-poi-none">No provisions data found nearby.</div>';
+  var catOrder = ['bakery','market','supermarket','convenience','pharmacy','doctor','other'];
+  var bycat = {};
+  els.forEach(function(el) {
+    var cat = _provCategoryOf(el);
+    if (!bycat[cat]) bycat[cat] = [];
+    var lat = el.lat || (el.center && el.center.lat) || stopLat;
+    var lon = el.lon || (el.center && el.center.lon) || stopLon;
+    var dist = _poiDistKm(stopLat, stopLon, lat, lon);
+    bycat[cat].push({ name: el.tags.name, dist: dist, hours: el.tags.opening_hours || '', cat: cat });
+  });
+  var html = '';
+  catOrder.forEach(function(cat) {
+    if (!bycat[cat] || !bycat[cat].length) return;
+    var items = bycat[cat].sort(function(a,b){return a.dist-b.dist;}).slice(0,4);
+    html += '<div class="rp-prov-group"><div class="rp-prov-label">' + _provIconOf(cat) + ' ' + _provLabelOf(cat) + '</div>';
+    items.forEach(function(item) {
+      var distStr = item.dist < 1 ? Math.round(item.dist * 1000) + ' m' : item.dist.toFixed(1) + ' km';
+      var hoursStr = item.hours ? ' <span class="rp-prov-hours">' + item.hours.substring(0,30) + '</span>' : '';
+      html += '<div class="rp-prov-item"><span class="rp-prov-name">' + item.name + '</span><span class="rp-prov-dist">' + distStr + '</span>' + hoursStr + '</div>';
+    });
+    html += '</div>';
+  });
+  return html || '<div class="rp-poi-none">No provisions found nearby.</div>';
+}
+
+function expandProvisions(wpId, wpLat, wpLon) {
+  var body = document.getElementById('prov-body-' + wpId);
+  var arrow = document.getElementById('prov-arrow-' + wpId);
+  if (!body) return;
+  var open = body.style.display !== 'none';
+  body.style.display = open ? 'none' : 'block';
+  if (arrow) arrow.textContent = open ? '▶' : '▼';
+}
+
+async function loadProvisionsFor(wpId, wpLat, wpLon) {
+  var body = document.getElementById('prov-body-' + wpId);
+  if (!body) return;
+  body.innerHTML = '<div class="prov-body" style="color:#7ad4ef;padding:8px">🔄 Loading nearby provisions…</div>';
+  var els = null;
+  // Try up to 3 times with increasing delays (handles Overpass rate-limiting)
+  for (var attempt = 0; attempt < 3; attempt++) {
+    if (attempt > 0) await new Promise(function(r){ setTimeout(r, attempt * 2000); });
+    try {
+      els = await _fetchProvisionsNearby(wpLat, wpLon);
+      break;
+    } catch(e) {
+      if (attempt === 2) {
+        body = document.getElementById('prov-body-' + wpId);
+        if (body) body.innerHTML = '<div class="prov-body"><button class="prov-load-btn" onclick="loadProvisionsFor(\'' + wpId + '\',' + wpLat + ',' + wpLon + ')">⚠ Failed — tap to retry</button></div>';
+        return;
+      }
+    }
+  }
+  body = document.getElementById('prov-body-' + wpId);
+  if (!body) return;
+  _provCache[wpId] = els;
+  body.innerHTML = '<div class="prov-body">' + _buildProvisionsSnippet(els, wpLat, wpLon) + '</div>';
+}
+
+async function loadRouteProvisions(idx) {
+  var stops = _routePOIStops;
+  if (!stops.length || idx >= stops.length) return;
+  var stop = stops[idx];
+  var block = document.getElementById('rp-prov-' + idx);
+  if (!block) return;
+  var btn = block.querySelector('.rp-load-btn');
+  if (btn) btn.textContent = '🛒 Loading…';
+  var els = null;
+  for (var attempt = 0; attempt < 3; attempt++) {
+    if (attempt > 0) await new Promise(function(r){ setTimeout(r, attempt * 2000); });
+    try {
+      els = await _fetchProvisionsNearby(stop.lat, stop.lon);
+      break;
+    } catch(e) {
+      if (attempt === 2) {
+        block = document.getElementById('rp-prov-' + idx);
+        if (block) { var b = block.querySelector('.rp-load-btn'); if (b) b.textContent = '⚠ Failed — tap to retry'; }
+        return;
+      }
+    }
+  }
+  block = document.getElementById('rp-prov-' + idx);
+  if (!block) return;
+  _provCache[stop.id] = els;
+  block.innerHTML = '<div class="rp-poi-sublabel">🛒 Provisions</div>' +
+    _buildProvisionsSnippet(els, stop.lat, stop.lon);
 }
 
 function _renderPOIList(wpId, wpLat, wpLon, activeCat) {
