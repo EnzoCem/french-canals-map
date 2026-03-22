@@ -1051,6 +1051,12 @@
   width: 18px; height: 18px; display: flex; align-items: center; justify-content: center;
   font-size: 11px; box-shadow: 0 1px 5px rgba(0,0,0,0.55); cursor: pointer;
 }
+/* Route-planner lock markers — always visible, slightly larger */
+.route-lock-dot {
+  background: #c0392b; border: 2px solid #f39c12; border-radius: 4px;
+  width: 20px; height: 20px; display: flex; align-items: center; justify-content: center;
+  font-size: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.7); cursor: pointer;
+}
 .live-lock-popup .ll-title { font-weight: 700; color: #f39c12; font-size: 13px; margin-bottom: 3px; }
 .live-lock-popup .ll-lift  { font-size: 11px; color: #2ecc71; margin-top: 3px; }
 .live-lock-popup .ll-hours { font-size: 11px; color: #5bc0de; margin-top: 3px; }
@@ -5598,9 +5604,32 @@ function renderRouteLocks(container, elements) {
 
   if (!locks.length) { container.innerHTML = ''; return; }
 
-  // Sort roughly by longitude (works for most west→east French routes)
+  // Sort roughly by longitude (west→east) — covers most French routes
   locks.sort((a, b) => a.lon - b.lon);
 
+  // ── Place markers on the map (visible at all zoom levels) ─────────────
+  routeLocksMapLayer.clearLayers();
+  const routeLockIcon = L.divIcon({
+    className: '',
+    html: '<div class="route-lock-dot">🔒</div>',
+    iconSize: [20, 20],
+    iconAnchor: [10, 10],
+  });
+  locks.forEach(function(lock) {
+    const t    = lock.tags;
+    const name = t.name || t['lock:name'] || (t.ref ? 'Écluse ' + t.ref : 'Écluse');
+    const ref  = t.ref && t.name ? ` · #${t.ref}` : (t.ref ? '' : '');
+    const lift = (t['lock:lift'] || t.lift) ? `<br>↑ ${t['lock:lift'] || t.lift} m rise` : '';
+    const hrs  = t.opening_hours ? `<br>🕐 ${t.opening_hours}` : '';
+    const m = L.marker([lock.lat, lock.lon], { icon: routeLockIcon, zIndexOffset: 55 });
+    m.bindPopup(`<div class="live-lock-popup">
+      <div class="ll-title">🔒 ${name}${ref}</div>
+      <div style="font-size:11px;color:#bbb;margin-top:3px">${lift}${hrs}</div>
+    </div>`, { maxWidth: 230 });
+    routeLocksMapLayer.addLayer(m);
+  });
+
+  // ── Sidebar list ───────────────────────────────────────────────────────
   const total   = locks.length;
   const display = locks.slice(0, 40);
 
@@ -5815,6 +5844,7 @@ const ROUTE_TO_WATERWAYS = {
 
 let routeHighlightLayer = null;
 let routeHighlightActive = false;
+let routeLocksMapLayer = L.layerGroup().addTo(map); // lock markers for planned route
 
 // ── Waypoint name fuzzy lookup (handles junction names like "St-Mammès") ───
 function findWpByName(name, routeNum) {
@@ -6012,6 +6042,7 @@ function clearRouteHighlight(restoreStyles) {
   }
   routeHighlightActive = false;
   if (restoreStyles !== false) restoreWaterwayStyles();
+  routeLocksMapLayer.clearLayers();
 }
 
 
