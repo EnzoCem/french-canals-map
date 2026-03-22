@@ -3623,7 +3623,9 @@ function toggleLayer(type) {
   if (type === 'towns') {
     layerState[type] ? map.addLayer(clusterGroup) : map.removeLayer(clusterGroup);
   } else if (type === 'locks') {
-    layerState[type] ? map.addLayer(lockGroup) : map.removeLayer(lockGroup);
+    layerState[type] ? map.addLayer(lockGroup)      : map.removeLayer(lockGroup);
+    layerState[type] ? map.addLayer(liveLocksGroup) : map.removeLayer(liveLocksGroup);
+    if (layerState[type]) scheduleLockFetch(); // re-fetch if turning back on
   } else if (type === 'notes') {
     layerState[type] ? map.addLayer(notesGroup) : map.removeLayer(notesGroup);
   } else if (type === 'haltes') {
@@ -5472,6 +5474,7 @@ function scheduleLockFetch() {
 }
 
 async function fetchLocksInView() {
+  if (!layerState.locks) return;
   const zoom = map.getZoom();
   if (zoom < LOCK_ZOOM_MIN) {
     liveLocksGroup.clearLayers();
