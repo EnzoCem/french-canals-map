@@ -980,6 +980,53 @@
 /* ── Feature 1: Vessel Profile ──────────────────────────────── */
 .vessel-warn { background: rgba(231,76,60,0.15); border-left: 3px solid #e74c3c; border-radius: 4px; padding: 5px 8px; font-size: 11px; color: #e74c3c; margin-top: 6px; }
 .vessel-ok   { background: rgba(46,204,113,0.12); border-left: 3px solid #2ecc71; border-radius: 4px; padding: 5px 8px; font-size: 11px; color: #2ecc71; margin-top: 6px; }
+/* Profile modal */
+#profile-modal {
+  position:fixed; inset:0; z-index:9000;
+  display:flex; align-items:center; justify-content:center;
+}
+#profile-backdrop { position:absolute; inset:0; background:rgba(0,0,0,0.65); }
+#profile-panel {
+  position:relative; z-index:9001;
+  background:#0f1b2d; border:1px solid #0f3460; border-radius:10px;
+  width:440px; max-width:96vw; max-height:92vh; overflow-y:auto;
+  box-shadow:0 8px 32px rgba(0,0,0,0.85);
+}
+.prof-header {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:14px 16px 10px; border-bottom:1px solid #0f3460;
+  position:sticky; top:0; background:#0f1b2d; z-index:1;
+}
+.prof-header h3 { margin:0; color:#5bc0de; font-size:15px; }
+.prof-header button { background:none; border:none; color:#5a7a8a; font-size:18px; cursor:pointer; line-height:1; }
+.prof-header button:hover { color:#fff; }
+.prof-body { padding:14px 16px 8px; }
+.prof-section-title {
+  font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.07em;
+  color:#e0c97f; margin:16px 0 8px; padding-bottom:4px; border-bottom:1px solid #1a3a5c;
+}
+.prof-body .prof-section-title:first-child { margin-top:0; }
+.prof-row { margin-bottom:10px; }
+.prof-row label { display:block; font-size:12px; color:#7a9ab0; margin-bottom:3px; }
+.prof-row input[type=text],
+.prof-row input[type=number] {
+  width:100%; box-sizing:border-box;
+  background:#0a1628; border:1px solid #1a3a5c; border-radius:5px;
+  color:#eee; padding:7px 10px; font-size:13px;
+}
+.prof-row input:focus { outline:none; border-color:#5bc0de; }
+.prof-hint { display:block; font-size:10px; color:#4a6a7a; margin-top:3px; line-height:1.4; }
+.prof-grid { display:grid; grid-template-columns:1fr 1fr; gap:0 14px; }
+.prof-actions { display:flex; gap:8px; margin-top:16px; padding-top:12px; border-top:1px solid #1a3a5c; padding-bottom:6px; }
+.prof-save-btn { flex:2; padding:9px; background:#0f3460; border:1px solid #5bc0de; border-radius:6px; color:#5bc0de; font-size:13px; font-weight:600; cursor:pointer; }
+.prof-save-btn:hover { background:#1a4a80; }
+.prof-reset-btn { flex:1; padding:9px; background:none; border:1px solid #2a4a5a; border-radius:6px; color:#7a9ab0; font-size:13px; cursor:pointer; }
+.prof-reset-btn:hover { background:#0a1628; color:#aaa; }
+.prof-toast { text-align:center; font-size:12px; height:18px; margin-top:6px; color:#2ecc71; }
+.cons-compat { border-radius:5px; padding:7px 10px; margin-top:7px; font-size:11px; line-height:1.6; }
+.cons-compat.warn { background:#1a0f00; border:1px solid #e67e22; color:#e67e22; }
+.cons-compat.ok   { background:#0a1a0f; border:1px solid #27ae60; color:#2ecc71; }
+.cons-compat.hint { background:#0a1428; border:1px solid #1a5276; color:#5bc0de; }
 
 /* ── Feature 2: Lock Count per Day ──────────────────────────── */
 .rp-day-locks { font-size: 10px; color: #f0ad4e; background: rgba(240,173,78,0.15); border-radius: 10px; padding: 2px 7px; margin-left: 6px; white-space: nowrap; }
@@ -1040,7 +1087,7 @@
     <button class="toggle-btn" id="btn-data-panel" onclick="toggleDataPanel()" title="Backup &amp; restore your data">💾 Backup</button>
     <button class="toggle-btn" id="toggle-michelin" onclick="toggleLayer('michelin')" title="Show Michelin-starred restaurants">⭐ Michelin</button>
     <button class="toggle-btn" id="toggle-fuel" onclick="toggleLayer('fuel')" title="Show boat fuel &amp; water stations">⛽ Fuel</button>
-    <button class="toggle-btn" id="toggle-vessel" onclick="toggleVesselPanel()" title="Set your vessel dimensions">⚓ Vessel</button>
+    <button class="toggle-btn" id="toggle-vessel" onclick="openProfileModal()" title="Your vessel profile &amp; cruise settings">⛵ Profile</button>
     <button class="toggle-btn" id="toggle-chomages" onclick="toggleLayer('chomages')" title="Show VNF maintenance closures">🚧 Chômages</button>
   </div>
   <div class="control-group" id="vessel-filter-group" style="background:#0d1e33;border:1px solid #1a4a7a;border-radius:6px;padding:4px 8px;gap:5px;align-items:center">
@@ -3509,75 +3556,90 @@ function toggleLayer(type) {
 }
 
 // ============================================================
-//  FEATURE 1: Vessel Profile
+//  FEATURE 1: Vessel Profile (full modal)
 // ============================================================
 const VESSEL_KEY = 'french_canals_vessel_v1';
-var _vesselProfile = JSON.parse(localStorage.getItem(VESSEL_KEY) || 'null') || {};
+const _PROFILE_DEFAULTS = {
+  vesselName: '', homePort: '',
+  air: null, draught: null, length: null, beam: null,
+  cruiseSpeed: 7, hoursPerDay: 8
+};
+var _vesselProfile = Object.assign({}, _PROFILE_DEFAULTS,
+  JSON.parse(localStorage.getItem(VESSEL_KEY) || 'null') || {});
 
-// Activate the button if a profile was saved
-(function() {
+function openProfileModal() {
+  var p = _vesselProfile;
+  var get = function(id, val) { var el = document.getElementById(id); if (el) el.value = (val != null ? val : ''); };
+  get('prof-vessel-name',   p.vesselName);
+  get('prof-home-port',     p.homePort);
+  get('prof-air-draught',   p.air);
+  get('prof-water-draught', p.draught);
+  get('prof-length',        p.length);
+  get('prof-beam',          p.beam);
+  get('prof-speed',         p.cruiseSpeed);
+  get('prof-hours',         p.hoursPerDay);
+  var t = document.getElementById('prof-toast'); if (t) t.textContent = '';
+  document.getElementById('profile-modal').style.display = 'flex';
+  // Show vessel name on button if set
   var btn = document.getElementById('toggle-vessel');
-  if (btn && (_vesselProfile.air || _vesselProfile.draught)) btn.classList.add('active');
-})();
-
-function toggleVesselPanel() {
-  var p = document.getElementById('vessel-panel');
-  if (!p) return;
-  var visible = p.style.display !== 'none';
-  p.style.display = visible ? 'none' : 'block';
-  if (!visible) {
-    var ai = document.getElementById('vessel-air');
-    var di = document.getElementById('vessel-draught');
-    var li = document.getElementById('vessel-length');
-    if (ai && _vesselProfile.air)    ai.value = _vesselProfile.air;
-    if (di && _vesselProfile.draught) di.value = _vesselProfile.draught;
-    if (li && _vesselProfile.length) li.value = _vesselProfile.length;
-    updateVesselStatus();
-  }
+  if (btn && p.vesselName) btn.textContent = '⛵ ' + p.vesselName;
 }
 
-function saveVesselProfile() {
-  var air     = parseFloat(document.getElementById('vessel-air').value)     || 0;
-  var draught = parseFloat(document.getElementById('vessel-draught').value) || 0;
-  var length  = parseFloat(document.getElementById('vessel-length').value)  || 0;
-  _vesselProfile = { air: air || null, draught: draught || null, length: length || null };
+function closeProfileModal() {
+  document.getElementById('profile-modal').style.display = 'none';
+}
+
+function saveProfile() {
+  var num = function(id) {
+    var el = document.getElementById(id);
+    var v = parseFloat(el ? el.value : '');
+    return isNaN(v) ? null : v;
+  };
+  var str = function(id) {
+    var el = document.getElementById(id);
+    return el ? el.value.trim() : '';
+  };
+  _vesselProfile = {
+    vesselName:   str('prof-vessel-name'),
+    homePort:     str('prof-home-port'),
+    air:          num('prof-air-draught'),
+    draught:      num('prof-water-draught'),
+    length:       num('prof-length'),
+    beam:         num('prof-beam'),
+    cruiseSpeed:  num('prof-speed')  != null ? num('prof-speed')  : 7,
+    hoursPerDay:  num('prof-hours')  != null ? num('prof-hours')  : 8
+  };
   localStorage.setItem(VESSEL_KEY, JSON.stringify(_vesselProfile));
-  updateVesselStatus();
+  // Update button label
   var btn = document.getElementById('toggle-vessel');
-  if (btn) btn.classList.toggle('active', !!(air || draught));
-  // Re-run route check if results are visible
-  if (_lastRouteSegments && _lastRouteSegments.length) {
-    var fromSel = document.getElementById('rp-from');
-    var toSel   = document.getElementById('rp-to');
-    if (fromSel && toSel && fromSel.value && toSel.value) calculateRoute();
+  if (btn) btn.textContent = _vesselProfile.vesselName ? '⛵ ' + _vesselProfile.vesselName : '⛵ Profile';
+  if (btn) btn.classList.toggle('active', !!(
+    _vesselProfile.air || _vesselProfile.draught || _vesselProfile.vesselName));
+  // Refresh route if open
+  if (typeof _lastRouteSegments !== 'undefined' && _lastRouteSegments && _lastRouteSegments.length) {
+    if (typeof calculateRoute === 'function') calculateRoute();
+  }
+  var t = document.getElementById('prof-toast');
+  if (t) {
+    t.textContent = '✓ Profile saved!';
+    setTimeout(function() { var x = document.getElementById('prof-toast'); if (x) x.textContent = ''; }, 2500);
   }
 }
 
-function clearVesselProfile() {
-  _vesselProfile = {};
+function resetProfile() {
+  _vesselProfile = Object.assign({}, _PROFILE_DEFAULTS);
   localStorage.removeItem(VESSEL_KEY);
-  ['vessel-air','vessel-draught','vessel-length'].forEach(function(id) {
-    var el = document.getElementById(id); if (el) el.value = '';
-  });
-  updateVesselStatus();
+  var ids = ['prof-vessel-name','prof-home-port','prof-air-draught','prof-water-draught','prof-length','prof-beam'];
+  ids.forEach(function(id) { var el = document.getElementById(id); if (el) el.value = ''; });
+  var spd = document.getElementById('prof-speed'); if (spd) spd.value = 7;
+  var hrs = document.getElementById('prof-hours'); if (hrs) hrs.value = 8;
   var btn = document.getElementById('toggle-vessel');
-  if (btn) btn.classList.remove('active');
+  if (btn) { btn.textContent = '⛵ Profile'; btn.classList.remove('active'); }
+  var t = document.getElementById('prof-toast'); if (t) t.textContent = 'Reset to defaults.';
 }
 
-function updateVesselStatus() {
-  var el = document.getElementById('vessel-status');
-  if (!el) return;
-  if (_vesselProfile.air || _vesselProfile.draught) {
-    el.textContent = 'Active: ' +
-      (_vesselProfile.air     ? _vesselProfile.air + 'm air' : '') +
-      (_vesselProfile.air && _vesselProfile.draught ? ' · ' : '') +
-      (_vesselProfile.draught ? _vesselProfile.draught + 'm draught' : '');
-    el.style.color = '#5bc0de';
-  } else {
-    el.textContent = 'No vessel profile set';
-    el.style.color = '#555';
-  }
-}
+// Legacy: kept for any code that called toggleVesselPanel()
+function toggleVesselPanel() { openProfileModal(); }
 
 function _vesselCheckSegment(seg) {
   var warns = [];
@@ -4234,6 +4296,11 @@ function init() {
   buildMichelinMarkers();
   buildLegend();
   updateStats();
+  // Restore vessel name on Profile button
+  if (_vesselProfile.vesselName) {
+    var _pb = document.getElementById('toggle-vessel');
+    if (_pb) { _pb.textContent = '⛵ ' + _vesselProfile.vesselName; _pb.classList.add('active'); }
+  }
 
   map.addLayer(lockGroup);
   map.addLayer(notesGroup);
@@ -6818,23 +6885,70 @@ function _downloadJSON(obj, filename) {
   <div id="notes-list"></div>
 </div>
 
-<!-- Feature 1: Vessel Profile Panel -->
-<div id="vessel-panel" style="display:none;position:fixed;top:110px;right:20px;z-index:2000;background:#1a2a3a;border:1px solid #3a5a7a;border-radius:10px;padding:16px;min-width:240px;box-shadow:0 4px 20px rgba(0,0,0,0.5)">
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-    <span style="font-weight:700;color:#7ad4ef">⚓ My Vessel</span>
-    <button onclick="document.getElementById('vessel-panel').style.display='none'" style="background:none;border:none;color:#aaa;font-size:18px;cursor:pointer">×</button>
+<!-- Feature 1: Vessel Profile Modal -->
+<div id="profile-modal" style="display:none">
+  <div id="profile-backdrop" onclick="closeProfileModal()"></div>
+  <div id="profile-panel">
+    <div class="prof-header">
+      <h3>⛵ My Vessel Profile</h3>
+      <button onclick="closeProfileModal()" title="Close">✕</button>
+    </div>
+    <div class="prof-body">
+      <div class="prof-section-title">🚢 Vessel Identity</div>
+      <div class="prof-row">
+        <label>Vessel Name</label>
+        <input id="prof-vessel-name" type="text" placeholder="e.g. Dolce Vita">
+      </div>
+      <div class="prof-row">
+        <label>Home Port</label>
+        <input id="prof-home-port" type="text" placeholder="e.g. Lyon, Port de Plaisance">
+      </div>
+      <div class="prof-section-title">📐 Vessel Dimensions</div>
+      <div class="prof-grid">
+        <div class="prof-row">
+          <label>Air Draught (m)</label>
+          <input id="prof-air-draught" type="number" step="0.1" min="0" max="20" placeholder="3.5">
+          <span class="prof-hint">Max height above waterline — checked against route bridge clearances</span>
+        </div>
+        <div class="prof-row">
+          <label>Water Draught (m)</label>
+          <input id="prof-water-draught" type="number" step="0.1" min="0" max="5" placeholder="1.5">
+          <span class="prof-hint">Max depth below waterline — checked against route minimums</span>
+        </div>
+        <div class="prof-row">
+          <label>Length Overall (m)</label>
+          <input id="prof-length" type="number" step="0.5" min="0" max="100" placeholder="12">
+          <span class="prof-hint">French canal locks max ~38.5 m</span>
+        </div>
+        <div class="prof-row">
+          <label>Beam (m)</label>
+          <input id="prof-beam" type="number" step="0.1" min="0" max="10" placeholder="4.0">
+          <span class="prof-hint">Width — most French canals max 5.0 m</span>
+        </div>
+      </div>
+      <div class="prof-section-title">⏱ Cruise Planning</div>
+      <div class="prof-grid">
+        <div class="prof-row">
+          <label>Cruise Speed (km/h)</label>
+          <input id="prof-speed" type="number" step="0.5" min="2" max="20" placeholder="7">
+          <span class="prof-hint">Typical canal limit: 6–8 km/h</span>
+        </div>
+        <div class="prof-row">
+          <label>Hours per Day</label>
+          <input id="prof-hours" type="number" step="0.5" min="1" max="16" placeholder="8">
+          <span class="prof-hint">Daily cruising hours (incl. locks)</span>
+        </div>
+      </div>
+      <div style="font-size:11px;color:#4a7a6a;margin-top:4px;line-height:1.5">
+        ℹ️ Locks are estimated at 30 min each. Journey days update automatically in Route Planner.
+      </div>
+      <div class="prof-actions">
+        <button class="prof-save-btn" onclick="saveProfile()">💾 Save Profile</button>
+        <button class="prof-reset-btn" onclick="resetProfile()">↺ Reset Defaults</button>
+      </div>
+      <div class="prof-toast" id="prof-toast"></div>
+    </div>
   </div>
-  <label style="display:block;font-size:12px;color:#aaa;margin-bottom:4px">Air draught (m)</label>
-  <input id="vessel-air" type="number" step="0.1" min="0" max="20" placeholder="e.g. 3.5" style="width:100%;padding:6px;background:#0d1b2a;border:1px solid #3a5a7a;border-radius:6px;color:#eee;font-size:13px;margin-bottom:10px">
-  <label style="display:block;font-size:12px;color:#aaa;margin-bottom:4px">Water draught (m)</label>
-  <input id="vessel-draught" type="number" step="0.1" min="0" max="5" placeholder="e.g. 1.2" style="width:100%;padding:6px;background:#0d1b2a;border:1px solid #3a5a7a;border-radius:6px;color:#eee;font-size:13px;margin-bottom:10px">
-  <label style="display:block;font-size:12px;color:#aaa;margin-bottom:4px">Length (m) <span style="color:#555">(optional)</span></label>
-  <input id="vessel-length" type="number" step="1" min="0" max="200" placeholder="e.g. 12" style="width:100%;padding:6px;background:#0d1b2a;border:1px solid #3a5a7a;border-radius:6px;color:#eee;font-size:13px;margin-bottom:12px">
-  <div style="display:flex;gap:8px">
-    <button onclick="saveVesselProfile()" style="flex:1;padding:8px;background:#2a7aaf;border:none;border-radius:6px;color:#fff;font-size:13px;cursor:pointer;font-weight:600">✓ Save</button>
-    <button onclick="clearVesselProfile()" style="flex:1;padding:8px;background:#333;border:1px solid #555;border-radius:6px;color:#aaa;font-size:13px;cursor:pointer">Clear</button>
-  </div>
-  <div id="vessel-status" style="margin-top:8px;font-size:11px;color:#5bc0de;text-align:center"></div>
 </div>
 
 </body>
