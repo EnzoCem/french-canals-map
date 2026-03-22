@@ -1090,6 +1090,14 @@
     <button class="toggle-btn" id="toggle-vessel" onclick="openProfileModal()" title="Your vessel profile &amp; cruise settings">⛵ Profile</button>
     <button class="toggle-btn" id="toggle-chomages" onclick="toggleLayer('chomages')" title="Show VNF maintenance closures">🚧 Chômages</button>
   </div>
+  <div class="control-group">
+    <label>Map:</label>
+    <button class="toggle-btn active" id="btn-map-ign"       onclick="setBaseLayer('ign')"       title="IGN France — best detail on French waterways">🗺 IGN</button>
+    <button class="toggle-btn"        id="btn-map-sat"       onclick="setBaseLayer('satellite')"  title="ESRI satellite imagery">🛰 Satellite</button>
+    <button class="toggle-btn"        id="btn-map-topo"      onclick="setBaseLayer('topo')"       title="OpenTopoMap — terrain &amp; contours">🏔 Topo</button>
+    <button class="toggle-btn"        id="btn-map-carto"     onclick="setBaseLayer('carto')"      title="CartoDB Voyager (OSM-based)">🗺 OSM</button>
+    <button class="toggle-btn"        id="btn-map-seamark"   onclick="toggleSeamark()"            title="OpenSeaMap nautical overlay — locks, lights, buoys, bridge heights">⚓ SeaMarks</button>
+  </div>
   <div class="control-group" id="vessel-filter-group" style="background:#0d1e33;border:1px solid #1a4a7a;border-radius:6px;padding:4px 8px;gap:5px;align-items:center">
     <span style="font-size:12px;white-space:nowrap">🚢 Draft:</span>
     <input type="number" id="vf-draft" min="0" max="5" step="0.1" placeholder="0.0"
@@ -3064,9 +3072,81 @@ const cartoLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/vo
 });
 
 const esriLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
-  attribution: 'Tiles © Esri',
+  attribution: 'Tiles &copy; Esri',
   maxZoom: 18,
 });
+
+// ── ESRI World Imagery (satellite) ───────────────────────────────────────
+const esriSatLayer = L.tileLayer(
+  'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+  {
+    attribution: 'Tiles &copy; Esri &mdash; Source: Esri, Earthstar Geographics',
+    maxZoom: 19,
+  }
+);
+
+// ── Satellite labels overlay (CartoDB labels only, transparent) ──────────
+// Shown automatically on top of satellite so place names remain visible
+const satLabelsLayer = L.tileLayer(
+  'https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png',
+  { subdomains: 'abcd', maxZoom: 19, opacity: 0.9, pane: 'overlayPane' }
+);
+
+// ── OpenTopoMap ───────────────────────────────────────────────────────────
+const openTopoLayer = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+  attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | Map: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)',
+  subdomains: 'abc',
+  maxZoom: 17,
+});
+
+// ── OpenSeaMap nautical overlay ───────────────────────────────────────────
+const seamarkLayer = L.tileLayer('https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png', {
+  attribution: '&copy; <a href="https://www.openseamap.org">OpenSeaMap</a> contributors',
+  maxZoom: 18,
+  opacity: 0.85,
+});
+
+// ── Base layer registry & switcher ───────────────────────────────────────
+const _baseLayers = {
+  ign:       ignLayer,
+  satellite: esriSatLayer,
+  topo:      openTopoLayer,
+  carto:     cartoLayer,
+};
+let _activeBase = 'ign';
+let _seamarkOn  = false;
+
+function setBaseLayer(name) {
+  if (!_baseLayers[name] || name === _activeBase) return;
+  // Remove current base
+  Object.values(_baseLayers).forEach(function(l) { if (map.hasLayer(l)) map.removeLayer(l); });
+  // Remove satellite labels if switching away from satellite
+  if (_activeBase === 'satellite' && map.hasLayer(satLabelsLayer)) map.removeLayer(satLabelsLayer);
+  // Add new base
+  _baseLayers[name].addTo(map);
+  // Satellite: add transparent label overlay so place names stay visible
+  if (name === 'satellite') satLabelsLayer.addTo(map);
+  _activeBase = name;
+  // Update button active states
+  ['ign','sat','topo','carto'].forEach(function(k) {
+    var btn = document.getElementById('btn-map-' + k);
+    if (btn) btn.classList.toggle('active', k === name);
+  });
+  // Re-raise waterway + marker layers so they sit on top of new base
+  if (typeof waterwayLayer !== 'undefined') waterwayLayer.bringToFront();
+}
+
+function toggleSeamark() {
+  _seamarkOn = !_seamarkOn;
+  if (_seamarkOn) {
+    seamarkLayer.addTo(map);
+    seamarkLayer.bringToFront();
+  } else {
+    map.removeLayer(seamarkLayer);
+  }
+  var btn = document.getElementById('btn-map-seamark');
+  if (btn) btn.classList.toggle('active', _seamarkOn);
+}
 
 // Start with IGN France (best for French canals — shows waterway detail)
 ignLayer.addTo(map);
@@ -3076,22 +3156,6 @@ map.on('popupopen', function() {
   if (editModeActive) map.closePopup();
 });
 
-// ── OpenSeaMap nautical overlay ───────────────────────────────────────────
-const seamarkLayer = L.tileLayer('https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png', {
-  attribution: '© <a href="https://www.openseamap.org">OpenSeaMap</a>',
-  maxZoom: 18,
-  opacity: 0.8,
-});
-
-// ── Tile layer switcher (base maps + overlays) ───────────────────────────
-const baseMaps = {
-  '🗺 IGN France (recommended)': ignLayer,
-  '🗺 CartoDB Voyager (OSM-based)': cartoLayer,
-  '🗺 ESRI Topo': esriLayer,
-};
-// Note: raw OpenStreetMap tiles are omitted — they require an HTTP Referer
-// header and return 403 when the file is opened via file://
-// Overlays will be added after waterwayLayer is created
 
 // Route polylines removed — actual canal/river geometry is now drawn
 // via the WATERWAY_GEOJSON overlay (buildWaterwayOverlay).
@@ -4275,15 +4339,8 @@ function buildWaterwayOverlay() {
   // Add BELOW route lines so waypoint dots remain visible
   waterwayLayer.addTo(map);
 
-  // Now set up the layer control with the overlay
-  const overlayMaps = {
-    '🌊 Canal/River routes': waterwayLayer,
-    '⚓ Nautical marks (OpenSeaMap)': seamarkLayer,
-  };
-  L.control.layers(baseMaps, overlayMaps, {
-    position: 'topright',
-    collapsed: true,
-  }).addTo(map);
+  // Waterway layer is toggled via the existing 🌊 Canals button in the controls bar.
+  // Base layers and SeaMarks are switched via the Map: row in the controls bar.
 }
 
 // ============================================================
@@ -4330,7 +4387,7 @@ function init() {
   hint.onAdd = () => {
     const d = L.DomUtil.create('div');
     d.style.cssText = 'background:rgba(22,33,62,0.85);color:#8ab4c2;padding:5px 10px;border-radius:4px;font-size:11px;pointer-events:none';
-    d.innerHTML = '💡 Click markers for details · Double-click map to add pin · Use 🗺 icon (top-right) to switch map style';
+    d.innerHTML = '💡 Click markers for details · Double-click map to add pin · Use Map row in toolbar to switch base layer or enable ⚓ SeaMarks';
     return d;
   };
   hint.addTo(map);
