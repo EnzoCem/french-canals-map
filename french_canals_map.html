@@ -1045,6 +1045,35 @@
 .chomage-icon.maintenance { background: rgba(230,126,34,0.9); border-color: #e67e22; }
 .chomage-icon.repair { background: rgba(241,196,15,0.9); border-color: #f1c40f; }
 
+/* ── Live Locks (Overpass zoom layer) ────────────────────────── */
+.live-lock-dot {
+  background: #e67e22; border: 2px solid #f39c12; border-radius: 4px;
+  width: 18px; height: 18px; display: flex; align-items: center; justify-content: center;
+  font-size: 11px; box-shadow: 0 1px 5px rgba(0,0,0,0.55); cursor: pointer;
+}
+.live-lock-popup .ll-title { font-weight: 700; color: #f39c12; font-size: 13px; margin-bottom: 3px; }
+.live-lock-popup .ll-lift  { font-size: 11px; color: #2ecc71; margin-top: 3px; }
+.live-lock-popup .ll-hours { font-size: 11px; color: #5bc0de; margin-top: 3px; }
+.live-lock-popup .ll-op    { font-size: 10px; color: #7a9ab0; margin-top: 2px; }
+.live-lock-popup .ll-ref   { color: #7a9ab0; }
+/* Route planner lock strip */
+.rp-locks-section { margin: 8px 0; }
+.rp-locks-header {
+  display: flex; align-items: center; gap: 8px; cursor: pointer;
+  padding: 8px 11px; background: rgba(243,156,18,0.1);
+  border: 1px solid rgba(243,156,18,0.3); border-radius: 7px;
+  font-size: 13px; color: #f0ad4e; font-weight: 600; user-select: none;
+}
+.rp-locks-header:hover { background: rgba(243,156,18,0.18); }
+.rp-locks-count { margin-left: auto; font-size: 11px; color: #f39c12; }
+.rp-locks-list  { margin-top: 5px; max-height: 240px; overflow-y: auto; border-radius: 5px; border: 1px solid rgba(255,255,255,0.06); }
+.rp-lock-item   { display: flex; align-items: baseline; gap: 7px; padding: 5px 9px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 12px; }
+.rp-lock-item:last-child { border-bottom: none; }
+.rp-lock-name   { color: #ddd; flex: 1; }
+.rp-lock-ref    { color: #7a9ab0; font-size: 11px; white-space: nowrap; }
+.rp-lock-lift   { color: #2ecc71; font-size: 11px; white-space: nowrap; }
+.rp-locks-loading { text-align: center; padding: 10px; font-size: 12px; color: #5a7a8a; font-style: italic; }
+
 </style>
 </head>
 <body>
@@ -3171,6 +3200,7 @@ const halteGroup   = L.layerGroup();
 const portGroup    = L.layerGroup();
 let michelinGroup  = L.layerGroup();
 let fuelGroup      = L.layerGroup(); // Feature 5: fuel/water stations
+let liveLocksGroup = L.layerGroup(); // Live lock positions from Overpass (zoom ≥ 12)
 
 const clusterGroup = L.markerClusterGroup({
   chunkedLoading: true,
@@ -4388,6 +4418,8 @@ function init() {
 
   map.addLayer(lockGroup);
   map.addLayer(notesGroup);
+  map.addLayer(liveLocksGroup);
+  scheduleLockFetch(); // load locks for initial viewport if zoomed in enough
 
   // Double-click to add a custom waypoint
   map.on('dblclick', function(e) {
@@ -5416,6 +5448,191 @@ map.on('moveend', function() {
 });
 
 // ============================================================
+//  LIVE LOCKS — Overpass query at zoom ≥ 12
+// ============================================================
+const LOCK_ZOOM_MIN = 12;
+const _lockCache = {};
+var _lockFetchTimer = null;
+var _lastLockBboxKey = null;
+
+function _lockBboxKey(b) {
+  return [b.getSouth().toFixed(2), b.getWest().toFixed(2),
+          b.getNorth().toFixed(2), b.getEast().toFixed(2)].join(',');
+}
+
+function scheduleLockFetch() {
+  clearTimeout(_lockFetchTimer);
+  _lockFetchTimer = setTimeout(fetchLocksInView, 700);
+}
+
+async function fetchLocksInView() {
+  const zoom = map.getZoom();
+  if (zoom < LOCK_ZOOM_MIN) {
+    liveLocksGroup.clearLayers();
+    _lastLockBboxKey = null;
+    return;
+  }
+  const bounds = map.getBounds().pad(0.05);
+  const key = _lockBboxKey(bounds);
+  if (key === _lastLockBboxKey) return;
+  _lastLockBboxKey = key;
+
+  if (_lockCache[key]) {
+    renderLiveLocks(_lockCache[key]);
+    return;
+  }
+  const bb = `${bounds.getSouth()},${bounds.getWest()},${bounds.getNorth()},${bounds.getEast()}`;
+  // Query lock chambers (way) — one per lock, already deduplicated
+  // Also query gate nodes as fallback for areas where ways aren't mapped
+  const q = `[out:json][timeout:25];(way["waterway"="lock"](${bb});node["waterway"="lock_gate"](${bb}););out center tags;`;
+  try {
+    const r = await fetch('https://overpass-api.de/api/interpreter', {
+      method: 'POST', body: 'data=' + encodeURIComponent(q)
+    });
+    const d = await r.json();
+    _lockCache[key] = d.elements || [];
+    renderLiveLocks(_lockCache[key]);
+  } catch(e) { /* silently fail — locks are a bonus layer */ }
+}
+
+function renderLiveLocks(elements) {
+  liveLocksGroup.clearLayers();
+  // Prefer way centres (one per lock chamber) then fill in lone gate nodes
+  const ways  = elements.filter(e => e.type === 'way' && e.center);
+  const nodes = elements.filter(e => e.type === 'node');
+  const placed = [];
+  ways.forEach(function(w) {
+    placeLiveLock(w.center.lat, w.center.lon, w.tags || {});
+    placed.push({ lat: w.center.lat, lon: w.center.lon });
+  });
+  nodes.forEach(function(n) {
+    // Skip gate nodes within ~150 m of an already-placed way centre
+    const dup = placed.some(p =>
+      Math.abs(p.lat - n.lat) < 0.0014 && Math.abs(p.lon - n.lon) < 0.0018);
+    if (!dup) {
+      placeLiveLock(n.lat, n.lon, n.tags || {});
+      placed.push({ lat: n.lat, lon: n.lon });
+    }
+  });
+}
+
+function placeLiveLock(lat, lon, tags) {
+  const rawName = tags.name || tags['lock:name'] || null;
+  const ref     = tags.ref  || null;
+  const name    = rawName || (ref ? 'Écluse ' + ref : 'Écluse');
+  const liftVal = tags['lock:lift'] || tags.lift || null;
+  const liftHtml  = liftVal  ? `<div class="ll-lift">↑ ${liftVal} m rise</div>` : '';
+  const hoursHtml = tags.opening_hours ? `<div class="ll-hours">🕐 ${tags.opening_hours}</div>` : '';
+  const opHtml    = tags.operator ? `<div class="ll-op">${tags.operator}</div>` : '';
+  const refHtml   = ref && rawName ? `<span class="ll-ref"> · #${ref}</span>` : '';
+
+  const icon = L.divIcon({
+    className: '',
+    html: '<div class="live-lock-dot">🔒</div>',
+    iconSize: [18, 18],
+    iconAnchor: [9, 9],
+  });
+  const m = L.marker([lat, lon], { icon, zIndexOffset: 60 });
+  m.bindPopup(
+    `<div class="live-lock-popup">
+      <div class="ll-title">🔒 ${name}${refHtml}</div>
+      ${liftHtml}${opHtml}${hoursHtml}
+    </div>`, { maxWidth: 240 }
+  );
+  m.addTo(liveLocksGroup);
+}
+
+map.on('moveend', scheduleLockFetch);
+map.on('zoomend', scheduleLockFetch);
+
+// ── Route planner: locks along the planned route ──────────────────────────
+async function fetchRouteLocksSection(allIds) {
+  // Remove any previous lock section
+  var old = document.getElementById('rp-locks-section');
+  if (old) old.remove();
+
+  const wps = allIds.map(id => WAYPOINTS.find(w => w.id === id)).filter(Boolean);
+  if (wps.length < 2) return;
+
+  const lats = wps.map(w => w.lat), lons = wps.map(w => w.lon);
+  const south = (Math.min(...lats) - 0.1).toFixed(4);
+  const north = (Math.max(...lats) + 0.1).toFixed(4);
+  const west  = (Math.min(...lons) - 0.1).toFixed(4);
+  const east  = (Math.max(...lons) + 0.1).toFixed(4);
+
+  // Inject loading placeholder before the map-buttons div
+  const resultsEl = document.getElementById('rp-results');
+  if (!resultsEl) return;
+  const sec = document.createElement('div');
+  sec.id = 'rp-locks-section';
+  sec.className = 'rp-locks-section';
+  sec.innerHTML = '<div class="rp-locks-loading">🔒 Loading locks along route…</div>';
+  const mapBtns = document.getElementById('rp-map-btns');
+  if (mapBtns) resultsEl.insertBefore(sec, mapBtns);
+  else resultsEl.appendChild(sec);
+
+  const bb = `${south},${west},${north},${east}`;
+  const q  = `[out:json][timeout:30];(way["waterway"="lock"](${bb});node["waterway"="lock_gate"](${bb}););out center tags;`;
+  try {
+    const r = await fetch('https://overpass-api.de/api/interpreter', {
+      method: 'POST', body: 'data=' + encodeURIComponent(q)
+    });
+    const d = await r.json();
+    renderRouteLocks(sec, d.elements || []);
+  } catch(e) {
+    sec.innerHTML = '<div class="rp-locks-loading">⚠️ Could not load lock positions</div>';
+  }
+}
+
+function renderRouteLocks(container, elements) {
+  // Deduplicate: prefer ways, filter close gate nodes
+  const ways  = elements.filter(e => e.type === 'way'  && e.center);
+  const nodes = elements.filter(e => e.type === 'node');
+  const locks = [];
+  ways.forEach(w  => locks.push({ lat: w.center.lat, lon: w.center.lon, tags: w.tags || {} }));
+  nodes.forEach(n => {
+    const dup = locks.some(p =>
+      Math.abs(p.lat - n.lat) < 0.0014 && Math.abs(p.lon - n.lon) < 0.0018);
+    if (!dup) locks.push({ lat: n.lat, lon: n.lon, tags: n.tags || {} });
+  });
+
+  if (!locks.length) { container.innerHTML = ''; return; }
+
+  // Sort roughly by longitude (works for most west→east French routes)
+  locks.sort((a, b) => a.lon - b.lon);
+
+  const total   = locks.length;
+  const display = locks.slice(0, 40);
+
+  let html = `<div class="rp-locks-header" onclick="
+    var l=this.nextElementSibling;
+    l.style.display=l.style.display==='none'?'block':'none';
+    this.querySelector('.rp-locks-count').textContent=
+      l.style.display==='none'?'${total} locks ▾':'${total} locks ▴';">
+    🔒 Locks along this route
+    <span class="rp-locks-count">${total} locks ▾</span>
+  </div>
+  <div class="rp-locks-list" style="display:none">`;
+
+  display.forEach(function(lock) {
+    const t    = lock.tags;
+    const name = t.name || t['lock:name'] || (t.ref ? 'Écluse ' + t.ref : 'Unnamed lock');
+    const ref  = t.ref && t.name ? `<span class="rp-lock-ref">#${t.ref}</span>` : '';
+    const lift = (t['lock:lift'] || t.lift) ?
+      `<span class="rp-lock-lift">↑ ${t['lock:lift'] || t.lift} m</span>` : '';
+    html += `<div class="rp-lock-item">
+      <span class="rp-lock-name">${name}</span>${ref}${lift}
+    </div>`;
+  });
+  if (total > 40) {
+    html += `<div class="rp-lock-item" style="color:#5a7a8a;font-style:italic">
+      …and ${total - 40} more</div>`;
+  }
+  html += '</div>';
+  container.innerHTML = html;
+}
+
+// ============================================================
 //  FEATURE 6: Lock Opening Hours data
 // ============================================================
 var LOCK_HOURS = {
@@ -5507,6 +5724,9 @@ function calculateRoute() {
   // Phase 3: populate Places Along Route section
   var _poiRouteStops = allIds.map(function(id) { return WAYPOINTS.find(function(w) { return w.id === id; }); }).filter(Boolean);
   renderRoutePOIsSection(_poiRouteStops);
+
+  // Locks along route — async fetch, injected into results panel
+  fetchRouteLocksSection(allIds);
 
   const mapBtns = document.createElement('div');
   mapBtns.className = 'rp-map-btns';
