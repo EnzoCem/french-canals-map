@@ -1109,7 +1109,8 @@
            style="width:46px;background:#16213e;border:1px solid #1a5276;border-radius:4px;color:#eee;font-size:12px;padding:3px 5px;text-align:center"
            oninput="applyVesselFilter()">
     <span style="font-size:11px;color:#5a7a8a">m</span>
-    <button onclick="clearVesselFilter()" title="Clear vessel filter" style="background:none;border:none;color:#e87a7a;font-size:14px;cursor:pointer;padding:0 2px;line-height:1" id="vf-clear-btn">✕</button>
+    <button onclick="applyProfileToFilter()" id="vf-profile-btn" title="Fill from your saved Profile dimensions" style="background:rgba(91,192,222,0.12);border:1px solid #1a5276;border-radius:4px;color:#5bc0de;font-size:11px;cursor:pointer;padding:2px 6px;white-space:nowrap">⛵ Profile</button>
+    <button onclick="clearVesselFilter()" title="Clear filter" style="background:none;border:none;color:#e87a7a;font-size:14px;cursor:pointer;padding:0 2px;line-height:1" id="vf-clear-btn">✕</button>
   </div>
   <div id="search-wrap">
     <input type="text" id="search-box" placeholder="🔍 Search place…"
@@ -3679,6 +3680,12 @@ function saveProfile() {
   if (btn) btn.textContent = _vesselProfile.vesselName ? '⛵ ' + _vesselProfile.vesselName : '⛵ Profile';
   if (btn) btn.classList.toggle('active', !!(
     _vesselProfile.air || _vesselProfile.draught || _vesselProfile.vesselName));
+  // Sync draft filter inputs with new profile values
+  var _vd = document.getElementById('vf-draft');
+  var _va = document.getElementById('vf-air');
+  if (_vd && _vesselProfile.draught) { _vd.value = _vesselProfile.draught; }
+  if (_va && _vesselProfile.air)     { _va.value = _vesselProfile.air; }
+  if (_vesselProfile.draught || _vesselProfile.air) applyVesselFilter();
   // Refresh route if open
   if (typeof _lastRouteSegments !== 'undefined' && _lastRouteSegments && _lastRouteSegments.length) {
     if (typeof calculateRoute === 'function') calculateRoute();
@@ -3770,6 +3777,18 @@ const VESSEL_WATERWAY_DIMS = {
 
 var vesselDraft = 0;
 var vesselAirDraught = 0;
+
+function applyProfileToFilter() {
+  var d = document.getElementById('vf-draft');
+  var a = document.getElementById('vf-air');
+  if (_vesselProfile.draught) { if (d) d.value = _vesselProfile.draught; }
+  if (_vesselProfile.air)     { if (a) a.value = _vesselProfile.air; }
+  if (!_vesselProfile.draught && !_vesselProfile.air) {
+    alert('No dimensions saved in your Profile yet. Open ⛵ Profile to set your water draught and air draught.');
+    return;
+  }
+  applyVesselFilter();
+}
 
 function applyVesselFilter() {
   var draftInput = document.getElementById('vf-draft');
@@ -4357,6 +4376,14 @@ function init() {
   if (_vesselProfile.vesselName) {
     var _pb = document.getElementById('toggle-vessel');
     if (_pb) { _pb.textContent = '⛵ ' + _vesselProfile.vesselName; _pb.classList.add('active'); }
+  }
+  // Auto-fill draft filter from saved profile
+  if (_vesselProfile.draught || _vesselProfile.air) {
+    var _vd = document.getElementById('vf-draft');
+    var _va = document.getElementById('vf-air');
+    if (_vd && _vesselProfile.draught) _vd.value = _vesselProfile.draught;
+    if (_va && _vesselProfile.air)     _va.value = _vesselProfile.air;
+    applyVesselFilter();
   }
 
   map.addLayer(lockGroup);
