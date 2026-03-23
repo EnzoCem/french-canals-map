@@ -4107,29 +4107,35 @@ function searchPlaces(query) {
   }
 
   const q = query.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+  const norm = s => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
 
   // Find matching waypoints (name + desc)
-  const matches = WAYPOINTS.filter(w => {
-    const n = w.name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
-    const d = (w.desc||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
-    return n.includes(q) || d.includes(q);
-  });
+  const wpMatches = WAYPOINTS.filter(w => norm(w.name).includes(q) || norm(w.desc||'').includes(q));
 
-  // Update map: show only matching markers
+  // Find matching moorings (name + waterway)
+  const mMatches = MOORINGS.filter(m => norm(m.name).includes(q) || norm(m.waterway||'').includes(q));
+
+  const totalCount = wpMatches.length + mMatches.length;
+
+  // Update map: show only matching waypoint markers
   clusterGroup.clearLayers();
-  const matchIds = new Set(matches.map(w => w.id));
+  const matchIds = new Set(wpMatches.map(w => w.id));
   allMarkers.forEach(m => { if (matchIds.has(m._waypointId)) clusterGroup.addLayer(m); });
   document.getElementById('stats').textContent =
-    matches.length ? `${matches.length} result${matches.length>1?'s':''} for "${query}"` : `No results for "${query}"`;
+    totalCount ? `${totalCount} result${totalCount>1?'s':''} for "${query}"` : `No results for "${query}"`;
 
-  // Build dropdown (max 8 + overflow note)
+  // Build dropdown (max 8 + overflow note, waypoints first then moorings)
   const MAX = 8;
   const routeMap = {};
   ROUTES.forEach(r => { routeMap[r.num] = r.canal; });
 
   dd.innerHTML = '';
-  const shown = matches.slice(0, MAX);
-  shown.forEach((w, i) => {
+  const shownWp = wpMatches.slice(0, MAX);
+  const remainSlots = Math.max(0, MAX - shownWp.length);
+  const shownM  = mMatches.slice(0, remainSlots);
+  const totalShown = shownWp.length + shownM.length;
+
+  shownWp.forEach(w => {
     const item = document.createElement('div');
     item.className = 'sd-item';
     item.dataset.id = w.id;
@@ -4138,21 +4144,35 @@ function searchPlaces(query) {
     item.addEventListener('mousedown', (e) => { e.preventDefault(); selectSearchResult(w.id); });
     dd.appendChild(item);
   });
-  if (matches.length > MAX) {
+
+  shownM.forEach(m => {
+    const item = document.createElement('div');
+    item.className = 'sd-item';
+    item.dataset.id = m.id;
+    const typeIcon = m.type === 'port' ? '⚓' : '🚢';
+    item.innerHTML = `<span class="sd-name">${m.name}</span>
+      <span class="sd-sub">${typeIcon} ${m.type==='port'?'Port':'Halte'} · ${m.waterway||''}</span>`;
+    item.addEventListener('mousedown', (e) => { e.preventDefault(); selectSearchResultMooring(m.id); });
+    dd.appendChild(item);
+  });
+
+  if (totalCount > MAX) {
     const more = document.createElement('div');
     more.className = 'sd-more';
-    more.textContent = `+ ${matches.length - MAX} more — keep typing to narrow down`;
+    more.textContent = `+ ${totalCount - totalShown} more — keep typing to narrow down`;
     dd.appendChild(more);
   }
-  dd.style.display = matches.length ? 'block' : 'none';
+  dd.style.display = totalCount ? 'block' : 'none';
 
-  // Auto-pan: fit all matches if ≤ 20, or just the first if 1
-  const markerList = shown.map(w => allMarkers.find(m => m._waypointId === w.id)).filter(Boolean);
-  if (markerList.length === 1) {
-    map.flyTo(markerList[0].getLatLng(), Math.max(map.getZoom(), 12), {duration:0.8});
-  } else if (markerList.length > 1) {
-    const bounds = L.featureGroup(markerList).getBounds();
-    if (bounds.isValid()) map.fitBounds(bounds, {padding:[60,60], maxZoom:13});
+  // Auto-pan: prefer waypoint markers, fall back to mooring markers
+  const wpMarkerList = shownWp.map(w => allMarkers.find(m => m._waypointId === w.id)).filter(Boolean);
+  const mMarkerList  = shownM.map(m => allMooringMarkers.find(x => x._mooringId === m.id)).filter(Boolean);
+  const allVisible   = [...wpMarkerList, ...mMarkerList];
+  if (allVisible.length === 1) {
+    map.flyTo(allVisible[0].getLatLng(), Math.max(map.getZoom(), 14), {duration:0.8});
+  } else if (allVisible.length > 1) {
+    const bounds = L.featureGroup(allVisible).getBounds();
+    if (bounds.isValid()) map.fitBounds(bounds, {padding:[60,60], maxZoom:14});
   }
 }
 
@@ -4176,6 +4196,20 @@ function selectSearchResult(waypointId) {
   });
 }
 
+function selectSearchResultMooring(mooringId) {
+  const m = MOORINGS.find(x => x.id === mooringId);
+  if (!m) return;
+  document.getElementById('search-dropdown').style.display = 'none';
+  document.getElementById('search-box').value = '';
+  buildMarkers();
+  updateStats();
+  map.flyTo([m.lat, m.lon], 16, {duration: 1.0});
+  map.once('moveend', function() {
+    const marker = allMooringMarkers.find(x => x._mooringId === m.id);
+    if (marker) marker.openPopup();
+  });
+}
+
 function searchKeyNav(e) {
   const dd = document.getElementById('search-dropdown');
   const items = dd.querySelectorAll('.sd-item');
@@ -4188,7 +4222,9 @@ function searchKeyNav(e) {
     _searchDdIdx = Math.max(_searchDdIdx - 1, 0);
   } else if (e.key === 'Enter' && _searchDdIdx >= 0) {
     e.preventDefault();
-    selectSearchResult(items[_searchDdIdx].dataset.id);
+    const selId = items[_searchDdIdx].dataset.id;
+    if (selId && selId.startsWith('m0')) selectSearchResultMooring(selId);
+    else selectSearchResult(selId);
     return;
   } else if (e.key === 'Escape') {
     dd.style.display = 'none';
