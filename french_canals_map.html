@@ -3764,54 +3764,13 @@ function _vesselCheckSegment(seg) {
 
 // ============================================================
 //  FEATURE 1b: Waterway depth/height quick filter
-// ============================================================
-// Per-route max dimensions (realistic French waterway data)
-const VESSEL_WATERWAY_DIMS = {
-  1:  { maxDraft: 2.2, maxAirDraught: 6.0 },   // River Seine
-  2:  { maxDraft: 1.8, maxAirDraught: 3.8 },   // Canal du Loing
-  3:  { maxDraft: 1.8, maxAirDraught: 3.5 },   // Canal de Briare
-  4:  { maxDraft: 1.8, maxAirDraught: 3.5 },   // Canal Latéral à la Loire
-  5:  { maxDraft: 1.6, maxAirDraught: 3.5 },   // Canal du Centre
-  6:  { maxDraft: 2.5, maxAirDraught: 7.0 },   // Saône
-  7:  { maxDraft: 1.6, maxAirDraught: 3.4 },   // Canal de Bourgogne
-  8:  { maxDraft: 1.2, maxAirDraught: 2.7 },   // Canal du Nivernais
-  9:  { maxDraft: 1.6, maxAirDraught: 3.5 },   // Canal Latéral à la Loire south
-  10: { maxDraft: 1.0, maxAirDraught: 2.5 },   // Canal du Berry
-  11: { maxDraft: 1.8, maxAirDraught: 3.7 },   // Canal de la Marne à la Saône
-  12: { maxDraft: 1.8, maxAirDraught: 3.7 },   // Canal entre Champagne et Bourgogne
-  13: { maxDraft: 2.5, maxAirDraught: 7.5 },   // Moselle
-  14: { maxDraft: 1.8, maxAirDraught: 3.7 },   // Canal de la Marne au Rhin
-  15: { maxDraft: 1.8, maxAirDraught: 3.7 },   // Canal de l'Est branche nord
-  16: { maxDraft: 1.8, maxAirDraught: 4.0 },   // Meuse
-  17: { maxDraft: 1.6, maxAirDraught: 3.5 },   // Canal des Vosges / Est branche sud
-  18: { maxDraft: 3.0, maxAirDraught: 9.5 },   // Rhin
-  19: { maxDraft: 1.8, maxAirDraught: 4.0 },   // Canal du Rhône au Rhin
-  20: { maxDraft: 1.6, maxAirDraught: 3.5 },   // Doubs
-  21: { maxDraft: 1.6, maxAirDraught: 3.3 },   // Canal du Midi
-  22: { maxDraft: 1.4, maxAirDraught: 3.0 },   // Canal de la Robine
-  23: { maxDraft: 1.6, maxAirDraught: 3.5 },   // Canal du Rhône à Sète
-  24: { maxDraft: 2.8, maxAirDraught: 9.0 },   // Rhône
-  25: { maxDraft: 1.6, maxAirDraught: 3.5 },   // Canal latéral à la Garonne
-  26: { maxDraft: 3.0, maxAirDraught: 15.0 },  // Garonne/Gironde
-  27: { maxDraft: 1.4, maxAirDraught: 3.0 },   // Canal de Brienne
-  28: { maxDraft: 1.4, maxAirDraught: 3.2 },   // Canal Saint-Martin
-  29: { maxDraft: 1.8, maxAirDraught: 4.0 },   // Canal Saint-Denis
-  30: { maxDraft: 2.2, maxAirDraught: 5.5 },   // Marne
-  31: { maxDraft: 1.2, maxAirDraught: 2.7 },   // Canal de l'Ourcq
-  32: { maxDraft: 2.2, maxAirDraught: 5.0 },   // Canal du Nord
-  33: { maxDraft: 1.8, maxAirDraught: 3.8 },   // Canal de la Somme
-  34: { maxDraft: 1.8, maxAirDraught: 3.8 },   // Canal de Saint-Quentin
-  35: { maxDraft: 1.8, maxAirDraught: 3.7 },   // Canal de l'Aisne à la Marne
-  36: { maxDraft: 1.8, maxAirDraught: 4.5 },   // Aisne
-  37: { maxDraft: 2.2, maxAirDraught: 5.5 },   // Oise
-  38: { maxDraft: 1.6, maxAirDraught: 3.5 },   // Canal de Calais
-  39: { maxDraft: 2.2, maxAirDraught: 5.0 },   // Canal de Neufossé
-  40: { maxDraft: 2.0, maxAirDraught: 4.5 },   // Canal de la Sensée
-  41: { maxDraft: 1.8, maxAirDraught: 3.8 },   // Scarpe
-  42: { maxDraft: 2.0, maxAirDraught: 4.5 },   // Escaut
-  43: { maxDraft: 1.8, maxAirDraught: 4.0 },   // Lys
-  44: { maxDraft: 2.5, maxAirDraught: 6.0 },   // Canal de Dunkerque
-};
+// Route dimensions are taken directly from the ROUTES array (max_height / max_draught).
+// _routeDims(routeNum) returns {maxDraft, maxAirDraught} or null.
+function _routeDims(routeNum) {
+  var r = ROUTES.find(function(x) { return x.num === routeNum; });
+  if (!r) return null;
+  return { maxDraft: r.max_draught, maxAirDraught: r.max_height };
+}
 
 var vesselDraft = 0;
 var vesselAirDraught = 0;
@@ -3841,7 +3800,7 @@ function applyVesselFilter() {
   allMarkers.forEach(function(marker) {
     var wp = WAYPOINTS.find(function(w) { return w.id === marker._waypointId; });
     if (!wp) return;
-    var dims = VESSEL_WATERWAY_DIMS[wp.route];
+    var dims = _routeDims(wp.route);
     var blocked = false;
     if (dims) {
       if (vesselDraft      > 0 && vesselDraft      > dims.maxDraft)      blocked = true;
@@ -3870,7 +3829,7 @@ function applyVesselFilter() {
     });
     var blocked = false;
     if (routeNum) {
-      var dims = VESSEL_WATERWAY_DIMS[routeNum];
+      var dims = _routeDims(routeNum);
       if (dims) {
         if (vesselDraft      > 0 && vesselDraft      > dims.maxDraft)      blocked = true;
         if (vesselAirDraught > 0 && vesselAirDraught > dims.maxAirDraught) blocked = true;
