@@ -4461,21 +4461,47 @@ function init() {
   } else {
     var _wBtn = document.getElementById('toggle-waterways');
     if (_wBtn) { var _origTxt = _wBtn.textContent; _wBtn.textContent = '🌊 Loading…'; _wBtn.disabled = true; }
-    fetch('./waterways.geojson')
-      .then(function(r) {
-        if (!r.ok) throw new Error('waterways.geojson not found (status ' + r.status + ')');
-        return r.json();
-      })
-      .then(function(data) {
+    // Cache API: first visit fetches from network and stores locally;
+    // every subsequent visit loads instantly from the browser cache.
+    // Bump WATERWAYS_CACHE_VER whenever waterways.geojson is updated to
+    // force all clients to re-fetch the new file automatically.
+    var WATERWAYS_CACHE_VER = 'french-canals-waterways-v1';
+    var WATERWAYS_URL = './waterways.geojson';
+    (async function() {
+      try {
+        var data = null;
+        var fromCache = false;
+        if ('caches' in window) {
+          try {
+            var _cache = await caches.open(WATERWAYS_CACHE_VER);
+            var _cached = await _cache.match(WATERWAYS_URL);
+            if (_cached) { data = await _cached.json(); fromCache = true; }
+          } catch(e) { /* Cache API blocked (e.g. private browsing) — fall through */ }
+        }
+        if (!data) {
+          var _resp = await fetch(WATERWAYS_URL);
+          if (!_resp.ok) throw new Error('waterways.geojson not found (' + _resp.status + ')');
+          if ('caches' in window) {
+            try {
+              var _c2 = await caches.open(WATERWAYS_CACHE_VER);
+              await _c2.put(WATERWAYS_URL, _resp.clone());
+            } catch(e) { /* ignore cache-write failure */ }
+          }
+          data = await _resp.json();
+        }
         WATERWAY_GEOJSON = data;
         buildWaterwayOverlay();
-        if (_wBtn) { _wBtn.textContent = _origTxt; _wBtn.disabled = false; }
-      })
-      .catch(function(err) {
+        if (_wBtn) {
+          _wBtn.textContent = _origTxt;
+          _wBtn.disabled = false;
+          if (fromCache) _wBtn.title = 'Waterways loaded from local cache';
+        }
+      } catch(err) {
         console.warn('Waterway overlay could not load:', err);
         if (_wBtn) { _wBtn.textContent = '🌊 Canals ⚠'; _wBtn.disabled = false; }
         showEditToast('⚠ Waterway overlay failed to load');
-      });
+      }
+    })();
   }
   buildMarkers();
   buildMooringMarkers();
