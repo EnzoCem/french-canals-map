@@ -4426,7 +4426,7 @@ function init() {
     // 2. In parallel, send a HEAD request to check if the server has a newer ETag
     // 3. If ETag differs → silently re-fetch, update cache, rebuild overlay
     // localStorage key stores the last-seen ETag for comparison.
-    var WATERWAYS_CACHE_VER = 'french-canals-waterways-v1';
+    var WATERWAYS_CACHE_VER = 'french-canals-waterways-v2';
     var WATERWAYS_URL = './waterways.geojson';
     var WATERWAYS_ETAG_KEY = 'french_canals_waterways_etag_v1';
     (async function() {
