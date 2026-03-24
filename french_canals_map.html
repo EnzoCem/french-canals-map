@@ -4443,18 +4443,40 @@ function buildWaterwayOverlay() {
 // ============================================================
 function init() {
   // Load waterways asynchronously — renders below markers once ready
-  fetch('./waterways.geojson')
-    .then(function(r) {
-      if (!r.ok) throw new Error('waterways.geojson not found (status ' + r.status + ')');
-      return r.json();
-    })
-    .then(function(data) {
-      WATERWAY_GEOJSON = data;
-      buildWaterwayOverlay();
-    })
-    .catch(function(err) {
-      console.warn('Waterway overlay could not load:', err);
-    })
+  if (location.protocol === 'file:') {
+    // file:// blocks fetch() — show a banner pointing to the live URL
+    var _fileBanner = document.createElement('div');
+    _fileBanner.id = 'file-protocol-banner';
+    _fileBanner.innerHTML =
+      '🌊 Waterway overlay requires a server. ' +
+      '<a href="https://enzocem.github.io/french-canals-map/" target="_blank" ' +
+      'style="color:#ffd700;font-weight:700;">Open live version</a> for full features.';
+    _fileBanner.style.cssText =
+      'position:fixed;bottom:10px;left:50%;transform:translateX(-50%);' +
+      'background:#1a3a5c;color:#eee;padding:8px 16px;border-radius:8px;' +
+      'font-size:12px;z-index:9999;border:1px solid #5bc0de;white-space:nowrap;' +
+      'box-shadow:0 2px 8px rgba(0,0,0,0.5);';
+    document.body.appendChild(_fileBanner);
+    setTimeout(function(){ if(_fileBanner.parentNode) _fileBanner.parentNode.removeChild(_fileBanner); }, 12000);
+  } else {
+    var _wBtn = document.getElementById('toggle-waterways');
+    if (_wBtn) { var _origTxt = _wBtn.textContent; _wBtn.textContent = '🌊 Loading…'; _wBtn.disabled = true; }
+    fetch('./waterways.geojson')
+      .then(function(r) {
+        if (!r.ok) throw new Error('waterways.geojson not found (status ' + r.status + ')');
+        return r.json();
+      })
+      .then(function(data) {
+        WATERWAY_GEOJSON = data;
+        buildWaterwayOverlay();
+        if (_wBtn) { _wBtn.textContent = _origTxt; _wBtn.disabled = false; }
+      })
+      .catch(function(err) {
+        console.warn('Waterway overlay could not load:', err);
+        if (_wBtn) { _wBtn.textContent = '🌊 Canals ⚠'; _wBtn.disabled = false; }
+        showEditToast('⚠ Waterway overlay failed to load');
+      });
+  }
   buildMarkers();
   buildMooringMarkers();
   buildMichelinMarkers();
