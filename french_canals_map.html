@@ -6066,10 +6066,10 @@ function highlightRouteOnMap(segments) {
 
   const glowGeoJSON = { type: 'FeatureCollection', features: matchingFeatures };
 
-  // Outer glow
+  // Outer halo — wide soft white for separation from base map
   const glowLayer = L.geoJSON(glowGeoJSON, {
     style: () => ({
-      color: '#FFD700', weight: 16, opacity: 0.22,
+      color: '#ffffff', weight: 14, opacity: 0.55,
       lineCap: 'round', lineJoin: 'round',
     }),
     onEachFeature: (_, layer) => {
@@ -6080,11 +6080,11 @@ function highlightRouteOnMap(segments) {
     },
   });
 
-  // Inner coloured line
+  // Inner line — single consistent coral-red, vivid on all base layers
   const lineLayer = L.geoJSON(glowGeoJSON, {
-    style: f => ({
-      color: WATERWAY_COLORS[f.properties.name] || '#5bc0de',
-      weight: 6, opacity: 1.0, lineCap: 'round', lineJoin: 'round',
+    style: () => ({
+      color: '#e8391e', weight: 5, opacity: 1.0,
+      lineCap: 'round', lineJoin: 'round',
     }),
     onEachFeature: (feature, layer) => {
       layer.bindTooltip(
