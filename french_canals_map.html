@@ -4461,40 +4461,71 @@ function init() {
   } else {
     var _wBtn = document.getElementById('toggle-waterways');
     if (_wBtn) { var _origTxt = _wBtn.textContent; _wBtn.textContent = '🌊 Loading…'; _wBtn.disabled = true; }
-    // Cache API: first visit fetches from network and stores locally;
-    // every subsequent visit loads instantly from the browser cache.
-    // Bump WATERWAYS_CACHE_VER whenever waterways.geojson is updated to
-    // force all clients to re-fetch the new file automatically.
+    // Cache API with automatic background update detection:
+    // 1. Load instantly from local cache (if available)
+    // 2. In parallel, send a HEAD request to check if the server has a newer ETag
+    // 3. If ETag differs → silently re-fetch, update cache, rebuild overlay
+    // localStorage key stores the last-seen ETag for comparison.
     var WATERWAYS_CACHE_VER = 'french-canals-waterways-v1';
     var WATERWAYS_URL = './waterways.geojson';
+    var WATERWAYS_ETAG_KEY = 'french_canals_waterways_etag_v1';
     (async function() {
       try {
         var data = null;
         var fromCache = false;
+        // ── Step 1: load from Cache API if available ──────────────────
         if ('caches' in window) {
           try {
             var _cache = await caches.open(WATERWAYS_CACHE_VER);
             var _cached = await _cache.match(WATERWAYS_URL);
             if (_cached) { data = await _cached.json(); fromCache = true; }
-          } catch(e) { /* Cache API blocked (e.g. private browsing) — fall through */ }
+          } catch(e) { /* Cache API blocked (private browsing) — fall through */ }
         }
-        if (!data) {
+        // ── Step 2: if cached, render immediately then check for update ─
+        if (data) {
+          WATERWAY_GEOJSON = data;
+          buildWaterwayOverlay();
+          if (_wBtn) { _wBtn.textContent = _origTxt; _wBtn.disabled = false;
+            _wBtn.title = 'Waterways loaded from local cache'; }
+          // Background ETag check — does not block the UI
+          (async function() {
+            try {
+              var _head = await fetch(WATERWAYS_URL, { method: 'HEAD' });
+              var _newEtag = _head.headers.get('ETag') || _head.headers.get('Last-Modified') || '';
+              var _oldEtag = localStorage.getItem(WATERWAYS_ETAG_KEY) || '';
+              if (_newEtag && _newEtag !== _oldEtag) {
+                // Server has a newer version — fetch it silently
+                var _fresh = await fetch(WATERWAYS_URL);
+                if (_fresh.ok) {
+                  if ('caches' in window) {
+                    try { var _cu = await caches.open(WATERWAYS_CACHE_VER);
+                      await _cu.put(WATERWAYS_URL, _fresh.clone()); } catch(e) {}
+                  }
+                  WATERWAY_GEOJSON = await _fresh.json();
+                  buildWaterwayOverlay();
+                  localStorage.setItem(WATERWAYS_ETAG_KEY, _newEtag);
+                  if (_wBtn) _wBtn.title = 'Waterways updated to latest version';
+                  showEditToast('🌊 Waterway data updated to latest version');
+                }
+              } else if (_newEtag) {
+                localStorage.setItem(WATERWAYS_ETAG_KEY, _newEtag);
+              }
+            } catch(e) { /* offline or HEAD not supported — ignore */ }
+          })();
+        } else {
+          // ── Step 3: no cache — fetch from network ─────────────────────
           var _resp = await fetch(WATERWAYS_URL);
           if (!_resp.ok) throw new Error('waterways.geojson not found (' + _resp.status + ')');
+          var _etag = _resp.headers.get('ETag') || _resp.headers.get('Last-Modified') || '';
+          if (_etag) localStorage.setItem(WATERWAYS_ETAG_KEY, _etag);
           if ('caches' in window) {
-            try {
-              var _c2 = await caches.open(WATERWAYS_CACHE_VER);
-              await _c2.put(WATERWAYS_URL, _resp.clone());
-            } catch(e) { /* ignore cache-write failure */ }
+            try { var _c2 = await caches.open(WATERWAYS_CACHE_VER);
+              await _c2.put(WATERWAYS_URL, _resp.clone()); } catch(e) {}
           }
           data = await _resp.json();
-        }
-        WATERWAY_GEOJSON = data;
-        buildWaterwayOverlay();
-        if (_wBtn) {
-          _wBtn.textContent = _origTxt;
-          _wBtn.disabled = false;
-          if (fromCache) _wBtn.title = 'Waterways loaded from local cache';
+          WATERWAY_GEOJSON = data;
+          buildWaterwayOverlay();
+          if (_wBtn) { _wBtn.textContent = _origTxt; _wBtn.disabled = false; }
         }
       } catch(err) {
         console.warn('Waterway overlay could not load:', err);
