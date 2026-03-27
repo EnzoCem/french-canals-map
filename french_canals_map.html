@@ -280,6 +280,25 @@
   .waterway-tooltip { background: #16213e !important; border: 1px solid #0f3460 !important; color: #5bc0de !important; border-radius: 4px; font-size: 12px; }
   .waterway-tooltip::before { display: none; }
 
+  /* Waterway nav-status legend */
+  #waterway-nav-legend {
+    display: none;
+    background: #0f1b2d;
+    border: 1px solid #1a4a7a;
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 11px;
+    color: #ccc;
+    white-space: nowrap;
+    gap: 8px;
+    align-items: center;
+  }
+  #waterway-nav-legend.visible { display: flex; }
+  .wn-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 3px; vertical-align: middle; }
+
+  /* Route planner nav warning */
+  .rp-nav-warning { background: #c62828; color: #fff; border-radius: 6px; padding: 8px 12px; margin-bottom: 10px; font-size: 12px; line-height: 1.5; }
+
   #loading { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); z-index: 9999; color: #e0c97f; font-size: 14px; }
 
   /* ── Route Planner Panel ───────────────────────────────────────────────── */
@@ -1133,6 +1152,13 @@
     <button class="toggle-btn"        id="btn-map-topo"      onclick="setBaseLayer('topo')"       title="OpenTopoMap — terrain &amp; contours">🏔 Topo</button>
     <button class="toggle-btn"        id="btn-map-carto"     onclick="setBaseLayer('carto')"      title="CartoDB Voyager (OSM-based)">🗺 OSM</button>
     <button class="toggle-btn"        id="btn-map-seamark"   onclick="toggleSeamark()"            title="OpenSeaMap nautical overlay — locks, lights, buoys, bridge heights">⚓ SeaMarks</button>
+  </div>
+  <div class="control-group" id="waterway-nav-legend" title="Canal navigability based on your vessel profile">
+    <span style="font-size:11px;color:#8ab4c2;margin-right:4px">Canals:</span>
+    <span><span class="wn-dot" style="background:#4fc3f7"></span>Navigable</span>
+    <span><span class="wn-dot" style="background:#ef5350"></span>Blocked</span>
+    <span><span class="wn-dot" style="background:#ffb74d"></span>Marginal</span>
+    <span><span class="wn-dot" style="background:#90a4ae"></span>No data</span>
   </div>
   <div class="control-group" id="vessel-filter-group" style="background:#0d1e33;border:1px solid #1a4a7a;border-radius:6px;padding:4px 8px;gap:5px;align-items:center">
     <span style="font-size:12px;white-space:nowrap">🚢 Draft:</span>
@@ -3729,6 +3755,9 @@ function saveProfile() {
   if (typeof _lastRouteSegments !== 'undefined' && _lastRouteSegments && _lastRouteSegments.length) {
     if (typeof calculateRoute === 'function') calculateRoute();
   }
+  // Rebuild waterway overlay with new nav-status colours
+  if (typeof buildWaterwayOverlay === 'function' && WATERWAY_GEOJSON) buildWaterwayOverlay();
+  else _updateWaterwayNavLegend();
   var t = document.getElementById('prof-toast');
   if (t) {
     t.textContent = '✓ Profile saved!';
@@ -4358,7 +4387,127 @@ const WATERWAY_COLORS = {
   'River Charente': '#9ecae1'
 };
 
+// VNF dimension constraints per waterway name (air draught, water draught, beam, length — all in metres)
+const WATERWAY_CONSTRAINTS = {
+  // Canal du Midi & connections
+  'Canal du Midi':                    { air: 3.50, draft: 1.60, beam: 5.45, length: 30 },
+  'Canal de la Robine':               { air: 3.50, draft: 1.20, beam: 5.20, length: 30 },
+  'Canal du Rhône à Sète':            { air: 3.50, draft: 1.60, beam: 5.50, length: 38.5 },
+  // Canal Latéral à la Garonne
+  'Canal latéral à la Garonne':       { air: 3.50, draft: 1.60, beam: 5.45, length: 38.5 },
+  'Canal de Garonne':                 { air: 3.50, draft: 1.60, beam: 5.45, length: 38.5 },
+  // Bourgogne network
+  'Canal de Bourgogne':               { air: 3.50, draft: 1.80, beam: 5.20, length: 38.5 },
+  'Canal du Nivernais':               { air: 3.10, draft: 1.20, beam: 3.10, length: 27 },
+  'Canal du Centre':                  { air: 3.50, draft: 1.80, beam: 5.20, length: 38.5 },
+  'Canal latéral à la Loire':         { air: 3.30, draft: 1.60, beam: 5.20, length: 38.5 },
+  'Canal de Briare':                  { air: 3.30, draft: 1.60, beam: 5.20, length: 38.5 },
+  'Canal du Loing':                   { air: 3.50, draft: 1.60, beam: 5.20, length: 38.5 },
+  // Marne / Saône network
+  'Canal de la Marne à la Saône':     { air: 3.50, draft: 1.80, beam: 5.20, length: 38.5 },
+  'Canal entre Champagne et Bourgogne':{ air: 3.50, draft: 1.80, beam: 5.20, length: 38.5 },
+  'Canal de la Marne au Rhin':        { air: 3.60, draft: 1.80, beam: 5.20, length: 38.5 },
+  'Canal de la Marne au Rhin (Est)':  { air: 3.60, draft: 1.80, beam: 5.20, length: 38.5 },
+  "Canal de l'Aisne à la Marne":      { air: 3.50, draft: 1.80, beam: 5.20, length: 38.5 },
+  // Rhine / Moselle / Est
+  'Canal du Rhône au Rhin':           { air: 3.50, draft: 1.60, beam: 5.05, length: 38.5 },
+  'Canal des Vosges':                 { air: 3.50, draft: 1.60, beam: 5.20, length: 38.5 },
+  "Canal de l'Est":                   { air: 3.50, draft: 1.60, beam: 5.20, length: 38.5 },
+  "Grand Canal d'Alsace":             { air: 7.00, draft: 3.00, beam: 12.0, length: 110 },
+  'Canal de Colmar':                  { air: 3.50, draft: 1.60, beam: 5.20, length: 38.5 },
+  // North / Pas-de-Calais
+  'Canal du Nord':                    { air: 4.50, draft: 2.20, beam: 6.00, length: 57 },
+  'Canal de Saint-Quentin':           { air: 3.70, draft: 2.20, beam: 5.20, length: 38.5 },
+  "Canal de la Sambre à l'Oise":      { air: 3.70, draft: 1.80, beam: 5.20, length: 38.5 },
+  "Canal de l'Escaut":                { air: 4.80, draft: 2.50, beam: 6.00, length: 57 },
+  'Canal de Roubaix':                 { air: 3.50, draft: 1.60, beam: 5.20, length: 38.5 },
+  // Seine system
+  'La Seine':                         { air: 6.70, draft: 3.40, beam: 12.0, length: 110 },
+  'Seine':                            { air: 6.70, draft: 3.40, beam: 12.0, length: 110 },
+  'Petite Seine':                     { air: 3.50, draft: 1.80, beam: 5.20, length: 38.5 },
+  'Yonne':                            { air: 4.50, draft: 2.00, beam: 6.00, length: 57 },
+  'Rivière Yonne':                    { air: 4.50, draft: 2.00, beam: 6.00, length: 57 },
+  // Oise / Marne
+  'Oise':                             { air: 5.00, draft: 2.50, beam: 8.00, length: 80 },
+  'Marne':                            { air: 5.00, draft: 2.20, beam: 6.00, length: 57 },
+  // Saône / Rhône
+  'Saône':                            { air: 5.60, draft: 2.80, beam: 11.4, length: 110 },
+  'La Saône':                         { air: 5.60, draft: 2.80, beam: 11.4, length: 110 },
+  'Rhône':                            { air: 7.50, draft: 3.50, beam: 12.0, length: 110 },
+  'Grand Rhône':                      { air: 7.50, draft: 3.50, beam: 12.0, length: 110 },
+  'Petit Rhône':                      { air: 3.50, draft: 1.60, beam: 6.00, length: 57 },
+  'Canal de Donzère-Mondragon':       { air: 7.00, draft: 3.50, beam: 12.0, length: 110 },
+  // Doubs / Alsace
+  'Doubs':                            { air: 3.50, draft: 1.80, beam: 5.20, length: 38.5 },
+  // Charente / Atlantic
+  'Charente':                         { air: 3.50, draft: 1.20, beam: 5.20, length: 38.5 },
+  'Canal de Charente':                { air: 3.50, draft: 1.20, beam: 5.20, length: 38.5 },
+  // Brittany
+  'Canal de Nantes à Brest':          { air: 2.50, draft: 1.20, beam: 4.60, length: 25 },
+  "Canal d'Ille-et-Rance":           { air: 2.65, draft: 1.20, beam: 4.60, length: 25 },
+  'Canal du Blavet':                  { air: 2.65, draft: 1.20, beam: 4.60, length: 25 },
+  'La Vilaine':                       { air: 3.50, draft: 1.40, beam: 5.00, length: 30 },
+  'Canal de la Vilaine':              { air: 3.50, draft: 1.40, beam: 5.00, length: 30 },
+  // Lot / Garonne tributaries
+  'Lot':                              { air: 3.50, draft: 1.00, beam: 5.20, length: 38.5 },
+  'Baise':                            { air: 3.50, draft: 0.80, beam: 5.20, length: 30 },
+  // Paris canals
+  'Canal Saint-Martin':               { air: 3.70, draft: 1.80, beam: 6.00, length: 40 },
+  'Canal Saint-Denis':                { air: 6.00, draft: 2.60, beam: 8.00, length: 80 },
+  "Canal de l'Ourcq":                 { air: 2.70, draft: 0.80, beam: 3.00, length: 18 },
+};
+
 let waterwayLayer = null;
+
+// Returns { color, reason } for a waterway given the current vessel profile.
+// Colors: blue = navigable, red = blocked, amber = marginal, grey = no VNF data.
+function getWaterwayNavStatus(name) {
+  const p = _vesselProfile;
+  const c = WATERWAY_CONSTRAINTS[name];
+
+  // No meaningful profile dimensions set → uniform blue (default behaviour)
+  const hasProfile = p && ((p.air > 0) || (p.draught > 0) || (p.length > 0) || (p.beam > 0));
+  if (!hasProfile) return { color: '#5bc0de', reason: null };
+
+  // Waterway not in constraints table → grey
+  if (!c) return { color: '#90a4ae', reason: 'No VNF dimension data available' };
+
+  const MARGIN = 0.10; // 10 % marginal zone
+  const blocked  = [];
+  const marginal = [];
+
+  if (p.air    > 0 && c.air    > 0) {
+    if (p.air    > c.air)                          blocked.push('Air draught limit ' + c.air + 'm — vessel is ' + p.air + 'm');
+    else if (p.air    > c.air    * (1 - MARGIN))  marginal.push('Air draught limit ' + c.air + 'm — vessel is ' + p.air + 'm (tight)');
+  }
+  if (p.draught > 0 && c.draft  > 0) {
+    if (p.draught > c.draft)                       blocked.push('Draft limit ' + c.draft + 'm — vessel is ' + p.draught + 'm');
+    else if (p.draught > c.draft  * (1 - MARGIN)) marginal.push('Draft limit ' + c.draft + 'm — vessel is ' + p.draught + 'm (tight)');
+  }
+  if (p.length  > 0 && c.length > 0) {
+    if (p.length  > c.length)                      blocked.push('Length limit ' + c.length + 'm — vessel is ' + p.length + 'm');
+  }
+  if (p.beam    > 0 && c.beam   > 0) {
+    if (p.beam    > c.beam)                        blocked.push('Beam limit ' + c.beam + 'm — vessel is ' + p.beam + 'm');
+  }
+
+  if (blocked.length  > 0) return { color: '#ef5350', reason: blocked.join(' · ') };
+  if (marginal.length > 0) return { color: '#ffb74d', reason: marginal.join(' · ') };
+  return { color: '#4fc3f7', reason: 'Navigable — all dimensions clear' };
+}
+
+// Show or hide the nav-status legend depending on whether a profile is active.
+function _updateWaterwayNavLegend() {
+  var el = document.getElementById('waterway-nav-legend');
+  if (!el) return;
+  var p = _vesselProfile;
+  var hasProfile = p && ((p.air > 0) || (p.draught > 0) || (p.length > 0) || (p.beam > 0));
+  if (hasProfile) {
+    el.classList.add('visible');
+  } else {
+    el.classList.remove('visible');
+  }
+}
 
 function buildWaterwayOverlay() {
   if (!WATERWAY_GEOJSON) { console.warn('buildWaterwayOverlay: data not loaded yet'); return; }
@@ -4371,28 +4520,44 @@ function buildWaterwayOverlay() {
       'drop-shadow(0px 0px 2.5px rgba(0,0,0,0.85))';
   }
 
+  // Remove old layer if rebuilding (e.g. after profile save)
+  if (waterwayLayer) { map.removeLayer(waterwayLayer); waterwayLayer = null; }
+
   waterwayLayer = L.geoJSON(WATERWAY_GEOJSON, {
     pane: 'waterwayPane',
     style: feature => {
-      const name = feature.properties.name || '';
-      const color = WATERWAY_COLORS[name] || '#5bc0de';
+      const name = feature.properties && feature.properties.name;
+      const nav  = getWaterwayNavStatus(name || '');
+      // Fall back to the hand-curated color palette when no profile is set
+      const p = _vesselProfile;
+      const hasProfile = p && ((p.air > 0) || (p.draught > 0) || (p.length > 0) || (p.beam > 0));
+      const color = hasProfile ? nav.color : (WATERWAY_COLORS[name] || '#5bc0de');
       return {
-        color: color,
-        weight: 5,
-        opacity: 1.0,
-        lineCap: 'round',
-        lineJoin: 'round',
+        color:     color,
+        weight:    5,
+        opacity:   1.0,
+        lineCap:   'round',
+        lineJoin:  'round',
       };
     },
     onEachFeature: (feature, layer) => {
-      const name = feature.properties.name || 'Waterway';
-      layer.bindTooltip(name, {sticky: true, className: 'waterway-tooltip'});
+      const name = (feature.properties && feature.properties.name) || 'Waterway';
+      const nav  = getWaterwayNavStatus(name);
+      const p = _vesselProfile;
+      const hasProfile = p && ((p.air > 0) || (p.draught > 0) || (p.length > 0) || (p.beam > 0));
+      const tipContent = (hasProfile && nav.reason)
+        ? '<strong>' + name + '</strong><br><span style="font-size:11px">' + nav.reason + '</span>'
+        : '<strong>' + name + '</strong>';
+      layer.bindTooltip(tipContent, { sticky: true, className: 'waterway-tooltip' });
       layer.on('click', e => onWaterwayClick(feature, e));
     },
   });
 
   // Add BELOW route lines so waypoint dots remain visible
   waterwayLayer.addTo(map);
+
+  // Update the nav legend visibility
+  _updateWaterwayNavLegend();
 
   // Waterway layer is toggled via the existing 🌊 Canals button in the controls bar.
   // Base layers and SeaMarks are switched via the Map: row in the controls bar.
@@ -4402,6 +4567,9 @@ function buildWaterwayOverlay() {
 //  INIT
 // ============================================================
 function init() {
+  // Show nav legend immediately if a profile with dimensions is already saved
+  _updateWaterwayNavLegend();
+
   // Load waterways asynchronously — renders below markers once ready
   if (location.protocol === 'file:') {
     // file:// blocks fetch() — show a banner pointing to the live URL
@@ -5138,6 +5306,28 @@ function renderMultiStopResults(legs) {
       html += `<div class="vessel-ok" style="margin:8px 0;font-size:12px">
         ✓ Your vessel (${[_vesselProfile.air?_vesselProfile.air+'m air':'',_vesselProfile.draught?_vesselProfile.draught+'m draught':''].filter(Boolean).join(', ')}) is compatible with this route
       </div>`;
+    }
+  }
+
+  // ── Waterway nav-status warnings (vessel profile vs VNF constraints) ──
+  const p = _vesselProfile;
+  const hasProfile = p && ((p.air > 0) || (p.draught > 0) || (p.length > 0) || (p.beam > 0));
+  if (hasProfile) {
+    // Collect unique blocked waterway names across all segments
+    const blockedWaterways = [];
+    const seen = {};
+    allSegs.forEach(seg => {
+      const name = seg.routeName || '';
+      if (seen[name]) return;
+      seen[name] = true;
+      const nav = getWaterwayNavStatus(name);
+      if (nav.color === '#ef5350') {
+        const vesselName = p.vesselName ? p.vesselName : 'your vessel';
+        blockedWaterways.push('<strong>' + name + '</strong>: ' + nav.reason.replace(/ — vessel is /g, ' — ' + vesselName + ' is '));
+      }
+    });
+    if (blockedWaterways.length > 0) {
+      html += `<div class="rp-nav-warning">⚠ <strong>Vessel cannot navigate:</strong><br>${blockedWaterways.join('<br>')}</div>`;
     }
   }
 
