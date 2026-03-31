@@ -1,7 +1,7 @@
 # Feature Backlog & To-Do
 
 Planned and proposed enhancements for the French Canals Interactive Map.
-*Last updated: 2026-03-31 (lock hours + Vigicrues live data)*
+*Last updated: 2026-03-31*
 
 ---
 
@@ -13,19 +13,22 @@ Planned and proposed enhancements for the French Canals Interactive Map.
 | Interactive Leaflet map | Dark nautical theme, zoom/pan, mobile-friendly |
 | Base layer switcher | IGN France (default), OpenStreetMap, CartoDB Voyager, ESRI Satellite, OpenTopoMap |
 | OpenSeaMap overlay | Nautical marks as a toggleable overlay |
-| Waterway overlay | 23,862 OSM canal/river segments loaded from `waterways.geojson` |
+| Waterway overlay | 3,481 OSM canal/river segments (deduped + non-navigable filtered) loaded from `waterways.geojson` |
 | Waterway Cache API | Instant load on repeat visits; background ETag check for updates |
+| Per-waterway colour coding | Each waterway rendered in its own colour from `WATERWAY_COLORS` when no vessel profile is set |
 | Town markers | 120+ waypoints with detail sidebars |
 | Lock markers | Curated lock positions + live Overpass locks at zoom ≥ 12 |
 | Haltes & Ports | VNF haltes and marinas as separate toggleable layers |
 | Michelin restaurants | 1,007 Michelin-awarded restaurants as a toggleable layer |
 | Fuel & water stops | Seed data + live Overpass query for marine fuel stations |
-| Chômages overlay | VNF maintenance closures (seed data, active + upcoming within 60 days) |
+| Chômages overlay | VNF maintenance closures (seed data, active + upcoming within 180 days) |
+| Tunnel markers | 5 major tunnels (Riqueval, Mauvages, Foug, Pouilly, Saint-Albin) with convoy times + booking info |
 | My Notes | User pins with personal notes, persisted in localStorage |
 | Edit Locations mode | Click-to-place marker repositioning, saved to localStorage |
 | Search | Live search across towns, locks, haltes, and ports |
 | VNF integration | Links to VNF route calculator, notices, and regional pages in all sidebars |
 | Section filter | Filter map to any of Jefferson's 9 book sections |
+| Non-navigable waterway cleanup | `fill_waterways.py --clean-geojson` removes ancien/bras-mort/vieux segments; normalised dedup removes variants |
 
 ### Route Planner
 | Feature | Description |
@@ -43,9 +46,25 @@ Planned and proposed enhancements for the French Canals Interactive Map.
 | Cruise speed calculator | Set km/h, hours/day, lock time → realistic day count |
 | Weather along route | 5-day Open-Meteo forecast per stop (async, cached) |
 | Michelin stops | Top 5 Michelin restaurants near each stop in route panel |
-| Nearby attractions | OSM historic sites, castles, museums, viewpoints per stop |
+| Nearby attractions | Historic sites, castles, museums, viewpoints, wineries per stop |
 | Provisions per stop | Supermarkets, pharmacies, boulangeries per stop |
 | Route navigation warnings | Red banner if any segment blocked by vessel dimensions |
+
+### Explore Nearby (town sidebars)
+| Category | Icon | Notes |
+|----------|------|-------|
+| Bike Hire | 🚲 | `amenity=bicycle_rental` — explore from the mooring |
+| Swimming Spots | 🏊 | `leisure=swimming_area` + public `natural=beach` |
+| Restaurants | 🍽 | `amenity=restaurant`, nearest 8, excluded from All view |
+| Local Food Shops | 🧀 | `shop=cheese/farm/deli` — fromageries, farm shops, delis |
+| Weekly Markets | 🏪 | `amenity=marketplace/market` with `opening_hours` shown in amber |
+| Wineries & Distilleries | 🍷 | `craft=winery/distillery`, `shop=wine`, `tourism=wine_cellar` |
+| Castles & Châteaux | 🏰 | `historic=castle/manor/palace/fort/fortress` |
+| Abbeys & Churches | ⛪ | `historic=church/cathedral/abbey/monastery/chapel` |
+| Historic Sites | 🏛 | Other `historic=*` tags |
+| Museums & Galleries | 🖼 | `tourism=museum/gallery` |
+| Attractions | 🎭 | `tourism=attraction` |
+| Viewpoints | 🏔 | `tourism=viewpoint` |
 
 ### Vessel Profile
 | Feature | Description |
@@ -64,13 +83,13 @@ Planned and proposed enhancements for the French Canals Interactive Map.
 
 | # | Issue | Details |
 |---|-------|---------|
-| 1 | ~~`reverseRoute()` duplicates `swapRoutePlannerEndpoints()`~~ | Fixed: removed dead with-via branch from `swapRoutePlannerEndpoints()`; ⇅ now always swaps only endpoints (via stays put), 🔄 reverses everything; swap button no longer hidden when via stops exist |
-| 2 | ~~Unnamed waterway segments show grey with profile active~~ | Fixed: added `!name` guard in `getWaterwayNavStatus` returning blue; fixed `onEachFeature` to pass raw feature name (not `'Waterway'` display fallback) to nav check |
-| 3 | ~~Waterway overlay still uses `WATERWAY_COLORS` fallback~~ | Fixed: `buildWaterwayOverlay` now uses `nav.color` directly (uniform blue when no profile); `restoreWaterwayStyles` now uses `getWaterwayNavStatus` so profile colours survive route highlight clear |
+| 1 | ~~`reverseRoute()` duplicates `swapRoutePlannerEndpoints()`~~ | Fixed |
+| 2 | ~~Unnamed waterway segments show grey with profile active~~ | Fixed |
+| 3 | ~~Waterway overlay still uses `WATERWAY_COLORS` fallback~~ | Fixed: `colorLookup()` now active for no-profile rendering |
 | 4 | `Open Map.command` needs `chmod +x` once | Execute permission not set after clone/copy |
-| 5 | ~~Chômages data is hardcoded seed, not live~~ | Fixed: removed 11 expired winter entries; added 13 spring/summer 2026 closures (Apr–Sep); lookahead extended 60 → 180 days |
-| 6 | ~~Fuel stops refetch on every map move~~ | Fixed: bbox cache check skips Overpass when viewport is within last queried area; 700ms debounce added to `moveend` handler |
-| 7 | ~~Phase 3 `rp-poi-section` may not populate~~ | Fixed: local variable renamed from `_poiRouteStops` to `poiStops` to avoid confusion with module-level `_routePOIStops` (which `clearEndpointPins()` resets to `[]`) |
+| 5 | ~~Chômages data is hardcoded seed, not live~~ | Fixed: updated to spring/summer 2026; lookahead extended to 180 days |
+| 6 | ~~Fuel stops refetch on every map move~~ | Fixed: bbox cache + 700ms debounce |
+| 7 | ~~Phase 3 `rp-poi-section` may not populate~~ | Fixed: variable rename |
 
 ---
 
@@ -89,16 +108,6 @@ Planned and proposed enhancements for the French Canals Interactive Map.
 | Live VNF chômages | Low | Parse published JSON from data.gouv.fr or Overpass `hazard` tags |
 | Share route via URL hash | Medium | Encode from/to/via IDs in `#` fragment for bookmarking + sharing |
 | Printable route card | Medium | `@media print` CSS showing segment table, locks, VNF links — for the helm |
-
----
-
-## 🟠 Planned — Points of Interest
-
-| Feature | Priority | Notes |
-|---------|----------|-------|
-| Weekly markets | Medium | OSM has good `amenity=marketplace` + `opening_hours` data; add to Explore Nearby |
-| Wineries near route | Medium | Already partially supported via Overpass `craft=winery` — surface in route panel |
-| Tunnel details | Medium | Riqueval, Mauvages, Foug, Pouilly, Saint-Albin — convoy times, booking requirements |
 | Bridge height markers | Low | Single lowest bridge is often the real air-draught bottleneck, not the route average |
 
 ---
@@ -119,8 +128,5 @@ Planned and proposed enhancements for the French Canals Interactive Map.
 
 | Item | Description |
 |------|-------------|
-| `WATERWAY_COLORS` dead weight | ~50-entry legacy colour map still in code, used in two places, should be removed once uniform colour is confirmed |
-| `reverseRoute()` duplicate | Consolidate with `swapRoutePlannerEndpoints()` |
+| Single-file architecture | At ~7,700 lines the HTML is large; no immediate plans to split, but worth tracking |
 | CLAUDE.md line numbers drift | Line numbers will drift as the file grows — use `grep -n "^function foo"` to find current positions |
-| `waterways.geojson` still includes non-navigable segments | Some small Alpine rivers and Camargue channels still slip through the whitelist filter |
-| Single-file architecture | At 7,660 lines the HTML is large; no immediate plans to split, but worth tracking |
