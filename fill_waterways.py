@@ -212,3 +212,139 @@ def merge_geojson(old_geojson, new_features, waterway_names):
         'type': 'FeatureCollection',
         'features': kept + new_features,
     }
+
+
+# ── Network functions (not unit-tested — make real Overpass calls) ────────────
+
+def _overpass_query(ql, retries=3):
+    """POST an Overpass QL query, return parsed JSON. Retries on failure."""
+    for attempt in range(retries):
+        try:
+            resp = requests.post(OVERPASS_URL, data={'data': ql}, timeout=180)
+            resp.raise_for_status()
+            return resp.json()
+        except Exception as exc:
+            if attempt < retries - 1:
+                wait = 15 * (attempt + 1)
+                print(f'    Overpass error ({exc}), retrying in {wait}s…')
+                time.sleep(wait)
+            else:
+                raise
+
+
+def _extract_ways(elements):
+    """
+    Extract [lon, lat] way coordinate lists from Overpass elements.
+    Overpass `out geom` embeds geometry directly in each way element.
+    """
+    ways = []
+    for el in elements:
+        if el.get('type') != 'way':
+            continue
+        geom = el.get('geometry', [])
+        if len(geom) < 2:
+            continue
+        ways.append([[pt['lon'], pt['lat']] for pt in geom])
+    return ways
+
+
+def fetch_waterway(app_name, osm_names):
+    """
+    Fetch OSM ways for a waterway, trying each osm_name in order.
+    For each name: tries relation[type=waterway] first, then way fallback.
+
+    Returns list of ways (each a list of [lon, lat] pairs), or [] if nothing found.
+    """
+    for osm_name in osm_names:
+        # ── 1. Relation query ─────────────────────────────────────────────
+        ql_relation = f'''[out:json][timeout:180];
+relation[type=waterway][name="{osm_name}"];
+way(r);
+out geom;'''
+        try:
+            data = _overpass_query(ql_relation)
+            ways = _extract_ways(data.get('elements', []))
+            if ways:
+                print(f'  {app_name}: {len(ways)} ways via relation[name="{osm_name}"]')
+                return ways
+        except Exception as exc:
+            print(f'  {app_name}: relation query failed ({exc})')
+        time.sleep(2)
+
+        # ── 2. Way fallback ───────────────────────────────────────────────
+        ql_ways = f'''[out:json][timeout:180];
+way[waterway][name="{osm_name}"]{FRANCE_BBOX};
+out geom;'''
+        try:
+            data = _overpass_query(ql_ways)
+            ways = _extract_ways(data.get('elements', []))
+            if ways:
+                print(f'  {app_name}: {len(ways)} ways via way[name="{osm_name}"]')
+                return ways
+        except Exception as exc:
+            print(f'  {app_name}: way query failed ({exc})')
+        time.sleep(2)
+
+    print(f'  WARNING: {app_name}: no OSM data found for {osm_names}')
+    return []
+
+
+# ── Main orchestration ────────────────────────────────────────────────────────
+
+def main(dry_run=False):
+    geojson_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'waterways.geojson')
+
+    with open(geojson_path) as f:
+        old_geojson = json.load(f)
+
+    old_total = len(old_geojson['features'])
+    waterway_set = set(NAVIGABLE_WATERWAYS)
+    old_navigable = sum(
+        1 for feat in old_geojson['features']
+        if feat.get('properties') and feat['properties'].get('name') in waterway_set
+    )
+    print(f'Loaded {old_total} features ({old_navigable} are navigable waterways to replace).')
+
+    if dry_run:
+        print('\n-- DRY RUN: would fetch these waterways --')
+        for name in NAVIGABLE_WATERWAYS:
+            osm_names = OSM_NAME_MAP.get(name, [name])
+            print(f'  {name}  →  OSM names: {osm_names}')
+        return
+
+    all_new_features = []
+
+    for app_name in NAVIGABLE_WATERWAYS:
+        osm_names = OSM_NAME_MAP.get(app_name, [app_name])
+        route_num = WATERWAY_ROUTES[app_name]
+
+        print(f'\nFetching: {app_name}')
+        ways = fetch_waterway(app_name, osm_names)
+        if not ways:
+            continue
+
+        chains = stitch_ways(ways)
+        features = build_features(app_name, chains, route_num)
+        all_new_features.extend(features)
+        print(f'  → {len(chains)} chains, {len(features)} features after RDP simplification')
+        time.sleep(2)  # be polite to Overpass
+
+    new_geojson = merge_geojson(old_geojson, all_new_features, waterway_set)
+    new_total = len(new_geojson['features'])
+
+    # Atomic write
+    tmp_path = geojson_path + '.tmp'
+    with open(tmp_path, 'w') as f:
+        json.dump(new_geojson, f, separators=(',', ':'))
+    os.replace(tmp_path, geojson_path)
+
+    removed = old_navigable
+    print(f'\nDone.')
+    print(f'  Removed: {removed} old navigable features')
+    print(f'  Added:   {len(all_new_features)} new features')
+    print(f'  Total:   {new_total} features  (was {old_total})')
+
+
+if __name__ == '__main__':
+    dry_run = '--dry-run' in sys.argv
+    main(dry_run=dry_run)
