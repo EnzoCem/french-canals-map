@@ -206,7 +206,7 @@ def merge_geojson(old_geojson, new_features, waterway_names):
     """
     kept = [
         f for f in old_geojson['features']
-        if f.get('properties', {}).get('name') not in waterway_names
+        if (f.get('properties') or {}).get('name') not in waterway_names
     ]
     return {
         'type': 'FeatureCollection',

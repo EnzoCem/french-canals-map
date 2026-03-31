@@ -1,6 +1,6 @@
 import sys, os
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
-from fill_waterways import stitch_ways
+from fill_waterways import stitch_ways, build_features, merge_geojson
 
 
 def test_two_ways_join_forward():
@@ -53,9 +53,6 @@ def test_empty_input():
 
 
 # ── build_features ────────────────────────────────────────────────────────────
-
-from fill_waterways import build_features, merge_geojson
-
 
 def test_build_features_returns_geojson_features():
     chains = [[[0.0, 0.0], [1.0, 0.0], [2.0, 0.0]]]
