@@ -37,6 +37,8 @@ Planned and proposed enhancements for the French Canals Interactive Map.
 | Save / load / delete routes | Persist named route plans in localStorage |
 | GPX export | Download planned route as .gpx for chartplotters |
 | Day-by-day itinerary | Split journey into daily stages based on speed + hours |
+| Lock opening hours | VNF regional schedule (6 groups, 44 routes) shown in lock sidebars |
+| Live Vigicrues water levels | Real-time Hub'Eau water height for 11 river routes, 10-min cache |
 | Lock count per day | Shows locks per day in the itinerary |
 | Cruise speed calculator | Set km/h, hours/day, lock time → realistic day count |
 | Weather along route | 5-day Open-Meteo forecast per stop (async, cached) |
@@ -62,13 +64,13 @@ Planned and proposed enhancements for the French Canals Interactive Map.
 
 | # | Issue | Details |
 |---|-------|---------|
-| 1 | `reverseRoute()` duplicates `swapRoutePlannerEndpoints()` | Two functions do the same thing; `reverseRoute` doesn't call `_rebuildAllPins()` for multi-stop routes |
-| 2 | Unnamed waterway segments show grey with profile active | `getWaterwayNavStatus('')` returns grey; segments with no `name` property should fall back to navigable blue |
-| 3 | Waterway overlay still uses `WATERWAY_COLORS` fallback | Without a profile, `buildWaterwayOverlay()` falls back to per-waterway colours instead of uniform blue |
+| 1 | ~~`reverseRoute()` duplicates `swapRoutePlannerEndpoints()`~~ | Fixed: removed dead with-via branch from `swapRoutePlannerEndpoints()`; ⇅ now always swaps only endpoints (via stays put), 🔄 reverses everything; swap button no longer hidden when via stops exist |
+| 2 | ~~Unnamed waterway segments show grey with profile active~~ | Fixed: added `!name` guard in `getWaterwayNavStatus` returning blue; fixed `onEachFeature` to pass raw feature name (not `'Waterway'` display fallback) to nav check |
+| 3 | ~~Waterway overlay still uses `WATERWAY_COLORS` fallback~~ | Fixed: `buildWaterwayOverlay` now uses `nav.color` directly (uniform blue when no profile); `restoreWaterwayStyles` now uses `getWaterwayNavStatus` so profile colours survive route highlight clear |
 | 4 | `Open Map.command` needs `chmod +x` once | Execute permission not set after clone/copy |
-| 5 | Chômages data is hardcoded seed, not live | Several entries are now expired (March 2026); 60-day lookahead too short for summer planning |
-| 6 | Fuel stops refetch on every map move | `loadFuelStops()` fires a new Overpass query on every `moveend` — no bbox cache |
-| 7 | Phase 3 `rp-poi-section` may not populate | `renderRoutePOIsSection` not reliably called after `calculateRoute()` — variable name mismatch suspected |
+| 5 | ~~Chômages data is hardcoded seed, not live~~ | Fixed: removed 11 expired winter entries; added 13 spring/summer 2026 closures (Apr–Sep); lookahead extended 60 → 180 days |
+| 6 | ~~Fuel stops refetch on every map move~~ | Fixed: bbox cache check skips Overpass when viewport is within last queried area; 700ms debounce added to `moveend` handler |
+| 7 | ~~Phase 3 `rp-poi-section` may not populate~~ | Fixed: local variable renamed from `_poiRouteStops` to `poiStops` to avoid confusion with module-level `_routePOIStops` (which `clearEndpointPins()` resets to `[]`) |
 
 ---
 
@@ -76,8 +78,6 @@ Planned and proposed enhancements for the French Canals Interactive Map.
 
 | Feature | Status | Notes |
 |---------|--------|-------|
-| Lock opening hours | CSS stub only | No data structure or display logic implemented |
-| Vigicrues water levels | Link only | Sidebar shows link to vigicrues.gouv.fr but no live data fetched |
 | Live chômages from VNF | Not started | VNF has no public API; would need scraping `data.gouv.fr` JSON |
 
 ---
