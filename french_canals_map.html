@@ -6985,7 +6985,11 @@ function _poiDistKm(lat1, lon1, lat2, lon2) {
 function _poiCategoryOf(el) {
   const t = el.tags || {};
   if (t.amenity === 'marketplace' || t.amenity === 'market') return 'market';
-  if (t.craft === 'winery' || t.amenity === 'winery' || t.shop === 'wine' || t.tourism === 'wine_cellar') return 'winery';
+  if (t.craft === 'winery' || t.craft === 'distillery' || t.amenity === 'winery' || t.shop === 'wine' || t.tourism === 'wine_cellar') return 'winery';
+  if (t.amenity === 'bicycle_rental') return 'bikerent';
+  if (t.shop === 'cheese' || t.shop === 'farm' || t.shop === 'deli') return 'localfood';
+  if (t.leisure === 'swimming_area' || (t.natural === 'beach' && t.access !== 'private' && t.access !== 'no')) return 'swimming';
+  if (t.amenity === 'restaurant') return 'restaurant';
   if (t.tourism === 'viewpoint') return 'viewpoint';
   if (t.tourism === 'museum' || t.tourism === 'gallery') return 'museum';
   if (t.tourism === 'attraction') return 'attraction';
@@ -6997,27 +7001,34 @@ function _poiCategoryOf(el) {
 }
 
 function _poiIconOf(cat) {
-  return { market:'🏪', castle:'🏰', church:'⛪', historic:'🏛', museum:'🖼', attraction:'🎭', viewpoint:'🏔', winery:'🍷', other:'📌' }[cat] || '📌';
+  return { market:'🏪', bikerent:'🚲', localfood:'🧀', swimming:'🏊', restaurant:'🍽', castle:'🏰', church:'⛪', historic:'🏛', museum:'🖼', attraction:'🎭', viewpoint:'🏔', winery:'🍷', other:'📌' }[cat] || '📌';
 }
 
 function _poiLabelOf(cat) {
-  return { market:'Weekly Markets', castle:'Castles & Châteaux', church:'Abbeys & Churches', historic:'Historic Sites', museum:'Museums & Galleries', attraction:'Attractions', viewpoint:'Viewpoints', winery:'Wineries', other:'Other' }[cat] || 'Other';
+  return { market:'Weekly Markets', bikerent:'Bike Hire', localfood:'Local Food Shops', swimming:'Swimming Spots', restaurant:'Restaurants', castle:'Castles & Châteaux', church:'Abbeys & Churches', historic:'Historic Sites', museum:'Museums & Galleries', attraction:'Attractions', viewpoint:'Viewpoints', winery:'Wineries & Distilleries', other:'Other' }[cat] || 'Other';
 }
 
 async function _fetchPOIsNearby(lat, lon) {
   const r = 15000;
-  const q = '[out:json][timeout:25];(' +
+  const q = '[out:json][timeout:30];(' +
     'node["amenity"="marketplace"](around:' + r + ',' + lat + ',' + lon + ');' +
     'node["amenity"="market"](around:' + r + ',' + lat + ',' + lon + ');' +
+    'node["amenity"="bicycle_rental"](around:' + r + ',' + lat + ',' + lon + ');' +
+    'node["amenity"="restaurant"](around:' + r + ',' + lat + ',' + lon + ');' +
+    'node["shop"~"^(cheese|farm|deli)$"](around:' + r + ',' + lat + ',' + lon + ');' +
+    'node["leisure"="swimming_area"](around:' + r + ',' + lat + ',' + lon + ');' +
+    'node["natural"="beach"]["access"!="private"]["access"!="no"](around:' + r + ',' + lat + ',' + lon + ');' +
     'node["tourism"~"^(museum|attraction|viewpoint|gallery)$"](around:' + r + ',' + lat + ',' + lon + ');' +
     'node["historic"~"^(castle|monument|memorial|ruins|church|cathedral|abbey|monastery|chapel|fort|fortress|manor|palace|battlefield|archaeological_site)$"](around:' + r + ',' + lat + ',' + lon + ');' +
-    'node["craft"="winery"](around:' + r + ',' + lat + ',' + lon + ');' +
+    'node["craft"~"^(winery|distillery)$"](around:' + r + ',' + lat + ',' + lon + ');' +
     'node["shop"="wine"](around:' + r + ',' + lat + ',' + lon + ');' +
     'node["tourism"="wine_cellar"](around:' + r + ',' + lat + ',' + lon + ');' +
     'way["amenity"="marketplace"](around:' + r + ',' + lat + ',' + lon + ');' +
+    'way["leisure"="swimming_area"](around:' + r + ',' + lat + ',' + lon + ');' +
+    'way["natural"="beach"]["access"!="private"]["access"!="no"](around:' + r + ',' + lat + ',' + lon + ');' +
     'way["tourism"~"^(museum|attraction|viewpoint|castle)$"](around:' + r + ',' + lat + ',' + lon + ');' +
     'way["historic"~"^(castle|ruins|church|cathedral|abbey|monastery|fort|fortress|manor|palace|archaeological_site)$"](around:' + r + ',' + lat + ',' + lon + ');' +
-    'way["craft"="winery"](around:' + r + ',' + lat + ',' + lon + ');' +
+    'way["craft"~"^(winery|distillery)$"](around:' + r + ',' + lat + ',' + lon + ');' +
     'way["shop"="wine"](around:' + r + ',' + lat + ',' + lon + ');' +
     ');out center tags;';
   const resp = await fetch('https://overpass-api.de/api/interpreter', {
@@ -7176,7 +7187,7 @@ function _renderPOIList(wpId, wpLat, wpLon, activeCat) {
   if (!els) return;
 
   // Category counts
-  const cats = ['market','castle','church','historic','museum','attraction','viewpoint','winery'];
+  const cats = ['bikerent','swimming','restaurant','localfood','market','winery','castle','church','historic','museum','attraction','viewpoint'];
   const counts = {};
   els.forEach(function(el) { const c = _poiCategoryOf(el); counts[c] = (counts[c]||0) + 1; });
   const available = cats.filter(function(c) { return counts[c]; });
@@ -7184,8 +7195,11 @@ function _renderPOIList(wpId, wpLat, wpLon, activeCat) {
   // If activeCat not set or not available, default to 'all'
   if (!activeCat || (activeCat !== 'all' && !counts[activeCat])) activeCat = 'all';
 
-  // Filter elements
-  const filtered = (activeCat === 'all' ? els : els.filter(function(el) { return _poiCategoryOf(el) === activeCat; }))
+  // Filter elements — restaurants capped at 8 to avoid swamping the list
+  const _cap = activeCat === 'restaurant' ? 8 : 25;
+  const filtered = (activeCat === 'all'
+    ? els.filter(function(el) { return _poiCategoryOf(el) !== 'restaurant'; })
+    : els.filter(function(el) { return _poiCategoryOf(el) === activeCat; }))
     .map(function(el) {
       const elLat = el.lat || (el.center && el.center.lat);
       const elLon = el.lon || (el.center && el.center.lon);
@@ -7193,7 +7207,7 @@ function _renderPOIList(wpId, wpLat, wpLon, activeCat) {
     })
     .filter(function(el) { return el._dist < 16; })
     .sort(function(a, b) { return a._dist - b._dist; })
-    .slice(0, 25);
+    .slice(0, _cap);
 
   // Build category chips
   let html = '<div class="explore-cats"><button class="exp-cat' + (activeCat==='all'?' active':'') + '" onclick="_renderPOIList(\'' + wpId + '\',' + wpLat + ',' + wpLon + ',\'all\')">All (' + els.filter(function(e){return (_poiDistKm(wpLat,wpLon,e.lat||(e.center&&e.center.lat)||0,e.lon||(e.center&&e.center.lon)||0))<16;}).length + ')</button>';
