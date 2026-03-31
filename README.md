@@ -109,7 +109,7 @@ Search bar finds towns, locks, haltes, and ports instantly.
 Two-file architecture: the app HTML + a separate GeoJSON for waterway geometry.
 
 ```
-french_canals_map.html   (~7,600 lines — HTML + CSS + JS + all data)
+french_canals_map.html   (~7,660 lines — HTML + CSS + JS + all data)
 waterways.geojson        (~8.5 MB — 23,862 OSM waterway features)
 ```
 

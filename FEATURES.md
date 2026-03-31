@@ -1,7 +1,7 @@
 # Feature Backlog & To-Do
 
 Planned and proposed enhancements for the French Canals Interactive Map.
-*Last updated: 2026-03-31*
+*Last updated: 2026-03-31 (lock hours + Vigicrues live data)*
 
 ---
 
@@ -123,4 +123,4 @@ Planned and proposed enhancements for the French Canals Interactive Map.
 | `reverseRoute()` duplicate | Consolidate with `swapRoutePlannerEndpoints()` |
 | CLAUDE.md line numbers drift | Line numbers will drift as the file grows — use `grep -n "^function foo"` to find current positions |
 | `waterways.geojson` still includes non-navigable segments | Some small Alpine rivers and Camargue channels still slip through the whitelist filter |
-| Single-file architecture | At 7,600 lines the HTML is large; no immediate plans to split, but worth tracking |
+| Single-file architecture | At 7,660 lines the HTML is large; no immediate plans to split, but worth tracking |

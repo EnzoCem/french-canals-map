@@ -15,7 +15,7 @@ A single-file interactive web map for cruising the French inland waterways, base
 
 ```
 French Canals/
-├── french_canals_map.html   ← entire app (HTML + CSS + JS + data) ~7,600 lines
+├── french_canals_map.html   ← entire app (HTML + CSS + JS + data) ~7,660 lines
 ├── waterways.geojson        ← canal/river geometry fetched from OSM (~8.5 MB, 23,862 features)
 ├── index.html               ← GitHub Pages redirect to french_canals_map.html
 ├── Open Map.command         ← macOS launcher script (requires chmod +x once)
