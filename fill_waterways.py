@@ -294,6 +294,9 @@ out geom;'''
 def main(dry_run=False):
     geojson_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'waterways.geojson')
 
+    if not os.path.exists(geojson_path):
+        sys.exit(f'ERROR: {geojson_path} not found. Run this script from the project root.')
+
     with open(geojson_path) as f:
         old_geojson = json.load(f)
 
@@ -339,7 +342,7 @@ def main(dry_run=False):
     os.replace(tmp_path, geojson_path)
 
     removed = old_navigable
-    print(f'\nDone.')
+    print('\nDone.')
     print(f'  Removed: {removed} old navigable features')
     print(f'  Added:   {len(all_new_features)} new features')
     print(f'  Total:   {new_total} features  (was {old_total})')
