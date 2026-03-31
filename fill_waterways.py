@@ -156,3 +156,59 @@ def stitch_ways(ways, tol=5):
         chains.append(chain)
 
     return chains
+
+
+def rdp_simplify(coords, epsilon=RDP_EPSILON):
+    """Apply RDP simplification to a list of [lon, lat] coordinate pairs."""
+    if len(coords) < 3:
+        return coords
+    simplified = _rdp(coords, epsilon=epsilon)
+    return [list(pt) for pt in simplified]
+
+
+def build_features(app_name, chains, route_num):
+    """
+    Build GeoJSON Feature dicts from a list of coordinate chains.
+
+    app_name:  the name stored in properties.name (= ROUTE_TO_WATERWAYS key)
+    chains:    output of stitch_ways()
+    route_num: integer route number for properties.route
+    """
+    features = []
+    for chain in chains:
+        simplified = rdp_simplify(chain)
+        if len(simplified) < 2:
+            continue
+        features.append({
+            'type': 'Feature',
+            'geometry': {
+                'type': 'LineString',
+                'coordinates': simplified,
+            },
+            'properties': {
+                'name': app_name,
+                'route': route_num,
+                'section': 1,
+            },
+        })
+    return features
+
+
+def merge_geojson(old_geojson, new_features, waterway_names):
+    """
+    Replace features whose name is in waterway_names with new_features.
+
+    old_geojson:    parsed FeatureCollection dict
+    new_features:   list of new Feature dicts to insert
+    waterway_names: set of name strings to remove from old features
+
+    Returns a new FeatureCollection dict (does not mutate inputs).
+    """
+    kept = [
+        f for f in old_geojson['features']
+        if f.get('properties', {}).get('name') not in waterway_names
+    ]
+    return {
+        'type': 'FeatureCollection',
+        'features': kept + new_features,
+    }
