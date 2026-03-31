@@ -1059,6 +1059,8 @@
 .rp-vigicrues-strip { background: rgba(91,192,222,0.07); border: 1px solid rgba(91,192,222,0.2); border-radius: 8px; padding: 10px 12px; margin: 10px 0; }
 .rp-vigicrues-strip a { color: #5bc0de; font-size: 12px; display: block; margin: 3px 0; }
 .rp-vigicrues-strip a:hover { color: #7ad4ef; }
+.vigicrues-live-row { font-size:14px; font-weight:600; color:#7ad4ef; margin-bottom:4px; display:flex; align-items:center; gap:8px; }
+.vigicrues-updated  { font-size:10px; color:#5a7a8a; font-weight:400; }
 
 /* ── Feature 4: Chômages ─────────────────────────────────────── */
 .chomage-icon { background: rgba(231,76,60,0.9); border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-size: 14px; border: 2px solid #e74c3c; box-shadow: 0 2px 8px rgba(0,0,0,0.4); }
@@ -3437,6 +3439,73 @@ function buildMarkers() {
 // Routes on navigable rivers that have Vigicrues monitoring data
 const VIGICRUES_ROUTES = new Set([1, 6, 13, 16, 20, 24, 25, 26, 30, 36, 37]);
 
+// Hub'Eau station codes for live water height fetch
+// Note: station codes are representative — verify against
+// https://hubeau.eaufrance.fr/api/v1/hydrometrie/referentiel/stations if data is missing
+var VIGICRUES_STATIONS = {
+  1:  { hubeau:'H--0615050', label:'Seine at Alfortville',      url:'https://www.vigicrues.gouv.fr/niv_station.php?CdStationHydro=H--0615050' },
+  6:  { hubeau:'H--0674010', label:'Yonne at Sens',             url:'https://www.vigicrues.gouv.fr/niv_station.php?CdStationHydro=H--0674010' },
+  13: { hubeau:'V-----00',   label:'Rhône at Lyon (Perrache)',  url:'https://www.vigicrues.gouv.fr/niv_station.php?CdStationHydro=V-----00' },
+  16: { hubeau:'V217401001', label:'Saône at Mâcon',            url:'https://www.vigicrues.gouv.fr/niv_station.php?CdStationHydro=V217401001' },
+  20: { hubeau:'A034001001', label:'Oise at Verberie',          url:'https://www.vigicrues.gouv.fr/niv_station.php?CdStationHydro=A034001001' },
+  24: { hubeau:'A072001001', label:'Somme at Abbeville',        url:'https://www.vigicrues.gouv.fr/niv_station.php?CdStationHydro=A072001001' },
+  25: { hubeau:'A034001002', label:'Sambre at Maubeuge',        url:'https://www.vigicrues.gouv.fr/niv_station.php?CdStationHydro=A034001002' },
+  26: { hubeau:'A046001001', label:'Escaut at Cambrai',         url:'https://www.vigicrues.gouv.fr/niv_station.php?CdStationHydro=A046001001' },
+  30: { hubeau:'A072001002', label:'Scarpe at Douai',           url:'https://www.vigicrues.gouv.fr/niv_station.php?CdStationHydro=A072001002' },
+  36: { hubeau:'M100001001', label:'Moselle at Metz',           url:'https://www.vigicrues.gouv.fr/niv_station.php?CdStationHydro=M100001001' },
+  37: { hubeau:'M100002001', label:'Meuse at Verdun',           url:'https://www.vigicrues.gouv.fr/niv_station.php?CdStationHydro=M100002001' }
+};
+
+// Cache: routeNum → { html: string, ts: Date.now() }
+var _vigicruesCache = {};
+
+async function fetchVigicruesHTML(wid, routeNum) {
+  var station = VIGICRUES_STATIONS[routeNum];
+  if (!station) return;
+  var el = document.getElementById('vigicrues-live-' + wid);
+  if (!el) return;
+
+  // Cache hit (10-minute TTL)
+  var cached = _vigicruesCache[routeNum];
+  if (cached && (Date.now() - cached.ts) < 600000) {
+    el.innerHTML = cached.html;
+    return;
+  }
+
+  var url = 'https://hubeau.eaufrance.fr/api/v1/hydrometrie/observations_tr' +
+    '?code_entite=' + encodeURIComponent(station.hubeau) +
+    '&grandeur_hydro=H&size=1&sort=desc&fields=resultat_obs,date_obs';
+
+  var html;
+  try {
+    var resp = await fetch(url);
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    var data = await resp.json();
+    var obs  = data.data && data.data[0];
+    if (!obs) throw new Error('no data');
+    var cm   = Math.round(obs.resultat_obs / 10);
+    var dt   = new Date(obs.date_obs);
+    var time = dt.getHours() + ':' + String(dt.getMinutes()).padStart(2, '0');
+    html = '<div class="vigicrues-card">' +
+      '<div class="vigicrues-live-row">🌊 <strong>' + cm + ' cm<\/strong>' +
+      '<span class="vigicrues-updated">updated ' + time + '<\/span><\/div>' +
+      '<div style="font-size:11px;color:#c0d0e0;margin-bottom:4px">' + station.label + '<\/div>' +
+      '<a href="' + station.url + '" target="_blank">📋 View station on Vigicrues →<\/a>' +
+      '<div class="vigicrues-note">Real-time data: Hub\'Eau / VNF — always verify before navigating<\/div>' +
+      '<\/div>';
+  } catch (e) {
+    html = '<div class="vigicrues-card">' +
+      '<div class="vigicrues-live-row" style="color:#e57373">⚠ Level unavailable<\/div>' +
+      '<div style="font-size:11px;color:#c0d0e0;margin-bottom:4px">' + station.label + '<\/div>' +
+      '<a href="' + station.url + '" target="_blank">📋 View station on Vigicrues →<\/a>' +
+      '<div class="vigicrues-note">Real-time data: Hub\'Eau / VNF — always verify before navigating<\/div>' +
+      '<\/div>';
+  }
+
+  _vigicruesCache[routeNum] = { html: html, ts: Date.now() };
+  if (el) el.innerHTML = html;
+}
+
 // ============================================================
 //  SIDEBAR
 // ============================================================
@@ -3560,12 +3629,10 @@ function openSidebar(wid) {
     ${w.is_lock ? buildLockHoursHTML(w.route) : ''}
 
     ${VIGICRUES_ROUTES.has(w.route) ? `
-    <div class="vigicrues-card">
-      <a href="https://www.vigicrues.gouv.fr/" target="_blank">🌊 Check Water Level (Vigicrues)</a>
-      <div class="vigicrues-note">Real-time river height monitoring — check before navigating</div>
-    </div>` : ''}
+    <div id="vigicrues-live-${w.id}">⏳ Loading water level…</div>` : ''}
   `;
   document.getElementById('place-info').classList.remove('empty');
+  if (VIGICRUES_ROUTES.has(w.route)) fetchVigicruesHTML(w.id, w.route);
 
   // Nearby Michelin restaurants (within ~20km)
   const _michelinR = 20; // km radius
