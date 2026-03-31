@@ -4534,11 +4534,25 @@ const WATERWAY_CONSTRAINTS = {
 
 let waterwayLayer = null;
 
+// Normalised lookup into WATERWAY_CONSTRAINTS.
+// Strips leading articles/prefixes (River, La, Le, L', Les) and lowercases
+// before matching, so 'River Saône' matches the key 'Saône', and
+// 'Canal Latéral à la Garonne' matches 'Canal latéral à la Garonne'.
+function constraintLookup(name) {
+  if (!name) return null;
+  const norm = s => s.toLowerCase().replace(/^(river |la |le |l'|les |the )/i, '').trim();
+  const key = norm(name);
+  for (const [k, v] of Object.entries(WATERWAY_CONSTRAINTS)) {
+    if (norm(k) === key) return v;
+  }
+  return null;
+}
+
 // Returns { color, reason } for a waterway given the current vessel profile.
 // Colors: blue = navigable, red = blocked, amber = marginal, grey = no VNF data.
 function getWaterwayNavStatus(name) {
   const p = _vesselProfile;
-  const c = WATERWAY_CONSTRAINTS[name];
+  const c = constraintLookup(name);
 
   // No meaningful profile dimensions set → uniform blue (default behaviour)
   const hasProfile = p && ((p.air > 0) || (p.draught > 0) || (p.length > 0) || (p.beam > 0));
@@ -4670,7 +4684,7 @@ function init() {
     // 2. In parallel, send a HEAD request to check if the server has a newer ETag
     // 3. If ETag differs → silently re-fetch, update cache, rebuild overlay
     // localStorage key stores the last-seen ETag for comparison.
-    var WATERWAYS_CACHE_VER = 'french-canals-waterways-v2';
+    var WATERWAYS_CACHE_VER = 'french-canals-waterways-v3';
     var WATERWAYS_URL = './waterways.geojson';
     var WATERWAYS_ETAG_KEY = 'french_canals_waterways_etag_v1';
     (async function() {
