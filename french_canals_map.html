@@ -6868,9 +6868,10 @@ function _buildExploreSnippet(cachedEls, stopLat, stopLon) {
     var name = x.el.tags.name;
     var dist = x.d < 1 ? Math.round(x.d * 1000) + ' m' : x.d.toFixed(1) + ' km';
     var click = (x.elLat && x.elLon) ? ' onclick="map.setView([' + x.elLat + ',' + x.elLon + '],15)"' : '';
+    var hours = (cat === 'market' && x.el.tags.opening_hours) ? x.el.tags.opening_hours : '';
     return '<div class="rp-poi-row"' + click + '>' +
       '<span class="rp-poi-badge">' + icon + '</span>' +
-      '<span class="rp-poi-name" style="color:#dde">' + name + '</span>' +
+      '<span class="rp-poi-name" style="color:#dde">' + name + (hours ? ' <span style="color:#ffd54f;font-size:10px">' + hours.substring(0,30) + '</span>' : '') + '</span>' +
       '<span class="rp-poi-km">' + dist + '</span>' +
     '</div>';
   }).join('');
@@ -6983,6 +6984,7 @@ function _poiDistKm(lat1, lon1, lat2, lon2) {
 
 function _poiCategoryOf(el) {
   const t = el.tags || {};
+  if (t.amenity === 'marketplace' || t.amenity === 'market') return 'market';
   if (t.craft === 'winery' || t.amenity === 'winery') return 'winery';
   if (t.tourism === 'viewpoint') return 'viewpoint';
   if (t.tourism === 'museum' || t.tourism === 'gallery') return 'museum';
@@ -6995,19 +6997,22 @@ function _poiCategoryOf(el) {
 }
 
 function _poiIconOf(cat) {
-  return { castle:'🏰', church:'⛪', historic:'🏛', museum:'🖼', attraction:'🎭', viewpoint:'🏔', winery:'🍷', other:'📌' }[cat] || '📌';
+  return { market:'🏪', castle:'🏰', church:'⛪', historic:'🏛', museum:'🖼', attraction:'🎭', viewpoint:'🏔', winery:'🍷', other:'📌' }[cat] || '📌';
 }
 
 function _poiLabelOf(cat) {
-  return { castle:'Castles & Châteaux', church:'Abbeys & Churches', historic:'Historic Sites', museum:'Museums & Galleries', attraction:'Attractions', viewpoint:'Viewpoints', winery:'Wineries', other:'Other' }[cat] || 'Other';
+  return { market:'Weekly Markets', castle:'Castles & Châteaux', church:'Abbeys & Churches', historic:'Historic Sites', museum:'Museums & Galleries', attraction:'Attractions', viewpoint:'Viewpoints', winery:'Wineries', other:'Other' }[cat] || 'Other';
 }
 
 async function _fetchPOIsNearby(lat, lon) {
   const r = 15000;
   const q = '[out:json][timeout:25];(' +
+    'node["amenity"="marketplace"](around:' + r + ',' + lat + ',' + lon + ');' +
+    'node["amenity"="market"](around:' + r + ',' + lat + ',' + lon + ');' +
     'node["tourism"~"^(museum|attraction|viewpoint|gallery)$"](around:' + r + ',' + lat + ',' + lon + ');' +
     'node["historic"~"^(castle|monument|memorial|ruins|church|cathedral|abbey|monastery|chapel|fort|fortress|manor|palace|battlefield|archaeological_site)$"](around:' + r + ',' + lat + ',' + lon + ');' +
     'node["craft"="winery"](around:' + r + ',' + lat + ',' + lon + ');' +
+    'way["amenity"="marketplace"](around:' + r + ',' + lat + ',' + lon + ');' +
     'way["tourism"~"^(museum|attraction|viewpoint|castle)$"](around:' + r + ',' + lat + ',' + lon + ');' +
     'way["historic"~"^(castle|ruins|church|cathedral|abbey|monastery|fort|fortress|manor|palace|archaeological_site)$"](around:' + r + ',' + lat + ',' + lon + ');' +
     'way["craft"="winery"](around:' + r + ',' + lat + ',' + lon + ');' +
@@ -7168,7 +7173,7 @@ function _renderPOIList(wpId, wpLat, wpLon, activeCat) {
   if (!els) return;
 
   // Category counts
-  const cats = ['castle','church','historic','museum','attraction','viewpoint','winery'];
+  const cats = ['market','castle','church','historic','museum','attraction','viewpoint','winery'];
   const counts = {};
   els.forEach(function(el) { const c = _poiCategoryOf(el); counts[c] = (counts[c]||0) + 1; });
   const available = cats.filter(function(c) { return counts[c]; });
@@ -7206,11 +7211,12 @@ function _renderPOIList(wpId, wpLat, wpLon, activeCat) {
       const flyFn = (el._elLat && el._elLon)
         ? 'map.setView([' + el._elLat + ',' + el._elLon + '],15);map.closePopup();'
         : '';
+      const hours = (cat === 'market' && el.tags.opening_hours) ? el.tags.opening_hours : '';
       html += '<div class="poi-item">' +
         '<div class="poi-icon">' + icon + '</div>' +
         '<div class="poi-body">' +
           '<div class="poi-name" title="' + name.replace(/"/g,'&quot;') + '">' + nameDisplay + '</div>' +
-          '<div class="poi-meta">' + _poiLabelOf(cat) + ' · ' + dist + '</div>' +
+          '<div class="poi-meta">' + _poiLabelOf(cat) + ' · ' + dist + (hours ? ' · <span style="color:#ffd54f">' + hours.substring(0,40) + '</span>' : '') + '</div>' +
         '</div>' +
         (flyFn ? '<button class="poi-fly" onclick="' + flyFn + '">📍</button>' : '') +
         '</div>';
