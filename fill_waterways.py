@@ -13,7 +13,6 @@ import json
 import os
 import sys
 import time
-import tempfile
 from collections import defaultdict
 
 import requests
