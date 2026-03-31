@@ -3823,6 +3823,12 @@ function applyVesselFilter() {
   vesselDraft      = parseFloat(draftInput && draftInput.value) || 0;
   vesselAirDraught = parseFloat(airInput   && airInput.value)   || 0;
 
+  // Keep _vesselProfile in sync so waterway colours reflect filter bar changes
+  _vesselProfile.draught = vesselDraft  || null;
+  _vesselProfile.air     = vesselAirDraught || null;
+  if (typeof buildWaterwayOverlay === 'function' && WATERWAY_GEOJSON) buildWaterwayOverlay();
+  _updateWaterwayNavLegend();
+
   var clearBtn = document.getElementById('vf-clear-btn');
   if (clearBtn) clearBtn.style.color = (vesselDraft || vesselAirDraught) ? '#e87a7a' : '#555';
 
