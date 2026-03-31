@@ -102,7 +102,7 @@ Search bar finds towns, locks, haltes, and ports instantly.
 | Base map (IGN) | [IGN Géoportail](https://data.geopf.fr) |
 | Nautical marks | [OpenSeaMap](https://www.openseamap.org) |
 | Weather | [Open-Meteo](https://open-meteo.com) (free, no API key) |
-| Michelin restaurants | [ngshiheng/michelin-my-maps](https://github.com/ngshiheng/michelin-my-maps) |
+| Michelin restaurants | [ngshiheng/michelin-my-maps](https://github.com/ngshiheng/michelin-my-maps) — updated annually via `fill_michelin.py` |
 
 ---
 
@@ -116,6 +116,10 @@ waterways.geojson        (~8.5 MB — 3,481 OSM waterway features, deduplicated 
 ```
 
 **No build tools, no npm.** Edit and refresh.
+
+**Maintenance scripts:**
+- `fill_waterways.py` — re-fetch canal geometry from OpenStreetMap
+- `fill_michelin.py` — update Michelin restaurant data (runs automatically via GitHub Action every February)
 
 **Libraries (CDN):**
 - [Leaflet.js 1.9.4](https://leafletjs.com) — map rendering

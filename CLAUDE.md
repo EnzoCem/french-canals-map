@@ -15,11 +15,14 @@ A single-file interactive web map for cruising the French inland waterways, base
 
 ```
 French Canals/
-├── french_canals_map.html   ← entire app (HTML + CSS + JS + data) ~7,700 lines
-├── waterways.geojson        ← canal/river geometry fetched from OSM (~8.5 MB, 3,481 features after cleanup)
-├── index.html               ← GitHub Pages redirect to french_canals_map.html
-├── Open Map.command         ← macOS launcher script (requires chmod +x once)
-├── fill_waterways.py        ← one-shot script that generated waterways.geojson via Overpass
+├── french_canals_map.html          ← entire app (HTML + CSS + JS + data) ~7,700 lines
+├── waterways.geojson               ← canal/river geometry fetched from OSM (~8.5 MB, 3,481 features after cleanup)
+├── index.html                      ← GitHub Pages redirect to french_canals_map.html
+├── Open Map.command                ← macOS launcher script (requires chmod +x once)
+├── fill_waterways.py               ← one-shot script that generated waterways.geojson via Overpass
+├── fill_michelin.py                ← annual script to update MICHELIN_RESTAURANTS from ngshiheng/michelin-my-maps
+├── .github/workflows/
+│   └── update-michelin.yml         ← GitHub Action: runs fill_michelin.py on Feb 15 each year
 └── CLAUDE.md / README.md / FEATURES.md
 ```
 
@@ -314,6 +317,31 @@ Seven drag implementations were attempted and all failed due to Leaflet internal
 | `clean_geojson(geojson)` | Removes non-navigable features + non-canonical variants from existing GeoJSON |
 | `merge_geojson()` | Merges Overpass fetch with existing file using normalised dedup |
 | `--clean-geojson` | CLI mode: run cleanup pass on `waterways.geojson` without re-fetching |
+
+---
+
+## fill_michelin.py — Michelin update script
+
+Downloads the latest Michelin Guide France data from [ngshiheng/michelin-my-maps](https://github.com/ngshiheng/michelin-my-maps) and regenerates the `MICHELIN_RESTAURANTS` constant in `french_canals_map.html`.
+
+**Run manually:**
+```bash
+python3 fill_michelin.py --preview   # dry run — shows counts, no file changes
+python3 fill_michelin.py             # update in-place
+git add french_canals_map.html
+git commit -m "Update Michelin restaurants YYYY"
+git push
+```
+
+**Automated:** `.github/workflows/update-michelin.yml` runs this automatically on **15 February each year** and opens a Pull Request if the data has changed. Can also be triggered manually from GitHub → Actions → Update Michelin Restaurants → Run workflow.
+
+**Filter logic:**
+- Country: `', France'` in the `Location` column
+- Included awards: `1 Star`, `2 Stars`, `3 Stars`, `Bib Gourmand`
+- Excluded: `Selected Restaurants` (~2,000 entries — unstarred, non-Bib)
+- Sort order: 3★ → 2★ → 1★ → Bib, then city + name alphabetically
+
+**Data source columns used:** `Name`, `Latitude`, `Longitude`, `Award`, `Cuisine`, `Location` (city), `Url`
 
 ---
 

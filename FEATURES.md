@@ -29,6 +29,11 @@ Planned and proposed enhancements for the French Canals Interactive Map.
 | VNF integration | Links to VNF route calculator, notices, and regional pages in all sidebars |
 | Section filter | Filter map to any of Jefferson's 9 book sections |
 | Non-navigable waterway cleanup | `fill_waterways.py --clean-geojson` removes ancien/bras-mort/vieux segments; normalised dedup removes variants |
+| Michelin annual update script | `fill_michelin.py` fetches latest data from ngshiheng/michelin-my-maps and regenerates MICHELIN_RESTAURANTS |
+| Michelin GitHub Action | `.github/workflows/update-michelin.yml` runs fill_michelin.py on Feb 15 each year; opens PR if data changed |
+| Michelin popup on click | Clicking a restaurant in sidebar or route planner opens a Leaflet popup with stars, cuisine, city, Michelin Guide link |
+| Explore Nearby POI popups | Clicking 📍 on any Explore Nearby item opens a popup with name, category, opening hours, phone, website |
+| Provisions auto-load | Provisions & Services section loads automatically on first expand — no second tap needed |
 
 ### Route Planner
 | Feature | Description |
