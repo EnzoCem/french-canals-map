@@ -7009,13 +7009,14 @@ function _poiLabelOf(cat) {
 }
 
 async function _fetchPOIsNearby(lat, lon) {
-  const r = 15000;
-  const q = '[out:json][timeout:30];(' +
+  const r  = 15000; // sightseeing radius (15 km)
+  const r2 = 5000;  // practical/dense categories (5 km) — restaurants etc. flood at 15 km
+  const q = '[out:json][timeout:45];(' +
     'node["amenity"="marketplace"](around:' + r + ',' + lat + ',' + lon + ');' +
     'node["amenity"="market"](around:' + r + ',' + lat + ',' + lon + ');' +
     'node["amenity"="bicycle_rental"](around:' + r + ',' + lat + ',' + lon + ');' +
-    'node["amenity"="restaurant"](around:' + r + ',' + lat + ',' + lon + ');' +
-    'node["shop"~"^(cheese|farm|deli)$"](around:' + r + ',' + lat + ',' + lon + ');' +
+    'node["amenity"="restaurant"](around:' + r2 + ',' + lat + ',' + lon + ');' +
+    'node["shop"~"^(cheese|farm|deli)$"](around:' + r2 + ',' + lat + ',' + lon + ');' +
     'node["leisure"="swimming_area"](around:' + r + ',' + lat + ',' + lon + ');' +
     'node["natural"="beach"]["access"!="private"]["access"!="no"](around:' + r + ',' + lat + ',' + lon + ');' +
     'node["tourism"~"^(museum|attraction|viewpoint|gallery)$"](around:' + r + ',' + lat + ',' + lon + ');' +
