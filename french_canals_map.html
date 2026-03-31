@@ -3461,7 +3461,7 @@ var _vigicruesCache = {};
 
 async function fetchVigicruesHTML(wid, routeNum) {
   var station = VIGICRUES_STATIONS[routeNum];
-  if (!station) return;
+  if (!station) return; // no station for this route — placeholder div stays as-is
   var el = document.getElementById('vigicrues-live-' + wid);
   if (!el) return;
 
@@ -3483,7 +3483,7 @@ async function fetchVigicruesHTML(wid, routeNum) {
     var data = await resp.json();
     var obs  = data.data && data.data[0];
     if (!obs) throw new Error('no data');
-    var cm   = Math.round(obs.resultat_obs / 10);
+    var cm   = Math.round(obs.resultat_obs / 10); // resultat_obs is in mm, convert to cm
     var dt   = new Date(obs.date_obs);
     var time = dt.getHours() + ':' + String(dt.getMinutes()).padStart(2, '0');
     html = '<div class="vigicrues-card">' +
