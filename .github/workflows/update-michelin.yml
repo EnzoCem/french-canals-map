@@ -1,0 +1,73 @@
+name: Update Michelin Restaurants
+
+# Runs automatically on Feb 15 each year (a few weeks after the Guide is
+# announced and the source dataset has been refreshed).
+# Can also be triggered manually from GitHub → Actions → Run workflow.
+
+on:
+  schedule:
+    - cron: '0 9 15 2 *'   # 09:00 UTC, 15 February
+  workflow_dispatch:         # manual trigger any time
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write        # push the update branch
+      pull-requests: write   # open the PR
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run fill_michelin.py
+        run: python3 fill_michelin.py
+
+      - name: Check whether french_canals_map.html changed
+        id: diff
+        run: |
+          if git diff --quiet french_canals_map.html; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+            echo "No changes — Michelin dataset unchanged since last run."
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+            # Count new total for PR body
+            TOTAL=$(grep -o "id:'mr_[0-9]*'" french_canals_map.html | wc -l | tr -d ' ')
+            echo "total=$TOTAL" >> $GITHUB_OUTPUT
+            echo "HTML changed — $TOTAL French entries."
+          fi
+
+      - name: Get current year
+        if: steps.diff.outputs.changed == 'true'
+        id: year
+        run: echo "value=$(date +'%Y')" >> $GITHUB_OUTPUT
+
+      - name: Open Pull Request
+        if: steps.diff.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: auto/michelin-update-${{ steps.year.outputs.value }}
+          delete-branch: true
+          commit-message: "Update Michelin restaurants ${{ steps.year.outputs.value }}"
+          title: "🍽 Michelin Guide France ${{ steps.year.outputs.value }} — auto-update"
+          body: |
+            ## Michelin Guide France — annual update
+
+            Automatically fetched from [ngshiheng/michelin-my-maps](https://github.com/ngshiheng/michelin-my-maps) by `fill_michelin.py`.
+
+            **Total French entries:** ${{ steps.diff.outputs.total }}
+            *(Stars 1 / 2 / 3 + Bib Gourmand — Selected Restaurants excluded)*
+
+            ### Before merging, please check
+            - [ ] Entry count looks reasonable (expect ~1,000)
+            - [ ] Star counts in the Action log match the Michelin announcement
+            - [ ] Spot-check one or two newly awarded restaurants on the live map after merge
+
+            ---
+            🤖 Generated automatically — merge to deploy to GitHub Pages.
