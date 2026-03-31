@@ -7059,27 +7059,30 @@ function _poiLabelOf(cat) {
 
 async function _fetchPOIsNearby(lat, lon) {
   const r  = 15000; // sightseeing radius (15 km)
-  const r2 = 5000;  // practical/dense categories (5 km) — restaurants etc. flood at 15 km
+  const r2 = 5000;  // practical/dense categories — restaurants etc. flood at 15 km
+  const rh = 10000; // historic radius (10 km) — France has a monument in every village
+  // ["name"] on every branch: unnamed features never leave the server,
+  // cutting the response size by ~80% for dense cities like Lyon.
   const q = '[out:json][timeout:45];(' +
-    'node["amenity"="marketplace"](around:' + r + ',' + lat + ',' + lon + ');' +
-    'node["amenity"="market"](around:' + r + ',' + lat + ',' + lon + ');' +
-    'node["amenity"="bicycle_rental"](around:' + r + ',' + lat + ',' + lon + ');' +
-    'node["amenity"="restaurant"](around:' + r2 + ',' + lat + ',' + lon + ');' +
-    'node["shop"~"^(cheese|farm|deli)$"](around:' + r2 + ',' + lat + ',' + lon + ');' +
-    'node["leisure"="swimming_area"](around:' + r + ',' + lat + ',' + lon + ');' +
-    'node["natural"="beach"]["access"!="private"]["access"!="no"](around:' + r + ',' + lat + ',' + lon + ');' +
-    'node["tourism"~"^(museum|attraction|viewpoint|gallery)$"](around:' + r + ',' + lat + ',' + lon + ');' +
-    'node["historic"~"^(castle|monument|memorial|ruins|church|cathedral|abbey|monastery|chapel|fort|fortress|manor|palace|battlefield|archaeological_site)$"](around:' + r + ',' + lat + ',' + lon + ');' +
-    'node["craft"~"^(winery|distillery)$"](around:' + r + ',' + lat + ',' + lon + ');' +
-    'node["shop"="wine"](around:' + r + ',' + lat + ',' + lon + ');' +
-    'node["tourism"="wine_cellar"](around:' + r + ',' + lat + ',' + lon + ');' +
-    'way["amenity"="marketplace"](around:' + r + ',' + lat + ',' + lon + ');' +
-    'way["leisure"="swimming_area"](around:' + r + ',' + lat + ',' + lon + ');' +
-    'way["natural"="beach"]["access"!="private"]["access"!="no"](around:' + r + ',' + lat + ',' + lon + ');' +
-    'way["tourism"~"^(museum|attraction|viewpoint|castle)$"](around:' + r + ',' + lat + ',' + lon + ');' +
-    'way["historic"~"^(castle|ruins|church|cathedral|abbey|monastery|fort|fortress|manor|palace|archaeological_site)$"](around:' + r + ',' + lat + ',' + lon + ');' +
-    'way["craft"~"^(winery|distillery)$"](around:' + r + ',' + lat + ',' + lon + ');' +
-    'way["shop"="wine"](around:' + r + ',' + lat + ',' + lon + ');' +
+    'node["amenity"="marketplace"]["name"](around:' + r + ',' + lat + ',' + lon + ');' +
+    'node["amenity"="market"]["name"](around:' + r + ',' + lat + ',' + lon + ');' +
+    'node["amenity"="bicycle_rental"]["name"](around:' + r + ',' + lat + ',' + lon + ');' +
+    'node["amenity"="restaurant"]["name"](around:' + r2 + ',' + lat + ',' + lon + ');' +
+    'node["shop"~"^(cheese|farm|deli)$"]["name"](around:' + r2 + ',' + lat + ',' + lon + ');' +
+    'node["leisure"="swimming_area"]["name"](around:' + r + ',' + lat + ',' + lon + ');' +
+    'node["natural"="beach"]["name"]["access"!="private"]["access"!="no"](around:' + r + ',' + lat + ',' + lon + ');' +
+    'node["tourism"~"^(museum|attraction|viewpoint|gallery)$"]["name"](around:' + r + ',' + lat + ',' + lon + ');' +
+    'node["historic"~"^(castle|monument|memorial|ruins|church|cathedral|abbey|monastery|chapel|fort|fortress|manor|palace|battlefield|archaeological_site)$"]["name"](around:' + rh + ',' + lat + ',' + lon + ');' +
+    'node["craft"~"^(winery|distillery)$"]["name"](around:' + r + ',' + lat + ',' + lon + ');' +
+    'node["shop"="wine"]["name"](around:' + r + ',' + lat + ',' + lon + ');' +
+    'node["tourism"="wine_cellar"]["name"](around:' + r + ',' + lat + ',' + lon + ');' +
+    'way["amenity"="marketplace"]["name"](around:' + r + ',' + lat + ',' + lon + ');' +
+    'way["leisure"="swimming_area"]["name"](around:' + r + ',' + lat + ',' + lon + ');' +
+    'way["natural"="beach"]["name"]["access"!="private"]["access"!="no"](around:' + r + ',' + lat + ',' + lon + ');' +
+    'way["tourism"~"^(museum|attraction|viewpoint|castle)$"]["name"](around:' + r + ',' + lat + ',' + lon + ');' +
+    'way["historic"~"^(castle|ruins|church|cathedral|abbey|monastery|fort|fortress|manor|palace|archaeological_site)$"]["name"](around:' + rh + ',' + lat + ',' + lon + ');' +
+    'way["craft"~"^(winery|distillery)$"]["name"](around:' + r + ',' + lat + ',' + lon + ');' +
+    'way["shop"="wine"]["name"](around:' + r + ',' + lat + ',' + lon + ');' +
     ');out center tags;';
   const resp = await fetch('https://overpass-api.de/api/interpreter', {
     method: 'POST',
@@ -7174,6 +7177,10 @@ function expandProvisions(wpId, wpLat, wpLon) {
   var open = body.style.display !== 'none';
   body.style.display = open ? 'none' : 'block';
   if (arrow) arrow.textContent = open ? '▶' : '▼';
+  // Auto-load on first open (no need to tap a second button)
+  if (!open && body.querySelector('.prov-load-btn')) {
+    loadProvisionsFor(wpId, wpLat, wpLon);
+  }
 }
 
 async function loadProvisionsFor(wpId, wpLat, wpLon) {
