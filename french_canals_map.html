@@ -6985,7 +6985,7 @@ function _poiDistKm(lat1, lon1, lat2, lon2) {
 function _poiCategoryOf(el) {
   const t = el.tags || {};
   if (t.amenity === 'marketplace' || t.amenity === 'market') return 'market';
-  if (t.craft === 'winery' || t.amenity === 'winery') return 'winery';
+  if (t.craft === 'winery' || t.amenity === 'winery' || t.shop === 'wine' || t.tourism === 'wine_cellar') return 'winery';
   if (t.tourism === 'viewpoint') return 'viewpoint';
   if (t.tourism === 'museum' || t.tourism === 'gallery') return 'museum';
   if (t.tourism === 'attraction') return 'attraction';
@@ -7012,10 +7012,13 @@ async function _fetchPOIsNearby(lat, lon) {
     'node["tourism"~"^(museum|attraction|viewpoint|gallery)$"](around:' + r + ',' + lat + ',' + lon + ');' +
     'node["historic"~"^(castle|monument|memorial|ruins|church|cathedral|abbey|monastery|chapel|fort|fortress|manor|palace|battlefield|archaeological_site)$"](around:' + r + ',' + lat + ',' + lon + ');' +
     'node["craft"="winery"](around:' + r + ',' + lat + ',' + lon + ');' +
+    'node["shop"="wine"](around:' + r + ',' + lat + ',' + lon + ');' +
+    'node["tourism"="wine_cellar"](around:' + r + ',' + lat + ',' + lon + ');' +
     'way["amenity"="marketplace"](around:' + r + ',' + lat + ',' + lon + ');' +
     'way["tourism"~"^(museum|attraction|viewpoint|castle)$"](around:' + r + ',' + lat + ',' + lon + ');' +
     'way["historic"~"^(castle|ruins|church|cathedral|abbey|monastery|fort|fortress|manor|palace|archaeological_site)$"](around:' + r + ',' + lat + ',' + lon + ');' +
     'way["craft"="winery"](around:' + r + ',' + lat + ',' + lon + ');' +
+    'way["shop"="wine"](around:' + r + ',' + lat + ',' + lon + ');' +
     ');out center tags;';
   const resp = await fetch('https://overpass-api.de/api/interpreter', {
     method: 'POST',
