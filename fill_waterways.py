@@ -47,7 +47,7 @@ OSM_NAME_MAP = {
     'Canal de Garonne':              ['Canal latéral à la Garonne', 'Canal Latéral à la Garonne'],
     'River Yonne':                   ["L'Yonne", 'River Yonne', 'Yonne'],
     'Canal de la Somme':             ['Canal de la Somme', 'Somme', 'Canal de la Somme à la Sensée'],
-    'Canal entre Champagne et Bourgogne': ['Canal entre Champagne et Bourgogne', 'Canal de la Marne à la Saône'],
+    'Canal entre Champagne et Bourgogne': ['Canal Entre Champagne et Bourgogne', 'Canal entre Champagne et Bourgogne', 'Canal de la Marne à la Saône'],
     'Liaison Dunkerque\u2013Escaut': ['Liaison Dunkerque\u2013Escaut', 'Canal Dunkerque-Escaut'],
     'Canal de la Marne à la Saône':  ['Canal de la Marne à la Saône', 'Canal entre Champagne et Bourgogne'],
 }

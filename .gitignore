@@ -9,6 +9,16 @@
 # EPUB source
 *.epub
 
+# Python
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Intermediate fetch artifacts
+waterways_existing.geojson
+waterways_overpass.json
+
 # Editor
 .idea/
 .vscode/
