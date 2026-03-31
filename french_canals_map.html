@@ -3373,6 +3373,30 @@ function buildMichelinMarkers() {
   });
 }
 
+// Open a Michelin popup by restaurant id — reuses the same popup HTML as the
+// marker layer. Leaflet auto-closes any previously open popup when openOn() is
+// called, so clicking a second restaurant dismisses the first automatically.
+function showMichelinPopup(id) {
+  const r = MICHELIN_RESTAURANTS.find(function(x) { return x.id === id; });
+  if (!r) return;
+  const starLabel = r.stars === 3 ? '3 Stars ★★★' : r.stars === 2 ? '2 Stars ★★' : r.stars === 1 ? '1 Star ★' : 'Bib Gourmand';
+  const starColor = r.stars >= 2 ? '#e74c3c' : r.stars === 1 ? '#e67e22' : '#27ae60';
+  const content =
+    '<div style="min-width:180px">' +
+    '<div class="mich-popup-stars">' + (r.stars > 0 ? '★'.repeat(r.stars) : 'Ⓑ') + '</div>' +
+    '<strong style="font-size:13px;color:#e0c97f">' + r.name + '</strong><br>' +
+    '<div class="mich-popup-cuisine">' + (r.cuisine || '') + '</div>' +
+    '<div class="mich-popup-addr">📍 ' + r.city + '</div>' +
+    '<div style="font-size:11px;color:' + starColor + ';margin-bottom:8px;font-weight:600">Michelin ' + starLabel + '</div>' +
+    (r.url ? '<a href="' + r.url + '" target="_blank" class="mich-popup-link">View on Michelin Guide →</a>' : '') +
+    '</div>';
+  map.setView([r.lat, r.lon], 14);
+  L.popup({ maxWidth: 280 })
+    .setLatLng([r.lat, r.lon])
+    .setContent(content)
+    .openOn(map);
+}
+
 function buildMarkers() {
   clusterGroup.clearLayers();
   townGroup.clearLayers();
@@ -3651,7 +3675,7 @@ function openSidebar(wid) {
     _michelinNearby.forEach(function(r) {
       const lbl = r.stars === 3 ? '\u2605\u2605\u2605' : r.stars === 2 ? '\u2605\u2605' : r.stars === 1 ? '\u2605' : '\u24B7';
       const col = r.stars >= 2 ? '#e74c3c' : r.stars === 1 ? '#e67e22' : '#27ae60';
-      mhtml += '<div style="padding:5px 0;border-bottom:1px solid #0f3460;cursor:pointer" onclick="map.setView([' + r.lat + ',' + r.lon + '],14)">' +
+      mhtml += '<div style="padding:5px 0;border-bottom:1px solid #0f3460;cursor:pointer" onclick="showMichelinPopup(\'' + r.id + '\')">' +
         '<span style="color:' + col + ';font-weight:700;margin-right:6px">' + lbl + '</span>' +
         '<span style="font-size:12px;color:#e0c97f">' + r.name + '</span>' +
         (r.cuisine ? '<span style="font-size:10px;color:#5bc0de;margin-left:6px">' + r.cuisine + '</span>' : '') +
@@ -6843,7 +6867,7 @@ function _buildMichelinSnippet(stopLat, stopLon) {
     var lbl = r.stars === 3 ? '★★★' : r.stars === 2 ? '★★' : r.stars === 1 ? '★' : 'Ⓑ';
     var col = r.stars >= 2 ? '#e74c3c' : r.stars === 1 ? '#e67e22' : '#27ae60';
     var dist = x.d < 1 ? Math.round(x.d * 1000) + ' m' : x.d.toFixed(1) + ' km';
-    return '<div class="rp-poi-row" onclick="map.setView([' + r.lat + ',' + r.lon + '],15)">' +
+    return '<div class="rp-poi-row" onclick="showMichelinPopup(\'' + r.id + '\')">' +
       '<span class="rp-poi-badge" style="color:' + col + '">' + lbl + '</span>' +
       '<span class="rp-poi-name" style="color:#e0c97f">' + r.name + '</span>' +
       '<span class="rp-poi-km">' + dist + '</span>' +
