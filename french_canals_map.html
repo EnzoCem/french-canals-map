@@ -3397,6 +3397,31 @@ function showMichelinPopup(id) {
     .openOn(map);
 }
 
+// Global store populated by _renderPOIList so showPOIPopup can look up by OSM id
+const _poiPopupStore = {};
+
+function showPOIPopup(osmId) {
+  const d = _poiPopupStore[osmId];
+  if (!d) return;
+  const icon = _poiIconOf(d.cat);
+  const label = _poiLabelOf(d.cat);
+  const hours   = d.tags.opening_hours || '';
+  const website = d.tags.website || d.tags['contact:website'] || d.tags['url'] || '';
+  const phone   = d.tags.phone   || d.tags['contact:phone']   || '';
+  let content = '<div style="min-width:160px;max-width:240px">' +
+    '<div style="font-size:15px;margin-bottom:3px">' + icon + ' <strong style="color:#e0c97f">' + (d.name || '') + '</strong></div>' +
+    '<div style="font-size:11px;color:#5bc0de;margin-bottom:6px">' + label + '</div>';
+  if (hours)   content += '<div style="font-size:11px;color:#ffd54f;margin-bottom:4px">🕐 ' + hours + '</div>';
+  if (phone)   content += '<div style="font-size:11px;color:#aaa;margin-bottom:4px">📞 ' + phone + '</div>';
+  if (website) content += '<a href="' + website + '" target="_blank" style="font-size:11px;color:#7ad4ef;text-decoration:none">🌐 Website →</a>';
+  content += '</div>';
+  map.setView([d.lat, d.lon], 15);
+  L.popup({ maxWidth: 260 })
+    .setLatLng([d.lat, d.lon])
+    .setContent(content)
+    .openOn(map);
+}
+
 function buildMarkers() {
   clusterGroup.clearLayers();
   townGroup.clearLayers();
@@ -7250,17 +7275,18 @@ function _renderPOIList(wpId, wpLat, wpLon, activeCat) {
       const name = (el.tags.name || '').replace(/'/g, '&#39;');
       const nameDisplay = el.tags.name || '';
       const dist = el._dist < 1 ? Math.round(el._dist * 1000) + ' m' : el._dist.toFixed(1) + ' km';
-      const flyFn = (el._elLat && el._elLon)
-        ? 'map.setView([' + el._elLat + ',' + el._elLon + '],15);map.closePopup();'
-        : '';
       const hours = (cat === 'market' && el.tags.opening_hours) ? el.tags.opening_hours : '';
+      // Store in global lookup so showPOIPopup can retrieve full data
+      const osmId = el.id || (el.type + '_' + el._elLat + '_' + el._elLon);
+      _poiPopupStore[osmId] = { name: el.tags.name, cat: cat, lat: el._elLat, lon: el._elLon, tags: el.tags };
+      const popupCall = (el._elLat && el._elLon) ? 'showPOIPopup(' + JSON.stringify(String(osmId)) + ')' : '';
       html += '<div class="poi-item">' +
         '<div class="poi-icon">' + icon + '</div>' +
         '<div class="poi-body">' +
           '<div class="poi-name" title="' + name.replace(/"/g,'&quot;') + '">' + nameDisplay + '</div>' +
           '<div class="poi-meta">' + _poiLabelOf(cat) + ' · ' + dist + (hours ? ' · <span style="color:#ffd54f">' + hours.substring(0,40) + '</span>' : '') + '</div>' +
         '</div>' +
-        (flyFn ? '<button class="poi-fly" onclick="' + flyFn + '">📍</button>' : '') +
+        (popupCall ? '<button class="poi-fly" onclick="' + popupCall + '">📍</button>' : '') +
         '</div>';
     });
   }
