@@ -5,12 +5,14 @@ stitch ways into continuous LineStrings, RDP-simplify, and update
 waterways.geojson.
 
 Usage:
-    python fill_waterways.py            # full run (~15–30 min)
-    python fill_waterways.py --dry-run  # print what would be fetched, no network calls
+    python fill_waterways.py               # full run (~15–30 min)
+    python fill_waterways.py --dry-run     # print what would be fetched, no network calls
+    python fill_waterways.py --clean-geojson  # remove non-navigable / duplicate features only
 """
 
 import json
 import os
+import re
 import sys
 import time
 from collections import defaultdict
@@ -102,6 +104,44 @@ WATERWAY_ROUTES = {
 }
 
 NAVIGABLE_WATERWAYS = list(WATERWAY_ROUTES.keys())
+
+
+# ── Name normalisation & non-navigable filter ────────────────────────────────
+
+_PREFIX_RE = re.compile(r'^(river |la |le |l\'|les |the )', re.I)
+
+def _norm_name(name):
+    """
+    Normalise a waterway name for fuzzy matching.
+    Strips leading natural-language articles and lowercases so that, e.g.,
+    'Canal Entre Champagne et Bourgogne' == 'Canal entre Champagne et Bourgogne',
+    'Canal Latéral à la Marne' == 'Canal latéral à la Marne', and
+    'La Seine' == 'River Seine' (both strip to 'seine').
+
+    Does NOT strip 'canal de' — that is part of the name, not a mere article.
+    'La Garonne' (the river) and 'Canal de Garonne' (the lateral canal) are
+    intentionally kept as distinct waterways.
+    """
+    return _PREFIX_RE.sub('', (name or '').lower()).strip()
+
+
+# Patterns that reliably identify non-navigable waterway structures.
+# These should never appear in the cruising overlay.
+_NON_NAVIGABLE_RE = re.compile(
+    r'\bancien(ne)?\b'       # Ancien Canal de…, Ancienne Dérivation de…
+    r'|\bbras[ -]mort\b'     # Bras Mort, Bras-Mort (dead arms)
+    r'|\bvieux\b|\bvieille\b'# Vieux Rhin, Vieille Lys, Le Vieux Rhône
+    r'|\bécluse\b'           # Écluse n°X — lock structures, not canal segments
+    r'|pont-canal'           # Pont-Canal (aqueduct bridges)
+    r'|\baqueduc\b'          # Aqueduc du Loing
+    r"|prise\s+d'eau"        # Prise d'Eau (water intake channels)
+    r'|\bsouterrain\b',      # Souterrain (tunnel segments)
+    re.I,
+)
+
+def is_non_navigable(name):
+    """Return True if the feature name indicates a non-navigable structure."""
+    return bool(_NON_NAVIGABLE_RE.search(name or ''))
 
 
 # ── Pure functions (unit-tested) ─────────────────────────────────────────────
@@ -198,22 +238,78 @@ def build_features(app_name, chains, route_num):
 
 def merge_geojson(old_geojson, new_features, waterway_names):
     """
-    Replace features whose name is in waterway_names with new_features.
+    Replace features whose name matches waterway_names with new_features.
 
     old_geojson:    parsed FeatureCollection dict
     new_features:   list of new Feature dicts to insert
     waterway_names: set of name strings to remove from old features
 
+    Matching is normalised (case-insensitive, leading articles stripped) so
+    capitalisation variants such as 'Canal Entre Champagne et Bourgogne' are
+    treated as the same waterway as 'Canal entre Champagne et Bourgogne'.
+
+    Also strips any non-navigable features (abandoned canals, dead arms,
+    lock structures, aqueducts, etc.) from the kept set.
+
     Returns a new FeatureCollection dict (does not mutate inputs).
     """
+    norm_names = {_norm_name(n) for n in waterway_names}
     kept = [
         f for f in old_geojson['features']
-        if (f.get('properties') or {}).get('name') not in waterway_names
+        if not (
+            _norm_name((f.get('properties') or {}).get('name') or '') in norm_names
+            or is_non_navigable((f.get('properties') or {}).get('name') or '')
+        )
     ]
     return {
         'type': 'FeatureCollection',
         'features': kept + new_features,
     }
+
+
+def clean_geojson(geojson):
+    """
+    One-shot cleanup pass: remove non-navigable structures and non-canonical
+    capitalisation variants from an existing FeatureCollection.
+
+    A feature is a 'non-canonical variant' when its name normalises to the
+    same string as a known navigable waterway key but differs in spelling
+    (e.g. capital-E 'Canal Entre…' alongside lowercase-e 'Canal entre…'),
+    AND the canonical spelling already has at least one feature present —
+    so we never discard the only data we have for a waterway.
+
+    Returns (cleaned_geojson, n_non_navigable_removed, n_variant_removed).
+    """
+    # Build normalised → canonical name index from the authoritative list
+    canonical_by_norm = {_norm_name(n): n for n in NAVIGABLE_WATERWAYS}
+
+    # Count existing features per exact name
+    name_counts = defaultdict(int)
+    for f in geojson['features']:
+        n = (f.get('properties') or {}).get('name') or ''
+        name_counts[n] += 1
+
+    kept = []
+    n_non_nav = 0
+    n_variant = 0
+
+    for f in geojson['features']:
+        name = (f.get('properties') or {}).get('name') or ''
+
+        # 1. Remove known non-navigable structure types
+        if is_non_navigable(name):
+            n_non_nav += 1
+            continue
+
+        # 2. Remove capitalisation variants when the canonical spelling exists
+        canonical = canonical_by_norm.get(_norm_name(name))
+        if canonical and canonical != name and name_counts.get(canonical, 0) > 0:
+            n_variant += 1
+            continue
+
+        kept.append(f)
+
+    return {'type': 'FeatureCollection', 'features': kept}, n_non_nav, n_variant
 
 
 # ── Network functions (not unit-tested — make real Overpass calls) ────────────
@@ -351,5 +447,23 @@ def main(dry_run=False):
 
 
 if __name__ == '__main__':
-    dry_run = '--dry-run' in sys.argv
-    main(dry_run=dry_run)
+    if '--clean-geojson' in sys.argv:
+        geojson_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'waterways.geojson')
+        if not os.path.exists(geojson_path):
+            sys.exit(f'ERROR: {geojson_path} not found.')
+        with open(geojson_path) as f:
+            old = json.load(f)
+        old_count = len(old['features'])
+        cleaned, n_non_nav, n_variant = clean_geojson(old)
+        new_count = len(cleaned['features'])
+        tmp = geojson_path + '.tmp'
+        with open(tmp, 'w') as f:
+            json.dump(cleaned, f, separators=(',', ':'))
+        os.replace(tmp, geojson_path)
+        print(f'Cleaned waterways.geojson:')
+        print(f'  Removed {n_non_nav} non-navigable features (abandoned, dead arms, structures)')
+        print(f'  Removed {n_variant} non-canonical capitalisation variants')
+        print(f'  Total: {old_count} → {new_count} features')
+    else:
+        dry_run = '--dry-run' in sys.argv
+        main(dry_run=dry_run)
