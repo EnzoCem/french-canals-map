@@ -7181,14 +7181,16 @@ async function loadProvisionsFor(wpId, wpLat, wpLon) {
   if (!body) return;
   body.innerHTML = '<div class="prov-body" style="color:#7ad4ef;padding:8px">🔄 Loading nearby provisions…</div>';
   var els = null;
-  // Try up to 3 times with increasing delays (handles Overpass rate-limiting)
-  for (var attempt = 0; attempt < 3; attempt++) {
-    if (attempt > 0) await new Promise(function(r){ setTimeout(r, attempt * 2000); });
+  // Try up to 4 times with increasing delays — Overpass rate-limits when
+  // Explore Nearby has just fired a large query immediately beforehand.
+  var _provDelays = [0, 4000, 10000, 18000];
+  for (var attempt = 0; attempt < 4; attempt++) {
+    if (_provDelays[attempt] > 0) await new Promise(function(r){ setTimeout(r, _provDelays[attempt]); });
     try {
       els = await _fetchProvisionsNearby(wpLat, wpLon);
       break;
     } catch(e) {
-      if (attempt === 2) {
+      if (attempt === 3) {
         body = document.getElementById('prov-body-' + wpId);
         if (body) body.innerHTML = '<div class="prov-body"><button class="prov-load-btn" onclick="loadProvisionsFor(\'' + wpId + '\',' + wpLat + ',' + wpLon + ')">⚠ Failed — tap to retry</button></div>';
         return;
@@ -7279,7 +7281,7 @@ function _renderPOIList(wpId, wpLat, wpLon, activeCat) {
       // Store in global lookup so showPOIPopup can retrieve full data
       const osmId = el.id || (el.type + '_' + el._elLat + '_' + el._elLon);
       _poiPopupStore[osmId] = { name: el.tags.name, cat: cat, lat: el._elLat, lon: el._elLon, tags: el.tags };
-      const popupCall = (el._elLat && el._elLon) ? 'showPOIPopup(' + JSON.stringify(String(osmId)) + ')' : '';
+      const popupCall = (el._elLat && el._elLon) ? "showPOIPopup('" + osmId + "')" : '';
       html += '<div class="poi-item">' +
         '<div class="poi-icon">' + icon + '</div>' +
         '<div class="poi-body">' +
