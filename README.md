@@ -1,63 +1,91 @@
 # 🚢 French Canals Interactive Map
 
-An interactive, self-contained HTML map for planning canal boat cruises through France, based on **David Jefferson's** *Through the French Canals* (14th edition).
+An interactive, self-contained web map for planning canal boat cruises through France, based on **David Jefferson's** *Through the French Canals* (14th edition).
 
-Open `french_canals_map.html` in any modern browser — no server, no installation, no internet required.
+**Live:** https://enzocem.github.io/french-canals-map/french_canals_map.html
+
+---
+
+## Quick Start
+
+**Online:** Open the live link above in any modern browser — works on desktop and iPhone.
+
+**Local:**
+1. Clone or download the repo
+2. Double-click `Open Map.command` (Mac) — starts a local server and opens the map
+   - First time only: `chmod +x "Open Map.command"` in Terminal
+3. Or run manually: `python3 -m http.server 8765` then open `http://localhost:8765/french_canals_map.html`
+
+> ⚠️ Opening `french_canals_map.html` directly via `file://` works for most features but the waterway overlay will not load (browser security blocks local file fetches).
 
 ---
 
 ## Features
 
-### Map & Navigation
-- **IGN France base map** (recommended) — shows towpaths, lock buildings, and canal infrastructure in detail. Also switchable to OpenStreetMap, CartoDB Voyager, and ESRI Topo.
-- **OpenSeaMap overlay** — nautical marks as a toggleable layer.
-- **Real waterway geometry** — 3,416 canal/river segments fetched from OpenStreetMap via Overpass API, covering 23 waterways across France.
-- **Section filter** — filter everything on the map to one of the book's 9 geographic sections.
+### 🗺 Map & Base Layers
+- **IGN France** (default) — France's official 1:25,000 topo map showing towpaths, lock buildings, canal infrastructure
+- **OpenStreetMap, CartoDB Voyager, ESRI Satellite, OpenTopoMap** — switchable via layer control
+- **OpenSeaMap** — nautical marks overlay (lock symbols, buoys, hazards)
+- **Waterway overlay** — 23,862 canal and river segments from OpenStreetMap, color-coded by navigability when a vessel profile is set
 
-### Points of Interest
-All marker layers are independently toggleable and clustered for performance:
+### 📍 Marker Layers (all independently toggleable)
+| Button | Layer | Description |
+|--------|-------|-------------|
+| 🏘 Towns | Town markers | 120+ halting towns with sidebars (distances, locks, services) |
+| 🔒 Locks | Lock markers | Curated locks + live Overpass locks (zoom ≥ 12) |
+| ⚓ Haltes | Halte markers | Official VNF mooring haltes |
+| ⛵ Ports | Port markers | Marinas and commercial ports |
+| 📌 Notes | My Notes | Personal notes pinned to the map |
+| ⭐ Michelin | Restaurants | 1,007 Michelin-awarded restaurants across France |
+| ⛽ Fuel | Fuel stops | Marine fuel and water stations |
+| 🚧 Chômages | Closures | VNF maintenance closures (active + upcoming) |
+| 🌊 Canals | Waterways | Canal and river geometry overlay |
 
-| Layer | Description |
-|-------|-------------|
-| 🏘 Towns | Major halting towns with sidebar info (distances, locks, services) |
-| 🔒 Locks | Individual lock positions with elevation and PK data |
-| ⚓ Haltes | Official VNF mooring haltes |
-| ⛵ Ports | Marinas and commercial ports |
-| 📌 My Notes | User-created personal notes pinned to the map |
+### 📍 Route Planner
+Open **📍 Plan Route** to access the route planner:
 
-### Route Planner
-Click **📍 Plan Route** in the top bar to open the route planner panel, which docks to the left side of the map so the route is always visible:
+- Select any two (or more) towns — full multi-stop planning (A → B → C → … → Z)
+- BFS pathfinding across 44 connected waterway routes
+- Results: total distance, lock count, estimated travel days, vessel constraint warnings
+- **Day-by-day itinerary** — split by your cruise speed and daily hours
+- **Lock count per day** — see where the lock-heavy days fall
+- **Weather forecast** — 5-day Open-Meteo forecast per stop
+- **Michelin restaurants** and **nearby attractions** per stop
+- **Provisions** (supermarkets, pharmacies, boulangeries) per stop
+- **Reverse route** — flip A → B into B → A instantly
+- **Save routes** — store named route plans for later
+- **GPX export** — download for Navionics, Garmin, or any chartplotter
 
-- Select any two towns from dropdowns grouped by the book's 9 sections
-- BFS pathfinding through a graph of 53 waterway junction connections
-- Results show total distance (~km), lock count, estimated travel days, and number of route segments
-- **Vessel constraints** — automatically finds the bottleneck route and shows the minimum air draught and water draught across the whole journey
-- Per-segment breakdown: route name, section, from/to cities, distance, locks, vessel limits
-- ⇅ Swap button to reverse the journey direction
-- Direct links to VNF route calculator and avis à la batellerie
+### ⛵ Vessel Profile
+Click **⛵ Profile** to enter your boat's details:
 
-### Route Highlight on Map
-After calculating a route, the matching canals and rivers are highlighted directly on the map:
+| Field | Used for |
+|-------|----------|
+| Vessel name | Shown on profile button |
+| Air draught | Waterway colour coding + route warnings |
+| Water draught | Waterway colour coding + route warnings |
+| Length | Waterway colour coding |
+| Beam | Waterway colour coding |
+| Cruise speed | Day-by-day itinerary calculation |
+| Daily hours | Day-by-day itinerary calculation |
 
-- All other waterways fade to near-invisible so the route stands out clearly
-- The planned waterways glow with a **pulsing gold halo** and bright coloured line
-- Each waterway keeps its own colour (Rhône in orange, Canal de Bourgogne in purple, etc.) so you can still tell them apart
-- The map **auto-zooms and pans** to fit the entire highlighted route
-- The route planner panel **auto-collapses** to a thin title bar after calculating, so the full map is visible
-- Click the title bar (▼/▲) to expand or collapse the panel at any time
-- **🗺 Highlight** and **✕ Clear** buttons toggle the highlight without recalculating
-- Closing the panel clears the highlight and restores all waterways to full colour
+**Waterway colour coding** (when profile is set):
+- 🔵 Blue — vessel fits, all dimensions clear
+- 🔴 Red — cannot navigate (e.g. air draught limit exceeded)
+- 🟡 Amber — marginal, within 10% of a limit
+- ⬜ Grey — no VNF data available for this waterway
 
-### VNF Integration
-Every town sidebar and waterway panel includes:
-- **Plan route on VNF calculator** — opens the official VNF online tool
-- **Check VNF notices** — links to *avis à la batellerie* (navigation notices)
-- **Regional VNF territory page** — territory inferred from the book section (Bassin de la Seine, Rhône-Saône, Sud-Ouest, etc.)
+You can also set draft and air draught directly in the controls bar — both inputs stay in sync with your profile.
 
-### My Notes
-- Click anywhere on the map (away from existing markers) to drop a note pin
-- Add a title and body text
-- Notes persist for the browser session
+### ✏️ Edit Locations
+Click **✏️ Edit** to enter Edit Locations mode:
+- Click any marker to select it (orange ring appears)
+- Click the map to move it to the correct position
+- Corrections are saved to your browser and applied on every reload
+- Export corrections as JSON to share with others
+
+### 🔍 Search
+Search bar finds towns, locks, haltes, and ports instantly.
 
 ---
 
@@ -67,26 +95,37 @@ Every town sidebar and waterway panel includes:
 |------|--------|
 | Route information (distances, locks, vessel constraints) | *Through the French Canals*, David Jefferson, 14th ed. |
 | Waypoints (towns, locks, haltes, ports) | Manually compiled from the book |
-| Waterway geometry (GeoJSON) | OpenStreetMap via [Overpass API](https://overpass-api.de) |
-| Base map | [IGN France WMTS](https://data.geopf.fr) (GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2) |
+| Waterway geometry | OpenStreetMap via Overpass API (23,862 features) |
+| VNF dimension limits | Voies Navigables de France official publications |
+| Base map (IGN) | [IGN Géoportail](https://data.geopf.fr) |
 | Nautical marks | [OpenSeaMap](https://www.openseamap.org) |
-| VNF links | [Voies Navigables de France](https://www.vnf.fr) |
+| Weather | [Open-Meteo](https://open-meteo.com) (free, no API key) |
+| Michelin restaurants | [ngshiheng/michelin-my-maps](https://github.com/ngshiheng/michelin-my-maps) |
 
 ---
 
-## Waterways Covered
+## Technical Architecture
 
-37 waterways with real OSM geometry (4,622 features):
+Two-file architecture: the app HTML + a separate GeoJSON for waterway geometry.
 
-**Rivers:** Rhône · Saône · Seine · Marne · Yonne · Oise · Moselle · Rhine · Loire · Lys · Mayenne · Sarthe · Charente · Aa
+```
+french_canals_map.html   (~7,600 lines — HTML + CSS + JS + all data)
+waterways.geojson        (~8.5 MB — 23,862 OSM waterway features)
+```
 
-**Canals:** Canal du Midi · Canal de Garonne · Canal de Bourgogne · Canal du Nivernais · Canal de Nantes à Brest · Canal latéral à la Loire · Canal latéral à la Marne · Canal latéral à l'Aisne · Canal de la Marne au Rhin · Canal des Vosges · Canal du Rhône au Rhin · Canal de Saint-Quentin · Canal du Nord · Canal de la Meuse · Canal de la Robine · Canal de Briare · Canal du Centre · Canal du Rhône à Sète · Canal d'Ille-et-Rance · Canal entre Champagne et Bourgogne · Canal de l'Oise à l'Aisne · Canal des Ardennes · Canal de Calais · Canals of Paris · Liaison Dunkerque–Escaut
+**No build tools, no npm.** Edit and refresh.
+
+**Libraries (CDN):**
+- [Leaflet.js 1.9.4](https://leafletjs.com) — map rendering
+- [Leaflet.markercluster](https://github.com/Leaflet/Leaflet.markercluster) — marker clustering
+
+**Persistence:** All user data (notes, vessel profile, saved routes, location corrections) stored in `localStorage` — survives browser restarts, never leaves your device.
 
 ---
 
 ## Route Coverage
 
-52 named routes across 9 sections of Jefferson's book:
+44 named routes across 9 sections of Jefferson's book:
 
 | Section | Area | Routes |
 |---------|------|--------|
@@ -102,84 +141,12 @@ Every town sidebar and waterway panel includes:
 
 ---
 
-## Technical Architecture
-
-Everything is embedded in a single `french_canals_map.html` file (~2.1 MB):
-
-```
-french_canals_map.html
-├── <style>          CSS — dark nautical theme + route highlight animations
-├── <body>
-│   ├── #controls    Section filter + layer toggles + Plan Route button
-│   ├── #map         Leaflet.js map container
-│   ├── #sidebar     Detail panel (towns, waterway dims, VNF links)
-│   └── #route-planner-panel  Route planner (docked left, collapsible)
-└── <script>
-    ├── const ROUTES[]              52 route records (section, km, locks, constraints)
-    ├── const WAYPOINTS[]           78 waypoints (towns + locks with PK values)
-    ├── const MOORING[]             Haltes and ports
-    ├── const WATERWAY_GEOJSON      4,622 GeoJSON features (embedded)
-    ├── const WATERWAY_COLORS       Colour map: waterway name → hex colour
-    ├── const ROUTE_CONNECTIONS[]   53 junction pairs for BFS pathfinding
-    ├── const ROUTE_TO_WATERWAYS    Maps route numbers → GeoJSON waterway names
-    ├── buildWaterwayOverlay()
-    ├── buildMarkers() / buildMooringMarkers()
-    ├── toggleLayer() / sectionFilter()
-    ├── openSidebar() / showWaterwayDims()
-    ├── vnfLinksHTML()
-    ├── findRoutePath() / planRoute()
-    ├── calculateRoute() / renderRouteResults()
-    ├── highlightRouteOnMap() / clearRouteHighlight() / restoreWaterwayStyles()
-    ├── toggleCollapseRoutePlanner() / expandRoutePlanner()
-    └── init()
-```
-
-**Libraries used (CDN):**
-- [Leaflet.js 1.9.4](https://leafletjs.com) — map rendering
-- [Leaflet.markercluster](https://github.com/Leaflet/Leaflet.markercluster) — marker clustering
-
----
-
-## How to Use
-
-1. Download `french_canals_map.html`
-2. Open it in Chrome, Firefox, Edge, or Safari
-3. No server needed — works completely offline once loaded
-
-### Tips
-- Use the **Section** dropdown to focus on one area of France
-- Click any town marker to open its detail sidebar
-- Click **🌊 Canals** to toggle the waterway overlay on/off
-- Use the layer control (top-right corner, ☰) to switch base maps or add OpenSeaMap
-- Open **📍 Plan Route**, select two towns, and hit **⚓ Calculate Route** — the route highlights on the map and the panel collapses so you can see it
-- Click the panel title bar to expand the full results; click again to collapse
-- Click anywhere on the map (away from markers) to add a personal note
-
----
-
-## Changelog
-
-### March 2026
-- **Extended waterway coverage** — 14 previously-missing waterways added (Canal latéral à l'Aisne, Canal de l'Oise à l'Aisne, Canals of Paris, Liaison Dunkerque–Escaut, Canal de Calais, River Aa, River Lys, Canal des Ardennes, River Moselle, Rhine, Loire, Mayenne, Sarthe, Charente); total features 3,416 → 4,622 across 37 waterways
-- **Map-click endpoint selection** — click any waterway or town to set From/To route endpoints directly on the map; floating nudge bar shows selected endpoints and triggers route calculation
-- **Route highlight zoom fix** — highlight corridor now clips to the journey's geographic extent (not the full waterway); map fits to the From/To pins rather than the entire GeoJSON
-- **Route highlight on map** — calculated routes glow on the map with a pulsing gold halo; non-route waterways fade
-- **Route planner panel repositioned** — docked to left side of screen (was centered overlay); auto-collapses after calculating so the map is fully visible; collapsible title bar
-- **Route planner** — BFS pathfinding with vessel constraint checking, per-segment breakdown, VNF links
-- **VNF integration** — route calculator, notices, and regional territory links in all sidebars
-- **Real waterway geometry** — OSM segments via Overpass API, replacing straight-line route polylines
-- **IGN France base map** + tile layer switcher + OpenSeaMap overlay
-- Initial release: map, markers, section filter, My Notes
-
----
-
 ## Known Limitations
 
-- **Brittany network is isolated** — Routes 41–48 have no inland waterway connection to the rest of France's canal network. Cross-network planning from Brittany requires going to sea.
-- **Multi-route distances are approximate** — the route planner uses full route distances for connecting segments where only part of the route is traversed.
-- **VNF has no public API** — all VNF links open the VNF website in a new tab; live lock status and booking are not available programmatically.
-- **Waterway geometry gaps** — a few routes (upper Seine, Canal de Garonne, Canal de la Somme) had incomplete OSM data at time of generation and use simplified or absent geometry.
-- **River Moselle sparse** — only 9 OSM way segments found for the Moselle; the route highlight will show partial coverage.
+- **Brittany network is isolated** — Routes 41–48 have no inland waterway connection to the rest of France. Cross-network planning requires going to sea.
+- **Chômages are seed data** — VNF has no public API; closures are hand-curated and may be incomplete or outdated. Always verify at [vnf.fr](https://www.vnf.fr).
+- **Multi-route distances are approximate** — the planner uses full route distances for connecting segments where only part is traversed.
+- **Waterway overlay uses OSM names** — vessel navigability colouring only works for waterways whose OSM `name` tag matches an entry in the `WATERWAY_CONSTRAINTS` table.
 
 ---
 

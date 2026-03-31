@@ -5,48 +5,80 @@
 A single-file interactive web map for cruising the French inland waterways, based on David Jefferson's *Through the French Canals* (14th edition). Users can browse towns, locks, haltes fluviales, ports de plaisance, plan routes, write notes, and correct marker positions.
 
 **GitHub:** https://github.com/EnzoCem/french-canals-map
-**Live page:** https://enzocem.github.io/french-canals-map/
-**Local file:** `french_canals_map.html` (open directly in a browser via `file://`)
+**Live page:** https://enzocem.github.io/french-canals-map/french_canals_map.html
+**Local file:** Open `french_canals_map.html` via `file://` (waterway overlay will not load — needs a server or GitHub Pages)
+**Local launcher:** Double-click `Open Map.command` to start a Python HTTP server and open the map at `http://localhost:8765`
 
 ---
 
-## Everything is one file
+## File structure
 
-The entire application — HTML, CSS, JavaScript, and all data — lives in **`french_canals_map.html`** (~3 300 lines). There are no build tools, no npm, no bundler. Edit the file and refresh the browser.
+```
+French Canals/
+├── french_canals_map.html   ← entire app (HTML + CSS + JS + data) ~7,600 lines
+├── waterways.geojson        ← canal/river geometry fetched from OSM (~8.5 MB, 23,862 features)
+├── index.html               ← GitHub Pages redirect to french_canals_map.html
+├── Open Map.command         ← macOS launcher script (requires chmod +x once)
+├── fill_waterways.py        ← one-shot script that generated waterways.geojson via Overpass
+└── CLAUDE.md / README.md / FEATURES.md
+```
 
-**External CDN dependencies** (must have internet access):
+**No build tools, no npm, no bundler.** Edit `french_canals_map.html` and refresh the browser.
+
+**External CDN dependencies** (requires internet):
 - Leaflet 1.9.4 — `https://unpkg.com/leaflet@1.9.4/dist/leaflet.js`
 - Leaflet MarkerCluster 1.5.3 — `https://unpkg.com/leaflet.markercluster@1.5.3/...`
 
 ---
 
-## File layout (line numbers)
+## Critical rule: never write `</script>` inside the script block
+
+The HTML parser terminates the `<script>` block the moment it sees `</script>` as a literal string — even inside comments or strings. Use `<\/script>` or rephrase. Violation causes all JS after that point to render as raw page text.
+
+---
+
+## File layout (current line numbers)
 
 | Lines | Content |
 |-------|---------|
-| 1–711 | `<head>` + all CSS styles |
-| 712–777 | HTML: `#controls` bar, `#main` wrapper, `#map` div, `#sidebar` |
-| 778–780 | CDN `<script>` tags (Leaflet + MarkerCluster) |
-| 780 | **`<script>` opens** — all application JS starts here |
-| 785–833 | `const ROUTES` — 44 canal route definitions |
-| 834–1047 | `const WAYPOINTS` — ~77 town/lock waypoints |
-| 1048–1143 | `const MOORINGS` — ~23 haltes + ports with full metadata |
-| 1144–1175 | localStorage keys, `locationOverrides` init, position patching |
-| 1176–1237 | `L.map(...)` init, tile layers, GeoJSON waterway data (~5 400 features) |
-| 1238–1296 | Layer group declarations (`clusterGroup`, `townGroup`, `lockGroup`, etc.) |
-| 1297–1343 | `buildMooringMarkers()` |
-| 1345–1437 | `buildMarkers()` |
-| 1438–1553 | Sidebar: `openSidebar()`, note save/delete |
-| 1554–1600 | `layerState`, `toggleLayer()` |
-| 1601–1818 | Search (`searchPlaces`, `searchKeyNav`) |
-| 1819–2326 | Waterway GeoJSON overlay, `waterwayLayer`, waterway dims lookup |
-| 2327–2840 | Route planner (`openRoutePlanner`, `nudgeCalculate`, endpoint pins) |
-| 2841–3002 | **Edit Locations mode** (see dedicated section below) |
-| 3003–3200 | `saveLocationOverride`, `resetAllLocationOverrides`, `exportLocationOverrides`, `importLocationOverrides`, data backup panel |
-| 3188 | **`</script>` closes** |
-| 3200–3297 | HTML after script: route planner panel, nudge bar, edit-mode banner, `#drag-coord-label`, `#edit-toast`, data panel |
-
-> ⚠️ **Critical rule:** Never write `</script>` (as a literal string) anywhere inside the `<script>` block — not in comments, not in strings. The HTML parser terminates the script block on sight, which causes all subsequent JS to render as raw page text. Use `<\/script>` or rephrase the comment if you need to reference it.
+| 1–1104 | `<head>` + all CSS styles |
+| 1105–1214 | `<body>`: `#controls` bar, `#main`, `#map`, `#sidebar` |
+| 1215–1216 | CDN `<script>` tags (Leaflet + MarkerCluster) |
+| 1217 | **`<script>` opens** — all application JS starts here |
+| 1222–1270 | `const ROUTES` — 44 canal route definitions |
+| 1271–1778 | `const WAYPOINTS` — ~120 town/lock waypoints |
+| 1779–2016 | `const MOORINGS` — haltes + ports with full metadata |
+| 2017–3071 | `const MICHELIN_RESTAURANTS` — 1,007 Michelin-awarded restaurants |
+| 3072–3091 | localStorage keys + saved-routes init |
+| 3092–3233 | Map init (`L.map`), tile layers, layer switcher, waterways fetch + cache |
+| 3234–3293 | Layer group declarations |
+| 3294–3369 | `buildMooringMarkers()` |
+| 3370–3484 | `buildMarkers()` |
+| 3485–3644 | Sidebar: `openSidebar()`, Explore Nearby, Provisions, note save/delete |
+| 3645–3696 | `layerState`, `toggleLayer()` |
+| 3697–3907 | Vessel profile: `openProfileModal()`, `saveProfile()`, `applyVesselFilter()` |
+| 3908–3999 | Chômages data + `buildChomagesMarkers()` |
+| 4000–4092 | Michelin markers: `buildMichelinMarkers()` |
+| 4093–4351 | Search: `searchPlaces()`, `searchKeyNav()` |
+| 4352–4396 | `WATERWAY_COLORS` (legacy colour palette) |
+| 4397–4469 | `WATERWAY_CONSTRAINTS` — VNF dimension limits per waterway |
+| 4470–4517 | `getWaterwayNavStatus()`, `_updateWaterwayNavLegend()` |
+| 4518–4734 | `buildWaterwayOverlay()`, waterway dims lookup, `ROUTE_TO_WATERWAYS` stub |
+| 4735–5402 | `ROUTE_CONNECTIONS`, route planner graph, `findRoutePath()`, `calculateRoute()` setup |
+| 5403–5535 | `openRoutePlanner()`, `closeRoutePlanner()`, `reverseRoute()`, `exportRouteAsGPX()` |
+| 5536–5760 | `renderDayByDay()`, `_getCruiseSettings()`, weather fetch + snippets |
+| 5761–5991 | Live locks: `fetchLocksInView()`, `scheduleLockFetch()`, route-lock markers |
+| 5992–6085 | `calculateRoute()` — BFS pathfinding + route results rendering |
+| 6086–6228 | `ROUTE_TO_WATERWAYS` — maps route numbers → OSM waterway names |
+| 6229–6488 | `highlightRouteOnMap()`, `clearRouteHighlight()`, `restoreWaterwayStyles()` |
+| 6489–6560 | Saved routes: `saveCurrentRoute()`, `loadSavedRoute()`, `deleteSavedRoute()` |
+| 6561–6900 | Route POIs: `renderRoutePOIsSection()`, `showRoutePOIStop()`, Michelin + Explore snippets |
+| 6901–7042 | Provisions: `loadRouteProvisions()`, `_buildProvisionsSnippet()` |
+| 7043–7131 | Edit mode marker selection: `selectForReposition()`, `deselectForReposition()` |
+| 7132–7185 | `activateEditMode()`, `deactivateEditMode()` |
+| 7186–7500 | `saveLocationOverride()`, `resetAllLocationOverrides()`, `exportLocationOverrides()`, `importLocationOverrides()` |
+| ~7500 | **`</script>` closes** |
+| 7500+ | HTML panels: route planner, profile modal, edit-mode banner, data backup panel |
 
 ---
 
@@ -55,7 +87,9 @@ The entire application — HTML, CSS, JavaScript, and all data — lives in **`f
 | Key | Purpose |
 |-----|---------|
 | `french_canals_notes_v1` | User notes per waypoint (`{ [id]: string }`) |
-| `french_canals_location_overrides_v1` | Corrected marker positions (`{ waypoints: { [id]: {lat,lon} }, moorings: { [id]: {lat,lon} } }`) |
+| `french_canals_location_overrides_v1` | Corrected marker positions (`{ waypoints: {}, moorings: {} }`) |
+| `french_canals_saved_routes_v1` | Saved route plans (array of route objects) |
+| `french_canals_vessel_v1` | Vessel profile (`{ vesselName, homePort, air, draught, length, beam, cruiseSpeed, hoursPerDay }`) |
 
 ---
 
@@ -70,7 +104,7 @@ The entire application — HTML, CSS, JavaScript, and all data — lives in **`f
 
 ### MOORINGS entry
 ```js
-{ id: 'm_001', name: 'Port de Plaisance Auxerre', type: 'port', // or 'halte'
+{ id: 'm_001', name: 'Port de Plaisance Auxerre', type: 'port',
   lat: 47.798, lon: 3.567, waterway: 'Canal du Nivernais',
   cost: 'paid', pk: '2K3', facilities: 'water/electric/showers',
   max_vessel: '35m', contact: 'Optional contact info' }
@@ -78,7 +112,13 @@ The entire application — HTML, CSS, JavaScript, and all data — lives in **`f
 
 ### ROUTES entry
 ```js
-{ num: 1, canal: 'River Seine', section: 1 }
+{ num: 1, canal: 'River Seine', section: 1,
+  dist_km: 86, locks: 6, max_height: 5.9, max_draught: 3.5 }
+```
+
+### WATERWAY_CONSTRAINTS entry
+```js
+'Canal du Midi': { air: 3.50, draft: 1.60, beam: 5.45, length: 30 }
 ```
 
 ---
@@ -87,72 +127,150 @@ The entire application — HTML, CSS, JavaScript, and all data — lives in **`f
 
 ```
 map
-├── waterwayLayer   (L.geoJSON — canal polylines, toggled by "Canals" button)
-├── clusterGroup    (L.markerClusterGroup — town markers, normal mode)
-├── townGroup       (L.layerGroup — same town markers, unclustered in edit mode)
-├── lockGroup       (L.layerGroup — lock markers, always unclustered)
-├── notesGroup      (L.layerGroup — note-pin markers)
-├── halteGroup      (L.layerGroup — halte markers)
-└── portGroup       (L.layerGroup — port markers)
+├── waterwayLayer    (L.geoJSON — loaded from waterways.geojson, toggled by "Canals")
+├── clusterGroup     (L.markerClusterGroup — town markers, normal mode)
+├── townGroup        (L.layerGroup — same towns, unclustered in edit mode)
+├── lockGroup        (L.layerGroup — curated lock markers)
+├── liveLocksGroup   (L.layerGroup — live OSM locks from Overpass, zoom ≥ 12)
+├── notesGroup       (L.layerGroup — user note pins)
+├── halteGroup       (L.layerGroup — halte markers)
+├── portGroup        (L.layerGroup — port markers)
+├── michelinGroup    (L.layerGroup — Michelin restaurant markers)
+├── fuelGroup        (L.layerGroup — fuel/water stops)
+└── chomagesGroup    (L.layerGroup — VNF maintenance closures)
 ```
 
-`allMarkers[]` and `allMooringMarkers[]` hold references to every Leaflet marker for use by edit mode.
+`allMarkers[]` and `allMooringMarkers[]` hold references to every marker for vessel filter and edit mode.
 
 ---
 
-## Edit Locations mode — full technical context
+## Waterway overlay (waterways.geojson)
 
-### What it does
-Allows the user to correct the lat/lon of any waypoint or mooring marker. Corrections are saved to localStorage and applied on every page load via `_origPositions`.
-
-### How it works (click-to-place UX)
-After **6+ failed attempts** to implement drag-and-drop (see history below), the feature uses a **click-to-place** approach:
-
-1. User clicks **Edit Locations** → `activateEditMode()` runs.
-2. Map panning is **disabled** (`map.dragging.disable()`) — scroll-to-zoom still works.
-3. User **clicks a marker** → `selectForReposition(marker, data, type)` is called; an orange ring appears on the icon; a label at the top says where to click next.
-4. User **clicks the map** → `map.on('click', ...)` places the marker, saves to localStorage.
-5. User clicks **✓ Done** → `deactivateEditMode()` runs, re-enables panning, rebuilds markers.
-
-### Why map panning is disabled in edit mode (critical)
-Leaflet's `_draggableMoved()` method falls back to checking `map.dragging.moved()` when a marker does not have dragging enabled. `map.dragging._moved` stays `true` permanently after any pan, causing **all marker clicks to be silently suppressed**. Disabling map drag and resetting `_draggable._moved = false` on entry is the only reliable fix.
+The waterway geometry lives in a **separate file** (`waterways.geojson`) loaded at startup:
 
 ```js
-// In activateEditMode():
-map.dragging.disable();
-if (map.dragging._draggable) map.dragging._draggable._moved = false;
-
-// In deactivateEditMode():
-map.dragging.enable();
+// Loaded via Cache API (instant on repeat visits):
+fetch('./waterways.geojson')  // → stored in Cache API → ETag checked in background
 ```
 
-### Why `_getLbl()` is a function, not a const
-The `#drag-coord-label` div is defined **after** `</script>` in the HTML. A module-level `const _dragLabel = document.getElementById(...)` evaluates at script-load time, before that element exists, returning `null`. All access to the element goes through `_getLbl()` which calls `getElementById` at call time.
+- **23,862 features** covering all French navigable waterways
+- Generated by `fill_waterways.py` via 12-region Overpass sweep
+- Filtered to navigable canals and named rivers only (no irrigation ditches)
+- RDP-simplified at 33m tolerance (2.08M → 348K nodes)
+- Cache version: `waterways-v2` — bump this constant to force all browsers to re-fetch
 
-### Key variables (Edit Locations scope)
-| Variable | Purpose |
-|----------|---------|
-| `editModeActive` | Boolean flag checked by marker click handlers |
-| `_selectedEditMarker` | The L.Marker currently selected for repositioning |
-| `_selectedEditData` | The raw data object (`w` or `m`) for the selected marker |
-| `_selectedEditType` | `'waypoint'` or `'mooring'` |
-| `_suppressMapClick` | Set to `true` by marker click to prevent the map click handler from also firing |
+### Vessel-profile waterway colouring
 
-### History of drag-and-drop attempts (do not retry these)
-All seven drag implementations were attempted and failed due to Leaflet internals:
-1. Custom `mousedown` → `map.on('mousemove')` — Leaflet map mousemove doesn't fire when mousedown is on a marker.
-2. Custom `mousedown` → `document.addEventListener('mousemove')` — used pointer events pipeline; Leaflet uses mouse events.
-3. `pointerdown` + `setPointerCapture` — completely separate event pipeline from Leaflet's mousedown-based system.
-4. Native `marker.dragging.enable()/disable()` — with `draggable: false`, `_initInteraction` still creates `marker.dragging` but disabling map drag was needed first.
-5. Variants of the above with different ordering — same underlying issues.
+When `_vesselProfile` has dimensions set, `buildWaterwayOverlay()` colours each waterway:
+- 🔵 `#4fc3f7` — navigable (all dimensions clear)
+- 🔴 `#ef5350` — blocked (dimension exceeded)
+- 🟡 `#ffb74d` — marginal (within 10% of a limit)
+- ⬜ `#90a4ae` — no VNF data for this waterway
 
-**The click-to-place approach is the correct solution for this codebase.**
+Without a profile, all waterways render in uniform blue.
+
+---
+
+## Vessel profile — two input paths, fully synced
+
+Two UIs both write to `_vesselProfile` and trigger `buildWaterwayOverlay()`:
+
+1. **Profile modal** (`openProfileModal()` / `saveProfile()`) — full vessel details
+2. **Controls bar filter** (`#vf-draft` / `#vf-air` + `applyVesselFilter()`) — quick override
+
+`applyVesselFilter()` writes `draught`/`air` back into `_vesselProfile` so both systems stay in sync.
+`saveProfile()` syncs values forward into the filter bar inputs.
+
+---
+
+## Edit Locations mode
+
+### How it works (click-to-place)
+1. User clicks **Edit Locations** → `activateEditMode()` runs
+2. Map panning is **disabled** — scroll-to-zoom still works
+3. User **clicks a marker** → orange ring appears; banner prompts where to click
+4. User **clicks the map** → marker repositioned, saved to localStorage
+5. User clicks **✓ Done** → `deactivateEditMode()` re-enables panning, rebuilds markers
+
+### Why map panning is disabled (critical)
+Leaflet's `_draggableMoved()` checks `map.dragging._moved`, which stays `true` after any pan, silently suppressing all marker clicks. Fix:
+```js
+map.dragging.disable();
+if (map.dragging._draggable) map.dragging._draggable._moved = false;
+```
+
+### Why `_getLbl()` is a function
+`#drag-coord-label` is in the HTML after `</script>`. A module-level `const` would evaluate to `null` at script load time. `_getLbl()` calls `getElementById` at call time.
+
+### Do not retry drag-and-drop
+Seven drag implementations were attempted and all failed due to Leaflet internals (mousedown/mousemove pipeline conflicts). Click-to-place is the correct solution.
+
+---
+
+## Key functions quick-reference
+
+| Function | Line | Purpose |
+|----------|------|---------|
+| `buildMooringMarkers()` | ~3294 | Clears + rebuilds halte/port markers |
+| `buildMarkers()` | ~3370 | Clears + rebuilds town/lock markers |
+| `buildMichelinMarkers()` | ~4000 | Builds Michelin restaurant layer |
+| `openSidebar(wid)` | ~3485 | Opens detail panel for a waypoint |
+| `toggleLayer(type)` | ~3645 | Show/hide layer groups |
+| `searchPlaces(query)` | ~4093 | Live search dropdown |
+| `openProfileModal()` | ~3700 | Opens vessel profile modal |
+| `saveProfile()` | ~3722 | Saves profile to localStorage + syncs filter bar |
+| `applyVesselFilter()` | ~3820 | Applies draft/air filter + syncs `_vesselProfile` |
+| `buildChomagesMarkers()` | ~3956 | Builds VNF maintenance closure markers |
+| `getWaterwayNavStatus(name)` | ~4470 | Returns nav status colour for a waterway |
+| `buildWaterwayOverlay()` | ~4518 | Builds/rebuilds the waterway GeoJSON layer |
+| `openRoutePlanner()` | ~5403 | Opens the route planner sidebar |
+| `reverseRoute()` | ~5459 | Reverses all route stops (A→B→C becomes C→B→A) |
+| `exportRouteAsGPX()` | ~5480 | Downloads planned route as .gpx file |
+| `renderDayByDay()` | ~5536 | Builds day-by-day itinerary from route legs |
+| `fetchLocksInView()` | ~5761 | Overpass query for locks in current viewport |
+| `calculateRoute()` | ~5992 | BFS pathfinding + renders results |
+| `highlightRouteOnMap()` | ~6229 | Highlights planned route on map (coral-red + white halo) |
+| `activateEditMode()` | ~7132 | Enters Edit Locations mode |
+| `deactivateEditMode()` | ~7158 | Exits Edit Locations mode |
+| `selectForReposition()` | ~7043 | Selects a marker for click-to-place |
+| `saveLocationOverride()` | ~7186 | Persists a position correction to localStorage |
+| `exportLocationOverrides()` | ~7232 | Downloads corrections as JSON |
+| `importLocationOverrides()` | ~7325 | Restores corrections from JSON |
+
+---
+
+## Common tasks
+
+### Add a new mooring
+Append to `MOORINGS` (~line 1779). Give it a unique `id` starting with `m_`.
+
+### Add a new waypoint
+Append to `WAYPOINTS` (~line 1271). Give it a unique `id` starting with `w_`.
+
+### Fix a waterway gap
+Edit `waterways.geojson` directly, or re-run `fill_waterways.py` for a fresh Overpass sweep. The ETag check will push the update to all browsers automatically.
+
+### Add a waterway constraint
+Add an entry to `WATERWAY_CONSTRAINTS` (~line 4397) using the exact OSM name as the key.
+
+### Change map behaviour
+Leaflet map initialised at ~line 3092. Tile layers and layer switcher also there.
+
+### Test locally
+Run `python3 -m http.server 8765` from the project folder, then open `http://localhost:8765/french_canals_map.html`. Or double-click `Open Map.command` (requires `chmod +x "Open Map.command"` once).
+
+### Deploy
+```bash
+git add french_canals_map.html waterways.geojson
+git commit -m "Your message"
+git push
+```
+GitHub Pages serves from `main` branch root. Live within ~2 minutes.
 
 ---
 
 ## Git workflow
 
-The project folder already has git initialised and a remote:
 ```bash
 # from inside the French Canals/ folder:
 git add french_canals_map.html
@@ -160,49 +278,7 @@ git commit -m "Your message"
 git push
 ```
 
-GitHub credentials are set with a PAT. If you need to re-authenticate:
+If you need to re-authenticate:
 ```bash
 git remote set-url origin https://EnzoCem:<PAT>@github.com/EnzoCem/french-canals-map.git
 ```
-The user can provide the PAT if needed.
-
-GitHub Pages serves the live site from the `main` branch root. Changes are live within ~2 minutes of pushing. The user also uses the file directly at `file:///Users/esen/Documents/Cem Code/French Canals/french_canals_map.html`.
-
----
-
-## Key functions quick-reference
-
-| Function | Lines | Purpose |
-|----------|-------|---------|
-| `buildMooringMarkers()` | ~1297 | Clears + rebuilds halte/port markers |
-| `buildMarkers()` | ~1345 | Clears + rebuilds town/lock markers |
-| `openSidebar(wid)` | ~1454 | Opens detail panel for a waypoint |
-| `toggleLayer(type)` | ~1556 | Show/hide layer groups |
-| `searchPlaces(query)` | ~1601 | Live search dropdown |
-| `openRoutePlanner()` | ~2327 | Opens the route planner sidebar |
-| `nudgeCalculate()` | ~2350 | Computes + highlights route between two pins |
-| `activateEditMode()` | ~2950 | Enters Edit Locations mode |
-| `deactivateEditMode()` | ~2976 | Exits Edit Locations mode (all steps in try/catch) |
-| `selectForReposition()` | ~2861 | Selects a marker for click-to-place |
-| `deselectForReposition()` | ~2895 | Clears selection + orange ring |
-| `saveLocationOverride()` | ~3004 | Persists a position correction to localStorage |
-| `exportLocationOverrides()` | ~3050 | Downloads corrections as JSON |
-| `importLocationOverrides()` | ~3139 | Restores corrections from JSON |
-| `updateEditBannerCount()` | ~3017 | Updates the "N corrections saved" badge |
-| `showEditToast(msg)` | ~3024 | Shows the brief toast notification |
-
----
-
-## Common tasks
-
-### Add a new mooring
-Append to the `MOORINGS` array (around line 1048). Give it a unique `id` starting with `m_`.
-
-### Fix a waterway gap
-The waterway GeoJSON is embedded in the HTML around line 1176. Find the relevant section and adjust the coordinates. See the git history for examples of past gap fixes.
-
-### Change map behaviour
-The Leaflet map is initialised around line 1176 with options like `zoomControl`, `minZoom`, `maxZoom`. Tile layer attribution is also there.
-
-### Test locally
-Open `french_canals_map.html` directly in Chrome/Firefox. No server needed. Use DevTools console to check for JS errors.

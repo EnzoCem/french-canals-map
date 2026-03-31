@@ -1,128 +1,119 @@
-# Feature Backlog
+# Feature Backlog & To-Do
 
 Planned and proposed enhancements for the French Canals Interactive Map.
+*Last updated: 2026-03-31*
 
 ---
 
 ## ✅ Completed
 
+### Core Map
 | Feature | Description |
 |---------|-------------|
-| Interactive map | Leaflet.js map with dark nautical theme |
-| IGN France base map | Best-quality French topo map as default layer |
-| Tile layer switcher | IGN France, OpenStreetMap, CartoDB, ESRI Topo |
+| Interactive Leaflet map | Dark nautical theme, zoom/pan, mobile-friendly |
+| Base layer switcher | IGN France (default), OpenStreetMap, CartoDB Voyager, ESRI Satellite, OpenTopoMap |
 | OpenSeaMap overlay | Nautical marks as a toggleable overlay |
-| Real waterway geometry | 4,622 OSM canal/river segments covering 37 waterways |
-| Town markers | 78 waypoints with detail sidebars |
-| Lock markers | Individual lock positions with PK data |
+| Waterway overlay | 23,862 OSM canal/river segments loaded from `waterways.geojson` |
+| Waterway Cache API | Instant load on repeat visits; background ETag check for updates |
+| Town markers | 120+ waypoints with detail sidebars |
+| Lock markers | Curated lock positions + live Overpass locks at zoom ≥ 12 |
 | Haltes & Ports | VNF haltes and marinas as separate toggleable layers |
+| Michelin restaurants | 1,007 Michelin-awarded restaurants as a toggleable layer |
+| Fuel & water stops | Seed data + live Overpass query for marine fuel stations |
+| Chômages overlay | VNF maintenance closures (seed data, active + upcoming within 60 days) |
+| My Notes | User pins with personal notes, persisted in localStorage |
+| Edit Locations mode | Click-to-place marker repositioning, saved to localStorage |
+| Search | Live search across towns, locks, haltes, and ports |
+| VNF integration | Links to VNF route calculator, notices, and regional pages in all sidebars |
 | Section filter | Filter map to any of Jefferson's 9 book sections |
-| My Notes | User pins with title/body text |
-| VNF integration | Links to VNF route calculator, notices, and regional pages |
-| Route planner | BFS pathfinding with distance, locks, vessel constraints, estimated days |
-| Map-click endpoint selection | Click any waterway or town marker to set From/To route endpoints; floating nudge bar triggers calculation |
-| Route highlight on map | Planned route glows with pulsing gold halo; corridor-clipped to journey extent; fits to endpoint pins |
+
+### Route Planner
+| Feature | Description |
+|---------|-------------|
+| BFS pathfinding | Find route between any two towns across 44 connected waterways |
+| Multi-stop planning | Add via stops (A → B → C → … → Z) |
+| Route highlight on map | Planned route in coral-red + white halo; non-route waterways fade |
+| Reverse route | Flip entire stop order with one click |
+| Save / load / delete routes | Persist named route plans in localStorage |
+| GPX export | Download planned route as .gpx for chartplotters |
+| Day-by-day itinerary | Split journey into daily stages based on speed + hours |
+| Lock count per day | Shows locks per day in the itinerary |
+| Cruise speed calculator | Set km/h, hours/day, lock time → realistic day count |
+| Weather along route | 5-day Open-Meteo forecast per stop (async, cached) |
+| Michelin stops | Top 5 Michelin restaurants near each stop in route panel |
+| Nearby attractions | OSM historic sites, castles, museums, viewpoints per stop |
+| Provisions per stop | Supermarkets, pharmacies, boulangeries per stop |
+| Route navigation warnings | Red banner if any segment blocked by vessel dimensions |
+
+### Vessel Profile
+| Feature | Description |
+|---------|-------------|
+| Profile modal | Vessel name, home port, air draught, water draught, length, beam, speed, hours/day |
+| Persisted in localStorage | Profile survives browser restart |
+| Controls-bar quick filter | Draft + air draught inputs that sync two-way with full profile |
+| Vessel filter on markers | Dims waypoint + mooring markers on blocked waterways |
+| Waterway navigability colouring | Blue/red/amber/grey waterways based on vessel vs VNF limits |
+| Navigability legend | Appears in controls bar when profile has dimensions |
+| Route planner speed pre-fill | Route planner inherits speed + hours from profile |
 
 ---
 
-## 🔵 High Priority — Most Impact for Trip Planning
+## 🔴 Bugs / Known Issues
 
-### 1. Day-by-Day Itinerary Builder
-**What:** Extend the route planner to split a journey into daily stages.
-**How:** Divide total distance by 35 km/day target, find the nearest halte or port at each overnight stop, display a "Day 1 → Day 2 → …" breakdown with overnight locations.
-**Value:** The most practically useful feature once actually preparing to cast off.
-**Complexity:** Medium — builds on existing route planner data.
-
-### 2. Vessel Profile & Route Filter
-**What:** Let the user enter their boat's air draught, water draught, and beam once, then automatically highlight or dim routes based on whether the boat fits.
-**How:** Two number inputs stored in `localStorage`. When set, colour-code route buttons green/amber/red and show a warning badge on inaccessible segments in the route planner.
-**Value:** Immediately answers "can my boat do this route?" without manual checking.
-**Complexity:** Low — the constraint data is already in the `ROUTES` array.
-
-### 3. GPX Export
-**What:** Export the planned route as a `.gpx` file.
-**How:** Build a GPX XML string from the waypoints on the planned route, create a `Blob`, trigger a browser download. Works entirely in JavaScript.
-**Value:** Loads directly into Navionics, iNavX, Garmin, or Raymarine chartplotters.
-**Complexity:** Low.
-
-### 4. Save & Restore Trips
-**What:** Persist planned routes, vessel profile, and notes between browser sessions.
-**How:** Serialize to `localStorage` on change; restore on page load.
-**Value:** Don't lose work when closing the tab.
-**Complexity:** Low.
+| # | Issue | Details |
+|---|-------|---------|
+| 1 | `reverseRoute()` duplicates `swapRoutePlannerEndpoints()` | Two functions do the same thing; `reverseRoute` doesn't call `_rebuildAllPins()` for multi-stop routes |
+| 2 | Unnamed waterway segments show grey with profile active | `getWaterwayNavStatus('')` returns grey; segments with no `name` property should fall back to navigable blue |
+| 3 | Waterway overlay still uses `WATERWAY_COLORS` fallback | Without a profile, `buildWaterwayOverlay()` falls back to per-waterway colours instead of uniform blue |
+| 4 | `Open Map.command` needs `chmod +x` once | Execute permission not set after clone/copy |
+| 5 | Chômages data is hardcoded seed, not live | Several entries are now expired (March 2026); 60-day lookahead too short for summer planning |
+| 6 | Fuel stops refetch on every map move | `loadFuelStops()` fires a new Overpass query on every `moveend` — no bbox cache |
+| 7 | Phase 3 `rp-poi-section` may not populate | `renderRoutePOIsSection` not reliably called after `calculateRoute()` — variable name mismatch suspected |
 
 ---
 
-## 🟡 Medium Priority — Nice to Have
+## 🟡 In Progress / Partially Implemented
 
-### 5. Trip Cost Estimator
-**What:** Estimate VNF lock tolls based on boat length.
-**How:** One number input (boat length in metres). Lock fee ≈ €0.85–1.20/metre/lock. Show estimated toll cost in the route planner results alongside distance and locks.
-**Value:** Useful for trip budgeting.
-**Complexity:** Low.
-
-### 6. Share Route Link
-**What:** Encode From/To waypoint IDs and vessel settings into the URL hash so a specific planned route can be bookmarked or shared.
-**How:** `window.location.hash = '#from=w001&to=w121&height=3.5&draught=1.4'`. Read on page load, auto-populate and calculate.
-**Value:** Share a planned route with crew or other boaters.
-**Complexity:** Low.
-
-### 7. Printable Route Card
-**What:** A clean print view of a planned route — segment table, lock count, vessel constraints, estimated days, VNF links — formatted for A4.
-**How:** `@media print` CSS hides the map and shows a formatted summary. `window.print()` opens the print dialog.
-**Value:** Physical reference to take on the boat.
-**Complexity:** Low–Medium.
-
-### 8. Tunnel Details
-**What:** Add specific info for major canal tunnels — length, procedure, convoy times, advance booking requirements.
-**Key tunnels:**
-  - Riqueval (Canal de Saint-Quentin) — 5,670 m, convoy required, advance booking
-  - Mauvages (Canal de la Marne au Rhin) — 4,877 m, convoy, tow service
-  - Foug (Canal de la Marne au Rhin) — 866 m
-  - Souterrain de Pouilly (Canal de Bourgogne) — 3,333 m, electric tow
-  - Souterrain de Saint-Albin (Canal du Nivernais) — 758 m
-**How:** New `TUNNELS` array → map markers with a distinct icon → sidebar with procedure details.
-**Value:** Tunnels are one of the most practically important pieces of information for route planning.
-**Complexity:** Medium — needs data research and a new marker layer.
-
-### 9. Seasonal Closures (Chômage)
-**What:** Show typical annual maintenance closure periods for each canal.
-**How:** Static data object mapping route numbers to closure months (most canals close for 2–6 weeks in winter). Display as a badge on route cards and a warning in the route planner if the planned travel overlaps.
-**Value:** Prevents planning a route that is closed.
-**Complexity:** Low — static data only.
-
-### 10. Bridge Height Markers
-**What:** Mark the lowest bridge or fixed obstacle on each route — the real limiting factor for air draught, often a single structure mid-route rather than the route average.
-**How:** New data in `ROUTES` or a `BRIDGES` array with position and measured clearance. Map markers and route planner warning if vessel exceeds the bridge clearance.
-**Value:** More accurate than using the route average air draught.
-**Complexity:** Medium — requires data research.
+| Feature | Status | Notes |
+|---------|--------|-------|
+| Lock opening hours | CSS stub only | No data structure or display logic implemented |
+| Vigicrues water levels | Link only | Sidebar shows link to vigicrues.gouv.fr but no live data fetched |
+| Live chômages from VNF | Not started | VNF has no public API; would need scraping `data.gouv.fr` JSON |
 
 ---
 
-## 🟠 Lower Priority — Future Ideas
+## 🔵 Planned — Navigation & Planning
 
-### 11. Weather Along Route
-**What:** Show current and 5-day forecast weather at key points along a planned route.
-**How:** Requires a call to a weather API (OpenWeatherMap free tier, or Météo-France). Only feature on this list that needs an external API key.
-**Complexity:** Medium — needs API key and async fetch.
+| Feature | Priority | Notes |
+|---------|----------|-------|
+| Lock opening hours per lock | High | Show VNF seasonal schedules in lock popups; Overpass has `opening_hours` tags on many locks |
+| Chômage lookahead 180 days | Medium | Extend from 60 days to cover full summer season |
+| Live VNF chômages | Low | Parse published JSON from data.gouv.fr or Overpass `hazard` tags |
+| Share route via URL hash | Medium | Encode from/to/via IDs in `#` fragment for bookmarking + sharing |
+| Printable route card | Medium | `@media print` CSS showing segment table, locks, VNF links — for the helm |
 
-### 12. Water Level / Lock Status
-**What:** Live lock closures and water levels from VNF.
-**Note:** VNF has no public API. This would require scraping the VNF avis à la batellerie page, which is fragile and may not be permissible.
-**Complexity:** High / uncertain.
+---
 
-### 13. Elevation Profile
-**What:** Show a cross-section elevation chart along a planned route — useful for understanding the summit level and how many locks climb vs. descend.
-**How:** Use stored lock elevation data (partially in `WAYPOINTS`) to build an SVG chart.
-**Complexity:** Medium.
+## 🟠 Planned — Points of Interest
 
-### 14. Offline Tile Caching
-**What:** Cache map tiles locally using a Service Worker so the map works fully offline on the boat.
-**Complexity:** High — Service Workers add significant complexity and browser compatibility concerns.
+| Feature | Priority | Notes |
+|---------|----------|-------|
+| Weekly markets | Medium | OSM has good `amenity=marketplace` + `opening_hours` data; add to Explore Nearby |
+| Wineries near route | Medium | Already partially supported via Overpass `craft=winery` — surface in route panel |
+| Tunnel details | Medium | Riqueval, Mauvages, Foug, Pouilly, Saint-Albin — convoy times, booking requirements |
+| Bridge height markers | Low | Single lowest bridge is often the real air-draught bottleneck, not the route average |
 
-### 15. Mobile / Touch Optimisation
-**What:** Improve the UI for phone and tablet use — larger touch targets, collapsible controls, swipe-friendly sidebar.
-**Complexity:** Medium.
+---
+
+## 🟢 Planned — Stats & UX
+
+| Feature | Priority | Notes |
+|---------|----------|-------|
+| Trip log / journal | Low | Log actual days cruised, distances, locks passed |
+| Photo pins | Low | Attach image URL to any waypoint note |
+| Elevation profile | Low | SVG cross-section of summit level and lock climbs/descents |
+| Offline tile caching | Low | Service Worker — significant complexity |
+| Mobile / touch optimisation | Medium | Larger touch targets, swipe sidebar |
 
 ---
 
@@ -130,11 +121,8 @@ Planned and proposed enhancements for the French Canals Interactive Map.
 
 | Item | Description |
 |------|-------------|
-| PK data gaps | Several routes (e.g. Route 3, 6, 7, 9, 17, 20, 21) have few or no intermediate waypoints — limits route planner precision for those segments |
-| Waterway geometry gaps | Upper Seine, Canal de Garonne, Canal de la Somme have incomplete OSM geometry; River Moselle has only 9 segments |
-| Lock count estimates | Multi-route planner uses proportional estimates for partial segments — would be more accurate with per-waypoint lock counts |
-| File size | At ~1.5 MB the HTML is large; the GeoJSON could be lazy-loaded to improve initial load time |
-
----
-
-*Last updated: March 2026 — 37 waterways, 4,622 features*
+| `WATERWAY_COLORS` dead weight | ~50-entry legacy colour map still in code, used in two places, should be removed once uniform colour is confirmed |
+| `reverseRoute()` duplicate | Consolidate with `swapRoutePlannerEndpoints()` |
+| CLAUDE.md line numbers drift | Line numbers will drift as the file grows — use `grep -n "^function foo"` to find current positions |
+| `waterways.geojson` still includes non-navigable segments | Some small Alpine rivers and Camargue channels still slip through the whitelist filter |
+| Single-file architecture | At 7,600 lines the HTML is large; no immediate plans to split, but worth tracking |
