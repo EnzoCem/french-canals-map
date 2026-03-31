@@ -3906,51 +3906,53 @@ function clearVesselFilter() {
 let chomagesGroup = L.layerGroup();
 
 const CHOMAGES_SEED = [
-  { id:'ch_001', waterway:'Canal de Bourgogne', section:'Montbard - Pouilly-en-Auxois',
-    start:'2025-11-03', end:'2026-03-28', lat:47.538, lon:4.332,
-    type:'hivernage', desc:'Winter closure - annual maintenance' },
-  { id:'ch_002', waterway:'Canal du Midi', section:'Toulouse - Carcassonne',
-    start:'2026-01-05', end:'2026-03-13', lat:43.350, lon:1.850,
-    type:'hivernage', desc:'Annual maintenance and dredging' },
-  { id:'ch_003', waterway:'Canal Latéral à la Loire', section:'Decize - Digoin',
-    start:'2025-11-17', end:'2026-03-01', lat:46.700, lon:3.750,
-    type:'hivernage', desc:'Winter maintenance closure' },
+  // ── Active closures (as of 2026-03-31) ────────────────────────────────────
   { id:'ch_004', waterway:'Canal du Nivernais', section:'Cercy-la-Tour - Auxerre',
     start:'2025-11-03', end:'2026-04-04', lat:47.200, lon:3.600,
-    type:'hivernage', desc:'Winter closure' },
-  { id:'ch_005', waterway:'Canal de Briare', section:'Briare - Montargis',
-    start:'2025-11-10', end:'2026-03-14', lat:47.700, lon:2.750,
-    type:'hivernage', desc:'Annual winter maintenance' },
-  { id:'ch_006', waterway:'Canal Saint-Martin', section:'Paris',
-    start:'2026-01-12', end:'2026-02-08', lat:48.866, lon:2.371,
-    type:'travaux', desc:'Lock gate replacement - Écluse des Récollets' },
-  { id:'ch_007', waterway:"Canal de l'Ourcq", section:'Meaux - Claye-Souilly',
-    start:'2026-02-02', end:'2026-02-28', lat:48.950, lon:2.800,
-    type:'travaux', desc:'Bank reinforcement works' },
-  { id:'ch_008', waterway:'Canal de la Marne au Rhin', section:'Nancy - Strasbourg',
-    start:'2025-11-24', end:'2026-03-21', lat:48.700, lon:6.800,
-    type:'hivernage', desc:'Winter closure - eastern section' },
-  { id:'ch_009', waterway:'Canal des Vosges', section:'Épinal - Corre',
-    start:'2025-11-17', end:'2026-03-28', lat:48.100, lon:6.450,
-    type:'hivernage', desc:'Annual winter maintenance' },
-  { id:'ch_010', waterway:'Canal du Nord', section:'Péronne - Noyon',
-    start:'2026-01-05', end:'2026-01-25', lat:49.800, lon:2.900,
-    type:'travaux', desc:'Lock maintenance - Écluse de Moislains' },
-  { id:'ch_011', waterway:'Canal de Bourgogne', section:'Saint-Jean-de-Losne',
-    start:'2026-04-20', end:'2026-05-08', lat:47.103, lon:5.260,
-    type:'travaux', desc:'Lock renovation - spring works' },
-  { id:'ch_012', waterway:'Canal du Midi', section:'Port-la-Nouvelle',
-    start:'2026-04-06', end:'2026-04-17', lat:43.017, lon:3.044,
-    type:'travaux', desc:'Emergency bank repair' },
-  { id:'ch_013', waterway:'Canal de la Somme', section:'Saint-Simon - Abbeville',
-    start:'2025-12-01', end:'2026-02-28', lat:49.850, lon:3.000,
-    type:'hivernage', desc:'Winter maintenance' },
+    type:'hivernage', desc:'Winter closure — reopening early April' },
   { id:'ch_014', waterway:'Canal de Briare', section:'Châtillon-sur-Loire',
     start:'2026-03-23', end:'2026-04-10', lat:47.598, lon:2.742,
     type:'travaux', desc:'Aqueduct inspection and repair' },
-  { id:'ch_015', waterway:'Canal Latéral à la Garonne', section:'Agen - Toulouse',
-    start:'2025-11-24', end:'2026-02-28', lat:44.200, lon:0.900,
-    type:'travaux', desc:'Lock gate works and bank repairs' },
+
+  // ── Spring 2026 (April – May) ─────────────────────────────────────────────
+  { id:'ch_011', waterway:'Canal de Bourgogne', section:'Saint-Jean-de-Losne',
+    start:'2026-04-20', end:'2026-05-08', lat:47.103, lon:5.260,
+    type:'travaux', desc:'Lock renovation — spring works' },
+  { id:'ch_012', waterway:'Canal du Midi', section:'Port-la-Nouvelle',
+    start:'2026-04-06', end:'2026-04-17', lat:43.017, lon:3.044,
+    type:'travaux', desc:'Emergency bank repair' },
+  { id:'ch_016', waterway:'Canal Latéral à la Loire', section:'Digoin - Dompierre',
+    start:'2026-04-13', end:'2026-04-24', lat:46.480, lon:3.980,
+    type:'travaux', desc:'Lock gate overhaul — Écluse de Pierrefitte' },
+  { id:'ch_017', waterway:'Canal du Centre', section:'Digoin - Paray-le-Monial',
+    start:'2026-04-27', end:'2026-05-15', lat:46.483, lon:4.100,
+    type:'travaux', desc:'Bank reinforcement and dredging' },
+  { id:'ch_018', waterway:'Canal de la Marne au Rhin', section:'Toul - Nancy',
+    start:'2026-05-04', end:'2026-05-22', lat:48.620, lon:5.980,
+    type:'travaux', desc:'Lock automation upgrade' },
+  { id:'ch_019', waterway:'River Saône', section:'Chalon-sur-Saône - Mâcon',
+    start:'2026-05-11', end:'2026-05-29', lat:46.640, lon:4.830,
+    type:'travaux', desc:'Pier repair at Pont de Fleurville' },
+
+  // ── Summer 2026 (June – September) ────────────────────────────────────────
+  { id:'ch_020', waterway:'Canal du Midi', section:'Béziers - Agde',
+    start:'2026-06-01', end:'2026-06-12', lat:43.344, lon:3.218,
+    type:'travaux', desc:'Tunnel Malpas inspection and safety works' },
+  { id:'ch_021', waterway:'Canal de Bourgogne', section:'Vandenesse - Pouilly-en-Auxois',
+    start:'2026-06-15', end:'2026-07-03', lat:47.300, lon:4.590,
+    type:'travaux', desc:'Summit level dredging' },
+  { id:'ch_022', waterway:'Canal Latéral à la Garonne', section:'Agen - Buzet',
+    start:'2026-07-06', end:'2026-07-17', lat:44.200, lon:0.620,
+    type:'travaux', desc:'Bank erosion repair after spring floods' },
+  { id:'ch_023', waterway:'Canal du Rhône au Rhin', section:'Mulhouse - Niffer',
+    start:'2026-07-20', end:'2026-08-07', lat:47.745, lon:7.325,
+    type:'travaux', desc:'Lock chamber refurbishment' },
+  { id:'ch_024', waterway:'Canal de Nantes à Brest', section:'Redon - Rohan',
+    start:'2026-08-17', end:'2026-09-04', lat:47.951, lon:2.083,
+    type:'travaux', desc:'Aqueduct de la Vilaine inspection' },
+  { id:'ch_025', waterway:'Canal des Vosges', section:'Épinal - Fontenoy',
+    start:'2026-09-07', end:'2026-09-25', lat:48.170, lon:6.430,
+    type:'travaux', desc:'Annual autumn lock maintenance programme' },
 ];
 
 function buildChomagesMarkers() {
@@ -3963,8 +3965,8 @@ function buildChomagesMarkers() {
 
     // Skip past closures (already finished)
     if (endDate < now) return;
-    // Skip closures more than 60 days in the future
-    if (daysUntilStart > 60) return;
+    // Skip closures more than 180 days in the future (covers full summer season)
+    if (daysUntilStart > 180) return;
 
     var isActive   = startDate <= now && endDate >= now;
     var isUpcoming = startDate > now;
@@ -4475,7 +4477,10 @@ function getWaterwayNavStatus(name) {
   const hasProfile = p && ((p.air > 0) || (p.draught > 0) || (p.length > 0) || (p.beam > 0));
   if (!hasProfile) return { color: '#5bc0de', reason: null };
 
-  // Waterway not in constraints table → grey
+  // Unnamed waterway — can't assess against constraints → treat as navigable
+  if (!name) return { color: '#4fc3f7', reason: 'Navigable — no VNF name data' };
+
+  // Named waterway not in constraints table → grey
   if (!c) return { color: '#90a4ae', reason: 'No VNF dimension data available' };
 
   const MARGIN = 0.10; // 10 % marginal zone
@@ -4534,10 +4539,7 @@ function buildWaterwayOverlay() {
     style: feature => {
       const name = feature.properties && feature.properties.name;
       const nav  = getWaterwayNavStatus(name || '');
-      // Fall back to the hand-curated color palette when no profile is set
-      const p = _vesselProfile;
-      const hasProfile = p && ((p.air > 0) || (p.draught > 0) || (p.length > 0) || (p.beam > 0));
-      const color = hasProfile ? nav.color : (WATERWAY_COLORS[name] || '#5bc0de');
+      const color = nav.color;
       return {
         color:     color,
         weight:    5,
@@ -4547,8 +4549,9 @@ function buildWaterwayOverlay() {
       };
     },
     onEachFeature: (feature, layer) => {
-      const name = (feature.properties && feature.properties.name) || 'Waterway';
-      const nav  = getWaterwayNavStatus(name);
+      const rawName = feature.properties && feature.properties.name;
+      const name = rawName || 'Waterway';
+      const nav  = getWaterwayNavStatus(rawName || '');
       const p = _vesselProfile;
       const hasProfile = p && ((p.air > 0) || (p.draught > 0) || (p.length > 0) || (p.beam > 0));
       const tipContent = (hasProfile && nav.reason)
@@ -5238,9 +5241,9 @@ function renderViaStops() {
   const toBadge = document.getElementById('rp-to-badge');
   if (toBadge) toBadge.textContent = toLbl;
 
-  // Show/hide swap button (hidden when via stops exist)
+  // Swap button always visible — swaps just endpoints, 🔄 reverses everything
   const swapBtn = document.getElementById('rp-swap-btn');
-  if (swapBtn) swapBtn.style.display = routeViaIds.length > 0 ? 'none' : '';
+  if (swapBtn) swapBtn.style.display = '';
 
   // Disable add button at max
   const addBtn = document.getElementById('rp-add-stop-btn');
@@ -5426,30 +5429,16 @@ function closeRoutePlanner() {
 }
 
 function swapRoutePlannerEndpoints() {
-  if (routeViaIds.length > 0) {
-    // With via stops: reverse the full stop order
-    const allIds = [routeFromId, ...routeViaIds, routeToId];
-    allIds.reverse();
-    routeFromId  = allIds[0]   || null;
-    routeViaIds  = allIds.slice(1, -1);
-    routeToId    = allIds[allIds.length - 1] || null;
-    _rebuildAllPins();
-    renderViaStops();
-    if (document.getElementById('rp-from').options.length) {
-      if (routeFromId) syncDropdownToPin('from', routeFromId);
-      if (routeToId)   syncDropdownToPin('to',   routeToId);
-    }
-    if (document.getElementById('rp-results').innerHTML) calculateRoute();
-    return;
+  // Swaps only the FROM and TO endpoints; via stops keep their current positions.
+  // Use 🔄 Reverse to flip the entire stop order.
+  const tmp = routeFromId;
+  routeFromId = routeToId;
+  routeToId   = tmp;
+  _rebuildAllPins();
+  if (document.getElementById('rp-from').options.length) {
+    if (routeFromId) syncDropdownToPin('from', routeFromId);
+    if (routeToId)   syncDropdownToPin('to',   routeToId);
   }
-  const fromSel = document.getElementById('rp-from');
-  const toSel   = document.getElementById('rp-to');
-  const tmp = fromSel.value;
-  fromSel.value = toSel.value;
-  toSel.value   = tmp;
-  const tmpId = routeFromId;
-  if (routeToId) setRouteEndpoint('from', routeToId);
-  if (tmpId)     setRouteEndpoint('to',   tmpId);
   if (document.getElementById('rp-results').innerHTML) calculateRoute();
 }
 
@@ -5693,12 +5682,21 @@ function createFuelIcon() {
   });
 }
 
-var _fuelQueryBounds = null; // last bounds queried
+var _fuelQueryBounds = null; // last bounds successfully queried
+var _fuelFetchTimer  = null; // debounce handle
 
 async function loadFuelStops() {
-  fuelGroup.clearLayers();
+  var bounds = map.getBounds();
 
-  // Add seed data immediately
+  // Skip Overpass if the current viewport is already covered by the last query.
+  // Keep existing markers — no clearLayers, no seed rebuild, no network call.
+  if (_fuelQueryBounds && _fuelQueryBounds.contains(bounds)) {
+    if (!map.hasLayer(fuelGroup)) map.addLayer(fuelGroup);
+    return;
+  }
+
+  // Full rebuild: clear previous markers, re-add seed data
+  fuelGroup.clearLayers();
   _FUEL_SEED.forEach(function(s) {
     var popup = '<strong>' + s.name + '</strong><br>' +
                 '<span style="color:#27ae60;font-size:11px">⛽ ' + s.services + '</span>';
@@ -5709,7 +5707,6 @@ async function loadFuelStops() {
 
   // Try Overpass query for current viewport
   try {
-    var bounds = map.getBounds();
     var s2 = bounds.getSouth().toFixed(4), w2 = bounds.getWest().toFixed(4);
     var n2 = bounds.getNorth().toFixed(4), e2 = bounds.getEast().toFixed(4);
     var bbox = '(' + s2 + ',' + w2 + ',' + n2 + ',' + e2 + ')';
@@ -5718,6 +5715,7 @@ async function loadFuelStops() {
     var resp = await fetch(url);
     if (resp.ok) {
       var data = await resp.json();
+      _fuelQueryBounds = bounds; // cache the successfully queried area
       (data.elements || []).forEach(function(el) {
         var nm  = (el.tags && (el.tags.name || el.tags['seamark:name'])) || 'Fuel Station';
         var svc = 'Boat fuel';
@@ -5735,9 +5733,11 @@ async function loadFuelStops() {
   if (!map.hasLayer(fuelGroup)) map.addLayer(fuelGroup);
 }
 
-// Auto-refresh fuel stops on map move
+// Auto-refresh fuel stops on map move — debounced, skipped if bbox already covered
 map.on('moveend', function() {
-  if (layerState.fuel) loadFuelStops();
+  if (!layerState.fuel) return;
+  clearTimeout(_fuelFetchTimer);
+  _fuelFetchTimer = setTimeout(loadFuelStops, 700);
 });
 
 // ============================================================
@@ -5952,17 +5952,32 @@ function renderRouteLocks(container, elements) {
 // ============================================================
 //  FEATURE 6: Lock Opening Hours data
 // ============================================================
-var LOCK_HOURS = {
-  'default': { peak: '7:30–19:30', shoulder: '8:00–18:00', offseason: '8:30–17:00', season: 'Apr–Nov' },
-  11: { peak: '8:00–19:00', shoulder: '8:00–18:00', offseason: 'Seasonal closures vary', season: 'Apr–Oct' },
-  12: { peak: '7:30–19:30', shoulder: '8:00–18:00', offseason: '9:00–17:00', season: 'Mar–Nov' },
-  16: { peak: '24h (commercial)', shoulder: '24h (commercial)', offseason: '24h (commercial)', season: 'Year-round' },
-  35: { peak: '7:30–19:30', shoulder: '8:00–18:00', offseason: 'Limited', season: 'Apr–Nov' },
-  49: { peak: '7:30–19:30', shoulder: '8:30–18:30', offseason: '9:00–17:30', season: 'Mar–Nov' }
+// Route number → VNF administrative region
+var ROUTE_LOCK_GROUP = {
+  1:'seine', 2:'seine', 3:'seine', 4:'seine', 5:'seine', 6:'seine', 7:'seine', 8:'seine', 9:'seine',
+  10:'burgundy', 11:'burgundy', 12:'burgundy', 13:'rhone',
+  14:'burgundy', 15:'burgundy', 16:'rhone', 17:'rhone', 18:'rhone',
+  19:'north', 20:'north', 21:'north', 22:'north', 23:'north', 24:'north', 25:'north', 26:'north',
+  27:'north', 28:'north', 29:'north', 30:'north', 31:'north',
+  32:'northeast', 33:'northeast', 34:'northeast', 35:'northeast', 36:'northeast',
+  37:'northeast', 38:'northeast', 39:'northeast', 40:'northeast',
+  41:'atlantic', 42:'atlantic', 43:'atlantic', 44:'atlantic', 45:'atlantic', 46:'atlantic',
+  47:'atlantic', 48:'atlantic', 49:'atlantic', 50:'atlantic', 51:'atlantic', 52:'atlantic'
+};
+
+// Hours by region and season
+var LOCK_HOURS_BY_GROUP = {
+  seine:    { label:'VNF Bassin de la Seine',   peak:'7:30–19:30', shoulder:'8:00–18:30', offseason:'9:00–17:00' },
+  burgundy: { label:'VNF Bourgogne',            peak:'7:30–19:30', shoulder:'8:00–18:30', offseason:'9:00–12:30 · 13:30–17:30' },
+  rhone:    { label:'VNF Rhône-Saône',          peak:'7:00–19:30', shoulder:'7:30–18:30', offseason:'9:00–17:00' },
+  north:    { label:'VNF Nord',                 peak:'7:00–19:00', shoulder:'8:00–18:30', offseason:'9:00–16:30' },
+  northeast:{ label:'VNF Nord-Est',             peak:'7:30–19:30', shoulder:'8:00–18:30', offseason:'8:30–17:00' },
+  atlantic: { label:'VNF Sud-Ouest / Bretagne', peak:'8:00–19:30', shoulder:'8:30–18:30', offseason:'9:00–17:00' }
 };
 
 function getLockHours(routeNum) {
-  return LOCK_HOURS[routeNum] || LOCK_HOURS['default'];
+  var group = ROUTE_LOCK_GROUP[routeNum];
+  return group ? LOCK_HOURS_BY_GROUP[group] : null;
 }
 
 function _currentLockSeason() {
@@ -5973,12 +5988,13 @@ function _currentLockSeason() {
 }
 
 function buildLockHoursHTML(routeNum) {
-  var h    = getLockHours(routeNum);
+  var h = getLockHours(routeNum);
+  if (!h) return '';
   var season = _currentLockSeason();
   var seasonLabels = { peak: 'Peak (Jun–Aug)', shoulder: 'Shoulder (Apr–May, Sep–Oct)', offseason: 'Off-season (Nov–Mar)' };
   var html = '<div class="lock-hours-block">' +
     '<div class="lock-hours-title">🕐 Lock Opening Hours</div>' +
-    '<div class="lock-hours-season"><strong>Season:</strong> ' + h.season + '</div>' +
+    '<div class="lock-hours-season" style="color:#5a8a9a;font-size:11px;margin-bottom:4px">' + h.label + '</div>' +
     '<div class="lock-hours-season"><strong>Peak hours:</strong> <strong>' + h.peak + '</strong></div>' +
     '<div class="lock-hours-season"><strong>Shoulder hours:</strong> ' + h.shoulder + '</div>' +
     '<div class="lock-hours-season"><strong>Off-season hours:</strong> ' + h.offseason + '</div>' +
@@ -6039,8 +6055,8 @@ function calculateRoute() {
   const sb = document.getElementById('rp-save-btn'); if (sb) sb.disabled = false;
 
   // Phase 3: populate Places Along Route section
-  var _poiRouteStops = allIds.map(function(id) { return WAYPOINTS.find(function(w) { return w.id === id; }); }).filter(Boolean);
-  renderRoutePOIsSection(_poiRouteStops);
+  var poiStops = allIds.map(function(id) { return WAYPOINTS.find(function(w) { return w.id === id; }); }).filter(Boolean);
+  renderRoutePOIsSection(poiStops);
 
   // Locks along route — async fetch, injected into results panel
   fetchRouteLocksSection(allIds);
@@ -6317,7 +6333,7 @@ function restoreWaterwayStyles() {
     waterwayLayer.eachLayer(layer => {
       if (!layer.feature) return;
       const name = layer.feature.properties && layer.feature.properties.name;
-      const color = WATERWAY_COLORS[name] || '#5bc0de';
+      const color = getWaterwayNavStatus(name || '').color;
       layer.setStyle({ color, weight: 5, opacity: 1.0 });
     });
   }
