@@ -1148,6 +1148,7 @@
     <button class="toggle-btn" id="toggle-fuel" onclick="toggleLayer('fuel')" title="Show boat fuel &amp; water stations">⛽ Fuel</button>
     <button class="toggle-btn" id="toggle-vessel" onclick="openProfileModal()" title="Your vessel profile &amp; cruise settings">⛵ Profile</button>
     <button class="toggle-btn" id="toggle-chomages" onclick="toggleLayer('chomages')" title="Show VNF maintenance closures">🚧 Chômages</button>
+    <button class="toggle-btn" id="toggle-tunnels" onclick="toggleLayer('tunnels')" title="Show canal tunnels with convoy schedules">🚇 Tunnels</button>
   </div>
   <div class="control-group">
     <label>Map:</label>
@@ -3238,6 +3239,7 @@ const portGroup    = L.layerGroup();
 let michelinGroup  = L.layerGroup();
 let fuelGroup      = L.layerGroup(); // Feature 5: fuel/water stations
 let liveLocksGroup = L.layerGroup(); // Live lock positions from Overpass (zoom ≥ 12)
+let tunnelGroup    = L.layerGroup(); // Canal tunnels with convoy schedules
 
 const clusterGroup = L.markerClusterGroup({
   chunkedLoading: true,
@@ -3709,7 +3711,7 @@ function saveNote(wid) {
 // ============================================================
 //  LAYER TOGGLES
 // ============================================================
-const layerState = { towns: true, locks: true, notes: true, haltes: true, ports: true, waterways: true, michelin: false, fuel: false, chomages: false };
+const layerState = { towns: true, locks: true, notes: true, haltes: true, ports: true, waterways: true, michelin: false, fuel: false, chomages: false, tunnels: false };
 
 function toggleLayer(type) {
   layerState[type] = !layerState[type];
@@ -3750,6 +3752,13 @@ function toggleLayer(type) {
       map.addLayer(chomagesGroup);
     } else {
       map.removeLayer(chomagesGroup);
+    }
+  } else if (type === 'tunnels') {
+    if (layerState.tunnels) {
+      buildTunnelMarkers();
+      map.addLayer(tunnelGroup);
+    } else {
+      map.removeLayer(tunnelGroup);
     }
   }
 }
@@ -4070,6 +4079,153 @@ function buildChomagesMarkers() {
     var marker = L.marker([ch.lat, ch.lon], { icon: icon });
     marker.bindPopup(popupHtml, { maxWidth: 290 });
     chomagesGroup.addLayer(marker);
+  });
+}
+
+// ============================================================
+//  TUNNEL MARKERS
+// ============================================================
+
+// Five major French canal tunnels that require convoy passage.
+// Convoy times are typical for the April–October season; verify annually at vnf.fr.
+const TUNNELS = [
+  {
+    id: 't001',
+    name: 'Riqueval',
+    fullName: 'Souterrain de Riqueval',
+    canal: 'Canal de Saint-Quentin',
+    route: 29,
+    lat: 49.9714,
+    lon: 3.2500,
+    length_m: 5670,
+    pk: '97',
+    tug_required: true,
+    // Electric tug (train électrique) mandatory — no self-propulsion.
+    // Convoys typically operate twice daily each direction (April–Oct).
+    convoys: [
+      { label: 'S-bound (St-Quentin → Oise)', times: ['07:30', '13:30'] },
+      { label: 'N-bound (Oise → St-Quentin)', times: ['10:00', '16:00'] },
+    ],
+    booking: '48 h advance booking required',
+    contact: 'VNF HAF: 03 23 09 17 70',
+    vnf_url: 'https://www.vnf.fr/vnf/naviguer-sur-le-reseau/naviguer/les-souterrains/',
+  },
+  {
+    id: 't002',
+    name: 'Mauvages',
+    fullName: 'Souterrain de Mauvages',
+    canal: 'Canal de la Marne au Rhin (Ouest)',
+    route: 35,
+    lat: 48.6817,
+    lon: 5.6224,
+    length_m: 4877,
+    pk: '239',
+    tug_required: true,
+    convoys: [
+      { label: 'E-bound (Toul → Nancy)', times: ['08:30', '14:30'] },
+      { label: 'W-bound (Nancy → Toul)', times: ['11:00', '17:00'] },
+    ],
+    booking: 'Advance booking recommended',
+    contact: 'VNF Est: 03 83 48 73 40',
+    vnf_url: 'https://www.vnf.fr/vnf/naviguer-sur-le-reseau/naviguer/les-souterrains/',
+  },
+  {
+    id: 't003',
+    name: 'Foug',
+    fullName: 'Souterrain de Foug',
+    canal: 'Canal de la Marne au Rhin',
+    route: 35,
+    lat: 48.6728,
+    lon: 5.8910,
+    length_m: 866,
+    pk: '313',
+    tug_required: false,
+    // Shorter tunnel — guide available, motor required.
+    convoys: [
+      { label: 'Guided convoy (both directions)', times: ['Contact VNF for schedule'] },
+    ],
+    booking: 'Contact VNF Est for current schedule',
+    contact: 'VNF Est: 03 83 48 73 40',
+    vnf_url: 'https://www.vnf.fr/vnf/naviguer-sur-le-reseau/naviguer/les-souterrains/',
+  },
+  {
+    id: 't004',
+    name: 'Pouilly-en-Auxois',
+    fullName: 'Souterrain de Pouilly',
+    canal: 'Canal de Bourgogne',
+    route: 12,
+    lat: 47.2654,
+    lon: 4.5590,
+    length_m: 3333,
+    pk: '229',
+    tug_required: false,
+    // No electric tug — boats pass under own power. Motor required, no sail.
+    convoys: [
+      { label: 'S-bound (Dijon → Pouilly)', times: ['08:00', '14:00'] },
+      { label: 'N-bound (Pouilly → Dijon)', times: ['11:00', '17:00'] },
+    ],
+    booking: 'No advance booking — arrive before convoy',
+    contact: 'VNF Bourgogne: 03 80 63 10 30',
+    vnf_url: 'https://www.vnf.fr/vnf/naviguer-sur-le-reseau/naviguer/les-souterrains/',
+  },
+  {
+    id: 't005',
+    name: 'Saint-Albin',
+    fullName: 'Souterrain de Balesmes (Saint-Albin)',
+    canal: 'Canal entre Champagne et Bourgogne',
+    route: 36,
+    lat: 47.9930,
+    lon: 5.3893,
+    length_m: 2306,
+    pk: '109',
+    tug_required: true,
+    // Electric aspirateur (tug) required.
+    convoys: [
+      { label: 'S-bound (Vitry → Gray)', times: ['08:00', '14:30'] },
+      { label: 'N-bound (Gray → Vitry)', times: ['10:30', '17:00'] },
+    ],
+    booking: 'Advance booking required',
+    contact: 'VNF Est: 03 25 04 91 00',
+    vnf_url: 'https://www.vnf.fr/vnf/naviguer-sur-le-reseau/naviguer/les-souterrains/',
+  },
+];
+
+function buildTunnelMarkers() {
+  tunnelGroup.clearLayers();
+  TUNNELS.forEach(function(t) {
+    var icon = L.divIcon({
+      className: '',
+      html: '<div style="background:rgba(30,30,50,0.95);border:2px solid #8888aa;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 2px 8px rgba(0,0,0,0.5)">🚇</div>',
+      iconSize: [30, 30],
+      iconAnchor: [15, 15],
+    });
+
+    var tugHtml = t.tug_required
+      ? '<div style="color:#f0ad4e;font-size:11px;margin-bottom:6px">⚡ Electric tug mandatory — no self-propulsion</div>'
+      : '<div style="color:#52d68a;font-size:11px;margin-bottom:6px">✅ Motor required — own power, no sail</div>';
+
+    var convoyRows = t.convoys.map(function(c) {
+      return '<div style="margin-bottom:3px"><span style="color:#8ab4c2;font-size:11px">' + c.label + '</span><br>' +
+        '<span style="font-size:12px;font-weight:600;color:#fff">' + c.times.join('  ·  ') + '</span></div>';
+    }).join('');
+
+    var popupHtml =
+      '<div style="min-width:230px;max-width:300px">' +
+      '<div style="font-size:10px;color:#e87a7a;margin-bottom:5px;font-weight:600">⚠ Times typical Apr–Oct — verify with VNF</div>' +
+      '<div style="font-size:14px;font-weight:700;color:#f0c040;margin-bottom:2px">🚇 ' + t.fullName + '</div>' +
+      '<div style="font-size:11px;color:#8ab4c2;margin-bottom:6px">' + t.canal + ' · PK ' + t.pk + ' · ' + (t.length_m/1000).toFixed(1) + ' km</div>' +
+      tugHtml +
+      '<div style="font-size:11px;color:#8ab4c2;margin-bottom:4px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px">Convoy times</div>' +
+      convoyRows +
+      '<div style="margin-top:8px;font-size:11px;color:#aaa">' + t.booking + '</div>' +
+      '<div style="font-size:11px;color:#aaa;margin-bottom:6px">' + t.contact + '</div>' +
+      '<a href="' + t.vnf_url + '" target="_blank" style="font-size:11px;color:#5bc0de">📋 VNF tunnels info →</a>' +
+      '</div>';
+
+    var marker = L.marker([t.lat, t.lon], { icon: icon });
+    marker.bindPopup(popupHtml, { maxWidth: 320 });
+    marker.bindTooltip(t.name + ' (' + t.length_m.toLocaleString() + ' m)', { sticky: true });
+    tunnelGroup.addLayer(marker);
   });
 }
 
@@ -4769,6 +4925,7 @@ function init() {
   buildMarkers();
   buildMooringMarkers();
   buildMichelinMarkers();
+  buildTunnelMarkers();
   buildLegend();
   updateStats();
   // Restore vessel name on Profile button
