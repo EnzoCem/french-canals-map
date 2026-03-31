@@ -4538,25 +4538,37 @@ let waterwayLayer = null;
 // Strips leading articles/prefixes (River, La, Le, L', Les) and lowercases
 // before matching, so 'River Saône' matches the key 'Saône', and
 // 'Canal Latéral à la Garonne' matches 'Canal latéral à la Garonne'.
+const _normName = s => (s || '').toLowerCase().replace(/^(river |la |le |l'|les |the )/i, '').trim();
+
 function constraintLookup(name) {
   if (!name) return null;
-  const norm = s => s.toLowerCase().replace(/^(river |la |le |l'|les |the )/i, '').trim();
-  const key = norm(name);
+  const key = _normName(name);
   for (const [k, v] of Object.entries(WATERWAY_CONSTRAINTS)) {
-    if (norm(k) === key) return v;
+    if (_normName(k) === key) return v;
+  }
+  return null;
+}
+
+function colorLookup(name) {
+  if (!name) return null;
+  const key = _normName(name);
+  for (const [k, v] of Object.entries(WATERWAY_COLORS)) {
+    if (_normName(k) === key) return v;
   }
   return null;
 }
 
 // Returns { color, reason } for a waterway given the current vessel profile.
 // Colors: blue = navigable, red = blocked, amber = marginal, grey = no VNF data.
+// When no profile is set, each named waterway uses its colour from WATERWAY_COLORS;
+// unnamed or unknown waterways fall back to the default blue.
 function getWaterwayNavStatus(name) {
   const p = _vesselProfile;
   const c = constraintLookup(name);
 
-  // No meaningful profile dimensions set → uniform blue (default behaviour)
+  // No meaningful profile dimensions set → per-waterway palette colour
   const hasProfile = p && ((p.air > 0) || (p.draught > 0) || (p.length > 0) || (p.beam > 0));
-  if (!hasProfile) return { color: '#5bc0de', reason: null };
+  if (!hasProfile) return { color: colorLookup(name) || '#5bc0de', reason: null };
 
   // Unnamed waterway — can't assess against constraints → treat as navigable
   if (!name) return { color: '#4fc3f7', reason: 'Navigable — no VNF name data' };
@@ -6179,7 +6191,7 @@ function toggleRouteOnMap(btn) {
 // ============================================================
 
 // Maps each route number to the GeoJSON waterway name(s) it uses.
-// Names must match keys in WATERWAY_COLORS exactly.
+// Names must match the `name` property of features in waterways.geojson.
 const ROUTE_TO_WATERWAYS = {
   1:  ['River Seine'],                          // Le Havre → Paris
   2:  ['River Seine'],                          // Upper Seine (Paris → Montereau)

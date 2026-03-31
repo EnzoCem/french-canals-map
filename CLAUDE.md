@@ -60,7 +60,7 @@ The HTML parser terminates the `<script>` block the moment it sees `</script>` a
 | 3908–3999 | Chômages data + `buildChomagesMarkers()` |
 | 4000–4092 | Michelin markers: `buildMichelinMarkers()` |
 | 4093–4351 | Search: `searchPlaces()`, `searchKeyNav()` |
-| 4352–4396 | `WATERWAY_COLORS` (legacy colour palette) |
+| 4352–4396 | `WATERWAY_COLORS` — per-waterway colour palette (active when no vessel profile set) |
 | 4397–4469 | `WATERWAY_CONSTRAINTS` — VNF dimension limits per waterway |
 | 4470–4517 | `getWaterwayNavStatus()`, `_updateWaterwayNavLegend()` |
 | 4518–4734 | `buildWaterwayOverlay()`, waterway dims lookup, `ROUTE_TO_WATERWAYS` stub |
@@ -221,7 +221,8 @@ Seven drag implementations were attempted and all failed due to Leaflet internal
 | `saveProfile()` | ~3722 | Saves profile to localStorage + syncs filter bar |
 | `applyVesselFilter()` | ~3820 | Applies draft/air filter + syncs `_vesselProfile` |
 | `buildChomagesMarkers()` | ~3956 | Builds VNF maintenance closure markers |
-| `getWaterwayNavStatus(name)` | ~4470 | Returns nav status colour for a waterway |
+| `colorLookup(name)` | ~4541 | Returns per-waterway colour from `WATERWAY_COLORS` (normalised match) |
+| `getWaterwayNavStatus(name)` | ~4470 | Returns colour for a waterway: per-palette (no profile) or navigability (with profile) |
 | `buildWaterwayOverlay()` | ~4518 | Builds/rebuilds the waterway GeoJSON layer |
 | `openRoutePlanner()` | ~5403 | Opens the route planner sidebar |
 | `reverseRoute()` | ~5459 | Reverses all route stops (A→B→C becomes C→B→A) |
