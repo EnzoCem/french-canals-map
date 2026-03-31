@@ -86,8 +86,6 @@ Planned and proposed enhancements for the French Canals Interactive Map.
 
 | Feature | Priority | Notes |
 |---------|----------|-------|
-| Lock opening hours per lock | High | Show VNF seasonal schedules in lock popups; Overpass has `opening_hours` tags on many locks |
-| Chômage lookahead 180 days | Medium | Extend from 60 days to cover full summer season |
 | Live VNF chômages | Low | Parse published JSON from data.gouv.fr or Overpass `hazard` tags |
 | Share route via URL hash | Medium | Encode from/to/via IDs in `#` fragment for bookmarking + sharing |
 | Printable route card | Medium | `@media print` CSS showing segment table, locks, VNF links — for the helm |
