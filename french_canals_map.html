@@ -7937,7 +7937,7 @@ function _parseGoogleTakeoutPlaces(jsonText) {
   return places;
 }
 
-function importGooglePlaces(input) {
+function importGooglePlaces(input, replace) {
   var file = input.files[0];
   if (!file) return;
   var reader = new FileReader();
@@ -7951,7 +7951,8 @@ function importGooglePlaces(input) {
         places = _parseGoogleTakeoutPlaces(text);
       }
       if (places.length === 0) throw new Error('No placemark coordinates found in this file. Make sure you export as KML from Google Maps or use a Google Takeout JSON file.');
-      googlePlaces = googlePlaces.concat(places);
+      var prevCount = googlePlaces.length;
+      googlePlaces = replace ? places : googlePlaces.concat(places);
       localStorage.setItem(GOOGLE_PLACES_KEY, JSON.stringify(googlePlaces));
       buildGooglePlacesMarkers();
       if (!layerState.googleplaces) {
@@ -7961,7 +7962,11 @@ function importGooglePlaces(input) {
         if (btn) btn.classList.add('active');
       }
       _refreshDataPanelStats();
-      alert('✅ ' + places.length + ' place' + (places.length !== 1 ? 's' : '') + ' imported from Google Maps.\nUse the 📍 My Places button to show/hide them.');
+      if (replace && prevCount > 0) {
+        alert('🔄 Synced: replaced ' + prevCount + ' old place' + (prevCount !== 1 ? 's' : '') + ' with ' + places.length + ' new one' + (places.length !== 1 ? 's' : '') + '.');
+      } else {
+        alert('✅ ' + places.length + ' place' + (places.length !== 1 ? 's' : '') + ' added. Total: ' + googlePlaces.length + '.\nUse the 📍 My Places button to show/hide them.');
+      }
     } catch(err) {
       alert('❌ Import failed: ' + err.message);
     }
@@ -8089,10 +8094,12 @@ function clearGooglePlaces() {
       Or use <a href="https://takeout.google.com" target="_blank" style="color:#5bc0de">Google Takeout</a> → Maps → Saved Places (JSON).
     </div>
     <div class="dp-row">
-      <button class="dp-btn import" onclick="document.getElementById('gplaces-file-input').click()">⬆ Import KML / JSON</button>
-      <button class="dp-btn" onclick="clearGooglePlaces()" style="background:rgba(231,76,60,0.15);border-color:#e74c3c;color:#e87a7a">🗑 Clear all</button>
+      <button class="dp-btn import" onclick="document.getElementById('gplaces-file-input').click()" title="Add places from file to existing ones">⬆ Add places</button>
+      <button class="dp-btn" onclick="document.getElementById('gplaces-sync-input').click()" style="background:rgba(46,204,113,0.12);border-color:#27ae60;color:#2ecc71" title="Replace all existing imported places with this file — use this to keep in sync">🔄 Sync (replace all)</button>
+      <button class="dp-btn" onclick="clearGooglePlaces()" style="background:rgba(231,76,60,0.15);border-color:#e74c3c;color:#e87a7a" title="Remove all imported places">🗑 Clear</button>
     </div>
-    <input type="file" id="gplaces-file-input" accept=".kml,.json" style="display:none" onchange="importGooglePlaces(this)">
+    <input type="file" id="gplaces-file-input"  accept=".kml,.json" style="display:none" onchange="importGooglePlaces(this, false)">
+    <input type="file" id="gplaces-sync-input"  accept=".kml,.json" style="display:none" onchange="importGooglePlaces(this, true)">
   </div>
 
   <div id="data-panel-stats" class="dp-stat"></div>
