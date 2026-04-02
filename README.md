@@ -26,7 +26,7 @@ An interactive, self-contained web map for planning canal boat cruises through F
 - **IGN France** (default) — France's official 1:25,000 topo map showing towpaths, lock buildings, canal infrastructure
 - **OpenStreetMap, CartoDB Voyager, ESRI Satellite, OpenTopoMap** — switchable via layer control
 - **OpenSeaMap** — nautical marks overlay (lock symbols, buoys, hazards)
-- **Waterway overlay** — 3,481 canal and river segments from OpenStreetMap (deduplicated and non-navigable segments removed), color-coded by navigability when a vessel profile is set
+- **Waterway overlay** — 3,500 canal and river segments from OpenStreetMap (deduplicated and non-navigable segments removed), color-coded by navigability when a vessel profile is set
 
 ### 📍 Marker Layers (all independently toggleable)
 | Button | Layer | Description |
@@ -97,7 +97,7 @@ Search bar finds towns, locks, haltes, and ports instantly.
 |------|--------|
 | Route information (distances, locks, vessel constraints) | *Through the French Canals*, David Jefferson, 14th ed. |
 | Waypoints (towns, locks, haltes, ports) | Manually compiled from the book |
-| Waterway geometry | OpenStreetMap via Overpass API (3,481 features after dedup + cleanup) |
+| Waterway geometry | OpenStreetMap via Overpass API (3,500 features after dedup + cleanup) |
 | VNF dimension limits | Voies Navigables de France official publications |
 | Base map (IGN) | [IGN Géoportail](https://data.geopf.fr) |
 | Nautical marks | [OpenSeaMap](https://www.openseamap.org) |
@@ -112,7 +112,7 @@ Two-file architecture: the app HTML + a separate GeoJSON for waterway geometry.
 
 ```
 french_canals_map.html   (~7,700 lines — HTML + CSS + JS + all data)
-waterways.geojson        (~8.5 MB — 3,481 OSM waterway features, deduplicated and cleaned)
+waterways.geojson        (~8.5 MB — 3,500 OSM waterway features, deduplicated and cleaned)
 ```
 
 **No build tools, no npm.** Edit and refresh.
