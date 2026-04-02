@@ -7125,7 +7125,7 @@ async function _fetchPOIsNearby(lat, lon) {
   const rh = 10000; // historic radius (10 km) — France has a monument in every village
   // ["name"] on every branch: unnamed features never leave the server,
   // cutting the response size by ~80% for dense cities like Lyon.
-  const q = '[out:json][timeout:45];(' +
+  const q = '[out:json][timeout:60][maxsize:2000000];(' +
     'node["amenity"="marketplace"]["name"](around:' + r + ',' + lat + ',' + lon + ');' +
     'node["amenity"="market"]["name"](around:' + r + ',' + lat + ',' + lon + ');' +
     'node["amenity"="bicycle_rental"]["name"](around:' + r + ',' + lat + ',' + lon + ');' +
@@ -7388,8 +7388,16 @@ function expandExplore(wpId, wpLat, wpLon) {
     _poiCache[wpId] = els;
     _renderPOIList(wpId, wpLat, wpLon, 'all');
   }).catch(function(err) {
-    body.innerHTML = '<div class="exp-error">⚠ Could not load data. Check your internet connection.</div>';
     console.warn('Overpass POI error:', err);
+    var msg = (err && err.message && err.message.indexOf('429') !== -1)
+      ? '⚠ Overpass API busy — too many requests. Wait a moment and try again.'
+      : (err && err.message && (err.message.indexOf('504') !== -1 || err.message.indexOf('timeout') !== -1))
+        ? '⚠ Query timed out — the area may have too many POIs. Try again.'
+        : '⚠ Could not load data (' + (err ? err.message : 'unknown') + ')';
+    body.innerHTML = '<div class="exp-error">' + msg + '<br>' +
+      '<button onclick="delete _poiCache[\'' + wpId + '\']; expandExplore(\'' + wpId + '\',' + wpLat + ',' + wpLon + ')" ' +
+      'style="margin-top:8px;padding:5px 12px;background:#1a4a7a;border:1px solid #5bc0de;border-radius:5px;color:#5bc0de;cursor:pointer;font-size:12px">🔄 Try Again</button>' +
+      '</div>';
   });
 }
 
