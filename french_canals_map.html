@@ -1106,6 +1106,14 @@
 .rp-lock-lift   { color: #2ecc71; font-size: 11px; white-space: nowrap; }
 .rp-locks-loading { text-align: center; padding: 10px; font-size: 12px; color: #5a7a8a; font-style: italic; }
 
+/* ── Google Maps imported places ─────────────────────────────────────────── */
+.gplace-marker { font-size: 22px; line-height: 1; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.7)); cursor: pointer; }
+.gplace-popup .gplace-title { font-weight: 700; color: #f0ad4e; font-size: 14px; margin-bottom: 4px; }
+.gplace-popup .gplace-addr  { font-size: 12px; color: #9ab; margin-bottom: 6px; line-height: 1.4; }
+.gplace-popup .gplace-desc  { font-size: 12px; color: #bbb; margin-bottom: 6px; }
+.gplace-popup .gplace-link  { font-size: 12px; color: #5bc0de; text-decoration: none; }
+.gplace-popup .gplace-link:hover { text-decoration: underline; }
+
 </style>
 </head>
 <body>
@@ -1151,6 +1159,7 @@
     <button class="toggle-btn" id="toggle-vessel" onclick="openProfileModal()" title="Your vessel profile &amp; cruise settings">⛵ Profile</button>
     <button class="toggle-btn" id="toggle-chomages" onclick="toggleLayer('chomages')" title="Show VNF maintenance closures">🚧 Chômages</button>
     <button class="toggle-btn" id="toggle-tunnels" onclick="toggleLayer('tunnels')" title="Show canal tunnels with convoy schedules">🚇 Tunnels</button>
+    <button class="toggle-btn" id="toggle-googleplaces" onclick="toggleLayer('googleplaces')" title="Show places imported from Google Maps">📍 My Places</button>
   </div>
   <div class="control-group">
     <label>Map:</label>
@@ -3088,6 +3097,11 @@ try { locationOverrides = JSON.parse(localStorage.getItem(OVERRIDES_KEY) || '{"w
 const SAVED_ROUTES_KEY = 'french_canals_saved_routes_v1';
 let savedRoutes = JSON.parse(localStorage.getItem(SAVED_ROUTES_KEY) || '[]');
 let _loadedSavedRouteId = null; // ID of currently loaded saved route
+
+// ── Google Maps imported places ────────────────────────────────────────────
+const GOOGLE_PLACES_KEY = 'french_canals_google_places_v1';
+let googlePlaces = [];
+try { googlePlaces = JSON.parse(localStorage.getItem(GOOGLE_PLACES_KEY) || '[]'); } catch(e){}
 let _routePOIStops      = []; // waypoint objects for current route stops
 let _routePOIActiveStop = 0;  // index of selected stop in the pills
 
@@ -3239,9 +3253,10 @@ const notesGroup   = L.layerGroup();
 const halteGroup   = L.layerGroup();
 const portGroup    = L.layerGroup();
 let michelinGroup  = L.layerGroup();
-let fuelGroup      = L.layerGroup(); // Feature 5: fuel/water stations
-let liveLocksGroup = L.layerGroup(); // Live lock positions from Overpass (zoom ≥ 12)
-let tunnelGroup    = L.layerGroup(); // Canal tunnels with convoy schedules
+let fuelGroup           = L.layerGroup(); // Feature 5: fuel/water stations
+let liveLocksGroup      = L.layerGroup(); // Live lock positions from Overpass (zoom ≥ 12)
+let tunnelGroup         = L.layerGroup(); // Canal tunnels with convoy schedules
+let googlePlacesGroup   = L.layerGroup(); // Imported Google Maps places
 
 const clusterGroup = L.markerClusterGroup({
   chunkedLoading: true,
@@ -3762,7 +3777,7 @@ function saveNote(wid) {
 // ============================================================
 //  LAYER TOGGLES
 // ============================================================
-const layerState = { towns: true, locks: true, notes: true, haltes: true, ports: true, waterways: true, michelin: false, fuel: false, chomages: false, tunnels: false };
+const layerState = { towns: true, locks: true, notes: true, haltes: true, ports: true, waterways: true, michelin: false, fuel: false, chomages: false, tunnels: false, googleplaces: false };
 
 function toggleLayer(type) {
   layerState[type] = !layerState[type];
@@ -3810,6 +3825,13 @@ function toggleLayer(type) {
       map.addLayer(tunnelGroup);
     } else {
       map.removeLayer(tunnelGroup);
+    }
+  } else if (type === 'googleplaces') {
+    if (layerState.googleplaces) {
+      buildGooglePlacesMarkers();
+      map.addLayer(googlePlacesGroup);
+    } else {
+      map.removeLayer(googlePlacesGroup);
     }
   }
 }
@@ -4983,6 +5005,13 @@ function init() {
   buildMooringMarkers();
   buildMichelinMarkers();
   buildTunnelMarkers();
+  if (googlePlaces.length > 0) {
+    layerState.googleplaces = true;
+    buildGooglePlacesMarkers();
+    map.addLayer(googlePlacesGroup);
+    var _gpBtn = document.getElementById('toggle-googleplaces');
+    if (_gpBtn) _gpBtn.classList.add('active');
+  }
   buildLegend();
   updateStats();
   // Restore vessel name on Profile button
@@ -7652,9 +7681,10 @@ function _refreshDataPanelStats() {
   const noteCount = Object.keys(userNotes).length;
   const locCount  = Object.keys(locationOverrides.waypoints || {}).length
                   + Object.keys(locationOverrides.moorings  || {}).length;
+  const gpCount   = googlePlaces.length;
   const el = document.getElementById('data-panel-stats');
   if (el) el.textContent =
-    `💬 ${noteCount} note${noteCount!==1?'s':''} · ✏️ ${locCount} location correction${locCount!==1?'s':''}`;
+    `💬 ${noteCount} note${noteCount!==1?'s':''} · ✏️ ${locCount} location correction${locCount!==1?'s':''} · 📍 ${gpCount} imported place${gpCount!==1?'s':''}`;
 }
 
 function exportFullBackup() {
@@ -7824,6 +7854,131 @@ function _downloadJSON(obj, filename) {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
+// ============================================================
+//  GOOGLE MAPS PLACES IMPORT
+// ============================================================
+
+function buildGooglePlacesMarkers() {
+  googlePlacesGroup.clearLayers();
+  googlePlaces.forEach(function(place, idx) {
+    var icon = L.divIcon({
+      html: '<div class="gplace-marker" title="' + (place.name || '').replace(/"/g, '&quot;') + '">📍</div>',
+      className: '',
+      iconSize: [28, 28],
+      iconAnchor: [14, 26],
+      popupAnchor: [0, -28]
+    });
+    var marker = L.marker([place.lat, place.lon], { icon: icon });
+    var esc = function(s) { return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); };
+    var html = '<div class="gplace-popup">' +
+      '<div class="gplace-title">' + esc(place.name) + '</div>';
+    if (place.addr) html += '<div class="gplace-addr">📌 ' + esc(place.addr) + '</div>';
+    if (place.desc && place.desc !== place.addr) html += '<div class="gplace-desc">' + esc(place.desc) + '</div>';
+    if (place.url)  html += '<a href="' + esc(place.url) + '" target="_blank" class="gplace-link">Open in Google Maps ↗</a>';
+    html += '<div style="margin-top:8px;font-size:11px;color:#5a7a8a">Place ' + (idx + 1) + ' of ' + googlePlaces.length + '</div>';
+    html += '</div>';
+    marker.bindPopup(html, { maxWidth: 280 });
+    googlePlacesGroup.addLayer(marker);
+  });
+}
+
+// Parse a Google Maps KML export (File → Export list as KML)
+function _parseKMLPlaces(kmlText) {
+  var parser = new DOMParser();
+  var doc = parser.parseFromString(kmlText, 'text/xml');
+  var placemarks = doc.querySelectorAll('Placemark');
+  var places = [];
+  placemarks.forEach(function(pm) {
+    var name = pm.querySelector('name') ? pm.querySelector('name').textContent.trim() : 'Saved Place';
+    // Description may contain HTML — strip tags
+    var desc = '';
+    var descEl = pm.querySelector('description');
+    if (descEl) {
+      var tmp = document.createElement('div');
+      tmp.innerHTML = descEl.textContent;
+      desc = (tmp.textContent || tmp.innerText || '').trim().slice(0, 300);
+    }
+    // Try address from ExtendedData
+    var addr = '';
+    var addrEl = pm.querySelector('ExtendedData SimpleData[name="addr"]') ||
+                 pm.querySelector('ExtendedData SimpleData[name="address"]');
+    if (addrEl) addr = addrEl.textContent.trim();
+    // Coordinates in <Point><coordinates>lon,lat,alt</coordinates></Point>
+    var coordEl = pm.querySelector('Point coordinates');
+    if (!coordEl) return;
+    var parts = coordEl.textContent.trim().split(',');
+    var lon = parseFloat(parts[0]);
+    var lat = parseFloat(parts[1]);
+    if (isNaN(lat) || isNaN(lon)) return;
+    places.push({ name: name, addr: addr, desc: desc, lat: lat, lon: lon, url: '' });
+  });
+  return places;
+}
+
+// Parse a Google Takeout JSON export (takeout.google.com → Maps → Saved Places)
+function _parseGoogleTakeoutPlaces(jsonText) {
+  var data = JSON.parse(jsonText);
+  // Takeout format: { "features": [ { "geometry": { "type":"Point", "coordinates":[lon,lat] }, "properties": {...} } ] }
+  var features = Array.isArray(data) ? data : (data.features || []);
+  var places = [];
+  features.forEach(function(f) {
+    var geom = f.geometry || f.geo;
+    if (!geom || geom.type !== 'Point') return;
+    var coords = geom.coordinates;
+    var lon = parseFloat(coords[0]);
+    var lat = parseFloat(coords[1]);
+    if (isNaN(lat) || isNaN(lon)) return;
+    var props = f.properties || {};
+    var name = props.Title || props.title || props.name || 'Saved Place';
+    var addr = (props.location && props.location.address) ? props.location.address : (props.address || '');
+    var url  = props['Google Maps URL'] || props.url || '';
+    places.push({ name: name.trim(), addr: addr, desc: '', lat: lat, lon: lon, url: url });
+  });
+  return places;
+}
+
+function importGooglePlaces(input) {
+  var file = input.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      var text = e.target.result.trim();
+      var places = [];
+      if (text.startsWith('<') || file.name.toLowerCase().endsWith('.kml')) {
+        places = _parseKMLPlaces(text);
+      } else {
+        places = _parseGoogleTakeoutPlaces(text);
+      }
+      if (places.length === 0) throw new Error('No placemark coordinates found in this file. Make sure you export as KML from Google Maps or use a Google Takeout JSON file.');
+      googlePlaces = googlePlaces.concat(places);
+      localStorage.setItem(GOOGLE_PLACES_KEY, JSON.stringify(googlePlaces));
+      buildGooglePlacesMarkers();
+      if (!layerState.googleplaces) {
+        layerState.googleplaces = true;
+        map.addLayer(googlePlacesGroup);
+        var btn = document.getElementById('toggle-googleplaces');
+        if (btn) btn.classList.add('active');
+      }
+      _refreshDataPanelStats();
+      alert('✅ ' + places.length + ' place' + (places.length !== 1 ? 's' : '') + ' imported from Google Maps.\nUse the 📍 My Places button to show/hide them.');
+    } catch(err) {
+      alert('❌ Import failed: ' + err.message);
+    }
+    input.value = '';
+  };
+  reader.readAsText(file);
+}
+
+function clearGooglePlaces() {
+  if (googlePlaces.length === 0) { alert('No imported places to clear.'); return; }
+  if (!confirm('Remove all ' + googlePlaces.length + ' imported Google Maps place' + (googlePlaces.length !== 1 ? 's' : '') + '?')) return;
+  googlePlaces = [];
+  localStorage.removeItem(GOOGLE_PLACES_KEY);
+  googlePlacesGroup.clearLayers();
+  _refreshDataPanelStats();
+}
+
 </script>
 
 <div id="route-planner-panel">
@@ -7925,6 +8080,19 @@ function _downloadJSON(obj, filename) {
       <button class="dp-btn import" onclick="document.getElementById('notes-file-input').click()">⬆ Import</button>
     </div>
     <input type="file" id="notes-file-input" accept=".json" style="display:none" onchange="importNotes(this)">
+  </div>
+
+  <div class="dp-section">
+    <div class="dp-label">📍 Google Maps — import saved places</div>
+    <div style="font-size:11px;color:#5a7a8a;margin-bottom:6px;line-height:1.5">
+      Export any list from Google Maps: open the list → ⋮ → <em>Export list</em> → save as KML.<br>
+      Or use <a href="https://takeout.google.com" target="_blank" style="color:#5bc0de">Google Takeout</a> → Maps → Saved Places (JSON).
+    </div>
+    <div class="dp-row">
+      <button class="dp-btn import" onclick="document.getElementById('gplaces-file-input').click()">⬆ Import KML / JSON</button>
+      <button class="dp-btn" onclick="clearGooglePlaces()" style="background:rgba(231,76,60,0.15);border-color:#e74c3c;color:#e87a7a">🗑 Clear all</button>
+    </div>
+    <input type="file" id="gplaces-file-input" accept=".kml,.json" style="display:none" onchange="importGooglePlaces(this)">
   </div>
 
   <div id="data-panel-stats" class="dp-stat"></div>
