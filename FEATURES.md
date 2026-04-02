@@ -1,7 +1,7 @@
 # Feature Backlog & To-Do
 
 Planned and proposed enhancements for the French Canals Interactive Map.
-*Last updated: 2026-03-31*
+*Last updated: 2026-04-02*
 
 ---
 
@@ -53,6 +53,7 @@ Planned and proposed enhancements for the French Canals Interactive Map.
 | Michelin stops | Top 5 Michelin restaurants near each stop in route panel |
 | Nearby attractions | Historic sites, castles, museums, viewpoints, wineries per stop |
 | Provisions per stop | Supermarkets, pharmacies, boulangeries per stop |
+| Nearest mooring at day-end | Day-by-day itinerary shows nearest halte/port (within 3 km) at the foot of each day row |
 | Route navigation warnings | Red banner if any segment blocked by vessel dimensions |
 
 ### Explore Nearby (town sidebars)
@@ -111,7 +112,7 @@ Planned and proposed enhancements for the French Canals Interactive Map.
 | Feature | Priority | Notes |
 |---------|----------|-------|
 | Live VNF chômages | Low | Parse published JSON from data.gouv.fr or Overpass `hazard` tags |
-| Share route via URL hash | Medium | Encode from/to/via IDs in `#` fragment for bookmarking + sharing |
+| ~~Share route via URL hash~~ | Done | `#r=fromId:toId` written on calculate; `_initFromHash()` restores on load; 🔗 Copy Link button in results |
 | Printable route card | Medium | `@media print` CSS showing segment table, locks, VNF links — for the helm |
 | Bridge height markers | Low | Single lowest bridge is often the real air-draught bottleneck, not the route average |
 
