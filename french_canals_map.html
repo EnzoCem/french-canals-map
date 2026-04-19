@@ -1055,6 +1055,9 @@
 .rp-day-locks   { font-size: 10px; color: #f0ad4e; background: rgba(240,173,78,0.15); border-radius: 10px; padding: 2px 7px; margin-left: 6px; white-space: nowrap; }
 .rp-day-mooring { font-size: 10px; color: #52d68a; background: rgba(82,214,138,0.12); border-radius: 10px; padding: 2px 7px; margin-left: 6px; white-space: nowrap; display: block; margin-top: 3px; }
 .rp-day-weather { font-size: 10px; color: #7ad4ef; background: rgba(122,212,239,0.12); border-radius: 10px; padding: 2px 7px; margin-left: 6px; white-space: nowrap; }
+.vhf-chip { display: inline-block; font-size: 11px; color: #c9a85e; background: rgba(201,168,94,0.12); border: 1px solid rgba(201,168,94,0.3); border-radius: 10px; padding: 1px 8px; margin-top: 3px; margin-right: 4px; white-space: nowrap; font-weight: 600; }
+.tel-link { color: #7ad4ef; text-decoration: none; border-bottom: 1px dotted rgba(122,212,239,0.4); }
+.tel-link:hover, .tel-link:active { color: #a0e0ff; border-bottom-color: rgba(122,212,239,0.8); }
 .rp-day-weather.err { color: #8899aa; background: rgba(136,153,170,0.10); }
 .rp-day-weather.out { color: #6a7a8a; background: transparent; padding-left: 0; }
 
@@ -3337,7 +3340,7 @@ function buildMooringMarkers() {
         <div class="popup-cost" style="color:${costColor}">💶 ${m.cost}</div>
         ${m.facilities && m.facilities !== 'none' ? `<div class="popup-facilities">🔌 ${m.facilities.split('/').join(' · ')}</div>` : ''}
         ${m.max_vessel ? `<div style="font-size:11px;color:#8ab4c2;margin-top:2px">Max vessel: ${m.max_vessel}</div>` : ''}
-        ${m.contact ? `<div style="font-size:11px;color:#5a7a8a;margin-top:3px">${m.contact}</div>` : ''}
+        ${m.contact ? `<div style="font-size:11px;color:#5a7a8a;margin-top:3px">${_autoLinkPhones(m.contact)}</div>` : ''}
       </div>`;
 
     marker._mooringId = m.id;
@@ -3432,7 +3435,7 @@ function showPOIPopup(osmId) {
     '<div style="font-size:15px;margin-bottom:3px">' + icon + ' <strong style="color:#e0c97f">' + (d.name || '') + '</strong></div>' +
     '<div style="font-size:11px;color:#5bc0de;margin-bottom:6px">' + label + '</div>';
   if (hours)   content += '<div style="font-size:11px;color:#ffd54f;margin-bottom:4px">🕐 ' + hours + '</div>';
-  if (phone)   content += '<div style="font-size:11px;color:#aaa;margin-bottom:4px">📞 ' + phone + '</div>';
+  if (phone)   content += '<div style="font-size:11px;color:#aaa;margin-bottom:4px">📞 ' + _telLink(phone) + '</div>';
   if (website) content += '<a href="' + website + '" target="_blank" style="font-size:11px;color:#7ad4ef;text-decoration:none">🌐 Website →</a>';
   content += '</div>';
   map.setView([d.lat, d.lon], 15);
@@ -4294,7 +4297,7 @@ function buildTunnelMarkers() {
       '<div style="font-size:11px;color:#8ab4c2;margin-bottom:4px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px">Convoy times</div>' +
       convoyRows +
       '<div style="margin-top:8px;font-size:11px;color:#aaa">' + t.booking + '</div>' +
-      '<div style="font-size:11px;color:#aaa;margin-bottom:6px">' + t.contact + '</div>' +
+      '<div style="font-size:11px;color:#aaa;margin-bottom:6px">' + _autoLinkPhones(t.contact || '') + '</div>' +
       '<a href="' + t.vnf_url + '" target="_blank" style="font-size:11px;color:#5bc0de">📋 VNF tunnels info →</a>' +
       '</div>';
 
@@ -4779,6 +4782,42 @@ let waterwayLayer = null;
 // before matching, so 'River Saône' matches the key 'Saône', and
 // 'Canal Latéral à la Garonne' matches 'Canal latéral à la Garonne'.
 const _normName = s => (s || '').toLowerCase().replace(/^(river |la |le |l'|les |the )/i, '').trim();
+
+/* ── Shared contact helpers ─────────────────────────────────────────────
+ * _telLink(raw)  → '<a href="tel:...">+33 1 23...</a>' (or plain text if no digits)
+ * _vhfChip(tags) → '<span class="vhf-chip">📻 VHF 18</span>' or '' if no channel
+ */
+function _telLink(raw) {
+  if (!raw) return '';
+  var txt = String(raw).trim();
+  // tel:-safe form: keep leading + if present, then digits only
+  var hasPlus = txt.charAt(0) === '+';
+  var digits = txt.replace(/\D/g, '');
+  if (digits.length < 6) return txt; // not a phone — return as-is
+  var href = (hasPlus ? '+' : '') + digits;
+  return '<a href="tel:' + href + '" class="tel-link">' + txt + '</a>';
+}
+/* _autoLinkPhones: finds French-format phone numbers embedded in free text
+ * and wraps them in <a href="tel:…"> links. Leaves everything else as-is.
+ * Matches: +33 X XX XX XX XX · 0X XX XX XX XX (dots/spaces/dashes allowed) */
+function _autoLinkPhones(text) {
+  if (!text) return '';
+  var re = /(\+33|0)[\s.-]?\d(?:[\s.-]?\d{2}){4}/g;
+  return String(text).replace(re, function(match) {
+    var digits = match.replace(/\D/g, '');
+    var href = match.charAt(0) === '+' ? '+' + digits : digits;
+    return '<a href="tel:' + href + '" class="tel-link">' + match + '</a>';
+  });
+}
+function _vhfChip(tags) {
+  if (!tags) return '';
+  var ch = tags.vhf_channel || tags['communication:vhf'] || tags['seamark:radio_station:channel'] || tags.channel;
+  if (!ch) return '';
+  // Normalise "Ch 18", "VHF18", "18" → "18"
+  var m = String(ch).match(/\d+/);
+  var label = m ? 'VHF ' + m[0] : 'VHF ' + ch;
+  return '<span class="vhf-chip">📻 ' + label + '</span>';
+}
 
 function constraintLookup(name) {
   if (!name) return null;
@@ -6270,6 +6309,9 @@ function placeLiveLock(lat, lon, tags) {
   const hoursHtml = tags.opening_hours ? `<div class="ll-hours">🕐 ${tags.opening_hours}</div>` : '';
   const opHtml    = tags.operator ? `<div class="ll-op">${tags.operator}</div>` : '';
   const refHtml   = ref && rawName ? `<span class="ll-ref"> · #${ref}</span>` : '';
+  const vhfHtml   = _vhfChip(tags);
+  const phoneRaw  = tags.phone || tags['contact:phone'] || tags['operator:phone'] || '';
+  const phoneHtml = phoneRaw ? `<div class="ll-phone" style="font-size:11px;color:#7ad4ef;margin-top:3px">📞 ${_telLink(phoneRaw)}</div>` : '';
 
   const icon = L.divIcon({
     className: '',
@@ -6281,7 +6323,8 @@ function placeLiveLock(lat, lon, tags) {
   m.bindPopup(
     `<div class="live-lock-popup">
       <div class="ll-title">🔒 ${name}${refHtml}</div>
-      ${liftHtml}${opHtml}${hoursHtml}
+      ${liftHtml}${opHtml}${hoursHtml}${phoneHtml}
+      ${vhfHtml ? '<div style="margin-top:4px">' + vhfHtml + '</div>' : ''}
     </div>`, { maxWidth: 240 }
   );
   m.addTo(liveLocksGroup);
@@ -6360,10 +6403,14 @@ function renderRouteLocks(container, elements) {
     const ref  = t.ref && t.name ? ` · #${t.ref}` : (t.ref ? '' : '');
     const lift = (t['lock:lift'] || t.lift) ? `<br>↑ ${t['lock:lift'] || t.lift} m rise` : '';
     const hrs  = t.opening_hours ? `<br>🕐 ${t.opening_hours}` : '';
+    const vhf  = _vhfChip(t);
+    const phRaw = t.phone || t['contact:phone'] || t['operator:phone'] || '';
+    const ph    = phRaw ? `<br>📞 ${_telLink(phRaw)}` : '';
     const m = L.marker([lock.lat, lock.lon], { icon: routeLockIcon, zIndexOffset: 55 });
     m.bindPopup(`<div class="live-lock-popup">
       <div class="ll-title">🔒 ${name}${ref}</div>
-      <div style="font-size:11px;color:#bbb;margin-top:3px">${lift}${hrs}</div>
+      <div style="font-size:11px;color:#bbb;margin-top:3px">${lift}${hrs}${ph}</div>
+      ${vhf ? '<div style="margin-top:4px">' + vhf + '</div>' : ''}
     </div>`, { maxWidth: 230 });
     routeLocksMapLayer.addLayer(m);
   });
