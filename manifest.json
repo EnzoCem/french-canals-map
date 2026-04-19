@@ -1,0 +1,18 @@
+{
+  "name": "French Canals Map",
+  "short_name": "Canals",
+  "description": "Interactive map for cruising the French inland waterways — towns, locks, haltes, ports, route planning, Michelin restaurants.",
+  "start_url": "./french_canals_map.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0a1a2a",
+  "theme_color": "#0a1a2a",
+  "lang": "en",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any",        "type": "image/svg+xml", "purpose": "any" },
+    { "src": "icon.svg", "sizes": "192x192",    "type": "image/svg+xml", "purpose": "maskable any" },
+    { "src": "icon.svg", "sizes": "512x512",    "type": "image/svg+xml", "purpose": "maskable any" }
+  ],
+  "categories": ["navigation", "travel", "maps"]
+}

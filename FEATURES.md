@@ -1,7 +1,7 @@
 # Feature Backlog & To-Do
 
 Planned and proposed enhancements for the French Canals Interactive Map.
-*Last updated: 2026-04-19*
+*Last updated: 2026-04-19 (PWA shipped)*
 
 ---
 
@@ -36,6 +36,10 @@ Planned and proposed enhancements for the French Canals Interactive Map.
 | Provisions auto-load | Provisions & Services section loads automatically on first expand — no second tap needed |
 | Google Maps saved places | Import starred / "Want to go" lists from Google Takeout (KML or GeoJSON); `📍 My Places` toggle layer. Add / Sync / Clear controls in Data Backup panel |
 | Explore Nearby error recovery | Overpass calls now use `[timeout:60][maxsize:2000000]` with a 🔄 Try Again button on failure (fixes Vienne-style dense-city timeouts) |
+| Per-day weather on itinerary | Each day row in the Day-by-Day panel shows an ETA-date Open-Meteo forecast (icon · high/low · rain) for the day's final stop |
+| VHF channel chips in lock popups | Surfaces OSM `vhf_channel` / `communication:vhf` tags on live + route-planner locks |
+| Tap-to-call phone numbers | Auto-linkified French phone numbers in mooring, lock, tunnel, and POI popups — tap dials on mobile |
+| PWA / offline mode | Installable web app (`manifest.json` + `sw.js` + `icon.svg`). App shell + `waterways.geojson` precached on install; tiles cached LRU (400 entries); update banner prompts reload when a new version is ready |
 
 ### Route Planner
 | Feature | Description |
@@ -127,14 +131,15 @@ Planned and proposed enhancements for the French Canals Interactive Map.
 | Trip log / journal | Low | Log actual days cruised, distances, locks passed |
 | Photo pins | Low | Attach image URL to any waypoint note |
 | Elevation profile | Low | SVG cross-section of summit level and lock climbs/descents |
-| Offline tile caching | Low | Service Worker — significant complexity |
+| ~~Offline tile caching~~ | Done | Service worker now runtime-caches tiles LRU (400 entries ≈ 20–40 MB) |
+| ~~PWA / offline mode~~ | Done | `manifest.json` + `sw.js` + `icon.svg`; app shell + geojson precached; update banner wired |
+| ~~Route-day weather~~ | Done | Open-Meteo per-stop ETA forecast rendered on each day row |
+| ~~VHF channel per lock~~ | Done | `_vhfChip()` renders on live + route-planner locks |
+| ~~Capitainerie tel: links~~ | Done | `_autoLinkPhones()` + `_telLink()` across mooring/lock/tunnel/POI popups |
 | Mobile / touch optimisation | Medium | Larger touch targets, swipe sidebar |
-| PWA / offline mode | **High** | manifest.json + service worker — cache tiles + `waterways.geojson` for on-boat poor-4G use |
-| Route-day weather | **High** | Open-Meteo keyed to each stop's lat/lon + ETA date — quick win, already have `renderDayByDay()` |
 | Tidal-section warnings | Medium | SHOM/horaire-maree for Lower Seine below Rouen — show tide window for departure |
-| VHF channel per lock | Medium | OSM `vhf_channel` tag already in Overpass fetch — surface in lock popup |
 | Voies vertes (towpath cycling) | Medium | OSM `route=bicycle` relations alongside canals — pair bike with the boat |
-| Capitainerie tel: links | Low | Wrap `contact` phone regex in `<a href="tel:…">` — tap-to-call on mobile |
+| Download-area-for-offline button | Medium | Explicit "download this area" that warms the tile cache over the current viewport + zoom range |
 | Fuel price overlay | Low | Crowdsource via export/import pattern (mirrors Google Places) |
 | Mooring pricing (€/night) | Low | `MOORINGS.cost` has `paid`/`free` but no ranges — help budgeting |
 | Border-crossing markers | Low | FR/BE/DE/CH border points with paperwork notes |

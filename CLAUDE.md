@@ -22,6 +22,9 @@ French Canals/
 ├── fill_waterways.py               ← one-shot script that generated waterways.geojson via Overpass
 ├── fill_michelin.py                ← annual script to update MICHELIN_RESTAURANTS from ngshiheng/michelin-my-maps
 ├── patch_lyon_waterways.py         ← one-shot patch: fetched Miribel/Jonage/Rhône through Lyon
+├── manifest.json                   ← PWA manifest (installable)
+├── sw.js                           ← Service worker: app shell precache + tile LRU cache
+├── icon.svg                        ← PWA icon (vessel on canal)
 ├── .github/workflows/
 │   └── update-michelin.yml         ← GitHub Action: runs fill_michelin.py on Feb 15 each year
 └── CLAUDE.md / README.md / FEATURES.md
@@ -275,6 +278,39 @@ Parsed client-side via `DOMParser` (KML) or `JSON.parse` (GeoJSON). No server, n
 
 ### Layer toggle
 `📍 My Places` button in the controls bar toggles `googlePlacesGroup`. Auto-enabled at init if `googlePlaces[]` is non-empty.
+
+---
+
+## PWA / offline mode
+
+The app is installable and works offline. Files that make this work:
+
+| File | Role |
+|------|------|
+| `manifest.json` | Installable web app metadata (name, icons, theme, start_url) |
+| `sw.js` | Service worker — precache app shell + LRU tile cache |
+| `icon.svg` | 512×512 vessel-on-canal icon referenced by manifest + Apple touch-icon |
+
+### Caching strategies (all in `sw.js`)
+
+| Resource | Strategy | Cache |
+|----------|----------|-------|
+| App shell (HTML, manifest, icon, `waterways.geojson`, Leaflet CDN) | Precache at install | `fc-shell-<VERSION>` |
+| Navigation / HTML | Network-first, fallback shell | `fc-shell-<VERSION>` |
+| Map tiles (OSM, IGN, CartoDB, ESRI, OpenTopo, OpenSeaMap) | Cache-first, LRU cap 400 entries | `fc-tiles-<VERSION>` |
+| Overpass, Open-Meteo, Vigicrues, Hub'Eau | **Never cached** (pass-through) | — |
+| Other same-origin / CDN | Stale-while-revalidate | `fc-shell-<VERSION>` |
+
+### Versioning
+Bump `VERSION` at the top of `sw.js` to invalidate ALL caches. New workers `skipWaiting()` on user request via the update banner.
+
+### Update banner (`#sw-update-banner`)
+Shows when a new SW is waiting. User taps **Reload** → SW posts `SKIP_WAITING` → `controllerchange` fires → page auto-reloads with the new version.
+
+### Limitations
+- Service workers require HTTP(S). `file://` skips registration silently.
+- Offline tile viewing only works for areas the user viewed while online (cache-first but no pre-downloading yet).
+- Overpass-dependent features (Explore Nearby, live locks, provisions) degrade gracefully — the cached geojson still renders the canal network.
 
 ---
 
