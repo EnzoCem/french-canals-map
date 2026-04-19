@@ -1,7 +1,7 @@
 # Feature Backlog & To-Do
 
 Planned and proposed enhancements for the French Canals Interactive Map.
-*Last updated: 2026-04-02*
+*Last updated: 2026-04-19*
 
 ---
 
@@ -13,7 +13,7 @@ Planned and proposed enhancements for the French Canals Interactive Map.
 | Interactive Leaflet map | Dark nautical theme, zoom/pan, mobile-friendly |
 | Base layer switcher | IGN France (default), OpenStreetMap, CartoDB Voyager, ESRI Satellite, OpenTopoMap |
 | OpenSeaMap overlay | Nautical marks as a toggleable overlay |
-| Waterway overlay | 3,481 OSM canal/river segments (deduped + non-navigable filtered) loaded from `waterways.geojson` |
+| Waterway overlay | 3,474 OSM canal/river segments (deduped + non-navigable filtered, Swiss/Saône upstream trimmed) loaded from `waterways.geojson` |
 | Waterway Cache API | Instant load on repeat visits; background ETag check for updates |
 | Per-waterway colour coding | Each waterway rendered in its own colour from `WATERWAY_COLORS` when no vessel profile is set |
 | Town markers | 120+ waypoints with detail sidebars |
@@ -34,6 +34,8 @@ Planned and proposed enhancements for the French Canals Interactive Map.
 | Michelin popup on click | Clicking a restaurant in sidebar or route planner opens a Leaflet popup with stars, cuisine, city, Michelin Guide link |
 | Explore Nearby POI popups | Clicking 📍 on any Explore Nearby item opens a popup with name, category, opening hours, phone, website |
 | Provisions auto-load | Provisions & Services section loads automatically on first expand — no second tap needed |
+| Google Maps saved places | Import starred / "Want to go" lists from Google Takeout (KML or GeoJSON); `📍 My Places` toggle layer. Add / Sync / Clear controls in Data Backup panel |
+| Explore Nearby error recovery | Overpass calls now use `[timeout:60][maxsize:2000000]` with a 🔄 Try Again button on failure (fixes Vienne-style dense-city timeouts) |
 
 ### Route Planner
 | Feature | Description |
@@ -127,6 +129,15 @@ Planned and proposed enhancements for the French Canals Interactive Map.
 | Elevation profile | Low | SVG cross-section of summit level and lock climbs/descents |
 | Offline tile caching | Low | Service Worker — significant complexity |
 | Mobile / touch optimisation | Medium | Larger touch targets, swipe sidebar |
+| PWA / offline mode | **High** | manifest.json + service worker — cache tiles + `waterways.geojson` for on-boat poor-4G use |
+| Route-day weather | **High** | Open-Meteo keyed to each stop's lat/lon + ETA date — quick win, already have `renderDayByDay()` |
+| Tidal-section warnings | Medium | SHOM/horaire-maree for Lower Seine below Rouen — show tide window for departure |
+| VHF channel per lock | Medium | OSM `vhf_channel` tag already in Overpass fetch — surface in lock popup |
+| Voies vertes (towpath cycling) | Medium | OSM `route=bicycle` relations alongside canals — pair bike with the boat |
+| Capitainerie tel: links | Low | Wrap `contact` phone regex in `<a href="tel:…">` — tap-to-call on mobile |
+| Fuel price overlay | Low | Crowdsource via export/import pattern (mirrors Google Places) |
+| Mooring pricing (€/night) | Low | `MOORINGS.cost` has `paid`/`free` but no ranges — help budgeting |
+| Border-crossing markers | Low | FR/BE/DE/CH border points with paperwork notes |
 
 ---
 
@@ -134,5 +145,9 @@ Planned and proposed enhancements for the French Canals Interactive Map.
 
 | Item | Description |
 |------|-------------|
-| Single-file architecture | At ~7,700 lines the HTML is large; no immediate plans to split, but worth tracking |
+| Single-file architecture | At ~8,200 lines the HTML is large; no immediate plans to split, but worth tracking |
 | CLAUDE.md line numbers drift | Line numbers will drift as the file grows — use `grep -n "^function foo"` to find current positions |
+| Overpass error handling inconsistency | `_fetchPOIsNearby` has Try Again UX; `_fetchProvisionsNearby`, `fetchLocksInView`, chômages do not. Extract shared `_overpassFetch(ql, opts)` helper |
+| `_NON_NAVIGABLE_RE` over-matches | Anchors weakly on `écluse` — any waterway name containing that token is filtered. Revisit to anchor on primary descriptor only |
+| Inline `onclick=` handlers | Data Backup panel & POI buttons use inline handlers; blocks future CSP tightening — migrate to `addEventListener` |
+| No localStorage schema migration | All keys use `_v1` suffix but there's no `_migrate()` runner — add now before needed |

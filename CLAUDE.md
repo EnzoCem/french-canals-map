@@ -15,12 +15,13 @@ A single-file interactive web map for cruising the French inland waterways, base
 
 ```
 French Canals/
-├── french_canals_map.html          ← entire app (HTML + CSS + JS + data) ~7,700 lines
-├── waterways.geojson               ← canal/river geometry fetched from OSM (~8.5 MB, 3,500 features after cleanup)
+├── french_canals_map.html          ← entire app (HTML + CSS + JS + data) ~8,200 lines
+├── waterways.geojson               ← canal/river geometry fetched from OSM (~8.5 MB, 3,474 features after cleanup)
 ├── index.html                      ← GitHub Pages redirect to french_canals_map.html
 ├── Open Map.command                ← macOS launcher script (requires chmod +x once)
 ├── fill_waterways.py               ← one-shot script that generated waterways.geojson via Overpass
 ├── fill_michelin.py                ← annual script to update MICHELIN_RESTAURANTS from ngshiheng/michelin-my-maps
+├── patch_lyon_waterways.py         ← one-shot patch: fetched Miribel/Jonage/Rhône through Lyon
 ├── .github/workflows/
 │   └── update-michelin.yml         ← GitHub Action: runs fill_michelin.py on Feb 15 each year
 └── CLAUDE.md / README.md / FEATURES.md
@@ -45,50 +46,52 @@ The HTML parser terminates the `<script>` block the moment it sees `</script>` a
 | Lines | Content |
 |-------|---------|
 | 1–1104 | `<head>` + all CSS styles |
-| 1105–1214 | `<body>`: `#controls` bar, `#main`, `#map`, `#sidebar` |
-| 1215–1216 | CDN `<script>` tags (Leaflet + MarkerCluster) |
-| 1217 | **`<script>` opens** — all application JS starts here |
-| 1227–1275 | `const ROUTES` — 44 canal route definitions |
-| 1276–1783 | `const WAYPOINTS` — ~120 town/lock waypoints |
-| 1784–2021 | `const MOORINGS` — haltes + ports with full metadata |
-| 2022–3076 | `const MICHELIN_RESTAURANTS` — 1,007 Michelin-awarded restaurants |
-| 3077–3096 | localStorage keys + saved-routes init |
-| 3097–3241 | Map init (`L.map`), tile layers, layer switcher, waterways fetch + cache |
-| 3242–3299 | Layer group declarations (incl. `tunnelGroup`) |
-| 3300–3375 | `buildMooringMarkers()` |
-| 3348–3375 | `buildMichelinMarkers()` |
-| 3376–3557 | `buildMarkers()` |
-| 3558–3713 | Sidebar: `openSidebar()`, Explore Nearby, Provisions, note save/delete |
-| 3714–3777 | `layerState`, `toggleLayer()` |
-| 3778–3897 | Vessel profile: `openProfileModal()`, `saveProfile()`, `applyVesselFilter()` |
-| 4036–4090 | Chômages data + `buildChomagesMarkers()` |
-| 4091–4192 | `const TUNNELS` — 5 tunnel entries with convoy schedules |
-| 4193–4260 | `buildTunnelMarkers()` |
-| 4579–4623 | `WATERWAY_COLORS` — per-waterway colour palette (active when no vessel profile set) |
-| 4624–4698 | `WATERWAY_CONSTRAINTS` — VNF dimension limits per waterway |
-| 4699 | `const _normName` — shared name normaliser |
-| 4710–4722 | `colorLookup(name)` — normalised WATERWAY_COLORS lookup |
-| 4723–4773 | `getWaterwayNavStatus()`, `_updateWaterwayNavLegend()` |
-| 4774–4989 | `buildWaterwayOverlay()`, waterway dims lookup |
-| 4990–5657 | `ROUTE_CONNECTIONS`, route planner graph, `findRoutePath()`, `calculateRoute()` setup |
-| 5658–5699 | `openRoutePlanner()`, `closeRoutePlanner()` |
-| 5700–5776 | `reverseRoute()`, `exportRouteAsGPX()` |
-| 5777–6007 | `renderDayByDay()`, `_getCruiseSettings()`, weather fetch + snippets |
-| 6008–6259 | Live locks: `fetchLocksInView()`, `scheduleLockFetch()`, route-lock markers |
-| 6260–6353 | `calculateRoute()` — BFS pathfinding + route results rendering |
-| 6354–6496 | `ROUTE_TO_WATERWAYS` — maps route numbers → OSM waterway names |
-| 6497–6733 | `highlightRouteOnMap()`, `clearRouteHighlight()`, `restoreWaterwayStyles()` |
-| 6734–6853 | Saved routes: `saveCurrentRoute()`, `loadSavedRoute()`, `deleteSavedRoute()` |
-| 6854–6937 | `_buildExploreSnippet()` — route planner attractions snippet |
-| 6938–7010 | `renderRoutePOIsSection()`, `showRoutePOIStop()`, `loadRoutePOIExplore()` |
-| 7011–7049 | `_fetchPOIsNearby()` — 15 km Overpass query (markets, bike hire, restaurants, food, swimming, tourism, wineries+distilleries) |
-| 7050–7182 | Provisions: `_fetchProvisionsNearby()`, `_buildProvisionsSnippet()`, `loadRouteProvisions()` |
-| 7183–7332 | `_renderPOIList()` — Explore Nearby category chips + item rows |
-| 7334–7422 | Edit mode marker selection: `selectForReposition()`, `deselectForReposition()` |
-| 7423–7448 | `activateEditMode()`, `deactivateEditMode()` |
-| 7477–7684 | `saveLocationOverride()`, `resetAllLocationOverrides()`, `exportLocationOverrides()`, `importLocationOverrides()` |
-| 7685 | **`</script>` closes** |
-| 7686+ | HTML panels: route planner, profile modal, edit-mode banner, data backup panel |
+| 1105–1230 | `<body>`: `#controls` bar, `#main`, `#map`, `#sidebar` |
+| 1231–1232 | CDN `<script>` tags (Leaflet + MarkerCluster) |
+| 1233 | **`<script>` opens** — all application JS starts here |
+| 1238–1286 | `const ROUTES` — 44 canal route definitions |
+| 1287–1794 | `const WAYPOINTS` — ~120 town/lock waypoints |
+| 1795–2032 | `const MOORINGS` — haltes + ports with full metadata |
+| 2033–3087 | `const MICHELIN_RESTAURANTS` — 1,007 Michelin-awarded restaurants |
+| 3088–3110 | localStorage keys (incl. `GOOGLE_PLACES_KEY`) + saved-routes / google-places init |
+| 3111–3249 | Map init (`L.map`), tile layers, layer switcher, waterways fetch + cache |
+| 3250–3316 | Layer group declarations (incl. `tunnelGroup`, `googlePlacesGroup`) |
+| 3317–3364 | `buildMooringMarkers()` |
+| 3365–3441 | `buildMichelinMarkers()` |
+| 3442–3623 | `buildMarkers()` |
+| 3624–3781 | Sidebar: `openSidebar()`, Explore Nearby, Provisions, note save/delete |
+| 3782–3850 | `layerState`, `toggleLayer()` (incl. `googleplaces` case) |
+| 3851–3970 | Vessel profile: `openProfileModal()`, `saveProfile()` |
+| 3971–4108 | `applyVesselFilter()`, vessel-filter wiring |
+| 4109–4163 | Chômages data + `buildChomagesMarkers()` |
+| 4164–4265 | `const TUNNELS` — 5 tunnel entries with convoy schedules |
+| 4266–4651 | `buildTunnelMarkers()` + tunnel popups + related helpers |
+| 4652–4699 | `WATERWAY_COLORS` — per-waterway colour palette (active when no vessel profile set) |
+| 4700–4777 | `WATERWAY_CONSTRAINTS` — VNF dimension limits per waterway |
+| 4778 | `const _normName` — shared name normaliser |
+| 4789–4801 | `colorLookup(name)` — normalised WATERWAY_COLORS lookup |
+| 4802–4852 | `getWaterwayNavStatus()`, `_updateWaterwayNavLegend()` |
+| 4853–5075 | `buildWaterwayOverlay()`, waterway dims lookup, cache loader (`WATERWAYS_CACHE_VER`) |
+| 5076–5752 | `ROUTE_CONNECTIONS`, route planner graph, `findRoutePath()`, `calculateRoute()` setup |
+| 5753–5794 | `openRoutePlanner()`, `closeRoutePlanner()` |
+| 5795–5871 | `reverseRoute()`, `exportRouteAsGPX()` |
+| 5872–6120 | `renderDayByDay()`, `_getCruiseSettings()`, weather fetch + snippets |
+| 6121–6370 | Live locks: `fetchLocksInView()`, `scheduleLockFetch()`, route-lock markers |
+| 6371–6464 | `calculateRoute()` — BFS pathfinding + route results rendering |
+| 6465–6607 | `ROUTE_TO_WATERWAYS` — maps route numbers → OSM waterway names |
+| 6608–6844 | `highlightRouteOnMap()`, `clearRouteHighlight()`, `restoreWaterwayStyles()` |
+| 6845–6964 | Saved routes: `saveCurrentRoute()`, `loadSavedRoute()`, `deleteSavedRoute()` |
+| 6965–7048 | `_buildExploreSnippet()` — route planner attractions snippet |
+| 7049–7121 | `renderRoutePOIsSection()`, `showRoutePOIStop()`, `loadRoutePOIExplore()` |
+| 7122–7164 | `_fetchPOIsNearby()` — 15 km Overpass query (markets, bike hire, restaurants, food, swimming, tourism, wineries+distilleries) |
+| 7165–7303 | Provisions: `_fetchProvisionsNearby()`, `_buildProvisionsSnippet()`, `loadRouteProvisions()` |
+| 7304–7463 | `_renderPOIList()` — Explore Nearby category chips + item rows (incl. 🔄 Try Again) |
+| 7464–7552 | Edit mode marker selection: `selectForReposition()`, `deselectForReposition()` |
+| 7553–7606 | `activateEditMode()`, `deactivateEditMode()` |
+| 7607–7868 | `saveLocationOverride()`, `resetAllLocationOverrides()`, `exportLocationOverrides()`, `importLocationOverrides()` |
+| 7869–7994 | Google Places: `buildGooglePlacesMarkers()`, `_parseKMLPlaces()`, `_parseGoogleTakeoutPlaces()`, `importGooglePlaces()`, `clearGooglePlaces()` |
+| 7995 | **`</script>` closes** |
+| 7996+ | HTML panels: route planner, profile modal, edit-mode banner, data backup panel (incl. Google Places import UI) |
 
 ---
 
@@ -100,6 +103,7 @@ The HTML parser terminates the `<script>` block the moment it sees `</script>` a
 | `french_canals_location_overrides_v1` | Corrected marker positions (`{ waypoints: {}, moorings: {} }`) |
 | `french_canals_saved_routes_v1` | Saved route plans (array of route objects) |
 | `french_canals_vessel_v1` | Vessel profile (`{ vesselName, homePort, air, draught, length, beam, cruiseSpeed, hoursPerDay }`) |
+| `french_canals_google_places_v1` | Imported Google Maps saved places (array of `{ id, name, lat, lon, note, url, importedAt }`) |
 
 ---
 
@@ -158,7 +162,8 @@ map
 ├── michelinGroup    (L.layerGroup — Michelin restaurant markers)
 ├── fuelGroup        (L.layerGroup — fuel/water stops)
 ├── chomagesGroup    (L.layerGroup — VNF maintenance closures)
-└── tunnelGroup      (L.layerGroup — canal tunnel markers with convoy schedules)
+├── tunnelGroup      (L.layerGroup — canal tunnel markers with convoy schedules)
+└── googlePlacesGroup (L.layerGroup — user's imported Google Maps saved places)
 ```
 
 `allMarkers[]` and `allMooringMarkers[]` hold references to every marker for vessel filter and edit mode.
@@ -174,12 +179,12 @@ The waterway geometry lives in a **separate file** (`waterways.geojson`) loaded 
 fetch('./waterways.geojson')  // → stored in Cache API → ETag checked in background
 ```
 
-- **3,500 features** covering all French navigable waterways (down from 23,862 after deduplication and non-navigable removal)
+- **3,474 features** covering all French navigable waterways (down from 23,862 after deduplication, non-navigable removal, and Swiss/Saône upstream trimming)
 - Generated by `fill_waterways.py` via 12-region Overpass sweep
 - Non-navigable segments filtered by name pattern (`_NON_NAVIGABLE_RE`: ancien, bras-mort, vieux/vieille, écluse, pont-canal, aqueduc, prise d'eau, souterrain)
 - Normalised deduplication removes regional/spelling variants; canonical OSM name kept
 - RDP-simplified at 33m tolerance
-- Cache version: `waterways-v7` — bump this constant to force all browsers to re-fetch
+- Cache version: `french-canals-waterways-v7` — bump this constant (in `buildWaterwayOverlay()`) to force all browsers to re-fetch
 
 ### Vessel-profile waterway colouring
 
@@ -230,7 +235,7 @@ Fetches POIs within **15 km** via Overpass. Categories (shown as filter chips):
 
 ## Tunnel markers
 
-Five major tunnels in `const TUNNELS` (~line 4091), rendered by `buildTunnelMarkers()` into `tunnelGroup`:
+Five major tunnels in `const TUNNELS` (~line 4164), rendered by `buildTunnelMarkers()` into `tunnelGroup`:
 
 | ID | Name | Canal | Length | Tug |
 |----|------|-------|--------|-----|
@@ -241,6 +246,35 @@ Five major tunnels in `const TUNNELS` (~line 4091), rendered by `buildTunnelMark
 | t005 | Saint-Albin / Balesmes | Canal entre Champagne et Bourgogne | 2,306 m | Yes |
 
 Each tunnel popup shows: length, tug requirement, northbound/southbound convoy times, booking info, and VNF link.
+
+---
+
+## Google Places import
+
+Users can bring their Google Maps "Saved Places" (Starred, Want to Go, lists) into the map as a 📍 My Places layer. Managed from the **Data Backup** panel under the *Google Maps places* heading.
+
+### Supported input formats
+- **KML** (`.kml`) — from Google Takeout → Maps → Your places
+- **GeoJSON / JSON** (`.json`, `.geojson`) — Takeout's newer format
+
+Parsed client-side via `DOMParser` (KML) or `JSON.parse` (GeoJSON). No server, no library.
+
+### Place entry shape
+```js
+{ id: 'gp_…', name: 'Le Petit Bateau', lat: 47.45, lon: 3.12,
+  note: 'Optional comment', url: 'https://maps.google.com/…',
+  importedAt: 1713000000000 }
+```
+
+### UI actions (all in Data Backup panel)
+| Button | Action |
+|--------|--------|
+| **📥 Add places** | Merge imported file into existing list (dedup by name+lat/lon round to 4dp) |
+| **🔄 Sync places** | Replace-all (re-import after editing Google lists) |
+| **🗑 Clear places** | Wipe all with confirm |
+
+### Layer toggle
+`📍 My Places` button in the controls bar toggles `googlePlacesGroup`. Auto-enabled at init if `googlePlaces[]` is non-empty.
 
 ---
 
@@ -272,37 +306,42 @@ Seven drag implementations were attempted and all failed due to Leaflet internal
 
 | Function | Line | Purpose |
 |----------|------|---------|
-| `buildMooringMarkers()` | ~3300 | Clears + rebuilds halte/port markers |
-| `buildMichelinMarkers()` | ~3348 | Builds Michelin restaurant layer |
-| `buildMarkers()` | ~3376 | Clears + rebuilds town/lock markers |
-| `buildTunnelMarkers()` | ~4193 | Builds tunnel layer with convoy popups |
-| `openSidebar(wid)` | ~3558 | Opens detail panel for a waypoint |
-| `toggleLayer(type)` | ~3716 | Show/hide layer groups |
-| `searchPlaces(query)` | ~4093 | Live search dropdown |
-| `openProfileModal()` | ~3778 | Opens vessel profile modal |
-| `saveProfile()` | ~3800 | Saves profile to localStorage + syncs filter bar |
-| `applyVesselFilter()` | ~3898 | Applies draft/air filter + syncs `_vesselProfile` |
-| `buildChomagesMarkers()` | ~4036 | Builds VNF maintenance closure markers |
-| `colorLookup(name)` | ~4710 | Returns per-waterway colour from `WATERWAY_COLORS` (normalised match) |
-| `getWaterwayNavStatus(name)` | ~4723 | Returns colour for a waterway: per-palette (no profile) or navigability (with profile) |
-| `buildWaterwayOverlay()` | ~4774 | Builds/rebuilds the waterway GeoJSON layer |
-| `openRoutePlanner()` | ~5658 | Opens the route planner sidebar |
-| `reverseRoute()` | ~5700 | Reverses all route stops (A→B→C becomes C→B→A) |
-| `exportRouteAsGPX()` | ~5721 | Downloads planned route as .gpx file |
-| `renderDayByDay()` | ~5777 | Builds day-by-day itinerary from route legs |
-| `fetchLocksInView()` | ~6013 | Overpass query for locks in current viewport |
-| `calculateRoute()` | ~6260 | BFS pathfinding + renders results |
-| `highlightRouteOnMap()` | ~6497 | Highlights planned route on map (coral-red + white halo) |
-| `_buildExploreSnippet()` | ~6854 | Route planner attractions snippet (top 5 nearest) |
-| `renderRoutePOIsSection()` | ~6938 | Renders per-stop POI panel in route planner |
-| `_fetchPOIsNearby()` | ~7011 | 15 km Overpass query for all Explore Nearby categories |
-| `_renderPOIList()` | ~7183 | Explore Nearby category chips + item rows |
-| `activateEditMode()` | ~7423 | Enters Edit Locations mode |
-| `deactivateEditMode()` | ~7449 | Exits Edit Locations mode |
-| `selectForReposition()` | ~7334 | Selects a marker for click-to-place |
-| `saveLocationOverride()` | ~7477 | Persists a position correction to localStorage |
-| `exportLocationOverrides()` | ~7523 | Downloads corrections as JSON |
-| `importLocationOverrides()` | ~7616 | Restores corrections from JSON |
+| `buildMooringMarkers()` | ~3317 | Clears + rebuilds halte/port markers |
+| `buildMichelinMarkers()` | ~3365 | Builds Michelin restaurant layer |
+| `buildMarkers()` | ~3442 | Clears + rebuilds town/lock markers |
+| `buildTunnelMarkers()` | ~4266 | Builds tunnel layer with convoy popups |
+| `openSidebar(wid)` | ~3624 | Opens detail panel for a waypoint |
+| `toggleLayer(type)` | ~3782 | Show/hide layer groups (incl. `googleplaces`) |
+| `openProfileModal()` | ~3851 | Opens vessel profile modal |
+| `saveProfile()` | ~3873 | Saves profile to localStorage + syncs filter bar |
+| `applyVesselFilter()` | ~3971 | Applies draft/air filter + syncs `_vesselProfile` |
+| `buildChomagesMarkers()` | ~4109 | Builds VNF maintenance closure markers |
+| `colorLookup(name)` | ~4789 | Returns per-waterway colour from `WATERWAY_COLORS` (normalised match) |
+| `getWaterwayNavStatus(name)` | ~4802 | Returns colour for a waterway: per-palette (no profile) or navigability (with profile) |
+| `buildWaterwayOverlay()` | ~4853 | Builds/rebuilds the waterway GeoJSON layer |
+| `openRoutePlanner()` | ~5753 | Opens the route planner sidebar |
+| `reverseRoute()` | ~5795 | Reverses all route stops (A→B→C becomes C→B→A) |
+| `exportRouteAsGPX()` | ~5816 | Downloads planned route as .gpx file |
+| `renderDayByDay()` | ~5872 | Builds day-by-day itinerary from route legs |
+| `fetchLocksInView()` | ~6124 | Overpass query for locks in current viewport |
+| `calculateRoute()` | ~6371 | BFS pathfinding + renders results |
+| `highlightRouteOnMap()` | ~6608 | Highlights planned route on map (coral-red + white halo) |
+| `_buildExploreSnippet()` | ~6965 | Route planner attractions snippet (top 5 nearest) |
+| `renderRoutePOIsSection()` | ~7049 | Renders per-stop POI panel in route planner |
+| `_fetchPOIsNearby()` | ~7122 | 15 km Overpass query for all Explore Nearby categories |
+| `_fetchProvisionsNearby()` | ~7165 | Overpass query for shops & services |
+| `_renderPOIList()` | ~7304 | Explore Nearby category chips + item rows (incl. 🔄 Try Again) |
+| `selectForReposition()` | ~7464 | Selects a marker for click-to-place |
+| `activateEditMode()` | ~7553 | Enters Edit Locations mode |
+| `deactivateEditMode()` | ~7579 | Exits Edit Locations mode |
+| `saveLocationOverride()` | ~7607 | Persists a position correction to localStorage |
+| `exportLocationOverrides()` | ~7653 | Downloads corrections as JSON |
+| `importLocationOverrides()` | ~7747 | Restores corrections from JSON |
+| `buildGooglePlacesMarkers()` | ~7869 | Renders 📍 pins for imported Google Maps places |
+| `_parseKMLPlaces()` | ~7894 | DOMParser KML → places array |
+| `_parseGoogleTakeoutPlaces()` | ~7927 | Parses Google Takeout GeoJSON export |
+| `importGooglePlaces()` | ~7948 | Import KML/JSON/GeoJSON (append or replace) |
+| `clearGooglePlaces()` | ~7986 | Clears all imported places (with confirm) |
 
 ---
 
@@ -374,7 +413,7 @@ Leaflet map initialised at ~line 3097. Tile layers and layer switcher also there
 Run `python3 -m http.server 8765` from the project folder, then open `http://localhost:8765/french_canals_map.html`. Or double-click `Open Map.command` (requires `chmod +x "Open Map.command"` once).
 
 ### Force browsers to re-fetch waterways.geojson
-Change `WATERWAYS_CACHE_VER` constant (currently `'waterways-v7'`) to the next version.
+Change `WATERWAYS_CACHE_VER` constant (currently `'french-canals-waterways-v7'`) to the next version.
 
 ### Deploy
 ```bash
