@@ -2,6 +2,36 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
+---
+
+## Task 1 findings (2026-04-23 spike — GDAL 3.12.3 via Homebrew)
+
+Concrete facts established from probing cells before starting extraction:
+
+1. **GDAL driver:** S-57, lowercase layer names (`bridge`, `berths`, `lokbsn`, `dismar`, `PONTON`) — NOT the uppercase `BRIDGE` the plan assumed.
+2. **Key bridge fields exist:** `OBJNAM` (name), `VERCLR` (air clearance, metres), `HORCLR` (horizontal clearance, metres), `catbrg` (category list), `PICREP` (bridge photo TIF ref).
+3. **VERCLR=9999.0 is a sentinel** for "aggregate bridge outline, see child `passe` features". Filter these out.
+4. **Multiple features per named bridge:** Big bridges emit one parent polygon + N span-specific features ("Passe n°1", "Passe n°2"). Extractor should aggregate by OBJNAM and keep the MINIMUM VERCLR per bridge name (most conservative clearance a vessel would encounter).
+5. **Data quality is edition-dependent.** Survey across FR.zip and the VNF Charts bundles:
+   - Moselle (`4V5MOS*`, 2022): full data ✓
+   - Rhine (`1W7RH*`, 2016): VERCLR complete but OBJNAM sparse ✓
+   - Dunkerque-Escaut (`4V5001DE–019DE`, 2015): full data ✓
+   - Rhône-Lyon (`4V5RHO00`, 2018): 82 bridges, 15 with VERCLR
+   - Saône (FR.zip 3 cells, 2018): full data ✓
+   - Leie / Nieuwpoort: partial
+   - **Seine Aval in FR.zip is OLD (2014–15) and lacks VERCLR**. `ENC_ROOT_SEINE_AVAL_ED2.zip` (2021) is **NOT** byte-identical as the plan previously claimed — it's a newer edition with richer attribute data (my earlier dedup claim was wrong). Central Paris cells SEI13–SEI17 carry most of the value (20–66 bridges each with VERCLR).
+   - Seine Amont (`ENC_ROOT_SEINE_AMONT_ED1.zip`, 2021): ~40% VERCLR coverage across 10 cells.
+6. **Dedup correction applied** (see Source Data table below): SEINE_AVAL_ED2 must override FR.zip's Seine cells; all other previously-marked "duplicates" confirmed genuinely byte-identical.
+7. **Warning spam:** GDAL emits harmless warnings about `wtwdis` and illegal attribute `17103` on most cells. Suppress via `gdal.PushErrorHandler('CPLQuietErrorHandler')` in the extractor.
+8. **`catbrg` values observed:** `'1'` (fixed bridge), `'9'` (footbridge/passerelle), and a few others. Useful for filtering out pedestrian-only bridges if we ever want to.
+
+**Revised dedup rules for the extractor:**
+- For Seine Aval cells, prefer `ENC_ROOT_SEINE_AVAL_ED2.zip` over FR.zip's SEI01–17.
+- For Saône cells SAO04–SAO15, must use `ENC_ROOT_SAONE_ED_2.zip` (not in FR.zip at all).
+- All other FR.zip cells are the canonical source and don't need VNF Charts bundles.
+
+---
+
 **Source data:** `ienc/FR.zip` (13 MB, 119 files across ~60 S-57 ENC cells, tracked in git as the pinned input snapshot). Coverage — **commercial-class waterways only**:
 
 | Prefix pattern | Waterway | Cell count |
