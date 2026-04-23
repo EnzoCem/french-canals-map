@@ -120,7 +120,7 @@ Planned and proposed enhancements for the French Canals Interactive Map.
 | Live VNF chômages | Low | Parse published JSON from data.gouv.fr or Overpass `hazard` tags |
 | ~~Share route via URL hash~~ | Done | `#r=fromId:toId` written on calculate; `_initFromHash()` restores on load; 🔗 Copy Link button in results |
 | Printable route card | Medium | `@media print` CSS showing segment table, locks, VNF links — for the helm |
-| Bridge height markers | **High** | Plan ready: `docs/superpowers/plans/2026-04-23-ienc-bridge-heights.md` — extract exact per-bridge air clearances from official VNF IENC S-57 cells (Rhône, Saône, Seine, Moselle). Unlocks vessel-profile-aware bridge colouring on the big rivers. |
+| ~~Bridge height markers~~ | Done | 🌉 Bridges layer renders 990 bridges across 13 waterways (Rhine, Moselle, Seine, Saône, Oise, Garonne tidal, Dunkerque-Escaut, etc.). Per-bridge air clearance from VNF IENC; vessel-profile-aware colouring (green/amber/red). Extraction pipeline: `extract_ienc.py` → `data/bridges.geojson` (226 KB). |
 
 ---
 
@@ -136,6 +136,7 @@ Planned and proposed enhancements for the French Canals Interactive Map.
 | ~~Route-day weather~~ | Done | Open-Meteo per-stop ETA forecast rendered on each day row |
 | ~~VHF channel per lock~~ | Done | `_vhfChip()` renders on live + route-planner locks |
 | ~~Capitainerie tel: links~~ | Done | `_autoLinkPhones()` + `_telLink()` across mooring/lock/tunnel/POI popups |
+| ~~IENC bridge air clearances~~ | Done | 🌉 Bridges layer — see row above. 990 bridges with VERCLR; vessel-profile-aware colouring. |
 | Mobile / touch optimisation | Medium | Larger touch targets, swipe sidebar |
 | Tidal-section warnings | Medium | Data half covered by IENC plan Task 6 (Garonne tidal table transcribed from VNF README). UI half still TBD: show tide-window banner + mascaret warning when route crosses tidal PK zones on Garonne / Seine-Aval. |
 | Voies vertes (towpath cycling) | Medium | OSM `route=bicycle` relations alongside canals — pair bike with the boat |

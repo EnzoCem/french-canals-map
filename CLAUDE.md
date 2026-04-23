@@ -25,6 +25,10 @@ French Canals/
 ├── manifest.json                   ← PWA manifest (installable)
 ├── sw.js                           ← Service worker: app shell precache + tile LRU cache
 ├── icon.svg                        ← PWA icon (vessel on canal)
+├── extract_ienc.py                 ← GDAL-based extractor: VNF IENC S-57 zips → data/bridges.geojson
+├── tests/test_extract_ienc.py      ← Pytest suite for extract_ienc (pure + one GDAL integration test)
+├── data/
+│   └── bridges.geojson             ← 990 bridge air-clearance points (VNF IENC, Licence Ouverte 2.0)
 ├── .github/workflows/
 │   └── update-michelin.yml         ← GitHub Action: runs fill_michelin.py on Feb 15 each year
 └── CLAUDE.md / README.md / FEATURES.md
@@ -166,6 +170,7 @@ map
 ├── fuelGroup        (L.layerGroup — fuel/water stops)
 ├── chomagesGroup    (L.layerGroup — VNF maintenance closures)
 ├── tunnelGroup      (L.layerGroup — canal tunnel markers with convoy schedules)
+├── bridgesGroup     (L.markerClusterGroup — IENC bridges with air-clearance colouring)
 └── googlePlacesGroup (L.layerGroup — user's imported Google Maps saved places)
 ```
 
@@ -249,6 +254,36 @@ Five major tunnels in `const TUNNELS` (~line 4164), rendered by `buildTunnelMark
 | t005 | Saint-Albin / Balesmes | Canal entre Champagne et Bourgogne | 2,306 m | Yes |
 
 Each tunnel popup shows: length, tug requirement, northbound/southbound convoy times, booking info, and VNF link.
+
+---
+
+## IENC Bridges layer (VNF air clearances)
+
+The 🌉 Bridges layer shows 990 bridge air-clearance points extracted from official VNF IENC (Inland ENC, S-57) cells.
+
+### Pipeline
+```
+ienc/FR.zip  +  VNF Charts/*.zip  →  extract_ienc.py  →  data/bridges.geojson
+```
+
+- `extract_ienc.py` runs via `source venv/bin/activate && python3 extract_ienc.py --zip <path> ... --out data/bridges.geojson`
+- Requires system GDAL (`brew install gdal`) plus matching Python binding (`pip install GDAL==$(gdal-config --version)` inside venv)
+- Aggregates per-named-bridge (MIN `VERCLR` across spans = worst-case for a vessel), cross-zip dedup keeps the more conservative record
+- Filters sentinels: `VERCLR=9999` (aggregate parent) and `VERCLR=0` (missing data) both dropped
+- Licence Ouverte 2.0 — attribution line in every popup
+
+### Coverage
+Rhine 281 · Dunkerque–Escaut 185 · Seine 176 · Moselle 100 · Saône 115 · Seine Amont 38 · Oise 32 · Garonne tidal 23 · Canal du Rhône au Rhin 12 · Rhône 11 · Nieuwpoort–Dunkerque 10 · Leie 7. **Gap**: full Rhône Lyon→Med is not in the current bundles.
+
+### Vessel-profile colouring (in popup + marker border)
+- 🟢 ok: `verclr ≥ air + 0.5 m`
+- 🟡 tight: `verclr ≥ air` but `< air + 0.5`
+- 🔴 blocked: `verclr < air`
+- ⚪ neutral: no profile set
+- Rebuild hooks: `saveProfile()` and `applyVesselFilter()` call `_refreshBridgesOnProfileChange()`
+
+### Caveat shown in every popup
+Clearances are at the IENC *reference water level*. Actual clearance drops in high water — the popup includes this note.
 
 ---
 

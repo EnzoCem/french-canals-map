@@ -1119,6 +1119,29 @@
 .rp-lock-lift   { color: #2ecc71; font-size: 11px; white-space: nowrap; }
 .rp-locks-loading { text-align: center; padding: 10px; font-size: 12px; color: #5a7a8a; font-style: italic; }
 
+/* ── IENC bridges (VNF chart-derived air clearances) ─────────────────────── */
+.bridge-marker-icon {
+  width: 26px; height: 26px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; border: 2px solid #7a8a9a;
+  background: #1a2a3a;
+  box-shadow: 0 0 4px rgba(0,0,0,0.5);
+  cursor: pointer;
+}
+.bridge-marker-icon.ok     { border-color: #52d68a; background: #0f2a1f; }
+.bridge-marker-icon.tight  { border-color: #f0ad4e; background: #2e2414; }
+.bridge-marker-icon.blocked{ border-color: #e87a7a; background: #2a1515; }
+.bridge-marker-icon .v     { font-size: 9px; font-weight: 700; color: #c0d0e0; line-height: 1; }
+.bridge-popup .bp-title  { font-weight: 700; color: #7ad4ef; font-size: 14px; margin-bottom: 4px; }
+.bridge-popup .bp-ww     { font-size: 11px; color: #8ab4c2; margin-bottom: 6px; }
+.bridge-popup .bp-clr    { font-size: 18px; font-weight: 700; color: #e0c97f; margin: 6px 0; }
+.bridge-popup .bp-clr.ok { color: #52d68a; }
+.bridge-popup .bp-clr.tight { color: #f0ad4e; }
+.bridge-popup .bp-clr.blocked { color: #e87a7a; }
+.bridge-popup .bp-hor    { font-size: 11px; color: #9ab; margin-bottom: 4px; }
+.bridge-popup .bp-note   { font-size: 10px; color: #7a8a9a; font-style: italic; margin-top: 6px; }
+.bridge-popup .bp-src    { font-size: 10px; color: #5a7a8a; margin-top: 4px; }
+
 /* ── Google Maps imported places ─────────────────────────────────────────── */
 .gplace-marker { font-size: 22px; line-height: 1; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.7)); cursor: pointer; }
 .gplace-popup .gplace-title { font-weight: 700; color: #f0ad4e; font-size: 14px; margin-bottom: 4px; }
@@ -1250,6 +1273,7 @@
     <button class="toggle-btn" id="toggle-vessel" onclick="openProfileModal()" title="Your vessel profile &amp; cruise settings">⛵ Profile</button>
     <button class="toggle-btn" id="toggle-chomages" onclick="toggleLayer('chomages')" title="Show VNF maintenance closures">🚧 Chômages</button>
     <button class="toggle-btn" id="toggle-tunnels" onclick="toggleLayer('tunnels')" title="Show canal tunnels with convoy schedules">🚇 Tunnels</button>
+    <button class="toggle-btn" id="toggle-bridges" onclick="toggleLayer('bridges')" title="Show bridge air clearances (VNF IENC data)">🌉 Bridges</button>
     <button class="toggle-btn" id="toggle-googleplaces" onclick="toggleLayer('googleplaces')" title="Show places imported from Google Maps">📍 My Places</button>
   </div>
   <div class="control-group">
@@ -3347,6 +3371,15 @@ let michelinGroup  = L.layerGroup();
 let fuelGroup           = L.layerGroup(); // Feature 5: fuel/water stations
 let liveLocksGroup      = L.layerGroup(); // Live lock positions from Overpass (zoom ≥ 12)
 let tunnelGroup         = L.layerGroup(); // Canal tunnels with convoy schedules
+let bridgesGroup        = L.markerClusterGroup({
+  showCoverageOnHover: false, maxClusterRadius: 50,
+  iconCreateFunction: function(c) {
+    return L.divIcon({
+      html: '<div class="bridge-marker-icon"><span>🌉</span></div>',
+      className: '', iconSize: [26, 26], iconAnchor: [13, 13]
+    });
+  }
+}); // IENC-derived bridge air clearances
 let googlePlacesGroup   = L.layerGroup(); // Imported Google Maps places
 
 const clusterGroup = L.markerClusterGroup({
@@ -3868,7 +3901,7 @@ function saveNote(wid) {
 // ============================================================
 //  LAYER TOGGLES
 // ============================================================
-const layerState = { towns: true, locks: true, notes: true, haltes: true, ports: true, waterways: true, michelin: false, fuel: false, chomages: false, tunnels: false, googleplaces: false };
+const layerState = { towns: true, locks: true, notes: true, haltes: true, ports: true, waterways: true, michelin: false, fuel: false, chomages: false, tunnels: false, bridges: false, googleplaces: false };
 
 function toggleLayer(type) {
   layerState[type] = !layerState[type];
@@ -3916,6 +3949,13 @@ function toggleLayer(type) {
       map.addLayer(tunnelGroup);
     } else {
       map.removeLayer(tunnelGroup);
+    }
+  } else if (type === 'bridges') {
+    if (layerState.bridges) {
+      buildBridgeMarkers();      // async-safe: fetches + caches first time
+      map.addLayer(bridgesGroup);
+    } else {
+      map.removeLayer(bridgesGroup);
     }
   } else if (type === 'googleplaces') {
     if (layerState.googleplaces) {
@@ -4000,6 +4040,8 @@ function saveProfile() {
   // Rebuild waterway overlay with new nav-status colours
   if (typeof buildWaterwayOverlay === 'function' && WATERWAY_GEOJSON) buildWaterwayOverlay();
   else _updateWaterwayNavLegend();
+  // Rebuild bridge markers so the green/amber/red colouring updates
+  if (typeof _refreshBridgesOnProfileChange === 'function') _refreshBridgesOnProfileChange();
   var t = document.getElementById('prof-toast');
   if (t) {
     t.textContent = '✓ Profile saved!';
@@ -4070,6 +4112,8 @@ function applyVesselFilter() {
   _vesselProfile.air     = vesselAirDraught || null;
   if (typeof buildWaterwayOverlay === 'function' && WATERWAY_GEOJSON) buildWaterwayOverlay();
   _updateWaterwayNavLegend();
+  if (typeof _refreshBridgesOnProfileChange === 'function') _refreshBridgesOnProfileChange();
+
 
   var clearBtn = document.getElementById('vf-clear-btn');
   if (clearBtn) clearBtn.style.color = (vesselDraft || vesselAirDraught) ? '#e87a7a' : '#555';
@@ -8080,6 +8124,84 @@ function _downloadJSON(obj, filename) {
   const a    = document.createElement('a');
   a.href = url; a.download = filename; a.click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+// ============================================================
+//  IENC BRIDGES (VNF air clearances) — data/bridges.geojson
+// ============================================================
+var _BRIDGES_DATA = null;       // cached FeatureCollection
+var _bridgesLoading = false;    // in-flight fetch guard
+
+/**
+ * Classify a bridge vs. vessel profile:
+ *   'ok'     — plenty of clearance (≥ vessel air + 0.5 m)
+ *   'tight'  — marginal (≥ vessel air, within 0.5 m)
+ *   'blocked'— will not pass (< vessel air)
+ *   'none'   — no vessel profile set → neutral grey
+ */
+function _bridgeStatus(verclr) {
+  var a = (_vesselProfile && _vesselProfile.air) ? Number(_vesselProfile.air) : null;
+  if (a == null || !isFinite(a) || a <= 0 || verclr == null) return 'none';
+  if (verclr < a) return 'blocked';
+  if (verclr < a + 0.5) return 'tight';
+  return 'ok';
+}
+
+function _renderBridgeMarkers() {
+  if (!_BRIDGES_DATA) return;
+  bridgesGroup.clearLayers();
+  _BRIDGES_DATA.features.forEach(function(f) {
+    var p = f.properties;
+    var coords = f.geometry.coordinates; // [lon, lat]
+    var status = _bridgeStatus(p.verclr_m);
+    var cls = 'bridge-marker-icon' + (status === 'none' ? '' : ' ' + status);
+    var vTxt = p.verclr_m != null ? p.verclr_m.toFixed(1) + 'm' : '?';
+    var icon = L.divIcon({
+      html: '<div class="' + cls + '" title="' + (p.name || 'Bridge').replace(/"/g, '&quot;') +
+            ' · ' + vTxt + '"><span class="v">' + vTxt + '</span></div>',
+      className: '', iconSize: [26, 26], iconAnchor: [13, 13], popupAnchor: [0, -14]
+    });
+    var marker = L.marker([coords[1], coords[0]], { icon: icon });
+    var popupCls = 'bp-clr' + (status === 'none' ? '' : ' ' + status);
+    var html =
+      '<div class="bridge-popup">' +
+        '<div class="bp-title">🌉 ' + (p.name ? p.name.replace(/</g, '&lt;') : 'Unnamed bridge') + '</div>' +
+        '<div class="bp-ww">' + p.waterway + (p.spans > 1 ? ' · ' + p.spans + ' spans' : '') + '</div>' +
+        (p.verclr_m != null ? '<div class="' + popupCls + '">↕ ' + p.verclr_m.toFixed(2) + ' m air clearance</div>' : '') +
+        (p.horclr_m != null ? '<div class="bp-hor">↔ ' + p.horclr_m.toFixed(1) + ' m horizontal</div>' : '') +
+        '<div class="bp-note">Clearances at IENC reference water level. Actual clearance drops in high water.</div>' +
+        '<div class="bp-src">' + (p.source || 'VNF IENC') + '</div>' +
+      '</div>';
+    marker.bindPopup(html, { maxWidth: 260, className: 'bridge-popup-wrap' });
+    marker.bindTooltip((p.name || 'Bridge') + ' · ' + vTxt, { sticky: true });
+    bridgesGroup.addLayer(marker);
+  });
+}
+
+function buildBridgeMarkers() {
+  if (_BRIDGES_DATA) { _renderBridgeMarkers(); return; }
+  if (_bridgesLoading) return; // in-flight — wait for it to resolve
+  _bridgesLoading = true;
+  fetch('data/bridges.geojson')
+    .then(function(r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    })
+    .then(function(gj) {
+      _BRIDGES_DATA = gj;
+      _bridgesLoading = false;
+      _renderBridgeMarkers();
+    })
+    .catch(function(err) {
+      _bridgesLoading = false;
+      console.warn('Failed to load bridges.geojson:', err);
+    });
+}
+
+/* Rebuild bridge colouring when vessel profile changes. Hook into the
+ * existing profile-save flow if bridgesGroup is currently visible. */
+function _refreshBridgesOnProfileChange() {
+  if (layerState.bridges && _BRIDGES_DATA) _renderBridgeMarkers();
 }
 
 // ============================================================
