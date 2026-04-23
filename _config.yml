@@ -1,0 +1,65 @@
+# GitHub Pages / Jekyll config
+#
+# Purpose: trim the public deploy artefact so Pages only serves what the
+# web app actually needs. Source-only files (IENC zips, extraction
+# scripts, tests, docs, reconciliation CSVs) remain tracked in git but
+# are NOT copied into the published site.
+#
+# This makes deploys faster, reduces bandwidth, and shrinks the surface
+# area the service-worker's stale-while-revalidate cache might touch.
+# It also means the next time we push a big data refresh (e.g. a new
+# FR.zip edition) we are much less likely to trip the "RPC failed"
+# transient that hit us on commit 18a6362.
+
+title: French Canals Map
+description: Interactive map for cruising the French inland waterways.
+
+# --- What to KEEP (serve on GitHub Pages) ---------------------------
+# (Everything not matched by `exclude:` below is included.)
+#   french_canals_map.html       the app
+#   index.html                   redirect
+#   manifest.json                PWA manifest
+#   sw.js                        service worker
+#   icon.svg                     PWA icon
+#   waterways.geojson            canal/river geometry used by the app
+#   data/bridges.geojson         IENC bridge air clearances layer
+
+# --- What to EXCLUDE from the deployed site -------------------------
+exclude:
+  # Source-only IENC inputs (never consumed by the browser)
+  - ienc/
+  - "VNF Charts/"
+
+  # Reconciliation CSVs — manual-review artefacts only
+  - data/bridges_locks_reconciliation.csv
+  - data/bridges_moorings_reconciliation.csv
+
+  # Cherry-pick sources — the browser doesn't fetch these
+  - data/ienc_locks.geojson
+  - data/ienc_moorings.geojson
+
+  # Python tooling + scripts (run locally only)
+  - extract_ienc.py
+  - fill_waterways.py
+  - fill_michelin.py
+  - patch_lyon_waterways.py
+  - tests/
+  - venv/
+  - __pycache__/
+  - "*.pyc"
+
+  # Docs / plans / local helpers
+  - docs/
+  - CLAUDE.md
+  - FEATURES.md
+  - README.md
+  - "Open Map.command"
+
+  # Editor / tooling droppings (already in .gitignore, belt-and-braces)
+  - .claude/
+  - .idea/
+  - .vscode/
+  - .pytest_cache/
+
+# Keep dotfiles excluded from default Jekyll output too
+keep_files: []
