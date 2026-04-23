@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Source data:** A 13 MB zip (`FR.zip` at `/Users/esen/Downloads/FR.zip` as of 2026-04-23, final destination TBD) containing 119 files across ~60 S-57 ENC cells. Coverage — **commercial-class waterways only**:
+**Source data:** `ienc/FR.zip` (13 MB, 119 files across ~60 S-57 ENC cells, tracked in git as the pinned input snapshot). Coverage — **commercial-class waterways only**:
 
 | Prefix pattern | Waterway | Cell count |
 |----------------|----------|-----------|
@@ -16,7 +16,25 @@
 | `7V7LEIE4`     | Leie (FR/BE border) | 1 |
 | `7V7PLDU4`     | Nieuwpoort – Dunkerque canal | 1 |
 
-**NOT covered** (don't raise expectations): Canal du Midi, Canal de Bourgogne, Nivernais, Briare, Centre, Champagne, Marne-Rhin, Garonne — i.e. the recreational canal network. IENC is produced only for the large-gauge commercial rivers.
+**NOT covered** (don't raise expectations): Canal du Midi, Canal de Bourgogne, Nivernais, Briare, Centre, Champagne, Marne-Rhin — i.e. the recreational canal network. IENC is produced only for the large-gauge commercial rivers.
+
+### Additional IENC bundles available locally (NOT in git)
+
+The user has a fuller VNF collection in `VNF Charts/` (gitignored — 150 MB, includes one 115 MB file that exceeds GitHub's per-file limit). If Task 2 succeeds on `FR.zip` and we want to expand coverage, these can be extracted into `ienc/` one at a time, run through `extract_ienc.py`, then the resulting GeoJSON committed while the source zip stays local:
+
+| Zip | Extra coverage |
+|-----|----------------|
+| `ENC_ROOT_GARONNE_MAJ1.zip` + `Garonne_edition3.zip` | Garonne (adds to the one currently blocked by lack of IENC) |
+| `ENC_ROOT_OISE.zip` + `ENC_ROOT_OISE_MAJ1.zip` | Oise |
+| `ENC_ROOT_Rhin_Ed3.zip` | Rhine (Strasbourg north) |
+| `ENC_ROOT_DK_ESCAUT_Edtion2.zip` | Dunkerque-Escaut canal |
+| `ENC_ROOT_Niffer_Mulhouse_Ed2.zip` | Canal de Niffer à Mulhouse |
+| `ENC_ROOT_MOSELLE_ED2_24.zip` (115 MB) | Newer Moselle edition (supersedes FR.zip's Moselle cells) |
+| `ENC_ROOT_RHONE_LYON_EDITION_1.zip` | Newer Rhône-Lyon edition |
+| `ENC_ROOT_SAONE_ED_2.zip` | Newer Saône edition |
+| `ENC_ROOT_SEINE_AMONT_ED1.zip` + `ENC_ROOT_SEINE_AVAL_ED2.zip` | Newer Seine editions |
+
+Don't commit these. If extraction needs updating later, point `extract_ienc.py` at the specific zip in `VNF Charts/` or `ienc/` — both paths supported.
 
 ---
 
@@ -51,7 +69,7 @@
 **Files:** none (exploratory)
 
 - [ ] **Step 1:** Install GDAL Python bindings: `pip install --user GDAL` (or `brew install gdal && pip install GDAL==$(gdal-config --version)`).
-- [ ] **Step 2:** Unzip `FR.zip` to a scratch dir. Pick one cell, e.g. `4V7SEI10/4V7SEI10.000` (Seine mid-section).
+- [ ] **Step 2:** Unzip `ienc/FR.zip` to a scratch dir (e.g. `ienc/_unpacked/` — already gitignored). Pick one cell, e.g. `4V7SEI10/4V7SEI10.000` (Seine mid-section).
 - [ ] **Step 3:** Run `ogrinfo -ro 4V7SEI10.000` and confirm it enumerates S-57 layers. Expected layer names include: `DEPARE`, `DEPCNT`, `SOUNDG`, `BRIDGE`, `LOKBSN`, `PILPNT`, `BERTHS`, `ACHARE`, `RESARE`, `DISMAR`, `NAVLNE`.
 - [ ] **Step 4:** `ogrinfo -ro -al -where "OBJL=42" 4V7SEI10.000` (OBJL 42 = bridge) — confirm there are BRIDGE features and that `VERCLR` (air clearance, metres) is populated.
 - [ ] **Step 5:** Document the exact field names found (they sometimes vary: `VERCLR`, `VERCCL`, `verclr`) in a comment at the top of the plan before starting Task 2.
@@ -71,7 +89,7 @@
 - [ ] **Step 3:** Write `dedupe_bridges(bridges) -> list[dict]`. Overlapping cells will produce duplicate bridge features at near-identical coordinates. Dedupe by rounding lat/lon to 4 dp + name match.
 - [ ] **Step 4:** Write `emit_geojson(features, path)`. Simple GeoJSON writer; use `separators=(',', ':')` like the other scripts.
 - [ ] **Step 5:** Write unit tests: deterministic cell path + expected bridge count for one known cell (e.g. `4V7SEI10` which crosses central Paris and has many bridges).
-- [ ] **Step 6:** Run end-to-end: `python3 extract_ienc.py --zip /Users/esen/Downloads/FR.zip --out data/bridges.geojson --layer bridges`. Expected output: ~200–400 bridge features across Rhône/Saône/Seine/Moselle.
+- [ ] **Step 6:** Run end-to-end: `python3 extract_ienc.py --zip ienc/FR.zip --out data/bridges.geojson --layer bridges`. Expected output: ~200–400 bridge features across Rhône/Saône/Seine/Moselle.
 - [ ] **Step 7:** Spot-check three known bridges against published VNF clearance tables (e.g. Pont d'Austerlitz on the Seine, Pont Bonaparte on the Rhône). Clearances should match within ±0.05 m.
 
 **Stop condition:** If dedup reduces total count by >50%, the rounding threshold is too aggressive — re-check.
