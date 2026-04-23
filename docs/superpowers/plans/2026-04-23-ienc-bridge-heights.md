@@ -6,35 +6,48 @@
 
 | Prefix pattern | Waterway | Cell count |
 |----------------|----------|-----------|
-| `1W7RH*`       | Rhône (Lyon → Mediterranean) | 20 |
-| `1W7RRS*`      | Rhône-Saône confluence | 1 |
-| `1W7SR*`       | Saône | 2 |
-| `4V5MOS*`      | Moselle (French) | 11 |
-| `4V5001DE – 4V5019DE` | Moselle (shared French/German) | 19 |
-| `4V5RHO* / 4V5SAO*` | Extra Rhône / Saône overlap | 3 |
-| `4V7SEI*`      | Seine | 17 |
+| `1W7RH160 – RH300` | **Rhine** (Alsace / Strasbourg) — cross-checked byte-identical vs. `ENC_ROOT_Rhin_Ed3.zip` | 15 |
+| `1W7RH310 – RH350` | Rhine (upper Alsace, extending RH300+ range) | 5 |
+| `1W7RRS00` | Canal du Rhône au Rhin (Niffer–Mulhouse) | 1 |
+| `1W7SR*`       | Saône (partial — only SR080, SR090) | 2 |
+| `4V5MOS*`      | Moselle (French section) | 11 |
+| `4V5001DE – 4V5019DE` | Dunkerque–Escaut canal network (the "DE" = DunkerquE, not "Deutschland") | 19 |
+| `4V5RHO00` | Rhône at Lyon only (a single cell — NOT the full Lyon→Med Rhône) | 1 |
+| `4V5SAO01 – SAO03` | Saône (partial — only lower 3 cells) | 3 |
+| `4V7SEI01 – SEI17` | Seine Aval (downstream: Paris → Rouen → Le Havre) | 17 |
 | `7V7LEIE4`     | Leie (FR/BE border) | 1 |
-| `7V7PLDU4`     | Nieuwpoort – Dunkerque canal | 1 |
+| `7V7PLDU4`     | Nieuwpoort–Dunkerque canal | 1 |
 
-**NOT covered** (don't raise expectations): Canal du Midi, Canal de Bourgogne, Nivernais, Briare, Centre, Champagne, Marne-Rhin — i.e. the recreational canal network. IENC is produced only for the large-gauge commercial rivers.
+> **⚠ Known gap:** The full navigable **Rhône from Lyon to the Mediterranean** is NOT in FR.zip (only one cell at Lyon). The user should grab any `ENC_ROOT_RHONE_*` bundle (not "RHONE_LYON", which is the single Lyon cell) from the VNF distribution service at <https://www.vnf.fr/vnf/app/uploads/ecdis/ecdis.html> to close this. Once downloaded to `VNF Charts/`, add it to the expansion list below.
+
+**NOT covered by IENC at all** (don't raise expectations): Canal du Midi, Canal de Bourgogne, Nivernais, Briare, Centre, Champagne, Marne-Rhin — i.e. the recreational canal network. IENC is produced only for the large-gauge commercial rivers.
 
 ### Additional IENC bundles available locally (NOT in git)
 
-The user has a fuller VNF collection in `VNF Charts/` (gitignored — 150 MB, includes one 115 MB file that exceeds GitHub's per-file limit). If Task 2 succeeds on `FR.zip` and we want to expand coverage, these can be extracted into `ienc/` one at a time, run through `extract_ienc.py`, then the resulting GeoJSON committed while the source zip stays local:
+The user has a larger VNF collection in `VNF Charts/` (gitignored — 150 MB total; includes a 115 MB Moselle TIF-heavy zip that exceeds GitHub's per-file limit). Dedup analysis against `FR.zip` — use this table to plan extraction runs:
 
-| Zip | Extra coverage |
-|-----|----------------|
-| `ENC_ROOT_GARONNE_MAJ1.zip` + `Garonne_edition3.zip` | Garonne (adds to the one currently blocked by lack of IENC) |
-| `ENC_ROOT_OISE.zip` + `ENC_ROOT_OISE_MAJ1.zip` | Oise |
-| `ENC_ROOT_Rhin_Ed3.zip` | Rhine (Strasbourg north) |
-| `ENC_ROOT_DK_ESCAUT_Edtion2.zip` | Dunkerque-Escaut canal |
-| `ENC_ROOT_Niffer_Mulhouse_Ed2.zip` | Canal de Niffer à Mulhouse |
-| `ENC_ROOT_MOSELLE_ED2_24.zip` (115 MB) | Newer Moselle edition (supersedes FR.zip's Moselle cells) |
-| `ENC_ROOT_RHONE_LYON_EDITION_1.zip` | Newer Rhône-Lyon edition |
-| `ENC_ROOT_SAONE_ED_2.zip` | Newer Saône edition |
-| `ENC_ROOT_SEINE_AMONT_ED1.zip` + `ENC_ROOT_SEINE_AVAL_ED2.zip` | Newer Seine editions |
+| Zip | Net-new vs. FR.zip? | Pleasure-cruising value |
+|-----|---------------------|-------------------------|
+| **`Garonne_edition3.zip`** (5 cells `4V5GA030–070`) | ✅ YES — tidal Garonne Bordeaux → Castets-en-Dorthe | **HIGH** — the maritime approach to Canal de Garonne |
+| `ENC_ROOT_GARONNE_MAJ1.zip` (1 cell `4V6GA070`) | Update overlay for Garonne_ed3 | Apply as incremental update |
+| **`ENC_ROOT_SEINE_AMONT_ED1.zip`** (10 cells `SEI18–27`) | ✅ YES — Seine upstream of Paris → Montereau/Nogent/Marcilly | **HIGH** — major pleasure route, feeds Bourgogne/Nivernais |
+| **`ENC_ROOT_SAONE_ED_2.zip`** (15 cells `SAO01–15`) | ✅ YES — full Saône (FR.zip has only SAO01–03) | **HIGH** — Corre → Lyon spine |
+| **`ENC_ROOT_OISE.zip`** (+ `_MAJ1.zip` update) (7 cells `OIS01–07`) | ✅ YES — Oise: Conflans → Compiègne | **HIGH** — links Seine to northern canals |
+| `ENC_ROOT_MOSELLE_ED2_24.zip` (115 MB) | Cells DUPLICATE FR.zip; adds 159 × ~2 MB TIF raster overlays | Cells: **skip**. TIFs: too bulky (290 MB) for the web app. |
+| `ENC_ROOT_DK_ESCAUT_Edtion2.zip` | Byte-identical duplicate of FR.zip's `4V5001DE–019DE` | **SKIP** |
+| `ENC_ROOT_Rhin_Ed3.zip` | Byte-identical duplicate of FR.zip's `1W7RH160–300` (confirmed by size match) | **SKIP** |
+| `ENC_ROOT_Niffer_Mulhouse_Ed2.zip` | Byte-identical duplicate of FR.zip's `1W7RRS00` | **SKIP** |
+| `ENC_ROOT_RHONE_LYON_EDITION_1.zip` | Byte-identical duplicate of FR.zip's `4V5RHO00` | **SKIP** |
+| `ENC_ROOT_SEINE_AVAL_ED2.zip` | Same Seine Aval cells as FR.zip (`SEI01–17`) | **SKIP** |
 
-Don't commit these. If extraction needs updating later, point `extract_ienc.py` at the specific zip in `VNF Charts/` or `ienc/` — both paths supported.
+**Extraction order for best ROI:**
+1. `ienc/FR.zip` — Task 2 baseline
+2. `Garonne_edition3.zip` + `ENC_ROOT_GARONNE_MAJ1.zip`
+3. `ENC_ROOT_SEINE_AMONT_ED1.zip`
+4. `ENC_ROOT_SAONE_ED_2.zip`
+5. `ENC_ROOT_OISE.zip` + `ENC_ROOT_OISE_MAJ1.zip`
+
+Don't commit any of these source zips (except `FR.zip`). If extraction needs updating later, point `extract_ienc.py` at the specific zip in `VNF Charts/` — the script should accept both `ienc/*.zip` and `VNF Charts/*.zip` paths.
 
 ---
 
@@ -85,7 +98,20 @@ Don't commit these. If extraction needs updating later, point `extract_ienc.py` 
 - Create: `tests/test_extract_ienc.py`
 
 - [ ] **Step 1:** Write `iter_cells(zip_path)` → yields `(cell_name, local_path_to_000_file)`. Unzip to a temp dir.
-- [ ] **Step 2:** Write `extract_bridges(cell_path) -> list[dict]`. Each dict: `{ name, lat, lon, verclr_m, horclr_m, cell, waterway }`. Derive `waterway` from the cell prefix (`4V7SEI*` → "Seine", `1W7RH*` → "Rhône", etc.).
+- [ ] **Step 2:** Write `extract_bridges(cell_path) -> list[dict]`. Each dict: `{ name, lat, lon, verclr_m, horclr_m, cell, waterway }`. Derive `waterway` from the cell prefix using this map (corrected after cross-checking byte-identical cells across the VNF bundle filenames):
+  - `4V7SEI01–17` → "Seine" (Paris → Le Havre, "Seine Aval")
+  - `4V7SEI18–27` → "Seine" (Paris upstream, "Seine Amont") — only available if SEINE_AMONT_ED1 extracted
+  - `4V7OIS*` → "Oise"
+  - `4V5MOS*` → "Moselle"
+  - `4V5001DE–019DE` → "Canal Dunkerque-Escaut"
+  - `4V5SAO*` → "Saône"
+  - `4V5RHO*` → "Rhône" (only `4V5RHO00` at Lyon in current data)
+  - `4V5GA*` / `4V6GA*` → "Garonne" (tidal) — only if Garonne zips extracted
+  - `1W7RH*` → **"Rhine"** (Alsace) — NOT Rhône; verified via byte-identical cells in `ENC_ROOT_Rhin_Ed3.zip`
+  - `1W7SR*` → "Saône" (partial — upstream cells)
+  - `1W7RRS*` → "Canal du Rhône au Rhin"
+  - `7V7LEIE*` → "Leie"
+  - `7V7PLDU*` → "Canal Nieuwpoort-Dunkerque"
 - [ ] **Step 3:** Write `dedupe_bridges(bridges) -> list[dict]`. Overlapping cells will produce duplicate bridge features at near-identical coordinates. Dedupe by rounding lat/lon to 4 dp + name match.
 - [ ] **Step 4:** Write `emit_geojson(features, path)`. Simple GeoJSON writer; use `separators=(',', ':')` like the other scripts.
 - [ ] **Step 5:** Write unit tests: deterministic cell path + expected bridge count for one known cell (e.g. `4V7SEI10` which crosses central Paris and has many bridges).
@@ -145,6 +171,40 @@ Don't commit these. If extraction needs updating later, point `extract_ienc.py` 
 
 ---
 
+## Task 6 (companion): Transcribe the Garonne tidal README into structured data
+
+The `ENC_ROOT_GARONNE_MAJ1.zip` / `Garonne_edition3.zip` READMEs contain **exactly the reference data the "Tidal-section warnings" backlog item needs** — tidal propagation tables, marnage per sector, and the mascaret warning below km 30. This task is a natural companion to Tasks 2–5 because we already have the source file in hand.
+
+**Files:**
+- Modify: `french_canals_map.html` (add a new `TIDAL_DATA` constant near `WATERWAY_CONSTRAINTS`)
+- This task is the "data" half of the Tidal-section warnings feature; the UI half remains separate backlog work.
+
+- [ ] **Step 1:** Transcribe the Garonne tidal propagation table into a JS constant of shape:
+  ```js
+  const TIDAL_DATA = {
+    'Garonne': {
+      reference_port: 'Bordeaux',
+      stations: [
+        { name: 'Portets',  km: /* from PK */ null, coeff_45: { high: '+0h30', low: '+2h00' }, coeff_70: { high: '+0h40', low: '+1h20' }, coeff_100: { high: '+0h50', low: '+1h30' } },
+        { name: 'Cadillac', km: null, coeff_45: { high: '+0h50', low: '+2h40' }, /* ... */ },
+        { name: 'Langon',   km: null, /* ... */ },
+        { name: 'Castets',  km: null, /* ... */ }
+      ],
+      marnage_min: [ /* Bordeaux 4m, Cadillac 3.5m, Langon 2.5m, Castets 1.5m */ ],
+      warnings: [
+        { type: 'mascaret', desc: 'Significant tidal bore below km 30 on the Garonne downstream of Bordeaux', pk_below: 30 }
+      ],
+      source: 'VNF IENC ENC_ROOT_GARONNE_MAJ1 README'
+    }
+  };
+  ```
+- [ ] **Step 2:** Check whether `ENC_ROOT_SEINE_AVAL_ED2.zip`'s README carries similar data for the Seine estuary (Rouen → Le Havre tidal section). If it does, add a `'Seine Aval'` entry. If not, note that as a gap and move on.
+- [ ] **Step 3:** Do NOT build the UI for tidal warnings in this task — the backlog item "Tidal-section warnings" remains separate and will consume `TIDAL_DATA` when implemented. This step just makes the data available.
+
+**Stop condition:** If transcription takes more than 30 minutes (e.g. Seine-Aval README has 5 tidal stations with different coefficients), limit to Garonne only and park the rest.
+
+---
+
 ## Risk log
 
 | Risk | Mitigation |
@@ -161,5 +221,6 @@ Don't commit these. If extraction needs updating later, point `extract_ienc.py` 
 
 - Rendering S-52 chart symbology (buoys, depth-tinted water, soundings). Massive project, wrong product.
 - Depth contour overlay — pleasure craft on large French rivers never hit depth issues; low value.
-- German IENC (`4V5*DE`) processing beyond bridges — out of scope for a French-canals app; bridges happen to be cheap to include.
-- Live IENC update subscription via VNF distribution service. One-shot manual refresh is enough for now.
+- **Moselle TIF raster overlays** from `ENC_ROOT_MOSELLE_ED2_24.zip` (159 × ~2 MB = 290 MB of scanned aerial/chart rasters). Even with aggressive tiling this bloats the payload and the ENC vector cells already give us everything navigationally useful. If a future "Fancy Moselle chart overlay" feature is requested, revisit as a separate effort — not here.
+- ~~German IENC (`4V5*DE`) processing~~ — **the "DE" suffix means DunkerquE, not Deutschland.** These are the Dunkerque–Escaut canal cells and are in scope.
+- Live IENC update subscription via VNF distribution service (<https://www.vnf.fr/vnf/app/uploads/ecdis/ecdis.html>). Manual refresh on major edition bumps is enough for now.

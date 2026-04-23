@@ -137,7 +137,7 @@ Planned and proposed enhancements for the French Canals Interactive Map.
 | ~~VHF channel per lock~~ | Done | `_vhfChip()` renders on live + route-planner locks |
 | ~~Capitainerie tel: links~~ | Done | `_autoLinkPhones()` + `_telLink()` across mooring/lock/tunnel/POI popups |
 | Mobile / touch optimisation | Medium | Larger touch targets, swipe sidebar |
-| Tidal-section warnings | Medium | SHOM/horaire-maree for Lower Seine below Rouen — show tide window for departure |
+| Tidal-section warnings | Medium | Data half covered by IENC plan Task 6 (Garonne tidal table transcribed from VNF README). UI half still TBD: show tide-window banner + mascaret warning when route crosses tidal PK zones on Garonne / Seine-Aval. |
 | Voies vertes (towpath cycling) | Medium | OSM `route=bicycle` relations alongside canals — pair bike with the boat |
 | Download-area-for-offline button | Medium | Explicit "download this area" that warms the tile cache over the current viewport + zoom range |
 | Fuel price overlay | Low | Crowdsource via export/import pattern (mirrors Google Places) |
