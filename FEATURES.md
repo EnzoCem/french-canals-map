@@ -120,7 +120,7 @@ Planned and proposed enhancements for the French Canals Interactive Map.
 | Live VNF chômages | Low | Parse published JSON from data.gouv.fr or Overpass `hazard` tags |
 | ~~Share route via URL hash~~ | Done | `#r=fromId:toId` written on calculate; `_initFromHash()` restores on load; 🔗 Copy Link button in results |
 | Printable route card | Medium | `@media print` CSS showing segment table, locks, VNF links — for the helm |
-| Bridge height markers | Low | Single lowest bridge is often the real air-draught bottleneck, not the route average |
+| Bridge height markers | **High** | Plan ready: `docs/superpowers/plans/2026-04-23-ienc-bridge-heights.md` — extract exact per-bridge air clearances from official VNF IENC S-57 cells (Rhône, Saône, Seine, Moselle). Unlocks vessel-profile-aware bridge colouring on the big rivers. |
 
 ---
 
