@@ -28,7 +28,11 @@ French Canals/
 ├── extract_ienc.py                 ← GDAL-based extractor: VNF IENC S-57 zips → data/bridges.geojson
 ├── tests/test_extract_ienc.py      ← Pytest suite for extract_ienc (pure + one GDAL integration test)
 ├── data/
-│   └── bridges.geojson             ← 990 bridge air-clearance points (VNF IENC, Licence Ouverte 2.0)
+│   ├── bridges.geojson             ← 990 bridge air-clearance points (VNF IENC, Licence Ouverte 2.0)
+│   ├── ienc_channel_axis.geojson   ← 2,508 dredged-channel centerline LineStrings (🧭 Channel layer)
+│   ├── ienc_obstructions.geojson   ← 157 navigation hazards (⚠ Hazards layer)
+│   ├── ienc_locks.geojson          ← 192 locks with dimensions (cherry-pick source, not rendered)
+│   └── ienc_moorings.geojson       ← 625 quays + pontoons (cherry-pick source, not rendered)
 ├── .github/workflows/
 │   └── update-michelin.yml         ← GitHub Action: runs fill_michelin.py on Feb 15 each year
 └── CLAUDE.md / README.md / FEATURES.md
@@ -176,6 +180,8 @@ map
 ├── chomagesGroup    (L.layerGroup — VNF maintenance closures)
 ├── tunnelGroup      (L.layerGroup — canal tunnel markers with convoy schedules)
 ├── bridgesGroup     (L.markerClusterGroup — IENC bridges with air-clearance colouring)
+├── channelAxisGroup (L.layerGroup — IENC wtwaxs dashed polylines, 2,508 features)
+├── obstructionsGroup(L.markerClusterGroup — IENC OBSTRN navigation hazards)
 └── googlePlacesGroup (L.layerGroup — user's imported Google Maps saved places)
 ```
 
@@ -279,6 +285,19 @@ ienc/FR.zip  +  VNF Charts/*.zip  →  extract_ienc.py  →  data/bridges.geojso
 
 ### Coverage
 Rhine 281 · Dunkerque–Escaut 185 · Seine 176 · Moselle 100 · Saône 115 · Seine Amont 38 · Oise 32 · Garonne tidal 23 · Canal du Rhône au Rhin 12 · Rhône 11 · Nieuwpoort–Dunkerque 10 · Leie 7. **Gap**: full Rhône Lyon→Med is not in the current bundles.
+
+### 🧭 Channel axis layer
+`data/ienc_channel_axis.geojson` — the official dredged navigation centerline (`wtwaxs` layer). On meandering rivers (Moselle hairpins, lower Seine, Bordeaux meander) this differs materially from the OSM river geometry.  Styled as a dashed polyline colour-coded per waterway. Fetched on first toggle (1.2 MB — NOT precached by the SW to keep first-install small; cached thereafter via stale-while-revalidate).
+
+### ⚠ Hazards layer
+`data/ienc_obstructions.geojson` — 157 OBSTRN records (rocks, snags, foul areas, islets, submerged structures). Marker border + popup title colour signals severity:
+- 🔴 **submerged** (WATLEV 3 — always underwater, hidden hazard)
+- 🟡 **awash / partly submerged** (WATLEV 1, 4, 5, 6 — tide-dependent)
+- ⚪ **visible** (WATLEV 2, 7 — above water / floating)
+
+Popup shows CATOBS category name (`foul area` / `snag/stump` / etc.), water-level, optional sounding depth, and the bilingual `INFORM` / `NINFOM` description from the source cell.
+
+Precached by the SW (50 KB) — works offline.
 
 ### Vessel-profile colouring (in popup + marker border)
 - 🟢 ok: `verclr ≥ air + 0.5 m`
@@ -512,6 +531,8 @@ python3 extract_ienc.py \
   --out data/bridges.geojson \
   --out-locks data/ienc_locks.geojson \
   --out-moorings data/ienc_moorings.geojson \
+  --out-channel-axis data/ienc_channel_axis.geojson \
+  --out-obstructions data/ienc_obstructions.geojson \
   --reconcile french_canals_map.html
 ```
 

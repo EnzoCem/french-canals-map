@@ -1,7 +1,7 @@
 # Feature Backlog & To-Do
 
 Planned and proposed enhancements for the French Canals Interactive Map.
-*Last updated: 2026-04-23 (IENC plan fully executed: bridges, locks, moorings, Garonne tidal data + UI, attribution)*
+*Last updated: 2026-04-23 (IENC: bridges, locks, moorings, channel axis, obstructions, Garonne tidal UI, attribution)*
 
 ---
 
@@ -139,11 +139,18 @@ Planned and proposed enhancements for the French Canals Interactive Map.
 | ~~IENC bridge air clearances~~ | Done | 🌉 Bridges layer — see row above. 990 bridges with VERCLR; vessel-profile-aware colouring. |
 | ~~IENC locks reconciliation data~~ | Done | `data/ienc_locks.geojson` (192 locks with length/width/rise) + `bridges_locks_reconciliation.csv` for manual review. Source for cherry-picking lock waypoints missing from the app. |
 | ~~IENC moorings reconciliation data~~ | Done | `data/ienc_moorings.geojson` (625 quays + pontoons) + `bridges_moorings_reconciliation.csv`. Surfaces candidate matches (e.g. Chalon port position verified; Seurre, Toul positions worth reviewing). |
+| ~~IENC channel axis (🧭 Channel)~~ | Done | 2,508 dredged-channel centerline segments from `wtwaxs` layer. Toggleable polyline overlay (dashed, per-waterway colour) — shows the official navigation axis vs. OSM's river bank. Significant on meandering sections (Moselle, lower Seine). |
+| ~~IENC obstructions (⚠ Hazards)~~ | Done | 157 navigation hazards from `OBSTRN` — rocks, snags, foul areas, islets. Colour-coded markers by water-level category (submerged/awash/visible). Popup shows CATOBS type + WATLEV context + bilingual description. |
 | ~~Garonne tidal data constant~~ | Done | `TIDAL_DATA` JS constant in `french_canals_map.html` (~line 4934): Bordeaux → Castets tidal propagation table per coefficient (45/70/100), marnage per sector, mascaret warning. Data half of Tidal-section-warnings (UI still pending). |
 | VNF / OSM / Michelin attribution | Done | Data Backup panel now carries a permanent attribution block (Licence Ouverte 2.0, ODbL, etc.). |
 | Mobile / touch optimisation | Medium | Larger touch targets, swipe sidebar |
 | ~~Tidal-section warnings (UI)~~ | Done | 🌊 Tidal section card in route-planner results when a leg crosses the tidal Garonne. Mascaret warning + marnage-per-sector chips + collapsible propagation table (Bordeaux / Portets / Cadillac / Langon / Castets × coefficients 45/70/100). Compact sidebar badge when user taps any tidal-Garonne waypoint. New route 51 "Garonne (tidal)" with 5 waypoints (Bordeaux → Castets-en-Dorthe) makes the tidal leg planable end-to-end. Extensible to future tidal waterways via `TIDAL_DATA` key + matching route entry. |
 | Lock waypoints from IENC | Low-Med | `data/ienc_locks.geojson` gives 192 locks with chamber dimensions across Rhine/Moselle/Seine/Saône/Oise. Could be cherry-picked into `WAYPOINTS` where the app currently has 0 coverage for those rivers' locks. |
+| IENC notice marks + restricted areas | Medium | `notmrk` (speed limits, no-overtaking, no-anchoring signboards) + `RESARE` (regulated zones). High signal for on-board decision-making. ~1.5 h effort, extraction pattern already established. |
+| IENC depth areas (DEPARE) | Low | Real river-depth polygons. Mostly irrelevant on big rivers for pleasure craft <1.5 m draft, so low priority. |
+| IENC soundings (SOUNDG) | Low | Dense individual depth points. Noisy without expert interpretation. Skip unless someone specifically asks. |
+| IENC anchorage areas (ACHARE) | Low | Legal anchoring zones. Niche — most pleasure cruisers moor rather than anchor. |
+| IENC distance marks (dismar) | Skip | Official PK positions. PKs are already shown in waypoint popups; physical markers on the map would clutter. |
 | Voies vertes (towpath cycling) | Medium | OSM `route=bicycle` relations alongside canals — pair bike with the boat |
 | Download-area-for-offline button | Medium | Explicit "download this area" that warms the tile cache over the current viewport + zoom range |
 | Fuel price overlay | Low | Crowdsource via export/import pattern (mirrors Google Places) |

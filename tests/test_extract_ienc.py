@@ -246,6 +246,83 @@ def test_locks_to_geojson_shape():
     assert "Licence Ouverte" in p["source"]
 
 
+# ── Channel axis tests ────────────────────────────────────────────────
+
+def test_dedupe_channel_axis_exact_duplicates_collapse():
+    seg = {
+        "name": "Axe de navigation", "inform": "Reach of APACH",
+        "waterway": "Moselle",
+        "coords": [[6.267, 49.399], [6.270, 49.402], [6.273, 49.405]],
+        "cell": "4V5MOS01",
+    }
+    duplicate = dict(seg)  # same object identity-wise but new dict
+    result = ei.dedupe_channel_axis([seg, duplicate])
+    assert len(result) == 1
+
+
+def test_dedupe_channel_axis_different_waterways_kept():
+    s1 = {"name": "Axe", "inform": None, "waterway": "Moselle",
+          "coords": [[6.0, 49.0], [6.1, 49.1]], "cell": "X"}
+    s2 = {"name": "Axe", "inform": None, "waterway": "Seine",
+          "coords": [[6.0, 49.0], [6.1, 49.1]], "cell": "Y"}
+    assert len(ei.dedupe_channel_axis([s1, s2])) == 2
+
+
+def test_channel_axis_to_geojson_shape():
+    segs = [{"name": "Axe", "inform": "info", "waterway": "Moselle",
+             "coords": [[6.0, 49.0], [6.1, 49.1]], "cell": "X"}]
+    gj = ei.channel_axis_to_geojson(segs)
+    assert gj["type"] == "FeatureCollection"
+    f = gj["features"][0]
+    assert f["geometry"]["type"] == "LineString"
+    assert f["geometry"]["coordinates"] == [[6.0, 49.0], [6.1, 49.1]]
+    assert "Licence Ouverte" in f["properties"]["source"]
+
+
+# ── Obstruction tests ─────────────────────────────────────────────────
+
+def test_catobs_labels_known_codes():
+    assert ei._CATOBS_LABELS[6] == "foul area"
+    assert ei._CATOBS_LABELS[7] == "foul ground"
+
+
+def test_watlev_labels_known_codes():
+    assert ei._WATLEV_LABELS[1] == "partly submerged at high water"
+    assert ei._WATLEV_LABELS[3] == "always underwater / submerged"
+
+
+def test_dedupe_obstructions_keeps_richer_record():
+    bare = {"name": None, "lat": 45.0, "lon": 4.0, "catobs": 7,
+            "catobs_label": "foul ground", "watlev": None, "watlev_label": None,
+            "valsou_m": None, "inform": None, "cell": "X", "waterway": "Saône"}
+    rich = {"name": "îlot", "lat": 45.0, "lon": 4.0, "catobs": 7,
+            "catobs_label": "foul ground", "watlev": 1, "watlev_label": "partly submerged",
+            "valsou_m": None, "inform": "small island", "cell": "X", "waterway": "Saône"}
+    result = ei.dedupe_obstructions([bare, rich])
+    assert len(result) == 1
+    assert result[0]["name"] == "îlot"
+
+
+def test_dedupe_obstructions_different_catobs_kept():
+    o1 = {"name": None, "lat": 45.0, "lon": 4.0, "catobs": 6,
+          "catobs_label": "foul area", "watlev": None, "watlev_label": None,
+          "valsou_m": None, "inform": None, "cell": "X", "waterway": "Saône"}
+    o2 = dict(o1); o2["catobs"] = 7
+    assert len(ei.dedupe_obstructions([o1, o2])) == 2
+
+
+def test_obstructions_to_geojson_shape():
+    obs = [{"name": "îlot", "lat": 45.0, "lon": 4.0, "catobs": 7,
+            "catobs_label": "foul ground", "watlev": 1, "watlev_label": "partly submerged",
+            "valsou_m": None, "inform": "small island", "cell": "X", "waterway": "Saône"}]
+    gj = ei.obstructions_to_geojson(obs)
+    assert gj["type"] == "FeatureCollection"
+    p = gj["features"][0]["properties"]
+    assert p["catobs_label"] == "foul ground"
+    assert p["watlev_label"] == "partly submerged"
+    assert "Licence Ouverte" in p["source"]
+
+
 # ── Integration test (requires GDAL + real zip) ───────────────────────
 
 def test_integration_fr_zip_produces_bridges():

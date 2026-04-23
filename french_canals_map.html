@@ -1190,6 +1190,33 @@
 .rp-lock-lift   { color: #2ecc71; font-size: 11px; white-space: nowrap; }
 .rp-locks-loading { text-align: center; padding: 10px; font-size: 12px; color: #5a7a8a; font-style: italic; }
 
+/* ── IENC channel axis (official dredged-channel centerline) ─────────────── */
+/* Styled dynamically in JS via pathOptions — these are the base tweaks.   */
+.leaflet-pane .channel-axis-glow { filter: drop-shadow(0 0 2px rgba(255,255,255,0.15)); }
+
+/* ── IENC obstructions (OBSTRN hazard areas, centroid-as-point) ──────────── */
+.obstruction-marker-icon {
+  width: 24px; height: 24px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; border: 2px solid #f0ad4e;
+  background: rgba(40,28,12,0.92);
+  box-shadow: 0 0 3px rgba(240,173,78,0.4);
+  cursor: pointer;
+}
+.obstruction-marker-icon.submerged { border-color: #e87a7a; background: rgba(40,20,20,0.92); }
+.obstruction-marker-icon.awash     { border-color: #f0ad4e; }
+.obstruction-marker-icon.visible   { border-color: #bbbbbb; background: rgba(30,30,30,0.92); }
+.obstruction-popup .op-title { font-weight: 700; color: #f0ad4e; font-size: 14px; margin-bottom: 4px; }
+.obstruction-popup .op-title.submerged { color: #e87a7a; }
+.obstruction-popup .op-cat   { font-size: 11px; color: #9ccadf; margin-bottom: 4px; }
+.obstruction-popup .op-watlev{
+  display: inline-block; font-size: 10px; background: rgba(240,173,78,0.15);
+  color: #ffd28a; border-radius: 10px; padding: 2px 8px; margin-bottom: 6px;
+}
+.obstruction-popup .op-watlev.submerged { background: rgba(231,122,122,0.15); color: #ffc0c0; }
+.obstruction-popup .op-inform{ font-size: 11px; color: #bbb; margin-bottom: 4px; font-style: italic; }
+.obstruction-popup .op-src   { font-size: 10px; color: #5a7a8a; margin-top: 4px; }
+
 /* ── IENC bridges (VNF chart-derived air clearances) ─────────────────────── */
 .bridge-marker-icon {
   width: 26px; height: 26px; border-radius: 50%;
@@ -1345,6 +1372,8 @@
     <button class="toggle-btn" id="toggle-chomages" onclick="toggleLayer('chomages')" title="Show VNF maintenance closures">🚧 Chômages</button>
     <button class="toggle-btn" id="toggle-tunnels" onclick="toggleLayer('tunnels')" title="Show canal tunnels with convoy schedules">🚇 Tunnels</button>
     <button class="toggle-btn" id="toggle-bridges" onclick="toggleLayer('bridges')" title="Show bridge air clearances (VNF IENC data)">🌉 Bridges</button>
+    <button class="toggle-btn" id="toggle-channel-axis" onclick="toggleLayer('channel-axis')" title="Show official dredged-channel centerline (VNF IENC — Rhine / Moselle / Seine / Saône / Oise / Garonne tidal)">🧭 Channel</button>
+    <button class="toggle-btn" id="toggle-obstructions" onclick="toggleLayer('obstructions')" title="Show IENC navigation hazards — rocks, shoals, submerged obstructions">⚠ Hazards</button>
     <button class="toggle-btn" id="toggle-googleplaces" onclick="toggleLayer('googleplaces')" title="Show places imported from Google Maps">📍 My Places</button>
   </div>
   <div class="control-group">
@@ -3466,6 +3495,16 @@ let bridgesGroup        = L.markerClusterGroup({
     });
   }
 }); // IENC-derived bridge air clearances
+let channelAxisGroup    = L.layerGroup();  // IENC wtwaxs polylines
+let obstructionsGroup   = L.markerClusterGroup({
+  showCoverageOnHover: false, maxClusterRadius: 40,
+  iconCreateFunction: function(c) {
+    return L.divIcon({
+      html: '<div class="obstruction-marker-icon"><span>⚠</span></div>',
+      className: '', iconSize: [24, 24], iconAnchor: [12, 12]
+    });
+  }
+}); // IENC-derived navigation hazards
 let googlePlacesGroup   = L.layerGroup(); // Imported Google Maps places
 
 const clusterGroup = L.markerClusterGroup({
@@ -3988,7 +4027,7 @@ function saveNote(wid) {
 // ============================================================
 //  LAYER TOGGLES
 // ============================================================
-const layerState = { towns: true, locks: true, notes: true, haltes: true, ports: true, waterways: true, michelin: false, fuel: false, chomages: false, tunnels: false, bridges: false, googleplaces: false };
+const layerState = { towns: true, locks: true, notes: true, haltes: true, ports: true, waterways: true, michelin: false, fuel: false, chomages: false, tunnels: false, bridges: false, 'channel-axis': false, obstructions: false, googleplaces: false };
 
 function toggleLayer(type) {
   layerState[type] = !layerState[type];
@@ -4043,6 +4082,20 @@ function toggleLayer(type) {
       map.addLayer(bridgesGroup);
     } else {
       map.removeLayer(bridgesGroup);
+    }
+  } else if (type === 'channel-axis') {
+    if (layerState['channel-axis']) {
+      buildChannelAxisLines();
+      map.addLayer(channelAxisGroup);
+    } else {
+      map.removeLayer(channelAxisGroup);
+    }
+  } else if (type === 'obstructions') {
+    if (layerState.obstructions) {
+      buildObstructionMarkers();
+      map.addLayer(obstructionsGroup);
+    } else {
+      map.removeLayer(obstructionsGroup);
     }
   } else if (type === 'googleplaces') {
     if (layerState.googleplaces) {
@@ -8514,6 +8567,117 @@ function buildBridgeMarkers() {
  * existing profile-save flow if bridgesGroup is currently visible. */
 function _refreshBridgesOnProfileChange() {
   if (layerState.bridges && _BRIDGES_DATA) _renderBridgeMarkers();
+}
+
+// ============================================================
+//  IENC CHANNEL AXIS (wtwaxs — official navigation centerline)
+// ============================================================
+var _CHANNEL_AXIS_DATA = null;
+var _channelAxisLoading = false;
+
+function _renderChannelAxisLines() {
+  if (!_CHANNEL_AXIS_DATA) return;
+  channelAxisGroup.clearLayers();
+  _CHANNEL_AXIS_DATA.features.forEach(function(f) {
+    var p = f.properties;
+    var coords = f.geometry.coordinates.map(function(c) { return [c[1], c[0]]; });
+    if (coords.length < 2) return;
+    // Colour by waterway, falling back to a neutral bright teal.
+    var stroke = colorLookup(p.waterway) || '#7ad4ef';
+    // Solid line underneath for the glow, dashed line on top for the
+    // "navigation axis" look (differentiates from the thicker OSM
+    // waterway overlay).
+    var glow = L.polyline(coords, { color: stroke, weight: 4, opacity: 0.25, className: 'channel-axis-glow' });
+    var line = L.polyline(coords, { color: stroke, weight: 2, opacity: 0.95, dashArray: '6,4' });
+    var tooltip = (p.name || 'Navigation axis') + (p.inform ? ' · ' + p.inform : '');
+    line.bindTooltip(tooltip, { sticky: true });
+    channelAxisGroup.addLayer(glow);
+    channelAxisGroup.addLayer(line);
+  });
+}
+
+function buildChannelAxisLines() {
+  if (_CHANNEL_AXIS_DATA) { _renderChannelAxisLines(); return; }
+  if (_channelAxisLoading) return;
+  _channelAxisLoading = true;
+  fetch('data/ienc_channel_axis.geojson')
+    .then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+    .then(function(gj) {
+      _CHANNEL_AXIS_DATA = gj;
+      _channelAxisLoading = false;
+      _renderChannelAxisLines();
+    })
+    .catch(function(err) {
+      _channelAxisLoading = false;
+      console.warn('Failed to load ienc_channel_axis.geojson:', err);
+    });
+}
+
+// ============================================================
+//  IENC OBSTRUCTIONS (OBSTRN — rocks, shoals, submerged hazards)
+// ============================================================
+var _OBSTRUCTIONS_DATA = null;
+var _obstructionsLoading = false;
+
+/* Classify an obstruction for marker styling + popup colour. The
+ * three buckets are tuned for pleasure-cruising threat level:
+ *
+ *   'submerged' — WATLEV 3 (always underwater): invisible hidden hazard
+ *   'awash'     — WATLEV 1/4/5/6: partially submerged / tide-dependent
+ *   'visible'   — WATLEV 2/7 or unknown: above water or known landmark
+ */
+function _obstructionSeverity(watlev) {
+  if (watlev === 3) return 'submerged';
+  if (watlev === 1 || watlev === 4 || watlev === 5 || watlev === 6) return 'awash';
+  return 'visible';
+}
+
+function _renderObstructionMarkers() {
+  if (!_OBSTRUCTIONS_DATA) return;
+  obstructionsGroup.clearLayers();
+  _OBSTRUCTIONS_DATA.features.forEach(function(f) {
+    var p = f.properties;
+    var coords = f.geometry.coordinates; // [lon, lat]
+    var sev = _obstructionSeverity(p.watlev);
+    var icon = L.divIcon({
+      html: '<div class="obstruction-marker-icon ' + sev + '"><span>⚠</span></div>',
+      className: '', iconSize: [24, 24], iconAnchor: [12, 12], popupAnchor: [0, -12]
+    });
+    var marker = L.marker([coords[1], coords[0]], { icon: icon });
+    var titleHtml = p.name ? p.name.replace(/</g, '&lt;') : (p.catobs_label || 'Navigation hazard');
+    var depthLine = p.valsou_m != null
+      ? '<div class="op-inform">Sounding: ' + p.valsou_m.toFixed(1) + ' m at reference water level.</div>'
+      : '';
+    var html =
+      '<div class="obstruction-popup">' +
+        '<div class="op-title ' + sev + '">⚠ ' + titleHtml + '</div>' +
+        '<div class="op-cat">' + p.waterway + (p.catobs_label ? ' · ' + p.catobs_label : '') + '</div>' +
+        (p.watlev_label ? '<span class="op-watlev ' + sev + '">💧 ' + p.watlev_label + '</span>' : '') +
+        depthLine +
+        (p.inform ? '<div class="op-inform">' + String(p.inform).replace(/</g, '&lt;') + '</div>' : '') +
+        '<div class="op-src">' + (p.source || 'VNF IENC') + '</div>' +
+      '</div>';
+    marker.bindPopup(html, { maxWidth: 260 });
+    marker.bindTooltip((p.name || p.catobs_label || 'Hazard'), { sticky: true });
+    obstructionsGroup.addLayer(marker);
+  });
+}
+
+function buildObstructionMarkers() {
+  if (_OBSTRUCTIONS_DATA) { _renderObstructionMarkers(); return; }
+  if (_obstructionsLoading) return;
+  _obstructionsLoading = true;
+  fetch('data/ienc_obstructions.geojson')
+    .then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+    .then(function(gj) {
+      _OBSTRUCTIONS_DATA = gj;
+      _obstructionsLoading = false;
+      _renderObstructionMarkers();
+    })
+    .catch(function(err) {
+      _obstructionsLoading = false;
+      console.warn('Failed to load ienc_obstructions.geojson:', err);
+    });
 }
 
 // ============================================================

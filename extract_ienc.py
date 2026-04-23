@@ -449,6 +449,187 @@ def dedupe_moorings(moorings: list[dict]) -> list[dict]:
     return list(by_key.values())
 
 
+# ──────────────────────────────────────────────────────────────────────
+# Channel-axis extraction (wtwaxs — official dredged-channel centerline)
+# ──────────────────────────────────────────────────────────────────────
+def extract_channel_axis_from_cell(cell_path: str, cell_name: str) -> list[dict]:
+    """Return per-cell channel-axis LineStrings. The `wtwaxs` layer holds
+    the official *dredged navigation axis* (one LineString per pound /
+    bief), which on meandering rivers like the Moselle or lower Seine
+    differs materially from the OSM river geometry."""
+    ds = ogr.Open(cell_path)
+    if ds is None:
+        return []
+    lyr = ds.GetLayerByName("wtwaxs")
+    if lyr is None:
+        return []
+    out: list[dict] = []
+    for feat in lyr:
+        geom = feat.GetGeometryRef()
+        if not geom or geom.GetGeometryName() != "LINESTRING":
+            continue
+        n = geom.GetPointCount()
+        if n < 2:
+            continue
+        coords = [[round(geom.GetX(i), 6), round(geom.GetY(i), 6)] for i in range(n)]
+        name = feat.GetField("OBJNAM") or None
+        # French is more useful to French-speaking cruisers; fall back to English.
+        inform = feat.GetField("NINFOM") or feat.GetField("INFORM") or None
+        out.append(
+            {
+                "name": name,
+                "inform": inform,
+                "coords": coords,
+                "cell": cell_name,
+                "waterway": _waterway_for_cell(cell_name),
+            }
+        )
+    return out
+
+
+def dedupe_channel_axis(segments: list[dict]) -> list[dict]:
+    """Overlapping cells can produce identical channel-axis LineStrings
+    (same source data). Dedup on a hash of (waterway, first-point-5dp,
+    last-point-5dp, point-count) — exact duplicates only, structural
+    variants stay separate."""
+    by_key: dict[tuple, dict] = {}
+    for s in segments:
+        c = s["coords"]
+        key = (
+            s["waterway"],
+            (round(c[0][0], 5), round(c[0][1], 5)),
+            (round(c[-1][0], 5), round(c[-1][1], 5)),
+            len(c),
+        )
+        cur = by_key.get(key)
+        if cur is None or ((s.get("inform") or "") > (cur.get("inform") or "")):
+            by_key[key] = s
+    return list(by_key.values())
+
+
+def channel_axis_to_geojson(segments: list[dict]) -> dict:
+    feats = []
+    for s in segments:
+        feats.append(
+            {
+                "type": "Feature",
+                "geometry": {"type": "LineString", "coordinates": s["coords"]},
+                "properties": {
+                    "name": s["name"],
+                    "inform": s["inform"],
+                    "waterway": s["waterway"],
+                    "source": "VNF IENC (Licence Ouverte 2.0)",
+                },
+            }
+        )
+    return {"type": "FeatureCollection", "features": feats}
+
+
+# ──────────────────────────────────────────────────────────────────────
+# Obstructions (OBSTRN — rocks, shoals, wrecks, foul areas, islets)
+# ──────────────────────────────────────────────────────────────────────
+# S-57 CATOBS category codes
+_CATOBS_LABELS = {
+    1: "snag / stump",
+    2: "wellhead",
+    3: "diffuser",
+    4: "crib",
+    5: "fish haven",
+    6: "foul area",
+    7: "foul ground",
+    8: "ice boom",
+    9: "ground tackle",
+    10: "boom",
+}
+# S-57 WATLEV water-level codes
+_WATLEV_LABELS = {
+    1: "partly submerged at high water",
+    2: "always dry",
+    3: "always underwater / submerged",
+    4: "covers and uncovers",
+    5: "awash",
+    6: "subject to inundation or flooding",
+    7: "floating",
+}
+
+
+def extract_obstructions_from_cell(cell_path: str, cell_name: str) -> list[dict]:
+    """Return per-cell obstruction features. IENC stores OBSTRN as
+    polygon hazard areas; we emit a POINT at the centroid with the key
+    navigational attributes so a marker can be placed on the map."""
+    ds = ogr.Open(cell_path)
+    if ds is None:
+        return []
+    lyr = ds.GetLayerByName("OBSTRN")
+    if lyr is None:
+        return []
+    out: list[dict] = []
+    for feat in lyr:
+        c = _feature_centroid(feat)
+        if c is None:
+            continue
+        lon, lat = c
+        catobs = feat.GetField("CATOBS")
+        watlev = feat.GetField("WATLEV")
+        valsou = feat.GetField("VALSOU")
+        name = feat.GetField("OBJNAM") or feat.GetField("NOBJNM") or None
+        inform = feat.GetField("NINFOM") or feat.GetField("INFORM") or None
+        out.append(
+            {
+                "name": name,
+                "lat": round(lat, 6),
+                "lon": round(lon, 6),
+                "catobs": catobs,
+                "catobs_label": _CATOBS_LABELS.get(catobs) if catobs else None,
+                "watlev": watlev,
+                "watlev_label": _WATLEV_LABELS.get(watlev) if watlev else None,
+                "valsou_m": round(valsou, 2) if isinstance(valsou, (int, float)) and valsou not in (0, None) else None,
+                "inform": inform,
+                "cell": cell_name,
+                "waterway": _waterway_for_cell(cell_name),
+            }
+        )
+    return out
+
+
+def dedupe_obstructions(obs: list[dict]) -> list[dict]:
+    """Dedup by (waterway, 4dp coords, CATOBS). Keeps the record with
+    more populated fields if there's a tie."""
+    def _score(o: dict) -> int:
+        return sum(1 for k in ("name", "inform", "watlev", "valsou_m") if o.get(k))
+
+    by_key: dict[tuple, dict] = {}
+    for o in obs:
+        key = (o["waterway"], round(o["lat"], 4), round(o["lon"], 4), o["catobs"])
+        cur = by_key.get(key)
+        if cur is None or _score(o) > _score(cur):
+            by_key[key] = o
+    return list(by_key.values())
+
+
+def obstructions_to_geojson(obs: list[dict]) -> dict:
+    feats = []
+    for o in obs:
+        feats.append(
+            {
+                "type": "Feature",
+                "geometry": {"type": "Point", "coordinates": [o["lon"], o["lat"]]},
+                "properties": {
+                    "name": o["name"],
+                    "waterway": o["waterway"],
+                    "catobs": o["catobs"],
+                    "catobs_label": o["catobs_label"],
+                    "watlev": o["watlev"],
+                    "watlev_label": o["watlev_label"],
+                    "valsou_m": o["valsou_m"],
+                    "inform": o["inform"],
+                    "source": "VNF IENC (Licence Ouverte 2.0)",
+                },
+            }
+        )
+    return {"type": "FeatureCollection", "features": feats}
+
+
 def moorings_to_geojson(moorings: list[dict]) -> dict:
     feats = []
     for m in moorings:
@@ -664,6 +845,10 @@ def main() -> int:
                     help="Also extract lock basins → this GeoJSON path.")
     ap.add_argument("--out-moorings", default=None,
                     help="Also extract quays/pontoons → this GeoJSON path.")
+    ap.add_argument("--out-channel-axis", default=None,
+                    help="Also extract the `wtwaxs` navigation axis → this GeoJSON path.")
+    ap.add_argument("--out-obstructions", default=None,
+                    help="Also extract OBSTRN hazard areas → this GeoJSON path.")
     ap.add_argument(
         "--reconcile",
         default=None,
@@ -679,7 +864,10 @@ def main() -> int:
     all_raw_bridges: list[dict] = []
     all_raw_locks: list[dict] = []
     all_raw_moorings: list[dict] = []
-    zip_stats: list[tuple[str, int, int, int, int]] = []  # (zip, cells, bridges, locks, moorings)
+    all_raw_axis: list[dict] = []
+    all_raw_obs: list[dict] = []
+    zip_stats: list[tuple[str, int, int, int, int, int, int]] = []
+    # (zip, cells, bridges, locks, moorings, axis, obstructions)
 
     with tempfile.TemporaryDirectory(prefix="ienc_") as tmp:
         for zp in args.zip:
@@ -691,16 +879,24 @@ def main() -> int:
             raw_b: list[dict] = []
             raw_l: list[dict] = []
             raw_m: list[dict] = []
+            raw_a: list[dict] = []
+            raw_o: list[dict] = []
             for cell_name, cell_path in cells:
                 raw_b.extend(extract_bridges_from_cell(cell_path, cell_name))
                 if args.out_locks or args.reconcile:
                     raw_l.extend(extract_locks_from_cell(cell_path, cell_name))
                 if args.out_moorings or args.reconcile:
                     raw_m.extend(extract_moorings_from_cell(cell_path, cell_name))
-            zip_stats.append((zp, len(cells), len(raw_b), len(raw_l), len(raw_m)))
+                if args.out_channel_axis:
+                    raw_a.extend(extract_channel_axis_from_cell(cell_path, cell_name))
+                if args.out_obstructions:
+                    raw_o.extend(extract_obstructions_from_cell(cell_path, cell_name))
+            zip_stats.append((zp, len(cells), len(raw_b), len(raw_l), len(raw_m), len(raw_a), len(raw_o)))
             all_raw_bridges.extend(raw_b)
             all_raw_locks.extend(raw_l)
             all_raw_moorings.extend(raw_m)
+            all_raw_axis.extend(raw_a)
+            all_raw_obs.extend(raw_o)
 
     # ── Bridges (primary product) ─────────────────────────────────────
     aggregated = aggregate_bridges(all_raw_bridges)
@@ -717,11 +913,15 @@ def main() -> int:
     hdr = f"  {'ZIP':45s} {'CELLS':>5s} {'BRIDGES':>7s}"
     if args.out_locks or args.reconcile:    hdr += f" {'LOCKS':>5s}"
     if args.out_moorings or args.reconcile: hdr += f" {'MOORS':>5s}"
+    if args.out_channel_axis:               hdr += f" {'AXIS':>5s}"
+    if args.out_obstructions:               hdr += f" {'OBSTR':>5s}"
     print(hdr)
-    for zp, cells, rb, rl, rm in zip_stats:
+    for zp, cells, rb, rl, rm, ra, ro in zip_stats:
         row = f"  {os.path.basename(zp):45s} {cells:5d} {rb:7d}"
         if args.out_locks or args.reconcile:    row += f" {rl:5d}"
         if args.out_moorings or args.reconcile: row += f" {rm:5d}"
+        if args.out_channel_axis:               row += f" {ra:5d}"
+        if args.out_obstructions:               row += f" {ro:5d}"
         print(row)
     print(f"\n  Raw bridge features (all zips): {len(all_raw_bridges)}")
     print(f"  After per-name aggregation:     {len(aggregated)}")
@@ -761,6 +961,30 @@ def main() -> int:
             print(f"  Wrote {args.out_moorings} "
                   f"({len(deduped_moorings)} moorings, "
                   f"{os.path.getsize(args.out_moorings) / 1024:.1f} KB)")
+
+    # ── Channel axis (optional) ───────────────────────────────────────
+    if args.out_channel_axis:
+        deduped_axis = dedupe_channel_axis(all_raw_axis)
+        os.makedirs(os.path.dirname(args.out_channel_axis) or ".", exist_ok=True)
+        tmp_ax = args.out_channel_axis + ".tmp"
+        with open(tmp_ax, "w") as f:
+            json.dump(channel_axis_to_geojson(deduped_axis), f, separators=(",", ":"))
+        os.replace(tmp_ax, args.out_channel_axis)
+        print(f"  Wrote {args.out_channel_axis} "
+              f"({len(deduped_axis)} axis segments, "
+              f"{os.path.getsize(args.out_channel_axis) / 1024:.1f} KB)")
+
+    # ── Obstructions (optional) ───────────────────────────────────────
+    if args.out_obstructions:
+        deduped_obs = dedupe_obstructions(all_raw_obs)
+        os.makedirs(os.path.dirname(args.out_obstructions) or ".", exist_ok=True)
+        tmp_ob = args.out_obstructions + ".tmp"
+        with open(tmp_ob, "w") as f:
+            json.dump(obstructions_to_geojson(deduped_obs), f, separators=(",", ":"))
+        os.replace(tmp_ob, args.out_obstructions)
+        print(f"  Wrote {args.out_obstructions} "
+              f"({len(deduped_obs)} obstructions, "
+              f"{os.path.getsize(args.out_obstructions) / 1024:.1f} KB)")
 
     # ── Reconciliation (optional) ─────────────────────────────────────
     if args.reconcile:

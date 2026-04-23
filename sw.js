@@ -14,7 +14,7 @@
  * Bump `VERSION` to force every client to re-install.
  */
 
-const VERSION    = 'fc-v2';
+const VERSION    = 'fc-v3';
 const SHELL      = `fc-shell-${VERSION}`;
 const TILES      = `fc-tiles-${VERSION}`;
 const TILES_CAP  = 400; // roughly: 400 × 50 KB ≈ 20 MB
@@ -29,6 +29,10 @@ const SHELL_URLS = [
   './icon.svg',
   './waterways.geojson',
   './data/bridges.geojson',
+  './data/ienc_obstructions.geojson',
+  // data/ienc_channel_axis.geojson is 1.2 MB — NOT precached to keep the
+  // install payload small. It's fetched on first layer-toggle when
+  // online, and staleWhileRevalidate keeps it cached thereafter.
   'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css',
   'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js',
   'https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js',
