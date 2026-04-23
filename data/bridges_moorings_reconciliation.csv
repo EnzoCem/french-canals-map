@@ -1,0 +1,626 @@
+match_status,distance_m,ienc_type,ienc_name,ienc_waterway,ienc_lat,ienc_lon,app_id,app_name,app_type
+match,132.6,pontoon,Passerelle embarquement,Saône,46.778885,4.853384,m053,Chalon-sur-Saône – Port de Plaisance,port
+candidate,217.3,pontoon,Ponton privé,Saône,47.000366,5.143429,m123,Seurre – Halte Nautique,halte
+candidate,606.2,quay,quai de chargement et de déchargement,Moselle,48.669548,5.891753,m225,Halte Fluviale de Toul,halte
+candidate,657.9,pontoon,Halte fluviale de Saint Laurent sur Saône,Saône,46.306772,4.839172,m054,Mâcon – Port de Plaisance,port
+candidate,694.6,pontoon,,Seine,49.43599,1.09662,m020,Rouen – Halte de Plaisance,halte
+candidate,746.0,pontoon,,Seine,49.435789,1.097899,m020,Rouen – Halte de Plaisance,halte
+candidate,769.2,quay,ducs d'albe,Saône,47.00789,5.13968,m123,Seurre – Halte Nautique,halte
+candidate,793.6,pontoon,,Seine,49.435584,1.098807,m020,Rouen – Halte de Plaisance,halte
+candidate,838.1,pontoon,,Seine,49.435353,1.099464,m020,Rouen – Halte de Plaisance,halte
+candidate,895.1,pontoon,,Seine,49.435091,1.100353,m020,Rouen – Halte de Plaisance,halte
+candidate,912.9,pontoon,,Oise,49.42321,2.829961,m161,Port de Plaisance de Compiègne,port
+candidate,958.3,pontoon,,Oise,49.423614,2.830403,m161,Port de Plaisance de Compiègne,port
+candidate,988.1,pontoon,,Seine,49.434575,1.101507,m020,Rouen – Halte de Plaisance,halte
+candidate,990.7,pontoon,,Oise,49.423804,2.832104,m161,Port de Plaisance de Compiègne,port
+no_match,1014.6,pontoon,,Oise,49.424048,2.831813,m161,Port de Plaisance de Compiègne,port
+no_match,1034.4,pontoon,Ponton club d'aviron,Saône,46.784025,4.866247,m053,Chalon-sur-Saône – Port de Plaisance,port
+no_match,1117.2,pontoon,,Moselle,48.664996,5.890295,m225,Halte Fluviale de Toul,halte
+no_match,1179.6,pontoon,Ponton club d'aviron,Saône,46.784801,4.867814,m053,Chalon-sur-Saône – Port de Plaisance,port
+no_match,1216.1,pontoon,Ponton VNF,Saône,46.78502,4.86819,m053,Chalon-sur-Saône – Port de Plaisance,port
+no_match,1241.8,pontoon,Ponton VNF,Saône,46.785167,4.868459,m053,Chalon-sur-Saône – Port de Plaisance,port
+no_match,1285.9,pontoon,,Moselle,48.663444,5.891017,m225,Halte Fluviale de Toul,halte
+no_match,1309.2,quay,bollards,Saône,47.104332,5.256873,m052,St-Jean-de-Losne – Grand Bassin,port
+no_match,1392.9,pontoon,Ponton avitaillement,Saône,47.101119,5.26088,m052,St-Jean-de-Losne – Grand Bassin,port
+no_match,1414.0,pontoon,,Moselle,48.683541,5.905969,m225,Halte Fluviale de Toul,halte
+no_match,1446.3,pontoon,,Moselle,48.683591,5.906491,m225,Halte Fluviale de Toul,halte
+no_match,1485.3,pontoon,,Moselle,48.683823,5.906889,m225,Halte Fluviale de Toul,halte
+no_match,1514.0,quay,ducs d'albe,Saône,46.102309,4.760794,m125,Belleville-en-Beaujolais – Port,port
+no_match,1530.3,pontoon,,Moselle,48.684128,5.907299,m225,Halte Fluviale de Toul,halte
+no_match,1574.7,pontoon,,Moselle,48.684422,5.907712,m225,Halte Fluviale de Toul,halte
+no_match,1751.5,quay,quai de chargement et de déchargement,Moselle,48.659291,5.893448,m225,Halte Fluviale de Toul,halte
+no_match,1962.0,pontoon,,Seine (Amont),48.388714,2.806487,m101,Moret-sur-Loing – Halte Nautique,halte
+no_match,1963.0,pontoon,,Seine (Amont),48.388586,2.805895,m101,Moret-sur-Loing – Halte Nautique,halte
+no_match,1973.4,pontoon,,Seine (Amont),48.388921,2.806943,m101,Moret-sur-Loing – Halte Nautique,halte
+no_match,2078.4,pontoon,,Oise,49.432347,2.840703,m161,Port de Plaisance de Compiègne,port
+no_match,2551.6,pontoon,Ponton privé club aviron,Saône,46.324497,4.84852,m054,Mâcon – Port de Plaisance,port
+no_match,2614.7,pontoon,,Seine,48.860119,2.331631,m214,Arsenal Marina Paris,halte
+no_match,2700.3,pontoon,Ponton privé club aviron,Saône,46.325725,4.849326,m054,Mâcon – Port de Plaisance,port
+no_match,2716.7,quay,quai de chargement,Moselle,48.688247,5.922793,m225,Halte Fluviale de Toul,halte
+no_match,2725.1,pontoon,Appontement,Saône,46.79719,4.879512,m053,Chalon-sur-Saône – Port de Plaisance,port
+no_match,2929.8,pontoon,Port d'Arques 1,Canal Dunkerque–Escaut,50.746474,2.297634,m132,Saint-Omer – Port de Plaisance,port
+no_match,2962.7,pontoon,Port d'Arques 2,Canal Dunkerque–Escaut,50.746482,2.298101,m132,Saint-Omer – Port de Plaisance,port
+no_match,3158.8,quay,quai de déchargement,Moselle,48.647686,5.90352,m225,Halte Fluviale de Toul,halte
+no_match,3256.7,quay,Liegestelle Kehl-Süd,Rhine,48.56971,7.804685,m202,Port du Rhin Strasbourg,port
+no_match,3300.2,quay,quai de chargement,Moselle,48.647216,5.9075,m225,Halte Fluviale de Toul,halte
+no_match,3301.1,pontoon,,Moselle,48.647206,5.907496,m225,Halte Fluviale de Toul,halte
+no_match,3379.2,pontoon,,Seine,48.862136,2.32162,m214,Arsenal Marina Paris,halte
+no_match,3419.5,pontoon,,Seine,48.862335,2.321144,m214,Arsenal Marina Paris,halte
+no_match,3479.6,quay,Liegestelle Kehl-Süd,Rhine,48.565678,7.805962,m202,Port du Rhin Strasbourg,port
+no_match,3608.0,quay,ducs d'albe,Saône,46.080166,4.756057,m125,Belleville-en-Beaujolais – Port,port
+no_match,4611.5,pontoon,,Moselle,48.645161,5.935306,m225,Halte Fluviale de Toul,halte
+no_match,4990.0,pontoon,,Oise,49.385531,2.777993,m161,Port de Plaisance de Compiègne,port
+no_match,5047.3,pontoon,,Oise,49.385139,2.777468,m161,Port de Plaisance de Compiègne,port
+no_match,5063.0,quay,Liegestelle Kehl-Nord,Rhine,48.603574,7.81727,m202,Port du Rhin Strasbourg,port
+no_match,5136.4,pontoon,,Oise,49.384394,2.776836,m161,Port de Plaisance de Compiègne,port
+no_match,5304.7,quay,Liegestelle Kehl-Nord,Rhine,48.605532,7.819164,m202,Port du Rhin Strasbourg,port
+no_match,5827.1,pontoon,,Oise,49.37602,2.776184,m161,Port de Plaisance de Compiègne,port
+no_match,5956.9,pontoon,,Oise,49.374817,2.775564,m161,Port de Plaisance de Compiègne,port
+no_match,5993.6,pontoon,Ponton,Saône,46.880615,4.951861,m124,Verdun-sur-le-Doubs – Port,port
+no_match,6036.1,pontoon,,Seine,48.816682,2.429897,m060,Paris – Port de l'Arsenal,port
+no_match,6118.0,pontoon,,Seine,49.3905,1.123768,m020,Rouen – Halte de Plaisance,halte
+no_match,6188.3,pontoon,Ponton plaisance,Saône,46.943234,5.072355,m124,Verdun-sur-le-Doubs – Port,port
+no_match,6204.7,pontoon,ponton attente aval plaisance écluse Dracé,Saône,46.153636,4.800608,m125,Belleville-en-Beaujolais – Port,port
+no_match,6212.0,quay,quai de chargement et de déchargement,Moselle,48.706184,5.961918,m225,Halte Fluviale de Toul,halte
+no_match,6226.6,quay,ducs d'albe,Saône,46.154078,4.800317,m125,Belleville-en-Beaujolais – Port,port
+no_match,6235.6,pontoon,,Seine,49.389418,1.123958,m020,Rouen – Halte de Plaisance,halte
+no_match,6392.6,quay,Festmachstelle,Saône (upper),49.165528,7.029972,m201,Port de Plaisance de Sarreguemines,port
+no_match,6436.3,pontoon,Port de Wambrechies,Canal Dunkerque–Escaut,50.687848,3.053843,m131,Lille – Port de Plaisance,port
+no_match,6469.6,pontoon,Ponton plaisance,Saône,46.94371,5.07779,m124,Verdun-sur-le-Doubs – Port,port
+no_match,6556.1,pontoon,ponton attente amont plaisance écluse Dracé,Saône,46.160592,4.795191,m125,Belleville-en-Beaujolais – Port,port
+no_match,6819.2,quay,bollards,Saône,46.165253,4.790893,m125,Belleville-en-Beaujolais – Port,port
+no_match,7007.2,pontoon,Port de Courcelles les Lens 3,Canal Dunkerque–Escaut,50.424657,3.028159,m133,Douai – Port de Plaisance,port
+no_match,7034.7,pontoon,Port de Courcelles les Lens 2,Canal Dunkerque–Escaut,50.42483,3.027858,m133,Douai – Port de Plaisance,port
+no_match,7058.0,pontoon,Port de Courcelles les Lens 1,Canal Dunkerque–Escaut,50.424957,3.027555,m133,Douai – Port de Plaisance,port
+no_match,7220.4,pontoon,,Seine (Amont),48.483926,2.709428,m100,Melun – Port de Plaisance,port
+no_match,7421.7,quay,quai de chargement et de déchargement,Moselle,48.754449,6.148289,m070,Nancy – Port de Plaisance,port
+no_match,7447.6,pontoon,Halte de Crèches-sur-Saône,Saône,46.240085,4.807139,m054,Mâcon – Port de Plaisance,port
+no_match,7485.5,pontoon,,Seine,48.814823,2.452246,m060,Paris – Port de l'Arsenal,port
+no_match,7501.7,pontoon,,Moselle,48.712808,5.976349,m225,Halte Fluviale de Toul,halte
+no_match,7508.3,pontoon,,Moselle,48.712838,5.976427,m225,Halte Fluviale de Toul,halte
+no_match,7514.8,pontoon,,Moselle,48.712864,5.976506,m225,Halte Fluviale de Toul,halte
+no_match,7521.6,pontoon,,Moselle,48.712895,5.976586,m225,Halte Fluviale de Toul,halte
+no_match,7528.0,pontoon,,Moselle,48.712922,5.976664,m225,Halte Fluviale de Toul,halte
+no_match,7534.8,pontoon,,Moselle,48.71296,5.976738,m225,Halte Fluviale de Toul,halte
+no_match,7554.9,pontoon,,Moselle,48.713054,5.976972,m225,Halte Fluviale de Toul,halte
+no_match,7560.8,pontoon,,Moselle,48.713071,5.977051,m225,Halte Fluviale de Toul,halte
+no_match,7777.1,pontoon,,Seine (Amont),48.424492,2.745385,m101,Moret-sur-Loing – Halte Nautique,halte
+no_match,7793.4,pontoon,,Seine (Amont),48.537129,2.554235,m100,Melun – Port de Plaisance,port
+no_match,7805.7,pontoon,,Seine (Amont),48.424837,2.745389,m101,Moret-sur-Loing – Halte Nautique,halte
+no_match,7839.0,pontoon,,Seine (Amont),48.425164,2.745268,m101,Moret-sur-Loing – Halte Nautique,halte
+no_match,7868.5,pontoon,,Seine (Amont),48.425523,2.745281,m101,Moret-sur-Loing – Halte Nautique,halte
+no_match,7902.8,pontoon,,Seine (Amont),48.425948,2.745312,m101,Moret-sur-Loing – Halte Nautique,halte
+no_match,7931.5,pontoon,,Seine,48.831229,2.261179,m214,Arsenal Marina Paris,halte
+no_match,7931.9,pontoon,,Seine (Amont),48.426307,2.745337,m101,Moret-sur-Loing – Halte Nautique,halte
+no_match,7962.6,pontoon,,Seine (Amont),48.426668,2.745336,m101,Moret-sur-Loing – Halte Nautique,halte
+no_match,7973.2,quay,quai de chargement et de déchargement,Moselle,48.758484,6.143282,m070,Nancy – Port de Plaisance,port
+no_match,7973.2,pontoon,,Moselle,48.758484,6.143282,m070,Nancy – Port de Plaisance,port
+no_match,7996.2,pontoon,,Seine,48.83052,2.260584,m214,Arsenal Marina Paris,halte
+no_match,8004.1,quay,quai de chargement et de déchargement,Moselle,48.758723,6.143056,m070,Nancy – Port de Plaisance,port
+no_match,8004.1,pontoon,,Moselle,48.758723,6.143056,m070,Nancy – Port de Plaisance,port
+no_match,8019.0,pontoon,,Seine,48.91219,2.305291,m214,Arsenal Marina Paris,halte
+no_match,8035.0,quay,quai de chargement et de déchargement,Moselle,48.758963,6.142833,m070,Nancy – Port de Plaisance,port
+no_match,8035.0,pontoon,,Moselle,48.758963,6.142833,m070,Nancy – Port de Plaisance,port
+no_match,8045.6,pontoon,,Oise,49.355831,2.766025,m161,Port de Plaisance de Compiègne,port
+no_match,8065.2,pontoon,,Seine,48.911715,2.30306,m214,Arsenal Marina Paris,halte
+no_match,8099.3,pontoon,,Seine,48.909956,2.298513,m214,Arsenal Marina Paris,halte
+no_match,8102.2,pontoon,,Seine,48.911728,2.302194,m214,Arsenal Marina Paris,halte
+no_match,8108.5,pontoon,,Seine,48.911563,2.30168,m214,Arsenal Marina Paris,halte
+no_match,8110.1,pontoon,,Seine,48.91137,2.301222,m214,Arsenal Marina Paris,halte
+no_match,8428.8,pontoon,,Oise,49.351682,2.765984,m161,Port de Plaisance de Compiègne,port
+no_match,8435.7,pontoon,,Seine,48.818623,2.470231,m060,Paris – Port de l'Arsenal,port
+no_match,8574.8,pontoon,,Seine,48.817675,2.471649,m060,Paris – Port de l'Arsenal,port
+no_match,8593.6,pontoon,,Seine,48.817728,2.471973,m060,Paris – Port de l'Arsenal,port
+no_match,8641.9,pontoon,,Seine (Amont),48.434046,2.744502,m101,Moret-sur-Loing – Halte Nautique,halte
+no_match,8784.0,pontoon,,Seine (Amont),48.5617,2.545253,m100,Melun – Port de Plaisance,port
+no_match,8920.8,pontoon,,Seine,48.885091,2.254102,m214,Arsenal Marina Paris,halte
+no_match,8952.1,pontoon,,Seine,48.891359,2.258482,m214,Arsenal Marina Paris,halte
+no_match,9191.7,pontoon,,Moselle,48.765129,6.125572,m070,Nancy – Port de Plaisance,port
+no_match,9274.6,pontoon,,Seine,48.801983,2.468509,m060,Paris – Port de l'Arsenal,port
+no_match,9475.2,pontoon,Halte de Asnières sur Saône,Saône,46.384509,4.875401,m054,Mâcon – Port de Plaisance,port
+no_match,9562.1,pontoon,,Seine (Amont),48.572419,2.539663,m100,Melun – Port de Plaisance,port
+no_match,9609.1,pontoon,,Seine (Amont),48.572483,2.539013,m100,Melun – Port de Plaisance,port
+no_match,9656.2,quay,Liegestelle,Saône (upper),49.196511,7.028714,m201,Port de Plaisance de Sarreguemines,port
+no_match,9736.2,pontoon,Halte de Quesnoy sur Deûle 2,Canal Dunkerque–Escaut,50.71038,3.002212,m131,Lille – Port de Plaisance,port
+no_match,9756.2,pontoon,Halte de Quesnoy sur Deûle 1,Canal Dunkerque–Escaut,50.710457,3.001779,m131,Lille – Port de Plaisance,port
+no_match,9941.3,pontoon,Halte de Watten 2,Canal Dunkerque–Escaut,50.830912,2.207508,m221,Port de Plaisance de Saint-Omer,port
+no_match,10000.6,pontoon,Halte de Watten 1,Canal Dunkerque–Escaut,50.831919,2.209526,m221,Port de Plaisance de Saint-Omer,port
+no_match,10105.6,pontoon,,Seine (Amont),48.574373,2.532889,m100,Melun – Port de Plaisance,port
+no_match,10116.6,pontoon,,Seine (Amont),48.57324,2.532045,m100,Melun – Port de Plaisance,port
+no_match,10142.5,quay,Festmachstelle,Canal du Rhône au Rhin,47.759949,7.46956,m170,Port de Plaisance de Mulhouse,port
+no_match,10236.3,pontoon,,Seine,48.85463,2.225164,m214,Arsenal Marina Paris,halte
+no_match,10267.4,quay,Dalbenanlegestelle,Saône (upper),49.200945,7.022266,m201,Port de Plaisance de Sarreguemines,port
+no_match,10425.4,quay,Festmachstelle,Canal du Rhône au Rhin,47.759414,7.473471,m170,Port de Plaisance de Mulhouse,port
+no_match,10481.1,pontoon,,Seine,48.788636,2.473344,m060,Paris – Port de l'Arsenal,port
+no_match,10484.2,pontoon,,Seine,48.831343,2.225118,m214,Arsenal Marina Paris,halte
+no_match,10490.5,pontoon,,Seine,48.830844,2.225199,m214,Arsenal Marina Paris,halte
+no_match,10540.9,pontoon,,Seine (Amont),48.762115,2.416032,m060,Paris – Port de l'Arsenal,port
+no_match,10550.9,quay,quai de chargement et de déchargement,Moselle,48.60837,6.116147,m070,Nancy – Port de Plaisance,port
+no_match,10769.5,pontoon,,Seine,48.810705,2.499791,m060,Paris – Port de l'Arsenal,port
+no_match,10841.7,pontoon,,Seine (Amont),48.57402,2.521947,m100,Melun – Port de Plaisance,port
+no_match,10887.2,pontoon,,Moselle,48.742624,5.999001,m225,Halte Fluviale de Toul,halte
+no_match,10923.0,quay,quai de chargement et de déchargement,Moselle,48.606711,6.110228,m070,Nancy – Port de Plaisance,port
+no_match,10942.3,pontoon,,Seine (Amont),48.573815,2.520375,m100,Melun – Port de Plaisance,port
+no_match,11280.8,pontoon,,Seine (Amont),48.572345,2.514723,m100,Melun – Port de Plaisance,port
+no_match,11350.0,pontoon,,Moselle,48.754209,6.061329,m070,Nancy – Port de Plaisance,port
+no_match,11424.2,quay,Festmachstelle,Canal du Rhône au Rhin,47.739153,7.487179,m170,Port de Plaisance de Mulhouse,port
+no_match,11425.4,pontoon,,Seine (Amont),48.571496,2.512234,m100,Melun – Port de Plaisance,port
+no_match,11434.2,pontoon,,Seine (Amont),48.571444,2.512084,m100,Melun – Port de Plaisance,port
+no_match,11482.2,pontoon,,Moselle,48.75627,6.061482,m070,Nancy – Port de Plaisance,port
+no_match,11524.3,pontoon,,Seine,49.338374,1.096701,m020,Rouen – Halte de Plaisance,halte
+no_match,11532.6,quay,Festmachstelle,Canal du Rhône au Rhin,47.737003,7.488315,m170,Port de Plaisance de Mulhouse,port
+no_match,11578.2,pontoon,,Seine (Amont),48.754071,2.423751,m060,Paris – Port de l'Arsenal,port
+no_match,11586.2,pontoon,,Seine (Amont),48.570555,2.509498,m100,Melun – Port de Plaisance,port
+no_match,11605.7,pontoon,,Seine (Amont),48.570433,2.509165,m100,Melun – Port de Plaisance,port
+no_match,11672.8,pontoon,,Moselle,48.757042,6.059094,m070,Nancy – Port de Plaisance,port
+no_match,11757.7,pontoon,,Seine (Amont),48.569737,2.506696,m100,Melun – Port de Plaisance,port
+no_match,11779.0,pontoon,,Seine (Amont),48.569651,2.506357,m100,Melun – Port de Plaisance,port
+no_match,11780.1,pontoon,,Seine,48.784305,2.491007,m060,Paris – Port de l'Arsenal,port
+no_match,11836.9,pontoon,,Seine (Amont),48.569436,2.505444,m100,Melun – Port de Plaisance,port
+no_match,11885.5,pontoon,,Seine (Amont),48.569295,2.504697,m100,Melun – Port de Plaisance,port
+no_match,11888.6,pontoon,ponton,Moselle,48.636116,6.042468,m225,Halte Fluviale de Toul,halte
+no_match,11927.7,pontoon,,Seine (Amont),48.569162,2.504044,m100,Melun – Port de Plaisance,port
+no_match,11974.8,pontoon,,Seine (Amont),48.569014,2.503316,m100,Melun – Port de Plaisance,port
+no_match,12024.9,pontoon,,Seine (Amont),48.568829,2.502533,m100,Melun – Port de Plaisance,port
+no_match,12049.4,pontoon,,Seine (Amont),48.568784,2.502169,m100,Melun – Port de Plaisance,port
+no_match,12097.7,pontoon,,Seine (Amont),48.568608,2.501415,m100,Melun – Port de Plaisance,port
+no_match,12196.2,pontoon,,Seine (Amont),48.568207,2.499867,m100,Melun – Port de Plaisance,port
+no_match,12466.8,pontoon,,Seine (Amont),48.567811,2.495911,m100,Melun – Port de Plaisance,port
+no_match,12592.2,pontoon,,Seine (Amont),48.566851,2.493795,m100,Melun – Port de Plaisance,port
+no_match,12611.5,pontoon,,Seine (Amont),48.74725,2.435564,m060,Paris – Port de l'Arsenal,port
+no_match,12617.5,pontoon,,Seine (Amont),48.566884,2.493453,m100,Melun – Port de Plaisance,port
+no_match,12629.1,pontoon,,Seine (Amont),48.747123,2.43572,m060,Paris – Port de l'Arsenal,port
+no_match,12638.2,pontoon,,Seine (Amont),48.747046,2.435762,m060,Paris – Port de l'Arsenal,port
+no_match,12655.1,pontoon,,Seine (Amont),48.746927,2.435924,m060,Paris – Port de l'Arsenal,port
+no_match,12727.0,pontoon,,Seine (Amont),48.746396,2.436529,m060,Paris – Port de l'Arsenal,port
+no_match,12773.4,pontoon,,Seine,48.941048,2.255175,m214,Arsenal Marina Paris,halte
+no_match,12775.7,pontoon,,Seine,48.941179,2.255373,m214,Arsenal Marina Paris,halte
+no_match,12777.7,pontoon,,Seine (Amont),48.746028,2.436976,m060,Paris – Port de l'Arsenal,port
+no_match,12803.6,pontoon,,Seine (Amont),48.745826,2.437156,m060,Paris – Port de l'Arsenal,port
+no_match,12834.2,pontoon,,Seine (Amont),48.745592,2.437385,m060,Paris – Port de l'Arsenal,port
+no_match,12983.2,pontoon,,Seine (Amont),48.568839,2.489065,m100,Melun – Port de Plaisance,port
+no_match,12997.9,pontoon,,Seine (Amont),48.568888,2.488878,m100,Melun – Port de Plaisance,port
+no_match,13044.4,pontoon,,Seine (Amont),48.569069,2.488295,m100,Melun – Port de Plaisance,port
+no_match,13095.6,pontoon,,Seine,48.795728,2.523956,m060,Paris – Port de l'Arsenal,port
+no_match,13103.8,pontoon,,Seine (Amont),48.569334,2.487564,m100,Melun – Port de Plaisance,port
+no_match,13106.6,pontoon,,Oise,49.317356,2.728617,m161,Port de Plaisance de Compiègne,port
+no_match,13126.0,pontoon,,Moselle,48.757336,6.034965,m070,Nancy – Port de Plaisance,port
+no_match,13130.8,pontoon,,Moselle,48.7573,6.034851,m070,Nancy – Port de Plaisance,port
+no_match,13137.4,pontoon,,Moselle,48.757259,6.034702,m070,Nancy – Port de Plaisance,port
+no_match,13142.6,pontoon,,Moselle,48.757219,6.034576,m070,Nancy – Port de Plaisance,port
+no_match,13146.1,pontoon,,Moselle,48.757179,6.034479,m070,Nancy – Port de Plaisance,port
+no_match,13151.5,pontoon,,Moselle,48.757151,6.034363,m070,Nancy – Port de Plaisance,port
+no_match,13155.2,pontoon,,Moselle,48.757115,6.034266,m070,Nancy – Port de Plaisance,port
+no_match,13158.6,pontoon,,Moselle,48.757078,6.034174,m070,Nancy – Port de Plaisance,port
+no_match,13164.9,pontoon,,Moselle,48.75705,6.034044,m070,Nancy – Port de Plaisance,port
+no_match,13169.5,pontoon,,Moselle,48.757016,6.033935,m070,Nancy – Port de Plaisance,port
+no_match,13176.0,pontoon,,Moselle,48.75697,6.033783,m070,Nancy – Port de Plaisance,port
+no_match,13177.4,pontoon,,Seine,48.791272,2.521457,m060,Paris – Port de l'Arsenal,port
+no_match,13188.3,pontoon,,Moselle,48.756888,6.033501,m070,Nancy – Port de Plaisance,port
+no_match,13193.4,pontoon,,Moselle,48.75685,6.033381,m070,Nancy – Port de Plaisance,port
+no_match,13197.1,pontoon,,Moselle,48.756822,6.033293,m070,Nancy – Port de Plaisance,port
+no_match,13200.7,pontoon,,Moselle,48.756787,6.0332,m070,Nancy – Port de Plaisance,port
+no_match,13206.4,pontoon,,Moselle,48.756731,6.033051,m070,Nancy – Port de Plaisance,port
+no_match,13212.9,pontoon,,Moselle,48.756673,6.032889,m070,Nancy – Port de Plaisance,port
+no_match,13286.1,pontoon,,Seine,48.788057,2.520247,m060,Paris – Port de l'Arsenal,port
+no_match,13841.5,pontoon,,Seine (Amont),48.585524,2.484937,m100,Melun – Port de Plaisance,port
+no_match,13844.1,pontoon,,Seine (Amont),48.586341,2.485387,m100,Melun – Port de Plaisance,port
+no_match,13844.2,pontoon,,Seine (Amont),48.586121,2.485253,m100,Melun – Port de Plaisance,port
+no_match,13927.7,quay,Festmachstelle,Saône (upper),49.229753,6.996151,m201,Port de Plaisance de Sarreguemines,port
+no_match,13966.6,quay,Festmachstelle,Canal du Rhône au Rhin,47.7015,7.508274,m170,Port de Plaisance de Mulhouse,port
+no_match,13996.4,quay,Festmachstelle,Rhine,47.701003,7.508406,m170,Port de Plaisance de Mulhouse,port
+no_match,13997.1,quay,Festmachstelle,Saône (upper),49.230153,6.995108,m201,Port de Plaisance de Sarreguemines,port
+no_match,14094.7,pontoon,Halte de Courrières,Canal Dunkerque–Escaut,50.463973,2.944783,m133,Douai – Port de Plaisance,port
+no_match,14131.2,pontoon,Port de Deulémont,Canal Dunkerque–Escaut,50.734771,2.943481,m131,Lille – Port de Plaisance,port
+no_match,14178.2,quay,quai de chargement,Moselle,48.811978,6.118527,m070,Nancy – Port de Plaisance,port
+no_match,14182.4,pontoon,,Oise,49.31031,2.718135,m161,Port de Plaisance de Compiègne,port
+no_match,14198.7,pontoon,,Seine (Amont),48.592691,2.484234,m100,Melun – Port de Plaisance,port
+no_match,14244.0,quay,Liegestelle,Saône (upper),49.232083,6.993344,m201,Port de Plaisance de Sarreguemines,port
+no_match,14273.8,pontoon,,Moselle,48.814736,6.126962,m070,Nancy – Port de Plaisance,port
+no_match,14316.8,quay,Liegestelle,Saône (upper),49.232699,6.993003,m201,Port de Plaisance de Sarreguemines,port
+no_match,14335.8,quay,Festmachstelle,Rhine,47.712234,7.519022,m170,Port de Plaisance de Mulhouse,port
+no_match,14392.0,quay,Festmachstelle,Rhine,47.694047,7.509675,m170,Port de Plaisance de Mulhouse,port
+no_match,14513.1,pontoon,,Seine (Amont),48.606307,2.490091,m100,Melun – Port de Plaisance,port
+no_match,14572.1,pontoon,,Oise,49.314324,2.701177,m161,Port de Plaisance de Compiègne,port
+no_match,14684.1,pontoon,,Seine (Amont),48.609261,2.490065,m100,Melun – Port de Plaisance,port
+no_match,14861.1,pontoon,,Seine (Amont),48.723004,2.424372,m060,Paris – Port de l'Arsenal,port
+no_match,14863.2,pontoon,,Seine (Amont),48.722952,2.424209,m060,Paris – Port de l'Arsenal,port
+no_match,14945.5,quay,Liegestelle,Saône (upper),49.237002,6.986292,m201,Port de Plaisance de Sarreguemines,port
+no_match,15036.9,quay,quai de chargement et de déchargement,Moselle,48.820276,6.119069,m070,Nancy – Port de Plaisance,port
+no_match,15186.4,pontoon,,Seine,48.899286,2.170356,m214,Arsenal Marina Paris,halte
+no_match,15220.7,pontoon,,Seine,48.898351,2.169337,m214,Arsenal Marina Paris,halte
+no_match,15244.8,pontoon,,Oise,49.314154,2.687383,m161,Port de Plaisance de Compiègne,port
+no_match,15297.4,pontoon,,Seine,48.890271,2.164234,m214,Arsenal Marina Paris,halte
+no_match,15346.0,pontoon,,Seine,48.888558,2.162806,m214,Arsenal Marina Paris,halte
+no_match,15411.3,quay,Liegestelle,Rhine,48.67922,7.902813,m202,Port du Rhin Strasbourg,port
+no_match,15432.5,quay,Liegestelle,Rhine,48.678625,7.90422,m202,Port du Rhin Strasbourg,port
+no_match,15533.6,pontoon,,Oise,49.315232,2.679849,m161,Port de Plaisance de Compiègne,port
+no_match,15551.6,quay,Liegestelle Saarbrücken - Schanzenbergbrücke,Saône (upper),49.234328,6.959489,m201,Port de Plaisance de Sarreguemines,port
+no_match,15768.4,pontoon,Halte d'Aire sur la Lys,Canal Dunkerque–Escaut,50.64217,2.408476,m132,Saint-Omer – Port de Plaisance,port
+no_match,15961.7,pontoon,Ponton de Gigny,Saône,46.653611,4.953265,m053,Chalon-sur-Saône – Port de Plaisance,port
+no_match,16075.4,pontoon,,Rhône,45.731323,4.818767,m001,Givors – Halte,halte
+no_match,16103.1,pontoon,,Rhône,45.731175,4.821053,m001,Givors – Halte,halte
+no_match,16110.1,pontoon,,Seine (Amont),48.708125,2.402467,m060,Paris – Port de l'Arsenal,port
+no_match,16148.9,quay,,Leie,50.774495,3.033947,m131,Lille – Port de Plaisance,port
+no_match,16167.1,pontoon,,Seine,48.868689,2.145516,m214,Arsenal Marina Paris,halte
+no_match,16167.2,quay,ducs d'albe,Saône,45.732713,4.815524,m001,Givors – Halte,halte
+no_match,16208.3,pontoon,,Seine,48.868564,2.144927,m214,Arsenal Marina Paris,halte
+no_match,16240.9,pontoon,,Seine,48.868484,2.144464,m214,Arsenal Marina Paris,halte
+no_match,16293.0,pontoon,,Seine,48.868376,2.143729,m214,Arsenal Marina Paris,halte
+no_match,16356.0,pontoon,,Saône,45.734524,4.815085,m001,Givors – Halte,halte
+no_match,16379.1,quay,,Leie,50.776986,3.072194,m131,Lille – Port de Plaisance,port
+no_match,16383.9,quay,Zone stationnement bateau école,Rhône,45.734056,4.819491,m001,Givors – Halte,halte
+no_match,16418.1,quay,,Leie,50.775934,3.092457,m131,Lille – Port de Plaisance,port
+no_match,16553.0,pontoon,Ponton,Saône,45.736402,4.814676,m001,Givors – Halte,halte
+no_match,16580.0,pontoon,,Saône,45.736657,4.814633,m001,Givors – Halte,halte
+no_match,16598.0,pontoon,,Saône,45.736828,4.814599,m001,Givors – Halte,halte
+no_match,16851.8,quay,Zone d'amarrage Bougival amont,Seine,48.868468,2.136057,m214,Arsenal Marina Paris,halte
+no_match,16852.7,pontoon,Ponton,Rhône,45.737596,4.824047,m001,Givors – Halte,halte
+no_match,16859.3,quay,,Leie,50.779396,3.097849,m131,Lille – Port de Plaisance,port
+no_match,16859.8,pontoon,,Saône,45.739318,4.814059,m001,Givors – Halte,halte
+no_match,16915.5,pontoon,,Seine (Amont),48.700335,2.397898,m060,Paris – Port de l'Arsenal,port
+no_match,16951.6,pontoon,,Seine,49.295835,1.027477,m020,Rouen – Halte de Plaisance,halte
+no_match,17137.1,quay,Poste attente paquebots hôtel,Saône,45.741856,4.814131,m001,Givors – Halte,halte
+no_match,17165.6,quay,Liegestelle,Rhine,48.691546,7.917796,m202,Port du Rhin Strasbourg,port
+no_match,17172.2,quay,Liegestelle,Rhine,48.690884,7.919037,m202,Port du Rhin Strasbourg,port
+no_match,17191.5,pontoon,,Saône,45.742345,4.814204,m001,Givors – Halte,halte
+no_match,17271.1,pontoon,Ponton wake board surf,Rhône,45.740968,4.826857,m001,Givors – Halte,halte
+no_match,17319.4,quay,,Leie,50.782841,3.104367,m131,Lille – Port de Plaisance,port
+no_match,17495.8,pontoon,,Saône,45.744975,4.815342,m001,Givors – Halte,halte
+no_match,17546.0,pontoon,,Saône,45.745377,4.815741,m001,Givors – Halte,halte
+no_match,17548.1,quay,Liegestelle,Rhine,47.654897,7.524014,m170,Port de Plaisance de Mulhouse,port
+no_match,17555.6,quay,,Leie,50.784717,3.10666,m131,Lille – Port de Plaisance,port
+no_match,17627.6,pontoon,Ponton ski nautique,Rhône,45.743828,4.829287,m001,Givors – Halte,halte
+no_match,17711.1,quay,Elbeuf,Seine,49.293133,1.007016,m020,Rouen – Halte de Plaisance,halte
+no_match,17740.1,quay,,Leie,50.786192,3.108345,m131,Lille – Port de Plaisance,port
+no_match,17871.1,pontoon,,Saône,45.747999,4.818194,m001,Givors – Halte,halte
+no_match,17985.3,pontoon,,Rhône,45.746655,4.831921,m001,Givors – Halte,halte
+no_match,18002.7,quay,,Leie,50.788124,3.111911,m131,Lille – Port de Plaisance,port
+no_match,18059.0,quay,quai de chargement,Moselle,48.838071,6.076298,m070,Nancy – Port de Plaisance,port
+no_match,18084.6,pontoon,,Saône,45.749597,4.820564,m001,Givors – Halte,halte
+no_match,18270.8,pontoon,,Seine (Amont),48.687321,2.387887,m060,Paris – Port de l'Arsenal,port
+no_match,18291.8,pontoon,,Seine (Amont),48.687125,2.387776,m060,Paris – Port de l'Arsenal,port
+no_match,18431.5,pontoon,,Seine (Amont),48.635618,2.455305,m100,Melun – Port de Plaisance,port
+no_match,18443.9,quay,,Leie,50.790312,3.124236,m131,Lille – Port de Plaisance,port
+no_match,18483.0,quay,,Leie,50.790663,3.124315,m131,Lille – Port de Plaisance,port
+no_match,18563.8,quay,,Leie,50.79103,3.126574,m131,Lille – Port de Plaisance,port
+no_match,18599.7,quay,,Leie,50.791358,3.126615,m131,Lille – Port de Plaisance,port
+no_match,18637.5,pontoon,,Oise,49.314345,2.624204,m161,Port de Plaisance de Compiègne,port
+no_match,18685.9,quay,quai de chargement et de déchargement,Moselle,48.844294,6.076223,m070,Nancy – Port de Plaisance,port
+no_match,18757.9,pontoon,,Oise,49.313376,2.623246,m161,Port de Plaisance de Compiègne,port
+no_match,19020.1,pontoon,Ponton attente plaisance Ormes amont,Saône,46.622295,4.95059,m053,Chalon-sur-Saône – Port de Plaisance,port
+no_match,19062.6,quay,Appontement quai Antonin Poncet,Rhône,45.755864,4.836273,m001,Givors – Halte,halte
+no_match,19076.9,pontoon,,Seine,48.972062,2.178978,m214,Arsenal Marina Paris,halte
+no_match,19118.4,pontoon,,Seine,48.971574,2.177458,m214,Arsenal Marina Paris,halte
+no_match,19633.5,pontoon,,Rhône,45.760404,4.840254,m001,Givors – Halte,halte
+no_match,19818.9,pontoon,,Seine (Amont),48.645553,2.442857,m100,Melun – Port de Plaisance,port
+no_match,19878.1,quay,Liegestelle,Rhine,47.849108,7.55478,m170,Port de Plaisance de Mulhouse,port
+no_match,20045.5,pontoon,Halte de Bouchain,Canal Dunkerque–Escaut,50.256129,3.297568,m133,Douai – Port de Plaisance,port
+no_match,21009.7,pontoon,,Oise,49.302833,2.596552,m161,Port de Plaisance de Compiègne,port
+no_match,21018.7,pontoon,,Seine (Amont),48.653181,2.431082,m100,Melun – Port de Plaisance,port
+no_match,21024.3,pontoon,,Seine (Amont),48.653188,2.430995,m100,Melun – Port de Plaisance,port
+no_match,21215.4,quay,ducs d'albe,Saône,45.779723,4.809139,m001,Givors – Halte,halte
+no_match,21221.0,quay,,Leie,50.801478,3.1893,m131,Lille – Port de Plaisance,port
+no_match,21343.3,pontoon,,Oise,49.302876,2.590805,m161,Port de Plaisance de Compiègne,port
+no_match,21390.6,quay,quai de chargement et de déchargement,Moselle,48.86963,6.071925,m070,Nancy – Port de Plaisance,port
+no_match,21406.2,pontoon,Halte de La Bassée,Canal Dunkerque–Escaut,50.527411,2.800475,m131,Lille – Port de Plaisance,port
+no_match,21575.3,pontoon,,Seine (Amont),48.655623,2.424389,m100,Melun – Port de Plaisance,port
+no_match,21586.4,pontoon,,Seine (Amont),48.415112,3.246095,m103,Montereau – Halte,halte
+no_match,21615.2,pontoon,,Seine (Amont),48.415155,3.24648,m103,Montereau – Halte,halte
+no_match,21674.1,pontoon,,Seine (Amont),48.656225,2.423391,m100,Melun – Port de Plaisance,port
+no_match,21801.4,pontoon,,Seine (Amont),48.658174,2.419833,m060,Paris – Port de l'Arsenal,port
+no_match,21835.3,pontoon,,Saône,45.784923,4.813234,m001,Givors – Halte,halte
+no_match,21844.7,pontoon,,Moselle,48.876037,6.079682,m070,Nancy – Port de Plaisance,port
+no_match,21847.4,quay,ponton,Moselle,48.876061,6.079671,m070,Nancy – Port de Plaisance,port
+no_match,21936.8,quay,quai de chargement,Moselle,48.877402,6.081664,m070,Nancy – Port de Plaisance,port
+no_match,21939.3,pontoon,,Moselle,48.877426,6.081667,m070,Nancy – Port de Plaisance,port
+no_match,22015.9,pontoon,,Seine,49.276466,1.260784,m020,Rouen – Halte de Plaisance,halte
+no_match,22037.4,pontoon,,Seine,49.276272,1.260871,m020,Rouen – Halte de Plaisance,halte
+no_match,22067.7,pontoon,,Saône,45.786906,4.814425,m001,Givors – Halte,halte
+no_match,22142.2,quay,quai de chargement et de déchargement,Moselle,48.876881,6.071737,m070,Nancy – Port de Plaisance,port
+no_match,22427.5,pontoon,Ponton de Caluire,Saône,45.789524,4.820001,m001,Givors – Halte,halte
+no_match,22632.3,pontoon,,Saône,45.791134,4.822058,m001,Givors – Halte,halte
+no_match,22693.2,pontoon,,Rhône,45.786195,4.854288,m001,Givors – Halte,halte
+no_match,23015.8,pontoon,Ponton,Saône,45.794027,4.826679,m001,Givors – Halte,halte
+no_match,23049.5,pontoon,Ponton,Saône,45.794284,4.827053,m001,Givors – Halte,halte
+no_match,23554.2,pontoon,,Oise,49.30101,2.55588,m161,Port de Plaisance de Compiègne,port
+no_match,23641.9,pontoon,Ponton,Saône,45.798079,4.838021,m001,Givors – Halte,halte
+no_match,23685.5,pontoon,,Oise,49.299868,2.554854,m161,Port de Plaisance de Compiègne,port
+no_match,24026.9,quay,Liegestelle,Rhine,47.61183,7.58383,m170,Port de Plaisance de Mulhouse,port
+no_match,24448.5,pontoon,,Oise,49.302163,2.540268,m161,Port de Plaisance de Compiègne,port
+no_match,24545.4,pontoon,,Seine,48.989176,2.102172,m214,Arsenal Marina Paris,halte
+no_match,24574.1,pontoon,,Seine,48.988894,2.101329,m214,Arsenal Marina Paris,halte
+no_match,24586.7,pontoon,Halte fuviale de Tournus,Saône,46.562697,4.913563,m053,Chalon-sur-Saône – Port de Plaisance,port
+no_match,24792.6,quay,Liegestelle,Rhine,47.606877,7.591014,m170,Port de Plaisance de Mulhouse,port
+no_match,24856.0,pontoon,ponton,Moselle,48.900791,6.062799,m070,Nancy – Port de Plaisance,port
+no_match,24867.1,pontoon,,Seine,49.247599,1.263682,m020,Rouen – Halte de Plaisance,halte
+no_match,24904.4,pontoon,,Moselle,48.901166,6.062437,m070,Nancy – Port de Plaisance,port
+no_match,24950.7,pontoon,,Moselle,48.901593,6.062361,m070,Nancy – Port de Plaisance,port
+no_match,24961.2,pontoon,Appontement,Saône,45.809576,4.842238,m001,Givors – Halte,halte
+no_match,25000.5,pontoon,,Moselle,48.901992,6.062041,m070,Nancy – Port de Plaisance,port
+no_match,25061.6,pontoon,,Oise,49.300349,2.532081,m161,Port de Plaisance de Compiègne,port
+no_match,25155.0,pontoon,,Seine,48.9912,2.093968,m214,Arsenal Marina Paris,halte
+no_match,25184.5,pontoon,,Seine,48.991149,2.093394,m214,Arsenal Marina Paris,halte
+no_match,25221.7,pontoon,,Seine,48.991144,2.092742,m214,Arsenal Marina Paris,halte
+no_match,25261.6,quay,Amarrage Conflans-Sainte-Honorine RD,Seine,48.991195,2.092111,m214,Arsenal Marina Paris,halte
+no_match,25301.3,quay,Zone d'amarrage Conflans-Sainte-Honorine rive gauche,Seine,48.989531,2.089481,m214,Arsenal Marina Paris,halte
+no_match,25347.2,pontoon,,Seine,48.990946,2.090335,m214,Arsenal Marina Paris,halte
+no_match,25434.5,pontoon,,Seine,48.99084,2.088705,m214,Arsenal Marina Paris,halte
+no_match,25464.4,quay,Amarrage Conflans-Sainte-Honorine RD,Seine,48.990747,2.088082,m214,Arsenal Marina Paris,halte
+no_match,25575.9,pontoon,,Seine,48.935257,2.039055,m214,Arsenal Marina Paris,halte
+no_match,25577.2,pontoon,,Seine,48.935152,2.038974,m214,Arsenal Marina Paris,halte
+no_match,25586.6,pontoon,,Seine,48.935263,2.038902,m214,Arsenal Marina Paris,halte
+no_match,25751.7,quay,ducs d'albe,Saône,45.815646,4.849601,m001,Givors – Halte,halte
+no_match,25756.3,pontoon,Halte de Collonges au mont d'Or,Saône,45.815689,4.849599,m001,Givors – Halte,halte
+no_match,25976.0,quay,Amarrage Conflans Fin d'Oise,Seine,48.9881,2.076387,m214,Arsenal Marina Paris,halte
+no_match,26104.0,quay,Liegestelle,Rhine,47.586911,7.58816,m170,Port de Plaisance de Mulhouse,port
+no_match,26119.0,quay,Liegestelle,Rhine,47.584306,7.584716,m170,Port de Plaisance de Mulhouse,port
+no_match,26286.1,quay,Zone d'amarrage Andrésy bras d'Oise,Seine,48.986335,2.069301,m214,Arsenal Marina Paris,halte
+no_match,26386.5,pontoon,,Seine,48.980757,2.061975,m214,Arsenal Marina Paris,halte
+no_match,26391.8,pontoon,,Seine,48.98118,2.062305,m214,Arsenal Marina Paris,halte
+no_match,26467.0,pontoon,,Seine,48.980997,2.060897,m214,Arsenal Marina Paris,halte
+no_match,26467.5,pontoon,,Seine,48.981105,2.060996,m214,Arsenal Marina Paris,halte
+no_match,26534.3,quay,Liegestelle,Rhine,47.579497,7.585445,m170,Port de Plaisance de Mulhouse,port
+no_match,26658.6,pontoon,,Moselle,48.913621,6.045161,m070,Nancy – Port de Plaisance,port
+no_match,26720.5,pontoon,,Moselle,48.914046,6.044509,m070,Nancy – Port de Plaisance,port
+no_match,26747.4,pontoon,,Moselle,48.914247,6.044284,m070,Nancy – Port de Plaisance,port
+no_match,26772.4,pontoon,,Moselle,48.914486,6.04427,m070,Nancy – Port de Plaisance,port
+no_match,26796.5,pontoon,,Moselle,48.914674,6.044097,m070,Nancy – Port de Plaisance,port
+no_match,27353.0,quay,quai de chargement et de déchargement,Moselle,48.919295,6.041171,m070,Nancy – Port de Plaisance,port
+no_match,27393.3,quay,Liegestelle Greffern,Rhine,48.759106,8.012425,m202,Port du Rhin Strasbourg,port
+no_match,27575.3,pontoon,,Saône,45.833523,4.843167,m001,Givors – Halte,halte
+no_match,27615.0,pontoon,,Oise,49.019625,2.086468,m214,Arsenal Marina Paris,halte
+no_match,27615.2,pontoon,Ponton,Saône,45.83423,4.840847,m001,Givors – Halte,halte
+no_match,27627.0,pontoon,,Oise,49.019534,2.086117,m214,Arsenal Marina Paris,halte
+no_match,27629.8,pontoon,,Oise,49.072337,2.190927,m214,Arsenal Marina Paris,halte
+no_match,27770.5,pontoon,,Oise,49.069223,2.178112,m214,Arsenal Marina Paris,halte
+no_match,27841.8,pontoon,,Oise,49.070726,2.180204,m214,Arsenal Marina Paris,halte
+no_match,27972.4,pontoon,,Seine,48.942514,2.008149,m214,Arsenal Marina Paris,halte
+no_match,28063.0,pontoon,,Saône,45.839584,4.831425,m001,Givors – Halte,halte
+no_match,28264.0,quay,,Saône,45.841224,4.833011,m001,Givors – Halte,halte
+no_match,28405.6,pontoon,,Oise,49.03787,2.098662,m214,Arsenal Marina Paris,halte
+no_match,28476.2,pontoon,,Oise,49.085076,2.204374,m214,Arsenal Marina Paris,halte
+no_match,28502.8,pontoon,,Oise,49.08547,2.204816,m214,Arsenal Marina Paris,halte
+no_match,28667.0,pontoon,,Seine,49.215924,1.284138,m020,Rouen – Halte de Plaisance,halte
+no_match,28713.4,pontoon,,Seine,49.214868,1.282497,m020,Rouen – Halte de Plaisance,halte
+no_match,28873.8,pontoon,,Oise,49.043407,2.098313,m214,Arsenal Marina Paris,halte
+no_match,28923.8,pontoon,,Seine,49.230499,1.32638,m020,Rouen – Halte de Plaisance,halte
+no_match,28965.5,pontoon,,Seine,49.216051,1.292906,m020,Rouen – Halte de Plaisance,halte
+no_match,28987.6,pontoon,,Oise,49.046704,2.101552,m214,Arsenal Marina Paris,halte
+no_match,29042.0,pontoon,,Seine,49.215022,1.292267,m020,Rouen – Halte de Plaisance,halte
+no_match,29068.9,pontoon,,Oise,49.047226,2.100769,m214,Arsenal Marina Paris,halte
+no_match,29239.7,pontoon,,Oise,49.057998,2.11668,m214,Arsenal Marina Paris,halte
+no_match,29313.6,pontoon,,Moselle,48.938921,6.043764,m070,Nancy – Port de Plaisance,port
+no_match,29344.9,pontoon,,Oise,49.064533,2.127357,m214,Arsenal Marina Paris,halte
+no_match,29355.3,pontoon,,Moselle,48.939325,6.043779,m070,Nancy – Port de Plaisance,port
+no_match,29400.2,pontoon,,Seine,49.252174,1.376514,m020,Rouen – Halte de Plaisance,halte
+no_match,29428.9,pontoon,,Seine,49.252108,1.376979,m020,Rouen – Halte de Plaisance,halte
+no_match,29811.9,pontoon,,Oise,49.019609,2.04682,m214,Arsenal Marina Paris,halte
+no_match,29836.9,pontoon,,Oise,49.031055,2.061145,m214,Arsenal Marina Paris,halte
+no_match,29840.3,pontoon,,Oise,49.030706,2.060606,m214,Arsenal Marina Paris,halte
+no_match,29868.1,pontoon,,Oise,49.031208,2.060779,m214,Arsenal Marina Paris,halte
+no_match,29874.5,pontoon,Halte de Béthune,Canal Dunkerque–Escaut,50.545269,2.638297,m130,Arras – Port de Plaisance,port
+no_match,29896.6,pontoon,,Oise,49.031256,2.06032,m214,Arsenal Marina Paris,halte
+no_match,30320.8,pontoon,,Oise,49.035246,2.057969,m214,Arsenal Marina Paris,halte
+no_match,30403.7,pontoon,,Oise,49.036057,2.057557,m214,Arsenal Marina Paris,halte
+no_match,30427.7,pontoon,,Seine,48.98157,1.998479,m214,Arsenal Marina Paris,halte
+no_match,30467.1,pontoon,,Seine,48.981995,1.998214,m214,Arsenal Marina Paris,halte
+no_match,30542.3,pontoon,,Seine,48.982729,1.997645,m214,Arsenal Marina Paris,halte
+no_match,30992.6,pontoon,,Oise,49.111611,2.211623,m214,Arsenal Marina Paris,halte
+no_match,31009.4,quay,Liegestelle,Rhine,48.788614,8.036275,m202,Port du Rhin Strasbourg,port
+no_match,31208.1,pontoon,,Oise,49.031748,2.037213,m214,Arsenal Marina Paris,halte
+no_match,31237.2,pontoon,,Oise,49.259795,2.470646,m161,Port de Plaisance de Compiègne,port
+no_match,31404.0,quay,quai de chargement et de déchargement,Moselle,48.957651,6.03837,m070,Nancy – Port de Plaisance,port
+no_match,31446.9,pontoon,,Seine,49.240809,1.399048,m020,Rouen – Halte de Plaisance,halte
+no_match,31619.9,pontoon,,Seine,49.239122,1.399817,m020,Rouen – Halte de Plaisance,halte
+no_match,31619.9,pontoon,,Seine,49.239146,1.399855,m020,Rouen – Halte de Plaisance,halte
+no_match,31624.4,pontoon,,Seine,49.239032,1.399764,m020,Rouen – Halte de Plaisance,halte
+no_match,31631.5,pontoon,,Seine,49.239007,1.399866,m020,Rouen – Halte de Plaisance,halte
+no_match,31636.0,pontoon,,Seine,49.238909,1.399801,m020,Rouen – Halte de Plaisance,halte
+no_match,31651.6,pontoon,,Seine,49.238716,1.399805,m020,Rouen – Halte de Plaisance,halte
+no_match,31991.6,pontoon,,Seine,48.993047,1.983627,m214,Arsenal Marina Paris,halte
+no_match,32069.9,pontoon,,Seine,48.993571,1.982845,m214,Arsenal Marina Paris,halte
+no_match,32196.9,pontoon,,Oise,49.132208,2.25556,m214,Arsenal Marina Paris,halte
+no_match,32351.2,pontoon,,Oise,49.141761,2.330536,m214,Arsenal Marina Paris,halte
+no_match,32366.4,pontoon,,Oise,49.14174,2.327566,m214,Arsenal Marina Paris,halte
+no_match,32457.5,pontoon,,Oise,49.130901,2.235231,m214,Arsenal Marina Paris,halte
+no_match,32853.9,pontoon,,Oise,49.141034,2.273758,m214,Arsenal Marina Paris,halte
+no_match,32860.0,pontoon,,Oise,49.141148,2.274188,m214,Arsenal Marina Paris,halte
+no_match,32877.7,pontoon,,Oise,49.141493,2.275545,m214,Arsenal Marina Paris,halte
+no_match,33132.8,pontoon,,Oise,49.144586,2.281459,m214,Arsenal Marina Paris,halte
+no_match,33587.3,pontoon,,Oise,49.149734,2.290101,m214,Arsenal Marina Paris,halte
+no_match,33894.2,pontoon,,Seine,49.000002,1.95968,m214,Arsenal Marina Paris,halte
+no_match,33933.3,pontoon,0,Seine,49.000204,1.959237,m214,Arsenal Marina Paris,halte
+no_match,33949.5,pontoon,0,Seine,49.000894,1.959567,m214,Arsenal Marina Paris,halte
+no_match,33950.8,pontoon,0,Seine,49.000686,1.95937,m214,Arsenal Marina Paris,halte
+no_match,34040.3,pontoon,,Seine,49.000777,1.958044,m214,Arsenal Marina Paris,halte
+no_match,34147.3,quay,quai d'embarquement et de débarquement,Moselle,48.981995,6.030487,m070,Nancy – Port de Plaisance,port
+no_match,34943.2,pontoon,,Oise,49.165951,2.366173,m214,Arsenal Marina Paris,halte
+no_match,35453.6,quay,Liegestelle,Rhine,48.024157,7.57342,m170,Port de Plaisance de Mulhouse,port
+no_match,35682.0,pontoon,,Seine (Amont),48.495008,3.464076,m090,Sens – Port de Plaisance,port
+no_match,35694.2,pontoon,,Seine (Amont),48.495031,3.464435,m090,Sens – Port de Plaisance,port
+no_match,35922.3,pontoon,,Seine,49.007147,1.933941,m214,Arsenal Marina Paris,halte
+no_match,36518.0,pontoon,,Seine,49.002077,1.920624,m214,Arsenal Marina Paris,halte
+no_match,36693.8,pontoon,,Oise,49.215914,2.426288,m161,Port de Plaisance de Compiègne,port
+no_match,36728.9,pontoon,,Seine,49.001273,1.916759,m214,Arsenal Marina Paris,halte
+no_match,36754.6,pontoon,Halte de Fresnes sur Escaut 1,Canal Dunkerque–Escaut,50.435751,3.58855,m133,Douai – Port de Plaisance,port
+no_match,36769.9,pontoon,Halte de Fresnes sur Escaut 2,Canal Dunkerque–Escaut,50.436474,3.588546,m133,Douai – Port de Plaisance,port
+no_match,36772.2,pontoon,,Seine,49.001069,1.915938,m214,Arsenal Marina Paris,halte
+no_match,36775.0,pontoon,Halte de Fresnes sur Escaut 3,Canal Dunkerque–Escaut,50.437033,3.588444,m133,Douai – Port de Plaisance,port
+no_match,36779.0,pontoon,Halte de Fresnes sur Escaut 4,Canal Dunkerque–Escaut,50.437571,3.588332,m133,Douai – Port de Plaisance,port
+no_match,37016.8,quay,quai de chargement et de déchargement,Moselle,49.01218,6.045482,m070,Nancy – Port de Plaisance,port
+no_match,37480.2,quay,Liegestelle Schleuse Iffezheim,Rhine,48.823433,8.109649,m202,Port du Rhin Strasbourg,port
+no_match,37590.9,quay,Liegestelle Schleuse Iffezheim,Rhine,48.8236,8.11159,m202,Port du Rhin Strasbourg,port
+no_match,37768.0,quay,Liegestelle Schleuse Iffezheim,Rhine,48.826378,8.110614,m202,Port du Rhin Strasbourg,port
+no_match,37888.3,quay,Liegestelle Schleuse Iffezheim,Rhine,48.826665,8.11256,m202,Port du Rhin Strasbourg,port
+no_match,38733.6,quay,Liegestelle Schleuse Iffezheim,Rhine,48.836462,8.113393,m202,Port du Rhin Strasbourg,port
+no_match,38745.6,pontoon,,Seine,48.997061,1.883031,m214,Arsenal Marina Paris,halte
+no_match,38745.9,quay,Liegestelle Schleuse Iffezheim,Rhine,48.835639,8.115031,m202,Port du Rhin Strasbourg,port
+no_match,38870.8,pontoon,,Oise,49.201231,2.37327,m214,Arsenal Marina Paris,halte
+no_match,39000.6,pontoon,,Oise,49.20234,2.377834,m214,Arsenal Marina Paris,halte
+no_match,39028.9,quay,Liegestelle Schleuse Iffezheim,Rhine,48.839526,8.114239,m202,Port du Rhin Strasbourg,port
+no_match,39045.3,quay,Liegestelle Schleuse Iffezheim,Rhine,48.838751,8.115894,m202,Port du Rhin Strasbourg,port
+no_match,39059.3,pontoon,,Oise,49.202789,2.382151,m214,Arsenal Marina Paris,halte
+no_match,39213.4,quay,Liegestelle Umpumpplatz Iffezheim,Rhine,48.842301,8.113273,m202,Port du Rhin Strasbourg,port
+no_match,39853.0,pontoon,,Moselle,49.040868,6.059139,m070,Nancy – Port de Plaisance,port
+no_match,39858.4,pontoon,,Seine,48.988021,1.860486,m214,Arsenal Marina Paris,halte
+no_match,39923.3,pontoon,,Seine,48.99105,1.861428,m214,Arsenal Marina Paris,halte
+no_match,39968.4,pontoon,,Seine,48.991626,1.861124,m214,Arsenal Marina Paris,halte
+no_match,42111.9,quay,quai,Moselle,49.063188,6.069711,m070,Nancy – Port de Plaisance,port
+no_match,45269.1,pontoon,,Moselle,49.095211,6.098448,m070,Nancy – Port de Plaisance,port
+no_match,45343.6,quay,quai,Moselle,49.096529,6.105776,m070,Nancy – Port de Plaisance,port
+no_match,45370.5,pontoon,,Moselle,49.096317,6.100497,m070,Nancy – Port de Plaisance,port
+no_match,46093.8,pontoon,,Moselle,49.104503,6.121689,m070,Nancy – Port de Plaisance,port
+no_match,46096.7,pontoon,,Moselle,49.104487,6.121058,m070,Nancy – Port de Plaisance,port
+no_match,46109.7,pontoon,,Moselle,49.104687,6.122318,m070,Nancy – Port de Plaisance,port
+no_match,46116.1,pontoon,,Moselle,49.104782,6.122896,m070,Nancy – Port de Plaisance,port
+no_match,46118.8,quay,,Canal Nieuwpoort–Dunkerque,51.070331,2.666376,m221,Port de Plaisance de Saint-Omer,port
+no_match,46126.2,quay,,Canal Nieuwpoort–Dunkerque,51.070781,2.665655,m221,Port de Plaisance de Saint-Omer,port
+no_match,46132.4,pontoon,,Moselle,49.10481,6.121052,m070,Nancy – Port de Plaisance,port
+no_match,46132.7,pontoon,,Moselle,49.105095,6.125502,m070,Nancy – Port de Plaisance,port
+no_match,46133.3,pontoon,,Moselle,49.105082,6.125202,m070,Nancy – Port de Plaisance,port
+no_match,46137.1,pontoon,,Moselle,49.105023,6.123703,m070,Nancy – Port de Plaisance,port
+no_match,46141.2,pontoon,,Moselle,49.105126,6.124751,m070,Nancy – Port de Plaisance,port
+no_match,46145.2,quay,,Canal Nieuwpoort–Dunkerque,51.070541,2.666563,m221,Port de Plaisance de Saint-Omer,port
+no_match,46202.3,pontoon,,Moselle,49.107039,6.153992,m070,Nancy – Port de Plaisance,port
+no_match,46202.8,pontoon,,Moselle,49.107041,6.153916,m070,Nancy – Port de Plaisance,port
+no_match,46204.3,pontoon,,Moselle,49.107059,6.154078,m070,Nancy – Port de Plaisance,port
+no_match,46204.9,pontoon,,Moselle,49.107068,6.154176,m070,Nancy – Port de Plaisance,port
+no_match,46206.9,pontoon,,Moselle,49.107089,6.15428,m070,Nancy – Port de Plaisance,port
+no_match,46208.2,pontoon,,Moselle,49.107109,6.154556,m070,Nancy – Port de Plaisance,port
+no_match,46208.4,pontoon,,Moselle,49.107106,6.154379,m070,Nancy – Port de Plaisance,port
+no_match,46208.5,pontoon,,Moselle,49.107109,6.154466,m070,Nancy – Port de Plaisance,port
+no_match,46232.4,pontoon,,Moselle,49.107299,6.153657,m070,Nancy – Port de Plaisance,port
+no_match,46237.9,pontoon,,Moselle,49.107428,6.156293,m070,Nancy – Port de Plaisance,port
+no_match,46239.1,pontoon,,Moselle,49.107434,6.156116,m070,Nancy – Port de Plaisance,port
+no_match,46239.1,pontoon,,Moselle,49.10738,6.154309,m070,Nancy – Port de Plaisance,port
+no_match,46239.4,pontoon,,Moselle,49.107445,6.156393,m070,Nancy – Port de Plaisance,port
+no_match,46240.1,pontoon,,Moselle,49.107434,6.155799,m070,Nancy – Port de Plaisance,port
+no_match,46240.3,pontoon,,Moselle,49.107433,6.155708,m070,Nancy – Port de Plaisance,port
+no_match,46241.0,pontoon,,Moselle,49.107437,6.155623,m070,Nancy – Port de Plaisance,port
+no_match,46241.1,pontoon,,Moselle,49.107447,6.155953,m070,Nancy – Port de Plaisance,port
+no_match,46241.2,pontoon,,Moselle,49.107436,6.15554,m070,Nancy – Port de Plaisance,port
+no_match,46241.4,pontoon,,Moselle,49.107465,6.156487,m070,Nancy – Port de Plaisance,port
+no_match,46241.9,pontoon,,Moselle,49.107439,6.155437,m070,Nancy – Port de Plaisance,port
+no_match,46242.7,pontoon,,Moselle,49.10748,6.15659,m070,Nancy – Port de Plaisance,port
+no_match,46243.0,pontoon,,Moselle,49.107446,6.155334,m070,Nancy – Port de Plaisance,port
+no_match,46243.3,pontoon,,Moselle,49.107446,6.155232,m070,Nancy – Port de Plaisance,port
+no_match,46244.4,pontoon,,Moselle,49.107498,6.156691,m070,Nancy – Port de Plaisance,port
+no_match,46246.0,pontoon,,Moselle,49.107515,6.156786,m070,Nancy – Port de Plaisance,port
+no_match,46247.4,pontoon,,Moselle,49.107531,6.156881,m070,Nancy – Port de Plaisance,port
+no_match,46248.9,pontoon,,Moselle,49.107547,6.156983,m070,Nancy – Port de Plaisance,port
+no_match,46250.6,pontoon,,Moselle,49.107565,6.157086,m070,Nancy – Port de Plaisance,port
+no_match,46252.0,pontoon,,Moselle,49.107581,6.157185,m070,Nancy – Port de Plaisance,port
+no_match,46258.5,pontoon,,Moselle,49.107648,6.157506,m070,Nancy – Port de Plaisance,port
+no_match,46267.1,pontoon,,Moselle,49.107734,6.15783,m070,Nancy – Port de Plaisance,port
+no_match,46475.9,quay,,Canal Nieuwpoort–Dunkerque,51.073756,2.667752,m221,Port de Plaisance de Saint-Omer,port
+no_match,46989.7,pontoon,,Moselle,49.113552,6.138997,m070,Nancy – Port de Plaisance,port
+no_match,47067.9,pontoon,,Moselle,49.114322,6.140432,m070,Nancy – Port de Plaisance,port
+no_match,47179.7,pontoon,,Moselle,49.116135,6.16616,m070,Nancy – Port de Plaisance,port
+no_match,47205.2,pontoon,,Moselle,49.116367,6.166288,m070,Nancy – Port de Plaisance,port
+no_match,47226.6,pontoon,,Moselle,49.116558,6.166217,m070,Nancy – Port de Plaisance,port
+no_match,47237.2,pontoon,,Moselle,49.116657,6.166415,m070,Nancy – Port de Plaisance,port
+no_match,47256.0,pontoon,,Moselle,49.116826,6.166424,m070,Nancy – Port de Plaisance,port
+no_match,47264.3,pontoon,,Moselle,49.116904,6.166599,m070,Nancy – Port de Plaisance,port
+no_match,47285.8,pontoon,,Moselle,49.117101,6.16677,m070,Nancy – Port de Plaisance,port
+no_match,47301.9,pontoon,,Moselle,49.117252,6.167147,m070,Nancy – Port de Plaisance,port
+no_match,47311.9,pontoon,,Moselle,49.117354,6.167853,m070,Nancy – Port de Plaisance,port
+no_match,47468.9,pontoon,,Moselle,49.118252,6.148293,m070,Nancy – Port de Plaisance,port
+no_match,47645.3,pontoon,,Seine,49.098424,1.486401,m020,Rouen – Halte de Plaisance,halte
+no_match,47666.7,pontoon,,Seine,49.09825,1.486535,m020,Rouen – Halte de Plaisance,halte
+no_match,47714.4,pontoon,,Seine,49.097938,1.486994,m020,Rouen – Halte de Plaisance,halte
+no_match,47768.0,pontoon,,Seine,49.097695,1.487728,m020,Rouen – Halte de Plaisance,halte
+no_match,48342.6,quay,quai de chargement et de déchargement,Moselle,49.126542,6.163291,m070,Nancy – Port de Plaisance,port
+no_match,48626.8,pontoon,,Moselle,49.129162,6.166633,m070,Nancy – Port de Plaisance,port
+no_match,48684.5,pontoon,,Moselle,49.129693,6.167326,m070,Nancy – Port de Plaisance,port
+no_match,48690.3,pontoon,,Moselle,49.129737,6.166848,m070,Nancy – Port de Plaisance,port
+no_match,48691.7,pontoon,,Moselle,49.129757,6.167284,m070,Nancy – Port de Plaisance,port
+no_match,48696.6,pontoon,,Moselle,49.1298,6.167218,m070,Nancy – Port de Plaisance,port
+no_match,48826.3,pontoon,,Seine,49.08952,1.495293,m020,Rouen – Halte de Plaisance,halte
+no_match,49445.6,quay,quai de chargement et de déchargement,Moselle,49.136675,6.184317,m070,Nancy – Port de Plaisance,port
+no_match,49622.1,pontoon,,Seine,48.996366,1.722493,m214,Arsenal Marina Paris,halte
+no_match,49643.7,pontoon,,Seine,48.996852,1.722432,m214,Arsenal Marina Paris,halte
+no_match,49751.2,quay,quai de chargement et de déchargement,Moselle,49.139414,6.188292,m070,Nancy – Port de Plaisance,port
+no_match,50118.3,pontoon,,Moselle,49.14266,6.195652,m070,Nancy – Port de Plaisance,port
+no_match,50129.3,pontoon,,Moselle,49.142756,6.195882,m070,Nancy – Port de Plaisance,port
+no_match,50152.8,pontoon,,Moselle,49.142962,6.196329,m070,Nancy – Port de Plaisance,port
+no_match,51456.7,quay,quai de chargement et de déchargement,Moselle,49.154591,6.20312,m070,Nancy – Port de Plaisance,port
+no_match,54272.9,pontoon,,Seine,49.065786,1.696965,m214,Arsenal Marina Paris,halte
+no_match,54285.4,pontoon,,Seine,49.066047,1.696967,m214,Arsenal Marina Paris,halte
+no_match,54339.2,pontoon,,Seine,49.066744,1.696661,m214,Arsenal Marina Paris,halte
+no_match,54350.0,pontoon,,Moselle,49.18064,6.201916,m070,Nancy – Port de Plaisance,port
+no_match,54365.1,pontoon,,Moselle,49.180789,6.201064,m070,Nancy – Port de Plaisance,port
+no_match,54370.8,pontoon,,Seine,49.066973,1.696348,m214,Arsenal Marina Paris,halte
+no_match,54406.5,pontoon,,Seine,49.064812,1.694216,m214,Arsenal Marina Paris,halte
+no_match,54756.6,pontoon,,Seine,49.066886,1.690404,m214,Arsenal Marina Paris,halte
+no_match,55108.8,quay,quai de déchargement,Moselle,49.187601,6.180986,m070,Nancy – Port de Plaisance,port
+no_match,55194.1,pontoon,,Moselle,49.188371,6.182312,m070,Nancy – Port de Plaisance,port
+no_match,55214.6,quay,quai de déchargement,Moselle,49.188556,6.182726,m070,Nancy – Port de Plaisance,port
+no_match,55504.7,pontoon,,Seine,49.045185,1.664349,m214,Arsenal Marina Paris,halte
+no_match,56005.7,pontoon,,Seine,49.078352,1.627987,m020,Rouen – Halte de Plaisance,halte
+no_match,56244.2,quay,quai de chargement et de déchargement,Moselle,49.197811,6.180512,m070,Nancy – Port de Plaisance,port
+no_match,56686.3,pontoon,,Seine,49.03665,1.567521,m020,Rouen – Halte de Plaisance,halte
+no_match,56690.0,pontoon,,Seine,49.03668,1.567667,m020,Rouen – Halte de Plaisance,halte
+no_match,57076.3,quay,quai de déchargement,Moselle,49.205296,6.181018,m070,Nancy – Port de Plaisance,port
+no_match,57095.9,pontoon,,Seine,49.028682,1.63117,m214,Arsenal Marina Paris,halte
+no_match,57116.7,pontoon,,Seine,49.028356,1.630687,m214,Arsenal Marina Paris,halte
+no_match,57133.8,pontoon,,Seine,49.028034,1.63026,m214,Arsenal Marina Paris,halte
+no_match,57162.4,quay,quai de déchargement,Moselle,49.20607,6.181116,m070,Nancy – Port de Plaisance,port
+no_match,57250.6,pontoon,,Seine,49.027845,1.628454,m214,Arsenal Marina Paris,halte
+no_match,57260.0,pontoon,,Seine,49.027543,1.628152,m214,Arsenal Marina Paris,halte
+no_match,57485.9,quay,quai de chargement et de déchargement,Moselle,49.20898,6.181432,m070,Nancy – Port de Plaisance,port
+no_match,57826.9,quay,Zone d'amarrage Méricourt aval,Seine,49.032655,1.622704,m214,Arsenal Marina Paris,halte
+no_match,57831.2,quay,Zone d'amarrage Méricourt aval,Seine,49.032634,1.62263,m214,Arsenal Marina Paris,halte
+no_match,58101.2,pontoon,,Seine,49.018421,1.61116,m214,Arsenal Marina Paris,halte
+no_match,58129.7,pontoon,,Seine,49.019321,1.611205,m214,Arsenal Marina Paris,halte
+no_match,58232.9,quay,Zone d'amarrage Méricourt amont,Seine,49.023737,1.611984,m214,Arsenal Marina Paris,halte
+no_match,58731.7,quay,quai de chargement et de déchargement,Moselle,49.220185,6.181884,m070,Nancy – Port de Plaisance,port
+no_match,60011.9,quay,quai de chargement,Moselle,49.231495,6.161366,m070,Nancy – Port de Plaisance,port
+no_match,60045.1,quay,quai d'embarquement et de débarquement,Moselle,49.23182,6.162862,m070,Nancy – Port de Plaisance,port
+no_match,62974.4,quay,quai de chargement et de déchargement,Moselle,49.258336,6.180021,m070,Nancy – Port de Plaisance,port
+no_match,63041.0,pontoon,passerelle,Moselle,49.442807,6.359516,m201,Port de Plaisance de Sarreguemines,port
+no_match,63048.5,pontoon,passerelle,Moselle,49.442653,6.359221,m201,Port de Plaisance de Sarreguemines,port
+no_match,63763.2,pontoon,,Moselle,49.445294,6.34999,m201,Port de Plaisance de Sarreguemines,port
+no_match,63776.9,pontoon,,Moselle,49.445409,6.349883,m201,Port de Plaisance de Sarreguemines,port
+no_match,63790.6,pontoon,,Moselle,49.445524,6.349775,m201,Port de Plaisance de Sarreguemines,port
+no_match,63802.1,pontoon,,Moselle,49.445616,6.34968,m201,Port de Plaisance de Sarreguemines,port
+no_match,63815.6,pontoon,,Moselle,49.445711,6.349556,m201,Port de Plaisance de Sarreguemines,port
+no_match,63824.8,pontoon,,Moselle,49.44576,6.349453,m201,Port de Plaisance de Sarreguemines,port
+no_match,64324.5,pontoon,,Moselle,49.449481,6.34503,m201,Port de Plaisance de Sarreguemines,port
+no_match,64465.4,quay,quai de chargement et de déchargement,Moselle,49.271748,6.180895,m070,Nancy – Port de Plaisance,port
+no_match,64704.3,pontoon,,Moselle,49.431881,6.320375,m201,Port de Plaisance de Sarreguemines,port
+no_match,64886.5,quay,quai de chargement et de déchargement,Moselle,49.275529,6.178909,m070,Nancy – Port de Plaisance,port
+no_match,65015.8,pontoon,,Moselle,49.276693,6.179367,m070,Nancy – Port de Plaisance,port
+no_match,65081.9,pontoon,,Moselle,49.27729,6.180201,m070,Nancy – Port de Plaisance,port
+no_match,65246.9,pontoon,,Moselle,49.441828,6.321455,m201,Port de Plaisance de Sarreguemines,port
+no_match,65732.2,quay,quai de chargement et de déchargement,Moselle,49.41872,6.291067,m201,Port de Plaisance de Sarreguemines,port
+no_match,65746.0,pontoon,,Moselle,49.418635,6.290767,m201,Port de Plaisance de Sarreguemines,port
+no_match,65800.3,pontoon,,Moselle,49.42525,6.296039,m201,Port de Plaisance de Sarreguemines,port
+no_match,65801.8,pontoon,,Moselle,49.425109,6.295882,m201,Port de Plaisance de Sarreguemines,port
+no_match,66179.0,quay,quai de chargement et de déchargement,Moselle,49.416252,6.281655,m201,Port de Plaisance de Sarreguemines,port
+no_match,66517.6,pontoon,,Moselle,49.290207,6.182755,m070,Nancy – Port de Plaisance,port
+no_match,66519.4,pontoon,,Moselle,49.290223,6.182865,m070,Nancy – Port de Plaisance,port
+no_match,66739.2,quay,quai de chargement et de déchargement,Moselle,49.394556,6.25435,m201,Port de Plaisance de Sarreguemines,port
+no_match,66787.9,pontoon,,Moselle,49.397439,6.255924,m201,Port de Plaisance de Sarreguemines,port
+no_match,66789.0,pontoon,,Moselle,49.396965,6.255521,m201,Port de Plaisance de Sarreguemines,port
+no_match,66810.0,pontoon,,Moselle,49.396093,6.254485,m201,Port de Plaisance de Sarreguemines,port
+no_match,66824.9,pontoon,,Moselle,49.395863,6.254067,m201,Port de Plaisance de Sarreguemines,port
+no_match,66843.0,quay,quai de chargement et de déchargement,Moselle,49.393839,6.252157,m201,Port de Plaisance de Sarreguemines,port
+no_match,67670.7,quay,quai de chargement et de déchargement,Moselle,49.39138,6.237359,m201,Port de Plaisance de Sarreguemines,port
+no_match,67696.3,quay,quai de chargement et de déchargement,Moselle,49.390953,6.23663,m201,Port de Plaisance de Sarreguemines,port
+no_match,68258.0,pontoon,,Moselle,49.386004,6.224183,m201,Port de Plaisance de Sarreguemines,port
+no_match,68284.7,pontoon,,Moselle,49.385974,6.22375,m201,Port de Plaisance de Sarreguemines,port
+no_match,68777.1,quay,quai de déchargement,Moselle,49.374586,6.207936,m201,Port de Plaisance de Sarreguemines,port
+no_match,69616.2,quay,quai de chargement et de déchargement,Moselle,49.323519,6.163835,m201,Port de Plaisance de Sarreguemines,port
+no_match,69676.5,quay,quai de chargement et de déchargement,Moselle,49.323363,6.16287,m201,Port de Plaisance de Sarreguemines,port
+no_match,69912.4,quay,quai de chargement et de déchargement,Moselle,49.323037,6.15925,m201,Port de Plaisance de Sarreguemines,port
+no_match,69996.7,quay,quai de chargement et de déchargement,Moselle,49.323244,6.158129,m201,Port de Plaisance de Sarreguemines,port
+no_match,70184.4,pontoon,,Moselle,49.344161,6.167133,m201,Port de Plaisance de Sarreguemines,port
+no_match,70190.9,quay,quai de chargement et de déchargement,Moselle,49.328964,6.158377,m201,Port de Plaisance de Sarreguemines,port
+no_match,70453.4,pontoon,Ex DF Organisation - THIONVILLE,Moselle,49.358937,6.172202,m201,Port de Plaisance de Sarreguemines,port
+no_match,70475.0,pontoon,Bowling - THIONVILLE,Moselle,49.356356,6.170252,m201,Port de Plaisance de Sarreguemines,port
+no_match,70513.3,pontoon,Quai Pierre Marchal,Moselle,49.357944,6.170679,m201,Port de Plaisance de Sarreguemines,port
+no_match,70595.2,pontoon,,Moselle,49.346603,6.162503,m201,Port de Plaisance de Sarreguemines,port
+no_match,70634.4,pontoon,,Moselle,49.346956,6.162133,m201,Port de Plaisance de Sarreguemines,port
+no_match,70674.3,pontoon,,Moselle,49.347317,6.161758,m201,Port de Plaisance de Sarreguemines,port
+no_match,70764.9,pontoon,,Moselle,49.349681,6.161834,m201,Port de Plaisance de Sarreguemines,port

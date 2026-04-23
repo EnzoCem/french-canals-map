@@ -1,0 +1,193 @@
+match_status,distance_m,ienc_name,ienc_waterway,ienc_lat,ienc_lon,ienc_length_m,ienc_width_m,ienc_rise_m,app_id,app_name,app_lat,app_lon
+no_match,8676.0,Ecluse de Saint-Maurice,Seine,48.816706,2.424184,125.0,11.4,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,9521.4,Petite écluse de Suresnes,Seine,48.870888,2.233033,160.5,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,9521.4,"Ecluse n°2 de Suresnes - 160,5x12m",Seine,48.870888,2.233033,160.5,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,9534.5,Ecluse de Rive Gauche de Suresnes,Seine,48.870987,2.232831,160.5,17.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,9534.5,"Ecluse n°1 de Suresnes - 160,5x17m",Seine,48.870987,2.232831,160.5,17.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,9541.3,Nouvelle écluse de Suresnes,Seine,48.870329,2.232884,180.0,18.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,9541.3,Ecluse n°3 de Suresnes - 180x18m,Seine,48.870329,2.232884,180.0,18.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,10226.4,Ecluse RD n°10 de Port-à-l'Anglais,Seine,48.798953,2.41829,180.0,16.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,10322.0,Ecluse RG n°10 de Port-à-l'Anglais,Seine,48.797621,2.416899,180.0,15.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,10478.7,Ecluse n°17 de Saint-Maur,Seine,48.812819,2.457301,125.0,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,12316.7,Ecluse de Créteil,Seine,48.798276,2.470131,125.0,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,13315.4,Ancienne écluse de Gigny,Saône,46.654502,4.95328,160.0,16.1,,lk015,Écluse de la Presque'île (Chalon junction),46.759,4.868
+no_match,14446.7,Ecluse de Chatou,Seine,48.8943,2.165042,185.0,18.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,16687.4,écluse d'Ormes,Saône,46.619312,4.947972,185.0,12.0,,lk015,Écluse de la Presque'île (Chalon junction),46.759,4.868
+no_match,16908.3,Ecluse non exploitée de Bougival,Seine,48.869874,2.131571,113.5,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,17016.7,Petite écluse de Bougival,Seine,48.870424,2.130011,51.0,8.2,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,17016.7,Ecluse n°2 de Bougival - 51x8m,Seine,48.870424,2.130011,51.0,8.2,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,17086.5,Grande écluse de Bougival,Seine,48.870899,2.128994,219.6,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,17086.5,Ecluse n°1 de Bougival - 220x12m,Seine,48.870899,2.128994,219.6,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,18609.7,Ecluse RG n°9 d'Ablon-Vigneux,Seine (Amont),48.719556,2.415854,172.0,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,18749.3,Ecluse RD n°9 d'Ablon-Vigneux,Seine (Amont),48.718544,2.41774,180.0,16.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,19846.1,ancienne écluse de Verdun accolée au barrage,Saône,46.897933,5.031756,185.0,12.0,,lk015,Écluse de la Presque'île (Chalon junction),46.759,4.868
+no_match,19929.7,anc écluse de Verdun sur le Doubs,Saône,46.898596,5.032307,185.0,12.0,,lk015,Écluse de la Presque'île (Chalon junction),46.759,4.868
+no_match,24295.7,Nouvelle écluse d'Andrésy,Seine,48.977374,2.061871,185.0,24.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,24295.7,Ecluse n°1 d'Andrésy - 185x24m,Seine,48.977374,2.061871,185.0,24.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,24303.5,Ancienne écluse de Carrières-Sous-Poissy,Seine,48.950695,2.045608,141.0,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,24323.1,Ecluse d'Andrésy,Seine,48.977624,2.061637,160.0,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,24323.1,Ecluse n°2 d'Andrésy - 160x12m,Seine,48.977624,2.061637,160.0,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,25078.8,Ancienne écluse de dérivation de Charnay-les-Chalon,Saône,46.934422,5.075261,185.0,12.0,,lk015,Écluse de la Presque'île (Chalon junction),46.759,4.868
+no_match,25680.7,Ecluse n°7 de Pontoise,Oise,49.034675,2.096514,125.0,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,25739.7,Ecluse n°7 de Pontoise,Oise,49.035247,2.0962,185.0,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,25843.1,écluse d'Ecuelles,Saône,46.94325,5.075137,185.0,12.0,,lk015,Écluse de la Presque'île (Chalon junction),46.759,4.868
+no_match,25898.3,Ancienne écluse de Pontoise,Oise,49.038482,2.097646,42.0,8.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,27491.7,Ecluse côté Seine n°8 d'Evry,Seine (Amont),48.642008,2.445014,172.0,18.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,27506.7,Ecluse côté terre n°8 d'Evry,Seine (Amont),48.641801,2.444556,180.0,16.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,27903.0,Ecluse de la Truchère,Saône,46.513467,4.943439,30.4,5.17,,lk015,Écluse de la Presque'île (Chalon junction),46.759,4.868
+no_match,28279.7,Ecluse n°6 de l'Isle-Adam,Oise,49.11807,2.213562,125.0,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,28346.8,Ecluse de l'Isle-Adam,Oise,49.118675,2.213386,185.0,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,29560.8,Ecluse n°5 de Boran,Oise,49.148938,2.358638,180.0,11.4,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,29564.0,Ecluse n°5 de Boran,Oise,49.148965,2.358316,120.0,11.4,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,31581.0,Ancienne écluse de Trugny dite de Seurre,Saône,46.978039,5.132445,38.5,5.05,,lk015,Écluse de la Presque'île (Chalon junction),46.759,4.868
+no_match,34343.4,écluse de Seurre,Saône,47.005555,5.14016,185.0,12.0,,lk015,Écluse de la Presque'île (Chalon junction),46.759,4.868
+no_match,35569.9,Ecluse RD n°7 du Coudray,Seine (Amont),48.573298,2.482713,180.0,18.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,35582.9,Ecluse RG n°7 du Coudray,Seine (Amont),48.572916,2.481165,172.0,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,36707.4,Ancienne écluse des Mureaux dite d'Hardicourt,Seine,48.995686,1.889458,42.0,8.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,36787.9,Ancienne écluse des Mureaux,Seine,48.994677,1.887738,141.0,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,39492.3,Saargemünd (N° 28),Saône (upper),49.113503,7.067304,38.5,5.1,,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
+no_match,40407.2,Welferding (NÃÂ° 29),Saône (upper),49.117368,7.045462,38.5,5.1,,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
+no_match,40628.6,Ecluse n°4 de Creil,Oise,49.243717,2.451662,120.0,11.4,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,43324.1,Ecluse côté Seine n°4 de Vives-Eaux,Seine (Amont),48.522525,2.58558,185.0,18.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,43356.7,Ecluse côté terre n°4 de Vives-Eaux,Seine (Amont),48.522173,2.585449,172.0,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,45901.3,Ancienne écluse de Chaugey dite de dérivation de Saint Jean de Losnes,Saône,47.087474,5.234073,9999.0,9999.0,,lk015,Écluse de la Presque'île (Chalon junction),46.759,4.868
+no_match,45902.5,Grosbliederstroff (NÃÂ° 30),Saône (upper),49.166085,7.029627,38.5,5.1,,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
+no_match,46159.3,,Rhine,48.58969,7.793203,109.0,12.0,,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
+no_match,46174.5,,Rhine,48.589932,7.793618,128.0,13.0,,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
+no_match,48373.0,écluse St-Jean-de-Losne,Saône,47.102703,5.258526,38.6,5.0,,lk015,Écluse de la Presque'île (Chalon junction),46.759,4.868
+no_match,49495.3,Güdingen,Saône (upper),49.199111,7.025039,39.0,5.15,,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
+no_match,49900.5,Écluses de Strasbourg,Rhine,48.524755,7.79446,185.0,22.9,,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
+no_match,50495.1,Ecluse n°3 de Sarron,Oise,49.306193,2.613821,120.0,11.4,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,50599.2,Ecluse n°3 de Sarron,Oise,49.306733,2.61564,180.0,11.4,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,50907.7,Écluses de Gambsheim,Rhine,48.684994,7.911071,270.0,24.0,,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
+no_match,51083.2,Ecluse de la Tuilerie,Saône,47.099992,5.318811,43.45,5.2,,lk015,Écluse de la Presque'île (Chalon junction),46.759,4.868
+no_match,51270.3,Ecluse 4.1 de la Cave (185 x 18),Seine (Amont),48.482148,2.70675,185.0,18.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,51294.9,Ecluse 4.1 de la Cave (172 x 12),Seine (Amont),48.481812,2.70653,172.0,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,51349.3,Ecluse de Laperrière,Saône,47.105016,5.315857,43.3,5.33,,lk015,Écluse de la Presque'île (Chalon junction),46.759,4.868
+no_match,51459.7,écluse St-Symphorien,Saône,47.107676,5.313635,43.15,5.22,,lk015,Écluse de la Presque'île (Chalon junction),46.759,4.868
+no_match,55475.0,Écluses de Gerstheim,Rhine,48.400672,7.729285,185.0,11.45,,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
+no_match,55598.0,Ecluse n°2 de Verberie,Oise,49.32135,2.729564,120.0,11.4,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,56236.8,Saarbrücken,Saône (upper),49.240594,6.929772,190.0,12.04,,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
+no_match,56259.6,Saarbrücken,Saône (upper),49.240692,6.929323,190.0,12.04,,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
+no_match,56326.9,Saarbrücken,Saône (upper),49.240982,6.928004,190.0,12.04,,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
+no_match,56736.0,Ecluse de 185x12 de Méricourt,Seine,49.028722,1.617168,185.0,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,56736.0,Ecluse n°3 de Méricourt - 185x12m,Seine,49.028722,1.617168,185.0,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,56763.3,Ecluse de 165x17 de Méricourt,Seine,49.02881,1.616818,160.0,16.4,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,56763.3,Ecluse n°2 de Méricourt - 165x17m,Seine,49.02881,1.616818,160.0,16.4,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,56783.1,Ancienne écluse de Méricourt,Seine,49.029284,1.616746,140.0,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,62326.8,Ecluse côté Seine n°2 de Champagne-sur-Seine,Seine (Amont),48.40035,2.79298,185.0,18.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,62338.7,Ecluse côté terre n°2 de Champagne-sur-Seine,Seine (Amont),48.400477,2.793625,172.0,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,63925.6,,Seine,49.056502,1.526923,141.0,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,64120.4,Écluses de Rhinau,Rhine,48.280662,7.679084,183.0,11.45,,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
+no_match,64946.1,Ãcluses de Iffezheim,Rhine,48.831207,8.11315,270.0,24.0,,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
+no_match,67145.2,,Seine (Amont),48.374415,2.854219,180.0,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,67217.6,écluse de Dracé,Saône,46.156363,4.799109,185.0,12.0,,lk015,Écluse de la Presque'île (Chalon junction),46.759,4.868
+no_match,67328.6,Ecluse n°1 de Venette,Oise,49.414141,2.806652,120.0,11.4,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,67389.5,Ecluse n°1 de Venette,Oise,49.413898,2.809066,180.0,11.4,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,68064.4,Ancienne écluse de Thoissey dite de Mogneneins,Saône,46.148549,4.802466,160.0,16.0,,lk015,Écluse de la Presque'île (Chalon junction),46.759,4.868
+no_match,69511.4,Ecluse RD n°1 de Varennes-sur-Seine,Seine (Amont),48.376159,2.915356,180.0,16.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,73859.2,Ecluse côté Seine n°13 de Marolles,Seine (Amont),48.388286,3.032461,185.0,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,73885.9,,Seine (Amont),48.388055,3.032615,61.5,9.9,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,74413.7,Écluses de Marckolsheim,Rhine,48.149559,7.589922,183.0,11.45,,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
+no_match,77264.4,Ecluse n°12 de la Tombe,Seine (Amont),48.392912,3.107182,40.0,7.8,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,77720.5,Ecluse de Notre Dame de la Garenne,Seine,49.167029,1.387872,185.0,24.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,77720.5,Ecluse n°3 de Notre Dame de la Garenne - 185x24 m,Seine,49.167029,1.387872,185.0,24.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,77738.9,Ecluse n°2 de Notre Dame de la Garenne - 42x8m,Seine,49.166826,1.38746,42.0,8.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,77753.8,Ecluse n°4 de Notre Dame de la Garenne - 185x12m,Seine,49.167647,1.387785,185.0,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,77754.5,Ecluse de Notre Dame de la Garenne,Seine,49.16765,1.387777,185.0,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,77792.6,Ecluse de Notre Dame de la Garenne,Seine,49.166966,1.386748,141.0,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,77792.6,Ecluse n°1 de Notre Dame de la Garenne - 141x12m,Seine,49.166966,1.386748,141.0,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,79287.6,Ecluse RG de la Grande Bosse,Seine (Amont),48.424465,3.188397,185.0,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,79774.0,Sas Petite Ecluse n°27,Moselle,48.7571,6.142393,38.5,6.0,,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
+no_match,79841.3,Ecluse de CLEVANT,Moselle,48.761571,6.141279,120.0,12.0,2.7,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
+no_match,79893.2,Petite Ecluse de CLEVANT,Moselle,48.761478,6.140575,38.5,6.0,2.7,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
+no_match,80092.3,Ecluse n°11 de Bazoches,Seine (Amont),48.41206,3.186687,40.0,7.8,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,81189.8,Ecluse de CUSTINES,Moselle,48.788868,6.122593,175.03,12.0,3.85,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
+no_match,81653.9,Ecluse de POMPEY-FROUARD,Moselle,48.762323,6.116514,184.04,12.0,2.7,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
+no_match,81916.7,Ecluse n°10 de Bray-sur-Seine,Seine (Amont),48.419074,3.228023,40.0,7.8,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,82242.4,Petite Ecluse de THIONVILLE,Moselle,49.345592,6.165614,38.5,5.9,4.28,lk014,Écluse de Stenay (Meuse),49.687,5.155
+no_match,82365.3,Ecluse de THIONVILLE,Moselle,49.344101,6.166321,174.84,12.0,4.28,lk014,Écluse de Stenay (Meuse),49.687,5.155
+no_match,82928.7,Sas écluse n°47 de Messein CVOSGES,Moselle,48.609703,6.128736,39.0,5.1,,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
+no_match,83293.5,Ecluse n°4 de Nogent-sur-Seine,Seine (Amont),48.500612,3.505263,38.0,7.8,,lk012,Vitry-le-François Lock (Canal-Marne Junction),48.736,4.581
+no_match,84196.3,Ecluse n°9 de Jaulnes,Seine (Amont),48.420171,3.268924,120.0,10.4,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,84672.8,Ecluse de NEUVES-MAISONS,Moselle,48.607277,6.105231,184.46,12.0,7.1,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
+no_match,85451.2,Ecluse n°8 du Vezoult,Seine (Amont),48.449524,3.322617,185.0,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,85548.8,Ecluse de BLENOD-LES-PAM,Moselle,48.871904,6.071254,175.14,12.0,5.7,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
+no_match,85732.8,Ecluse à Nacelle de KOENIGSMACKER,Moselle,49.401039,6.258518,21.0,3.6,,lk014,Écluse de Stenay (Meuse),49.687,5.155
+no_match,86022.4,Écluse de Neuf-Brisach,Rhine,48.033761,7.564621,40.0,6.0,,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
+no_match,86235.8,Ecluse n°5 de Beaulieu,Seine (Amont),48.495302,3.465827,120.0,10.3,,lk012,Vitry-le-François Lock (Canal-Marne Junction),48.736,4.581
+no_match,86303.2,Ecluse de KOENIGSMACKER,Moselle,49.39898,6.265741,176.67,12.0,3.9,lk014,Écluse de Stenay (Meuse),49.687,5.155
+no_match,86856.4,Petite Ecluse de l'ORNE-RICHEMONT,Moselle,49.281083,6.182273,38.5,6.0,4.35,lk014,Écluse de Stenay (Meuse),49.687,5.155
+no_match,86857.0,Ecluse de l'ORNE-RICHEMONT,Moselle,49.280604,6.181829,175.18,12.0,4.35,lk014,Écluse de Stenay (Meuse),49.687,5.155
+no_match,87022.4,Ecluse de METZ,Moselle,49.128761,6.167518,175.12,12.0,4.6,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
+no_match,87024.1,Ecluse n°7 de Villiers-sur-Seine,Seine (Amont),48.465941,3.364711,121.0,10.5,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,87031.2,Petite Ecluse de METZ,Moselle,49.129435,6.167896,38.5,6.0,4.6,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
+no_match,87679.7,Ecluse d'AINGERAY,Moselle,48.756331,6.034531,184.46,12.0,7.3,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
+no_match,87740.9,Écluse à Barrage agricole de Breisach,Rhine,48.021677,7.584669,67.0,8.2,,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
+no_match,87837.8,Écluses de Vogelgrun,Rhine,48.019532,7.578654,183.0,11.45,,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
+no_match,87850.1,Écluses de Vogelgrun,Rhine,48.019348,7.578315,183.0,22.8,,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
+no_match,89257.0,Ecluse n°6 de Metz,Seine (Amont),48.487236,3.419643,120.0,10.3,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,90149.1,Petite Ecluse de TALANGE,Moselle,49.228466,6.183629,38.5,6.0,3.15,lk014,Écluse de Stenay (Meuse),49.687,5.155
+no_match,90168.0,Ecluse de ARS-SUR-MOSELLE,Moselle,49.073499,6.083061,175.07,12.0,4.02,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
+no_match,90175.5,Ecluse de TALANGE,Moselle,49.227551,6.183095,175.28,12.0,3.15,lk014,Écluse de Stenay (Meuse),49.687,5.155
+no_match,90687.6,Ecluse à Nacelle bief APACH,Moselle,49.467099,6.366211,24.5,3.6,,lk014,Écluse de Stenay (Meuse),49.687,5.155
+no_match,90730.1,Ecluse de PAGNY-SUR-MOSELLE,Moselle,48.983351,6.03094,175.4,12.0,8.65,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
+no_match,90848.5,Ecluse de APACH,Moselle,49.467449,6.368683,176.36,12.0,4.4,lk014,Écluse de Stenay (Meuse),49.687,5.155
+no_match,93126.8,Ecluse de FONTENOY,Moselle,48.708263,5.964512,179.86,12.0,4.4,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
+no_match,93142.0,Ecluse de VILLEY-LE-SEC,Moselle,48.649764,5.975262,184.54,12.0,7.2,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
+no_match,94258.2,Ancienne écluse de Port Bernalin,Saône,45.912217,4.811385,185.0,12.0,,lk015,Écluse de la Presque'île (Chalon junction),46.759,4.868
+no_match,94332.2,Sas écluse n°23 d' Ecrouves CMRO,Moselle,48.675206,5.863229,39.0,5.1,,lk012,Vitry-le-François Lock (Canal-Marne Junction),48.736,4.581
+no_match,94797.4,Grande écluse d'Amfreville,Seine,49.312421,1.236987,220.0,17.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,94797.4,Ecluse n°3 d'Amfreville - 220x17m,Seine,49.312421,1.236987,220.0,17.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,94807.4,Moyenne écluse d'Amfreville,Seine,49.312006,1.236465,141.0,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,94807.4,Ecluse n°1 d'Amfreville - 141x12m,Seine,49.312006,1.236465,141.0,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,94978.7,Sas écluse n°24 d' Ecrouves CMRO,Moselle,48.677203,5.8723,39.0,5.1,,lk012,Vitry-le-François Lock (Canal-Marne Junction),48.736,4.581
+no_match,95681.1,Sas écluse n°25 de Toul CMRO,Moselle,48.677715,5.881955,39.0,5.1,,lk012,Vitry-le-François Lock (Canal-Marne Junction),48.736,4.581
+no_match,95956.9,Sas écluse n°26 de Toul CMRO,Moselle,48.67808,5.885764,39.0,5.1,,lk012,Vitry-le-François Lock (Canal-Marne Junction),48.736,4.581
+no_match,96691.2,Petite Ecluse de TOUL,Moselle,48.671233,5.89497,38.5,6.0,4.4,lk012,Vitry-le-François Lock (Canal-Marne Junction),48.736,4.581
+no_match,96694.3,Ecluse de TOUL,Moselle,48.670614,5.894934,188.44,12.0,4.4,lk012,Vitry-le-François Lock (Canal-Marne Junction),48.736,4.581
+no_match,96934.8,Sas écluse n°27 de Toul CMRO,Moselle,48.683608,5.899725,39.0,5.1,,lk012,Vitry-le-François Lock (Canal-Marne Junction),48.736,4.581
+no_match,97266.3,Sas écluse n°27 bis de Toul CMRO,Moselle,48.683866,5.904278,39.0,5.1,,lk012,Vitry-le-François Lock (Canal-Marne Junction),48.736,4.581
+no_match,99365.1,Écluses de Fessenheim,Rhine,47.910493,7.57142,183.0,22.8,,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
+no_match,99379.7,Écluses de Fessenheim,Rhine,47.910432,7.571848,183.0,11.45,,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
+no_match,101409.4,écluse de Couzon,Saône,45.847281,4.835412,185.0,12.0,,lk015,Écluse de la Presque'île (Chalon junction),46.759,4.868
+no_match,101421.2,,Saône,45.847183,4.834966,9999.0,9999.0,,lk015,Écluse de la Presque'île (Chalon junction),46.759,4.868
+no_match,114009.0,Écluses de Ottmarsheim,Rhine,47.768645,7.526101,183.0,22.8,,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
+no_match,114009.2,Écluses de Ottmarsheim,Rhine,47.768699,7.526528,183.0,11.45,,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
+no_match,120029.7,Écluse principale de Niffer-Mulhouse,Canal du Rhône au Rhin,47.710742,7.502405,190.0,12.0,,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
+no_match,120783.9,Écluse secondaire de Niffer,Canal du Rhône au Rhin,47.704112,7.504594,85.0,12.0,,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
+no_match,126716.1,Écluses de Kembs,Rhine,47.652511,7.526497,186.5,22.9,,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
+no_match,126736.9,Écluses de Kembs,Rhine,47.652269,7.526051,180.0,22.9,,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
+no_match,138907.4,Ecluse n°10 de Trith,Canal Dunkerque–Escaut,50.315419,3.475236,144.6,12.0,,lk014,Écluse de Stenay (Meuse),49.687,5.155
+no_match,139201.6,Ecluse n°13 de la Folie dite de Bruay,Canal Dunkerque–Escaut,50.387371,3.539412,144.6,12.0,,lk014,Écluse de Stenay (Meuse),49.687,5.155
+no_match,139248.7,Ecluse n°12 de Valenciennes dite de Folien,Canal Dunkerque–Escaut,50.366503,3.517523,144.6,12.0,,lk014,Écluse de Stenay (Meuse),49.687,5.155
+no_match,139330.9,Ecluse n°14 de Fresnes,Canal Dunkerque–Escaut,50.434015,3.587862,144.6,12.0,,lk014,Écluse de Stenay (Meuse),49.687,5.155
+no_match,144368.3,Ecluse n°8 de Denain,Canal Dunkerque–Escaut,50.318302,3.389817,144.6,12.0,,lk014,Écluse de Stenay (Meuse),49.687,5.155
+no_match,147404.3,Ecluse n°6 de Pont-Malin,Canal Dunkerque–Escaut,50.267298,3.301559,144.6,12.0,,lk014,Écluse de Stenay (Meuse),49.687,5.155
+no_match,149622.0,Ecluse n°6 de Thun,Canal Dunkerque–Escaut,50.482335,3.46337,6.05,40.0,,lk014,Écluse de Stenay (Meuse),49.687,5.155
+no_match,163923.7,Ecluse de Goeulzin,Canal Dunkerque–Escaut,50.315305,3.080108,144.6,12.0,,lk014,Écluse de Stenay (Meuse),49.687,5.155
+no_match,166251.5,Ecluse n°1 du Fort-de-Scarpe,Canal Dunkerque–Escaut,50.391166,3.101304,40.7,5.2,,lk014,Écluse de Stenay (Meuse),49.687,5.155
+no_match,166950.1,Ecluse de Courchelettes,Canal Dunkerque–Escaut,50.342544,3.052835,143.0,11.4,,lk014,Écluse de Stenay (Meuse),49.687,5.155
+no_match,166959.6,Ecluse de Courchelettes,Canal Dunkerque–Escaut,50.342288,3.052499,89.0,11.4,,lk014,Écluse de Stenay (Meuse),49.687,5.155
+no_match,167086.9,Ecluse n°36 de Corbehem,Canal Dunkerque–Escaut,50.336239,3.046116,38.8,5.05,,lk014,Écluse de Stenay (Meuse),49.687,5.155
+no_match,167346.4,Ecluse de Douai,Canal Dunkerque–Escaut,50.376269,3.072149,89.0,11.4,,lk014,Écluse de Stenay (Meuse),49.687,5.155
+no_match,184362.3,Ecluse du Grand Carré,Canal Dunkerque–Escaut,50.647889,3.045379,144.6,12.0,,lk014,Écluse de Stenay (Meuse),49.687,5.155
+no_match,184462.9,Ecluse de Cuinchy,Canal Dunkerque–Escaut,50.52249,2.754342,140.0,11.4,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,184919.4,Ecluse n°1 de Marquette,Canal Dunkerque–Escaut,50.676126,3.067073,38.5,5.05,,lk014,Écluse de Stenay (Meuse),49.687,5.155
+no_match,185937.5,Ecluse de Don,Canal Dunkerque–Escaut,50.545983,2.917405,144.6,12.0,,lk014,Écluse de Stenay (Meuse),49.687,5.155
+no_match,186177.4,Ancienne écluse de Don,Canal Dunkerque–Escaut,50.550847,2.917921,38.5,5.05,,lk014,Écluse de Stenay (Meuse),49.687,5.155
+no_match,189821.7,Ecluse de Quesnoy,Canal Dunkerque–Escaut,50.704337,3.013379,110.0,5.7,,lk014,Écluse de Stenay (Meuse),49.687,5.155
+no_match,190082.2,Ecluse de Menin,Canal Dunkerque–Escaut,50.780777,3.100968,195.0,12.5,,lk014,Écluse de Stenay (Meuse),49.687,5.155
+no_match,190082.5,Nieuwe stuwsluis Menen kolk,Leie,50.780789,3.100978,86.0,10.3,,lk014,Écluse de Stenay (Meuse),49.687,5.155
+no_match,194755.0,Ecluse n°2 de Cense à Witz,Canal Dunkerque–Escaut,50.632722,2.486558,38.5,5.05,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,194797.5,Ecluse de Comines,Canal Dunkerque–Escaut,50.760635,2.991065,185.0,12.5,,lk014,Écluse de Stenay (Meuse),49.687,5.155
+no_match,196075.7,Ecluse n°1 de Fort-Gassion,Canal Dunkerque–Escaut,50.646125,2.41441,38.5,5.05,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,205248.4,Ecluse des Fontinettes,Canal Dunkerque–Escaut,50.728608,2.307406,144.0,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,206907.0,Ecluse de Flandres,Canal Dunkerque–Escaut,50.743358,2.294964,144.6,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,207543.5,Ecluse du Saint-Bertin,Canal Dunkerque–Escaut,50.748647,2.270244,38.5,5.05,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,209471.3,Ecluse du Haut pont,Canal Dunkerque–Escaut,50.765802,2.261276,38.5,5.05,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,218004.9,Ecluse n°1 de Watten dite de Holque-Watten,Canal Dunkerque–Escaut,50.841215,2.209845,144.6,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,223777.6,Ecluse n°2 de Lynck,Canal Dunkerque–Escaut,50.894329,2.251722,38.5,8.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,229921.9,Ecluse de Bourbourg,Canal Dunkerque–Escaut,50.948244,2.201084,38.7,5.2,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_match,234001.6,Nieuwpoortsluis te Veurne,Canal Nieuwpoort–Dunkerque,51.070605,2.668098,38.5,5.1,,lk014,Écluse de Stenay (Meuse),49.687,5.155
+no_match,238293.2,Ecluse de Mardyck,Canal Dunkerque–Escaut,51.025261,2.267437,114.6,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619

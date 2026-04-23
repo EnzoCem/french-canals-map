@@ -143,6 +143,109 @@ def test_to_geojson_shape():
     assert "Licence Ouverte" in f["properties"]["source"]
 
 
+# ── Task 4: lock / mooring / reconciliation tests ─────────────────────
+
+def test_haversine_m_zero_for_same_point():
+    assert ei._haversine_m(48.85, 2.35, 48.85, 2.35) == 0.0
+
+
+def test_haversine_m_approx_paris_london():
+    # Paris (48.8566, 2.3522) → London (51.5074, -0.1278) ≈ 343 km
+    d = ei._haversine_m(48.8566, 2.3522, 51.5074, -0.1278)
+    assert 340_000 <= d <= 346_000, f"got {d:.0f}m"
+
+
+def test_dedupe_locks_merges_close_same_name_keeps_richer():
+    locks = [
+        {"name": "Ecluse d'Apach", "lat": 49.399, "lon": 6.267,
+         "length_m": None, "width_m": None, "rise_m": None,
+         "inform": None, "cell": "4V5MOS01", "waterway": "Moselle"},
+        {"name": "Ecluse d'Apach", "lat": 49.3992, "lon": 6.2672,
+         "length_m": 176.36, "width_m": 12.0, "rise_m": 4.40,
+         "inform": "rise: 4.40m", "cell": "4V5MOS01", "waterway": "Moselle"},
+    ]
+    result = ei.dedupe_locks(locks)
+    assert len(result) == 1
+    assert result[0]["length_m"] == 176.36  # richer record won
+
+
+def test_dedupe_locks_keeps_same_name_different_waterway():
+    locks = [
+        {"name": "Ecluse du Moulin", "lat": 47.0, "lon": 4.0,
+         "length_m": 40, "width_m": 5, "rise_m": 2, "inform": None,
+         "cell": "X", "waterway": "Saône"},
+        {"name": "Ecluse du Moulin", "lat": 49.0, "lon": 6.0,
+         "length_m": 40, "width_m": 5, "rise_m": 2, "inform": None,
+         "cell": "Y", "waterway": "Moselle"},
+    ]
+    assert len(ei.dedupe_locks(locks)) == 2
+
+
+def test_reconcile_locks_finds_close_match_within_200m():
+    ienc_locks = [
+        {"name": "Ecluse d'Apach", "lat": 49.399, "lon": 6.267,
+         "length_m": 176, "width_m": 12, "rise_m": 4.4,
+         "inform": None, "cell": "X", "waterway": "Moselle"},
+    ]
+    app_waypoints = [
+        {"id": "w_apach", "name": "Apach", "lat": 49.3993, "lon": 6.2668,
+         "is_lock": True, "route": 30, "section": 5},  # ~25 m away
+        {"id": "w_other", "name": "Nowhere", "lat": 48.0, "lon": 2.0,
+         "is_lock": True, "route": 99, "section": 9},
+    ]
+    result = ei.reconcile_locks(ienc_locks, app_waypoints)
+    assert len(result) == 1
+    row = result[0]
+    assert row["match_status"] == "match"
+    assert row["app_id"] == "w_apach"
+    assert row["distance_m"] < 100
+
+
+def test_reconcile_locks_marks_no_match_when_all_far():
+    ienc_locks = [
+        {"name": "Ecluse X", "lat": 49.0, "lon": 6.0,
+         "length_m": 40, "width_m": 5, "rise_m": 2,
+         "inform": None, "cell": "X", "waterway": "Moselle"},
+    ]
+    app_waypoints = [
+        {"id": "w_far", "name": "Far", "lat": 43.0, "lon": 1.0,
+         "is_lock": True, "route": 1, "section": 1},
+    ]
+    result = ei.reconcile_locks(ienc_locks, app_waypoints)
+    assert result[0]["match_status"] == "no_match"
+    assert result[0]["distance_m"] > 1000
+
+
+def test_reconcile_locks_ignores_non_lock_waypoints():
+    ienc_locks = [
+        {"name": "Ecluse X", "lat": 49.0, "lon": 6.0,
+         "length_m": 40, "width_m": 5, "rise_m": 2,
+         "inform": None, "cell": "X", "waterway": "Moselle"},
+    ]
+    # Waypoint is at the same spot but is_lock=False — must be ignored
+    app_waypoints = [
+        {"id": "w_town", "name": "Some Town", "lat": 49.0, "lon": 6.0,
+         "is_lock": False, "route": 1, "section": 1},
+    ]
+    result = ei.reconcile_locks(ienc_locks, app_waypoints)
+    assert result[0]["match_status"] == "no_app_locks"
+
+
+def test_locks_to_geojson_shape():
+    locks = [
+        {"name": "Ecluse X", "waterway": "Moselle", "lat": 49.0, "lon": 6.0,
+         "length_m": 176.36, "width_m": 12.0, "rise_m": 4.4,
+         "inform": "rise: 4.40m", "cell": "X"},
+    ]
+    gj = ei.locks_to_geojson(locks)
+    assert gj["type"] == "FeatureCollection"
+    assert len(gj["features"]) == 1
+    p = gj["features"][0]["properties"]
+    assert p["length_m"] == 176.36
+    assert p["width_m"] == 12.0
+    assert "Licence Ouverte" in p["source"]
+
+
 # ── Integration test (requires GDAL + real zip) ───────────────────────
 
 def test_integration_fr_zip_produces_bridges():

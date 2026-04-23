@@ -300,11 +300,357 @@ def to_geojson(bridges: list[dict]) -> dict:
 
 
 # ──────────────────────────────────────────────────────────────────────
+# Lock extraction (lokbsn layer — lock basins as polygons)
+# ──────────────────────────────────────────────────────────────────────
+def extract_locks_from_cell(cell_path: str, cell_name: str) -> list[dict]:
+    """Return per-cell lock features. Uses IENC `lokbsn` (lock basin)
+    polygons — one polygon per lock. Captures the most useful fields:
+
+    - `horcll`  — lock usable length, metres
+    - `horclw` / `HORWID` — lock usable width, metres
+    - `OBJNAM` (English) / `NOBJNM` (French)
+    - `INFORM` — often contains rise ("rise: 4.40m") or other notes
+    """
+    ds = ogr.Open(cell_path)
+    if ds is None:
+        return []
+    lyr = ds.GetLayerByName("lokbsn")
+    if lyr is None:
+        return []
+    out: list[dict] = []
+    for feat in lyr:
+        c = _feature_centroid(feat)
+        if c is None:
+            continue
+        lon, lat = c
+        # Prefer French name (NOBJNM) since the app is Francophone; fall back.
+        name = feat.GetField("NOBJNM") or feat.GetField("OBJNAM") or None
+        length = feat.GetField("horcll")
+        width = feat.GetField("horclw") or feat.GetField("HORWID")
+        inform = feat.GetField("INFORM") or feat.GetField("NINFOM") or None
+        rise = None
+        if inform:
+            import re as _re
+            m = _re.search(r"(\d+(?:\.\d+)?)\s*m", inform.lower().replace(",", "."))
+            if m and "rise" in inform.lower() or (m and "chute" in inform.lower()):
+                rise = float(m.group(1))
+        out.append(
+            {
+                "name": name,
+                "lat": round(lat, 6),
+                "lon": round(lon, 6),
+                "length_m": round(length, 2) if length and length > 0 else None,
+                "width_m": round(width, 2) if width and width > 0 else None,
+                "rise_m": rise,
+                "inform": inform,
+                "cell": cell_name,
+                "waterway": _waterway_for_cell(cell_name),
+            }
+        )
+    return out
+
+
+def dedupe_locks(locks: list[dict]) -> list[dict]:
+    """Collapse IENC locks that are the same physical basin across cells.
+    Two locks within ~150 m with matching (normalised) name are merged;
+    keep the one with the most field coverage."""
+    def _norm(s: str | None) -> str:
+        if not s:
+            return ""
+        s = s.lower()
+        for pfx in ("ecluse de ", "lock of ", "écluse de ", "ecluse d'", "écluse d'"):
+            if s.startswith(pfx):
+                s = s[len(pfx):]
+                break
+        return s.strip()
+
+    def _score(l: dict) -> int:
+        return sum(1 for k in ("name", "length_m", "width_m", "rise_m") if l.get(k))
+
+    by_key: dict[tuple, dict] = {}
+    for l in locks:
+        key = (_norm(l["name"]), round(l["lat"], 3), round(l["lon"], 3))
+        cur = by_key.get(key)
+        if cur is None or _score(l) > _score(cur):
+            by_key[key] = l
+    return list(by_key.values())
+
+
+def locks_to_geojson(locks: list[dict]) -> dict:
+    feats = []
+    for l in locks:
+        feats.append(
+            {
+                "type": "Feature",
+                "geometry": {"type": "Point", "coordinates": [l["lon"], l["lat"]]},
+                "properties": {
+                    "name": l["name"],
+                    "waterway": l["waterway"],
+                    "length_m": l["length_m"],
+                    "width_m": l["width_m"],
+                    "rise_m": l["rise_m"],
+                    "source": "VNF IENC (Licence Ouverte 2.0)",
+                },
+            }
+        )
+    return {"type": "FeatureCollection", "features": feats}
+
+
+# ──────────────────────────────────────────────────────────────────────
+# Mooring extraction (berths + PONTON — the useful moorings-for-visitors)
+# ──────────────────────────────────────────────────────────────────────
+def extract_moorings_from_cell(cell_path: str, cell_name: str) -> list[dict]:
+    """Return mooring features from `berths` (wharfs/quays) and `PONTON`
+    (pontoons). Excludes `MORFAC` because those are mainly navigation
+    aids (dolphins/bollards) rather than places a boat can tie up for
+    the night."""
+    ds = ogr.Open(cell_path)
+    if ds is None:
+        return []
+    out: list[dict] = []
+    for layer_name, type_label in (("berths", "quay"), ("PONTON", "pontoon")):
+        lyr = ds.GetLayerByName(layer_name)
+        if lyr is None:
+            continue
+        for feat in lyr:
+            c = _feature_centroid(feat)
+            if c is None:
+                continue
+            lon, lat = c
+            name = feat.GetField("NOBJNM") or feat.GetField("OBJNAM") or None
+            inform = feat.GetField("NINFOM") or feat.GetField("INFORM") or None
+            out.append(
+                {
+                    "type": type_label,
+                    "name": name,
+                    "lat": round(lat, 6),
+                    "lon": round(lon, 6),
+                    "inform": inform,
+                    "cell": cell_name,
+                    "waterway": _waterway_for_cell(cell_name),
+                }
+            )
+    return out
+
+
+def dedupe_moorings(moorings: list[dict]) -> list[dict]:
+    """Collapse mooring features that are the same physical feature
+    across cells / layers. Keys on (type, rounded coords) and keeps
+    the one with a name over one without."""
+    def _score(m: dict) -> int:
+        return (1 if m.get("name") else 0) + (1 if m.get("inform") else 0)
+
+    by_key: dict[tuple, dict] = {}
+    for m in moorings:
+        key = (m["type"], round(m["lat"], 4), round(m["lon"], 4))
+        cur = by_key.get(key)
+        if cur is None or _score(m) > _score(cur):
+            by_key[key] = m
+    return list(by_key.values())
+
+
+def moorings_to_geojson(moorings: list[dict]) -> dict:
+    feats = []
+    for m in moorings:
+        feats.append(
+            {
+                "type": "Feature",
+                "geometry": {"type": "Point", "coordinates": [m["lon"], m["lat"]]},
+                "properties": {
+                    "type": m["type"],
+                    "name": m["name"],
+                    "waterway": m["waterway"],
+                    "inform": m["inform"],
+                    "source": "VNF IENC (Licence Ouverte 2.0)",
+                },
+            }
+        )
+    return {"type": "FeatureCollection", "features": feats}
+
+
+# ──────────────────────────────────────────────────────────────────────
+# Reconciliation: IENC data vs. the app's curated WAYPOINTS / MOORINGS
+# ──────────────────────────────────────────────────────────────────────
+def _haversine_m(lat1, lon1, lat2, lon2) -> float:
+    """Great-circle distance in metres."""
+    from math import radians, sin, cos, asin, sqrt
+    R = 6_371_000.0
+    dlat = radians(lat2 - lat1)
+    dlon = radians(lon2 - lon1)
+    a = sin(dlat / 2) ** 2 + cos(radians(lat1)) * cos(radians(lat2)) * sin(dlon / 2) ** 2
+    return 2 * R * asin(sqrt(a))
+
+
+def _parse_app_data(html_path: str) -> tuple[list[dict], list[dict]]:
+    """Extract waypoints (lock subset) and moorings from
+    `french_canals_map.html`. Uses json5 to handle the JS-literal syntax
+    (unquoted keys, trailing commas, // line comments) directly."""
+    import re as _re
+    if not os.path.exists(html_path):
+        return [], []
+    try:
+        import json5 as _json5
+    except ImportError:
+        print("WARN: json5 not installed — reconciliation disabled. "
+              "Install with: pip install json5", file=sys.stderr)
+        return [], []
+    with open(html_path) as f:
+        text = f.read()
+
+    def _extract_array(const_name: str) -> list[dict]:
+        m = _re.search(rf"const\s+{const_name}\s*=\s*\[", text)
+        if not m:
+            return []
+        # Walk brackets to find the matching close. Must be aware of
+        # JS string literals AND line comments (because `// ]` would
+        # otherwise fool the bracket counter).
+        start = m.end() - 1
+        depth = 0
+        in_str = False
+        str_ch = ""
+        i = start
+        L = len(text)
+        while i < L:
+            ch = text[i]
+            if in_str:
+                if ch == "\\" and i + 1 < L:
+                    i += 2
+                    continue
+                if ch == str_ch:
+                    in_str = False
+                i += 1
+                continue
+            # Skip // line comments
+            if ch == "/" and i + 1 < L and text[i + 1] == "/":
+                while i < L and text[i] != "\n":
+                    i += 1
+                continue
+            # Skip /* */ block comments
+            if ch == "/" and i + 1 < L and text[i + 1] == "*":
+                i += 2
+                while i + 1 < L and not (text[i] == "*" and text[i + 1] == "/"):
+                    i += 1
+                i += 2
+                continue
+            if ch in ("'", '"'):
+                in_str = True
+                str_ch = ch
+            elif ch == "[":
+                depth += 1
+            elif ch == "]":
+                depth -= 1
+                if depth == 0:
+                    i += 1
+                    break
+            i += 1
+        block = text[start:i]
+        try:
+            return _json5.loads(block)
+        except Exception as e:
+            print(f"WARN: failed to parse {const_name}: {e}", file=sys.stderr)
+            return []
+
+    waypoints = _extract_array("WAYPOINTS")
+    moorings = _extract_array("MOORINGS")
+    return waypoints, moorings
+
+
+def reconcile_locks(ienc_locks: list[dict], app_waypoints: list[dict],
+                    max_dist_m: float = 200.0) -> list[dict]:
+    """For each IENC lock, find the nearest app lock-waypoint. Emit rows
+    sorted by distance — close matches first (likely-same lock with a
+    possible position correction), far ones last (likely missing from
+    the app entirely)."""
+    app_locks = [w for w in app_waypoints if w.get("is_lock")]
+    out = []
+    for il in ienc_locks:
+        best = None
+        best_d = float("inf")
+        for aw in app_locks:
+            try:
+                d = _haversine_m(il["lat"], il["lon"], float(aw["lat"]), float(aw["lon"]))
+            except (TypeError, KeyError):
+                continue
+            if d < best_d:
+                best_d = d
+                best = aw
+        out.append(
+            {
+                "ienc_name": il["name"],
+                "ienc_waterway": il["waterway"],
+                "ienc_lat": il["lat"],
+                "ienc_lon": il["lon"],
+                "ienc_length_m": il["length_m"],
+                "ienc_width_m": il["width_m"],
+                "ienc_rise_m": il["rise_m"],
+                "app_id": best["id"] if best else None,
+                "app_name": best["name"] if best else None,
+                "app_lat": best["lat"] if best else None,
+                "app_lon": best["lon"] if best else None,
+                "distance_m": round(best_d, 1) if best else None,
+                "match_status": (
+                    "no_app_locks" if not app_locks
+                    else "match" if best_d <= max_dist_m
+                    else "candidate" if best_d <= 1000
+                    else "no_match"
+                ),
+            }
+        )
+    return sorted(out, key=lambda r: (r["distance_m"] if r["distance_m"] is not None else 9e9))
+
+
+def reconcile_moorings(ienc_moorings: list[dict], app_moorings: list[dict],
+                       max_dist_m: float = 200.0) -> list[dict]:
+    out = []
+    for im in ienc_moorings:
+        best = None
+        best_d = float("inf")
+        for am in app_moorings:
+            try:
+                d = _haversine_m(im["lat"], im["lon"], float(am["lat"]), float(am["lon"]))
+            except (TypeError, KeyError):
+                continue
+            if d < best_d:
+                best_d = d
+                best = am
+        out.append(
+            {
+                "ienc_type": im["type"],
+                "ienc_name": im["name"],
+                "ienc_waterway": im["waterway"],
+                "ienc_lat": im["lat"],
+                "ienc_lon": im["lon"],
+                "app_id": best["id"] if best else None,
+                "app_name": best["name"] if best else None,
+                "app_type": best.get("type") if best else None,
+                "distance_m": round(best_d, 1) if best else None,
+                "match_status": (
+                    "no_app_moorings" if not app_moorings
+                    else "match" if best_d <= max_dist_m
+                    else "candidate" if best_d <= 1000
+                    else "no_match"
+                ),
+            }
+        )
+    return sorted(out, key=lambda r: (r["distance_m"] if r["distance_m"] is not None else 9e9))
+
+
+def _write_csv(path: str, rows: list[dict], columns: list[str]) -> None:
+    import csv as _csv
+    os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
+    with open(path, "w", newline="") as f:
+        w = _csv.DictWriter(f, fieldnames=columns, extrasaction="ignore")
+        w.writeheader()
+        for r in rows:
+            w.writerow(r)
+
+
+# ──────────────────────────────────────────────────────────────────────
 # CLI
 # ──────────────────────────────────────────────────────────────────────
 def main() -> int:
     ap = argparse.ArgumentParser(
-        description="Extract VNF IENC bridge clearances into GeoJSON."
+        description="Extract VNF IENC data (bridges, locks, moorings) into GeoJSON."
     )
     ap.add_argument(
         "--zip",
@@ -312,11 +658,28 @@ def main() -> int:
         required=True,
         help="Path to an IENC zip (repeatable; later zips override cells in earlier ones).",
     )
-    ap.add_argument("--out", required=True, help="Output GeoJSON path.")
+    ap.add_argument("--out", required=True,
+                    help="Output path for bridges GeoJSON (primary product).")
+    ap.add_argument("--out-locks", default=None,
+                    help="Also extract lock basins → this GeoJSON path.")
+    ap.add_argument("--out-moorings", default=None,
+                    help="Also extract quays/pontoons → this GeoJSON path.")
+    ap.add_argument(
+        "--reconcile",
+        default=None,
+        help=(
+            "Reconcile extracted IENC data against the app's curated WAYPOINTS / "
+            "MOORINGS in this HTML file (typically `french_canals_map.html`). "
+            "Emits {out}_locks_reconciliation.csv and {out}_moorings_reconciliation.csv "
+            "next to --out. Manual review only — never auto-applied."
+        ),
+    )
     args = ap.parse_args()
 
-    all_raw: list[dict] = []
-    zip_stats: list[tuple[str, int, int]] = []  # (zip_path, cell_count, raw_bridges)
+    all_raw_bridges: list[dict] = []
+    all_raw_locks: list[dict] = []
+    all_raw_moorings: list[dict] = []
+    zip_stats: list[tuple[str, int, int, int, int]] = []  # (zip, cells, bridges, locks, moorings)
 
     with tempfile.TemporaryDirectory(prefix="ienc_") as tmp:
         for zp in args.zip:
@@ -325,15 +688,23 @@ def main() -> int:
                 continue
             sub = os.path.join(tmp, re.sub(r"[^A-Za-z0-9]+", "_", os.path.basename(zp)))
             cells = unpack_zip(zp, sub)
-            raw_this = []
+            raw_b: list[dict] = []
+            raw_l: list[dict] = []
+            raw_m: list[dict] = []
             for cell_name, cell_path in cells:
-                raw_this.extend(extract_bridges_from_cell(cell_path, cell_name))
-            zip_stats.append((zp, len(cells), len(raw_this)))
-            all_raw.extend(raw_this)
+                raw_b.extend(extract_bridges_from_cell(cell_path, cell_name))
+                if args.out_locks or args.reconcile:
+                    raw_l.extend(extract_locks_from_cell(cell_path, cell_name))
+                if args.out_moorings or args.reconcile:
+                    raw_m.extend(extract_moorings_from_cell(cell_path, cell_name))
+            zip_stats.append((zp, len(cells), len(raw_b), len(raw_l), len(raw_m)))
+            all_raw_bridges.extend(raw_b)
+            all_raw_locks.extend(raw_l)
+            all_raw_moorings.extend(raw_m)
 
-    aggregated = aggregate_bridges(all_raw)
+    # ── Bridges (primary product) ─────────────────────────────────────
+    aggregated = aggregate_bridges(all_raw_bridges)
     deduped = dedupe_across_zips(aggregated)
-
     gj = to_geojson(deduped)
     os.makedirs(os.path.dirname(args.out) or ".", exist_ok=True)
     tmp_out = args.out + ".tmp"
@@ -342,10 +713,17 @@ def main() -> int:
     os.replace(tmp_out, args.out)
 
     # ── Report ────────────────────────────────────────────────────
-    print("\n=== IENC bridge extraction summary ===")
-    for zp, cells, raw in zip_stats:
-        print(f"  {os.path.basename(zp):45s} {cells:4d} cells  {raw:4d} raw bridges")
-    print(f"\n  Raw bridge features (all zips): {len(all_raw)}")
+    print("\n=== IENC extraction summary ===")
+    hdr = f"  {'ZIP':45s} {'CELLS':>5s} {'BRIDGES':>7s}"
+    if args.out_locks or args.reconcile:    hdr += f" {'LOCKS':>5s}"
+    if args.out_moorings or args.reconcile: hdr += f" {'MOORS':>5s}"
+    print(hdr)
+    for zp, cells, rb, rl, rm in zip_stats:
+        row = f"  {os.path.basename(zp):45s} {cells:5d} {rb:7d}"
+        if args.out_locks or args.reconcile:    row += f" {rl:5d}"
+        if args.out_moorings or args.reconcile: row += f" {rm:5d}"
+        print(row)
+    print(f"\n  Raw bridge features (all zips): {len(all_raw_bridges)}")
     print(f"  After per-name aggregation:     {len(aggregated)}")
     print(f"  After cross-zip dedup:          {len(deduped)}")
     print(f"\n  Waterway breakdown (final):")
@@ -355,7 +733,75 @@ def main() -> int:
     for ww in sorted(ww_count, key=lambda w: -ww_count[w]):
         print(f"    {ww:30s} {ww_count[ww]:4d}")
     print(f"\n  Wrote {args.out} ({os.path.getsize(args.out) / 1024:.1f} KB)")
+
+    # ── Locks (optional) ──────────────────────────────────────────────
+    deduped_locks: list[dict] = []
+    if args.out_locks or args.reconcile:
+        deduped_locks = dedupe_locks(all_raw_locks)
+        if args.out_locks:
+            os.makedirs(os.path.dirname(args.out_locks) or ".", exist_ok=True)
+            tmp_lk = args.out_locks + ".tmp"
+            with open(tmp_lk, "w") as f:
+                json.dump(locks_to_geojson(deduped_locks), f, separators=(",", ":"))
+            os.replace(tmp_lk, args.out_locks)
+            print(f"  Wrote {args.out_locks} "
+                  f"({len(deduped_locks)} locks, "
+                  f"{os.path.getsize(args.out_locks) / 1024:.1f} KB)")
+
+    # ── Moorings (optional) ───────────────────────────────────────────
+    deduped_moorings: list[dict] = []
+    if args.out_moorings or args.reconcile:
+        deduped_moorings = dedupe_moorings(all_raw_moorings)
+        if args.out_moorings:
+            os.makedirs(os.path.dirname(args.out_moorings) or ".", exist_ok=True)
+            tmp_mo = args.out_moorings + ".tmp"
+            with open(tmp_mo, "w") as f:
+                json.dump(moorings_to_geojson(deduped_moorings), f, separators=(",", ":"))
+            os.replace(tmp_mo, args.out_moorings)
+            print(f"  Wrote {args.out_moorings} "
+                  f"({len(deduped_moorings)} moorings, "
+                  f"{os.path.getsize(args.out_moorings) / 1024:.1f} KB)")
+
+    # ── Reconciliation (optional) ─────────────────────────────────────
+    if args.reconcile:
+        if not os.path.exists(args.reconcile):
+            print(f"WARN: --reconcile target not found: {args.reconcile}", file=sys.stderr)
+        else:
+            app_wp, app_mo = _parse_app_data(args.reconcile)
+            print(f"\n  Reconciling against {args.reconcile}:")
+            print(f"    App WAYPOINTS: {len(app_wp)} "
+                  f"({sum(1 for w in app_wp if w.get('is_lock'))} locks)")
+            print(f"    App MOORINGS:  {len(app_mo)}")
+
+            base = os.path.splitext(args.out)[0]
+            locks_csv = base + "_locks_reconciliation.csv"
+            moor_csv = base + "_moorings_reconciliation.csv"
+
+            lock_rows = reconcile_locks(deduped_locks, app_wp)
+            _write_csv(locks_csv, lock_rows, [
+                "match_status", "distance_m",
+                "ienc_name", "ienc_waterway", "ienc_lat", "ienc_lon",
+                "ienc_length_m", "ienc_width_m", "ienc_rise_m",
+                "app_id", "app_name", "app_lat", "app_lon",
+            ])
+            moor_rows = reconcile_moorings(deduped_moorings or all_raw_moorings, app_mo)
+            _write_csv(moor_csv, moor_rows, [
+                "match_status", "distance_m",
+                "ienc_type", "ienc_name", "ienc_waterway", "ienc_lat", "ienc_lon",
+                "app_id", "app_name", "app_type",
+            ])
+            print(f"    Wrote {locks_csv} ({len(lock_rows)} rows)")
+            print(f"    Wrote {moor_csv}  ({len(moor_rows)} rows)")
+            _print_reconcile_summary("Locks", lock_rows)
+            _print_reconcile_summary("Moorings", moor_rows)
     return 0
+
+
+def _print_reconcile_summary(label: str, rows: list[dict]) -> None:
+    tally: dict[str, int] = defaultdict(int)
+    for r in rows:
+        tally[r["match_status"]] += 1
+    print(f"    {label} status: " + ", ".join(f"{k}={v}" for k, v in sorted(tally.items())))
 
 
 if __name__ == "__main__":
