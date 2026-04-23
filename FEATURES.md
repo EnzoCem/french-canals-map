@@ -1,7 +1,7 @@
 # Feature Backlog & To-Do
 
 Planned and proposed enhancements for the French Canals Interactive Map.
-*Last updated: 2026-04-23 (IENC plan fully executed: bridges, locks, moorings, Garonne tidal data, attribution)*
+*Last updated: 2026-04-23 (IENC plan fully executed: bridges, locks, moorings, Garonne tidal data + UI, attribution)*
 
 ---
 
@@ -142,7 +142,7 @@ Planned and proposed enhancements for the French Canals Interactive Map.
 | ~~Garonne tidal data constant~~ | Done | `TIDAL_DATA` JS constant in `french_canals_map.html` (~line 4934): Bordeaux → Castets tidal propagation table per coefficient (45/70/100), marnage per sector, mascaret warning. Data half of Tidal-section-warnings (UI still pending). |
 | VNF / OSM / Michelin attribution | Done | Data Backup panel now carries a permanent attribution block (Licence Ouverte 2.0, ODbL, etc.). |
 | Mobile / touch optimisation | Medium | Larger touch targets, swipe sidebar |
-| Tidal-section warnings (UI) | Medium | Data half **shipped** as `TIDAL_DATA` (Garonne only — Seine-Aval README lacks a comparable table). UI half: show tide-window banner + mascaret warning when a route crosses tidal PK zones. Consume from `TIDAL_DATA['Garonne']`. |
+| ~~Tidal-section warnings (UI)~~ | Done | 🌊 Tidal section card in route-planner results when a leg crosses the tidal Garonne. Mascaret warning + marnage-per-sector chips + collapsible propagation table (Bordeaux / Portets / Cadillac / Langon / Castets × coefficients 45/70/100). Compact sidebar badge when user taps any tidal-Garonne waypoint. New route 51 "Garonne (tidal)" with 5 waypoints (Bordeaux → Castets-en-Dorthe) makes the tidal leg planable end-to-end. Extensible to future tidal waterways via `TIDAL_DATA` key + matching route entry. |
 | Lock waypoints from IENC | Low-Med | `data/ienc_locks.geojson` gives 192 locks with chamber dimensions across Rhine/Moselle/Seine/Saône/Oise. Could be cherry-picked into `WAYPOINTS` where the app currently has 0 coverage for those rivers' locks. |
 | Voies vertes (towpath cycling) | Medium | OSM `route=bicycle` relations alongside canals — pair bike with the boat |
 | Download-area-for-offline button | Medium | Explicit "download this area" that warms the tile cache over the current viewport + zoom range |

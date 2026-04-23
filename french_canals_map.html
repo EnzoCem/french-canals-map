@@ -321,6 +321,65 @@
   /* Route planner nav warning */
   .rp-nav-warning { background: #c62828; color: #fff; border-radius: 6px; padding: 8px 12px; margin-bottom: 10px; font-size: 12px; line-height: 1.5; }
 
+  /* ── Tidal section card (route-planner) ───────────────────── */
+  .rp-tidal-card {
+    background: linear-gradient(135deg, #0d2a3e 0%, #12384e 100%);
+    border: 1px solid #1e5a7a; border-radius: 6px;
+    padding: 10px 12px; margin-bottom: 12px; color: #eaf4ff;
+  }
+  .rp-tidal-title {
+    font-size: 13px; font-weight: 700; color: #7ad4ef;
+    margin-bottom: 6px; letter-spacing: 0.3px;
+  }
+  .rp-tidal-sub { font-size: 11px; color: #9ccadf; margin-bottom: 10px; line-height: 1.5; }
+  .rp-tidal-warn {
+    background: rgba(240,173,78,0.12); border-left: 3px solid #f0ad4e;
+    color: #ffd28a; padding: 6px 9px; font-size: 11px; line-height: 1.5;
+    margin-bottom: 10px; border-radius: 0 4px 4px 0;
+  }
+  .rp-tidal-warn.critical {
+    background: rgba(231,122,122,0.12); border-left-color: #e87a7a; color: #ffc0c0;
+  }
+  .rp-tidal-section {
+    display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px;
+    font-size: 10px; color: #9ccadf;
+  }
+  .rp-tidal-chip {
+    background: rgba(122,212,239,0.10); border: 1px solid rgba(122,212,239,0.25);
+    border-radius: 12px; padding: 2px 9px; font-size: 10px;
+  }
+  .rp-tidal-chip b { color: #eaf4ff; }
+  .rp-tidal-table-wrap { margin-top: 8px; }
+  .rp-tidal-summary {
+    cursor: pointer; font-size: 11px; color: #7ad4ef;
+    user-select: none; padding: 3px 0;
+  }
+  .rp-tidal-summary:hover { color: #a0e0ff; }
+  .rp-tidal-table {
+    width: 100%; border-collapse: collapse; font-size: 10px; margin-top: 6px;
+    color: #c9dae5;
+  }
+  .rp-tidal-table th, .rp-tidal-table td {
+    padding: 3px 6px; text-align: center;
+    border-bottom: 1px solid rgba(122,212,239,0.10);
+  }
+  .rp-tidal-table th {
+    font-size: 9px; text-transform: uppercase; letter-spacing: 0.4px;
+    color: #8ab4c2; font-weight: 700;
+  }
+  .rp-tidal-table td.station { text-align: left; color: #eaf4ff; font-weight: 600; }
+  .rp-tidal-table td.na { color: #5a7a8a; font-style: italic; }
+  .rp-tidal-src { font-size: 9px; color: #5a7a8a; margin-top: 6px; font-style: italic; }
+
+  /* Sidebar tidal badge — compact variant for waypoint info panel */
+  .info-tidal-badge {
+    background: rgba(26,122,154,0.14); border: 1px solid rgba(122,212,239,0.30);
+    border-radius: 5px; padding: 8px 10px; margin-top: 10px;
+    font-size: 11px; color: #a8d8ea; line-height: 1.5;
+  }
+  .info-tidal-badge .t-title { color: #7ad4ef; font-weight: 700; margin-bottom: 4px; }
+  .info-tidal-badge .t-warn  { color: #ffd28a; margin-top: 5px; font-size: 10.5px; }
+
   #loading { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); z-index: 9999; color: #e0c97f; font-size: 14px; }
 
   /* ── Route Planner Panel ───────────────────────────────────────────────── */
@@ -1406,6 +1465,7 @@ const ROUTES = [
   { num: 48, section: 8, canal: "River Sarthe",                          from: "Angers",              to: "Le Mans",                locks: 20,  dist_km: 133,  max_height: 3.5,  max_draught: 1.4,  color: "#7ed6df" },
   { num: 49, section: 9, canal: "Canal des Deux Mers",                   from: "Royan",               to: "Sète",                   locks: 114, dist_km: 601,  max_height: 3.3,  max_draught: 1.4,  color: "#e55039" },
   { num: 50, section: 9, canal: "Canal de la Robine",                    from: "Port-la-Robine",      to: "Port-la-Nouvelle",       locks: 13,  dist_km: 36,   max_height: 2.5,  max_draught: 1.2,  color: "#cb4335" },
+  { num: 51, section: 9, canal: "Garonne (tidal)",                       from: "Bordeaux",            to: "Castets-en-Dorthe",      locks: 0,   dist_km: 54,   max_height: 6.5,  max_draught: 3.5,  color: "#1a7a9a" },
   { num: 52, section: 9, canal: "River Charente",                        from: "Rochefort",           to: "Angoulême",              locks: 21,  dist_km: 169,  max_height: 3.5,  max_draught: 1.8,  color: "#922b21" },
 ];
 
@@ -1585,6 +1645,20 @@ const WAYPOINTS = [
     desc:"Birthplace of Ingres. Fine 17th century brick town on the Tarn. Pont Vieux bridge is elegant. Moorings on the Tarn just below the aqueduct." },
   { id:"w123", route:49, section:9, lat:43.2050, lon:2.3636,  name:"Port Lauragais", is_lock:false, pk:240,
     desc:"Rest area and museum at the Col de Naurouze – the highest point of the Canal du Midi (189.3m). Pierre-Paul Riquet's monument is here. The canal descends both towards Toulouse and towards Sète from this point." },
+
+  // ── Tidal Garonne (Bordeaux → Castets-en-Dorthe, route 51) ─────────────
+  // Maritime / tidal section: heavily tide-dependent, mascaret below km 30.
+  // See TIDAL_DATA['Garonne'] for propagation tables + warnings.
+  { id:"w398", route:51, section:9, lat:44.8384, lon:-0.5628, name:"Bordeaux (Pont de Pierre)", is_lock:false, pk:0,
+    desc:"Tidal start — the Pont de Pierre (VERCLR 11.9 m at reference, ~4–5 m at PHMA spring high water). Passage under the bridge is governed by the tide; time your transit within 1–2 h of slack water. See the 🌊 Tidal section info when planning this route." },
+  { id:"w399", route:51, section:9, lat:44.7139, lon:-0.4267, name:"Portets",  is_lock:false, pk:22,
+    desc:"Tidal Garonne. High-water offset from Bordeaux reference: roughly +30 min (coeff 45) to +50 min (coeff 100). No formal halte — lay alongside by arrangement only." },
+  { id:"w400", route:51, section:9, lat:44.6349, lon:-0.3220, name:"Cadillac", is_lock:false, pk:36,
+    desc:"Tidal Garonne. Minimum marnage ~3.5 m in étiage. Castle of Cadillac overlooks the river. High-water offset ~+50 min to +1 h 20 min relative to Bordeaux." },
+  { id:"w401", route:51, section:9, lat:44.5561, lon:-0.2456, name:"Langon",   is_lock:false, pk:47,
+    desc:"Tidal Garonne, approaching the upper tidal limit (La Réole is the furthest tidal-influence point). Marnage drops to ~2.5 m. High-water offset ~+1 h 10 min to +1 h 50 min." },
+  { id:"w402", route:51, section:9, lat:44.5722, lon:-0.1736, name:"Castets-en-Dorthe (maritime)", is_lock:false, pk:54,
+    desc:"Junction with the Canal de Garonne. End of tidal Garonne navigation. Marnage ~1.5 m at étiage, tide not accused at coefficient 45. Gateway lock into the canal system." },
 
   // ── Notable Locks & Engineering Features ─────────────────────────────────
   // Note: The book documents 1,600+ individual locks by number in group ranges
@@ -3786,6 +3860,7 @@ function openSidebar(wid) {
     <div class="info-name">${w.is_lock ? '🔒 ' : '🏘 '}${w.name}</div>
     <div class="info-route">Route ${w.route}${routeInfo ? ' · ' + routeInfo.canal : ''}</div>
     ${w.desc ? `<div class="info-desc">${w.desc}</div>` : ''}
+    ${routeInfo ? _buildTidalBadgeHTML(routeInfo.canal) : ''}
     <div class="info-meta">${metaHTML}</div>
 
     ${routeInfo ? `
@@ -4805,6 +4880,9 @@ const WATERWAY_COLORS = {
   'River Oise':               '#27ae60',
   'Canal du Midi':            '#e55039',
   'Canal de Garonne':         '#c0392b',
+  'Garonne':                  '#1a7a9a',   // tidal river — teal/nautical
+  'River Garonne':            '#1a7a9a',
+  'La Garonne':               '#1a7a9a',
   'Canal de la Robine':       '#cb4335',
   'Canal de Bourgogne':       '#6c3483',
   'Canal du Loing':           '#7d3c98',
@@ -4852,6 +4930,9 @@ const WATERWAY_CONSTRAINTS = {
   // Canal Latéral à la Garonne
   'Canal latéral à la Garonne':       { air: 3.50, draft: 1.60, beam: 5.45, length: 38.5 },
   'Canal de Garonne':                 { air: 3.50, draft: 1.60, beam: 5.45, length: 38.5 },
+  // Tidal river: generous filter limits — actual constraints are time-
+  // dependent and surfaced via the Tidal section warning card.
+  'Garonne':                          { air: 6.50, draft: 3.50, beam: 12.0, length: 110 },
   // Bourgogne network
   'Canal de Bourgogne':               { air: 3.50, draft: 1.80, beam: 5.20, length: 38.5 },
   'Canal du Nivernais':               { air: 3.10, draft: 1.20, beam: 3.10, length: 27 },
@@ -4978,6 +5059,162 @@ const TIDAL_DATA = {
 // before matching, so 'River Saône' matches the key 'Saône', and
 // 'Canal Latéral à la Garonne' matches 'Canal latéral à la Garonne'.
 const _normName = s => (s || '').toLowerCase().replace(/^(river |la |le |l'|les |the )/i, '').trim();
+
+/* ── TIDAL_DATA consumers ──────────────────────────────────────────────
+ * `tidalDataFor(waterwayName)` — returns the TIDAL_DATA entry for a
+ * waterway name (normalised — "River Garonne" / "La Garonne" / "Garonne"
+ * all resolve to TIDAL_DATA['Garonne']).
+ *
+ * `_getTidalWarnings(segments)` — given the route-planner's segment
+ * list, returns an array of unique { waterway, tidal } pairs for each
+ * matching tidal section the route crosses. Input can be `allSegs` from
+ * calculateRoute — only the `routeName` field is used.
+ *
+ * `_buildTidalCardHTML(tidalsList)` — renders the 🌊 Tidal section card
+ * as HTML (no DOM manipulation — caller appends). Returns '' if list
+ * is empty.
+ *
+ * `_buildTidalBadgeHTML(waterwayName)` — compact sidebar variant,
+ * shown on waypoint/mooring popups for tidal waterways.
+ */
+function tidalDataFor(waterwayName) {
+  if (!waterwayName || typeof TIDAL_DATA !== 'object') return null;
+  if (TIDAL_DATA[waterwayName]) return TIDAL_DATA[waterwayName];
+  var norm = _normName(waterwayName);
+  // 1. Exact normalised match (handles "La Garonne" → "Garonne")
+  for (var k in TIDAL_DATA) {
+    if (_normName(k) === norm) return TIDAL_DATA[k];
+  }
+  // 2. Prefix match so "Garonne (tidal)" / "Garonne (maritime)" / etc.
+  //    resolve to TIDAL_DATA['Garonne']. The key must end at a word
+  //    boundary to avoid false matches like "Canal de Garonne" → "Garonne"
+  //    (which starts with "canal", not "garonne", so it's already safe).
+  for (var k in TIDAL_DATA) {
+    var nk = _normName(k);
+    if (!nk) continue;
+    if (norm.indexOf(nk) === 0 &&
+        (norm.length === nk.length || /[\s(,-]/.test(norm.charAt(nk.length)))) {
+      return TIDAL_DATA[k];
+    }
+  }
+  return null;
+}
+
+function _getTidalWarnings(segments) {
+  if (!segments || !segments.length) return [];
+  var seen = {};
+  var out = [];
+  segments.forEach(function(seg) {
+    var name = seg.routeName || seg.waterway || '';
+    if (!name || seen[name]) return;
+    seen[name] = true;
+    var td = tidalDataFor(name);
+    if (td) out.push({ waterway: name, tidal: td });
+  });
+  return out;
+}
+
+/* Format a minute-offset (e.g. 130) as "+Hh MMm" (e.g. "+2h 10m"). */
+function _fmtTidalOffset(mins) {
+  if (mins == null) return '—';
+  var sign = mins < 0 ? '-' : '+';
+  var a = Math.abs(mins);
+  var h = Math.floor(a / 60);
+  var m = a % 60;
+  if (h === 0) return sign + m + 'm';
+  if (m === 0) return sign + h + 'h';
+  return sign + h + 'h ' + (m < 10 ? '0' : '') + m + 'm';
+}
+
+function _buildTidalCardHTML(tidalsList) {
+  if (!tidalsList || !tidalsList.length) return '';
+  var html = '';
+  tidalsList.forEach(function(entry) {
+    var td = entry.tidal;
+    var warnHtml = '';
+    (td.warnings || []).forEach(function(w) {
+      var cls = (w.type === 'mascaret' || w.type === 'critical') ? 'critical' : '';
+      warnHtml += '<div class="rp-tidal-warn ' + cls + '">⚠ ' + (w.note || w.type) + '</div>';
+    });
+
+    // Chips: one per station showing marnage if known.
+    var chipHtml = '';
+    var marnage = td.marnage_min_m || {};
+    (td.stations || []).forEach(function(st) {
+      var m = marnage[st.name];
+      chipHtml += '<span class="rp-tidal-chip">' +
+        '<b>' + st.name + '</b>' +
+        (st.km_approx != null ? ' · km&nbsp;' + st.km_approx : '') +
+        (m != null ? ' · ' + m + '&nbsp;m tide' : '') +
+        '</span>';
+    });
+
+    // Collapsible propagation table.
+    var coeffs = [];
+    (td.stations || []).forEach(function(st) {
+      for (var c in (st.offsets || {})) if (!coeffs.includes(+c)) coeffs.push(+c);
+    });
+    coeffs.sort(function(a, b) { return a - b; });
+
+    var tableHtml = '';
+    if (coeffs.length && (td.stations || []).length) {
+      tableHtml = '<details class="rp-tidal-table-wrap">' +
+        '<summary class="rp-tidal-summary">📊 Tidal propagation (relative to ' +
+        (td.reference_port || 'reference port') + ')</summary>' +
+        '<table class="rp-tidal-table">' +
+          '<thead><tr><th>Station</th>';
+      coeffs.forEach(function(c) { tableHtml += '<th>Coeff ' + c + ' · HW</th><th>Coeff ' + c + ' · LW</th>'; });
+      tableHtml += '</tr></thead><tbody>';
+      td.stations.forEach(function(st) {
+        tableHtml += '<tr><td class="station">' + st.name + '</td>';
+        coeffs.forEach(function(c) {
+          var o = (st.offsets || {})[c] || {};
+          var hw = o.high, lw = o.low;
+          tableHtml += '<td class="' + (hw == null ? 'na' : '') + '">' + (hw == null ? '—' : _fmtTidalOffset(hw)) + '</td>';
+          tableHtml += '<td class="' + (lw == null ? 'na' : '') + '">' + (lw == null ? '—' : _fmtTidalOffset(lw)) + '</td>';
+        });
+        tableHtml += '</tr>';
+      });
+      tableHtml += '</tbody></table>' +
+        '<div class="rp-tidal-src">Source: ' + (td.source || 'VNF IENC') + '</div>' +
+        '</details>';
+    }
+
+    var range = (td.navigable_from_km != null && td.navigable_to_km != null)
+      ? 'km ' + td.navigable_from_km + '–' + td.navigable_to_km : '';
+    var influence = td.tidal_influence_to
+      ? '; tidal influence felt up to ' + td.tidal_influence_to : '';
+
+    html += '<div class="rp-tidal-card">' +
+      '<div class="rp-tidal-title">🌊 Tidal section: ' + entry.waterway + '</div>' +
+      '<div class="rp-tidal-sub">This leg crosses the tidal Garonne (' + range + ')' +
+        influence + '. Plan passage times against the reference port (' +
+        (td.reference_port || 'reference port') + ').</div>' +
+      warnHtml +
+      '<div class="rp-tidal-section">' + chipHtml + '</div>' +
+      tableHtml +
+      '</div>';
+  });
+  return html;
+}
+
+function _buildTidalBadgeHTML(waterwayName) {
+  var td = tidalDataFor(waterwayName);
+  if (!td) return '';
+  var firstWarn = (td.warnings && td.warnings[0]) ? td.warnings[0].note : '';
+  var marnageLine = '';
+  if (td.marnage_min_m) {
+    var parts = [];
+    for (var k in td.marnage_min_m) parts.push(k + ' ' + td.marnage_min_m[k] + 'm');
+    marnageLine = 'Min tidal range (étiage): ' + parts.join(' · ');
+  }
+  return '<div class="info-tidal-badge">' +
+    '<div class="t-title">🌊 Tidal section</div>' +
+    'Navigation depends on the tide at ' + (td.reference_port || 'the reference port') + '.' +
+    (marnageLine ? '<br>' + marnageLine : '') +
+    (firstWarn ? '<div class="t-warn">⚠ ' + firstWarn + '</div>' : '') +
+    '</div>';
+}
 
 /* ── Shared contact helpers ─────────────────────────────────────────────
  * _telLink(raw)  → '<a href="tel:...">+33 1 23...</a>' (or plain text if no digits)
@@ -5377,6 +5614,8 @@ const ROUTE_CONNECTIONS = [
   [49, 18, 'Sète'],
   [49, 50, 'Port-la-Robine'],
   [49, 52, 'Royan / Bordeaux'],
+  [51, 49, 'Castets-en-Dorthe'],   // Tidal Garonne joins Canal de Garonne
+  [51, 52, 'Bordeaux / Gironde'],  // Tidal Garonne ↔ Gironde estuary / Charente via coastal
 ];
 
 // ── Graph builder & BFS ───────────────────────────────────────────────────
@@ -5922,6 +6161,11 @@ function renderMultiStopResults(legs) {
     if (blockedWaterways.length > 0) {
       html += `<div class="rp-nav-warning">⚠ <strong>Vessel cannot navigate:</strong><br>${blockedWaterways.join('<br>')}</div>`;
     }
+  }
+
+  // ── Tidal section warnings (Garonne, future: Seine Aval) ──
+  if (typeof _getTidalWarnings === 'function') {
+    html += _buildTidalCardHTML(_getTidalWarnings(allSegs));
   }
 
   // ── Legs ──
@@ -6837,6 +7081,7 @@ const ROUTE_TO_WATERWAYS = {
   48: ['River Sarthe'],
   49: ['Canal du Midi', 'Canal de Garonne'],    // Canal des Deux Mers
   50: ['Canal de la Robine'],
+  51: ['River Garonne', 'La Garonne', 'Garonne'],  // Tidal Bordeaux → Castets
   52: ['River Charente'],
 };
 

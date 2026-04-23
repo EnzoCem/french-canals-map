@@ -292,6 +292,31 @@ Clearances are at the IENC *reference water level*. Actual clearance drops in hi
 
 ---
 
+## Tidal-section warnings (🌊 Garonne)
+
+Structured data for tidal navigation lives in `TIDAL_DATA` (~line 4934 in `french_canals_map.html`). Currently keyed only on `'Garonne'` (Bordeaux → Castets-en-Dorthe, 54 km).
+
+### Route integration
+Route 51 "Garonne (tidal)" with waypoints w398–w402 (Bordeaux, Portets, Cadillac, Langon, Castets-en-Dorthe) makes the tidal leg planable end-to-end. `ROUTE_CONNECTIONS` joins route 51 to route 49 at Castets-en-Dorthe and Bordeaux.
+
+### UI touch-points
+| Location | What appears |
+|----------|--------------|
+| **Route-planner results** | 🌊 **Tidal section card** above the legs whenever `_getTidalWarnings(allSegs)` returns matches. Shows mascaret warning, marnage chips per sector, and a collapsible propagation table (coeff 45 / 70 / 100 × HW/LW offsets relative to Bordeaux). |
+| **Waypoint sidebar** | Compact `🌊 Tidal section` badge above the info-meta block when the waypoint's route is a tidal waterway. |
+
+### Helpers (JS)
+- `tidalDataFor(waterwayName)` — tolerant name resolver (`"Garonne (tidal)"`, `"La Garonne"`, `"River Garonne"` all resolve to `TIDAL_DATA['Garonne']`; `"Canal de Garonne"` correctly does NOT).
+- `_getTidalWarnings(segments)` — walks route segments, dedups, returns `[{waterway, tidal}]` for matches.
+- `_buildTidalCardHTML(list)` / `_buildTidalBadgeHTML(waterwayName)` — pure HTML generators.
+
+### Extending to another tidal waterway
+1. Add an entry to `TIDAL_DATA` with stations/marnage/warnings.
+2. Add a ROUTE entry whose `canal` string begins with the TIDAL_DATA key (e.g. `"Seine (estuary)"` → `TIDAL_DATA['Seine']`).
+3. Add waypoints on that route. Done — the card + badge trigger automatically.
+
+---
+
 ## Google Places import
 
 Users can bring their Google Maps "Saved Places" (Starred, Want to Go, lists) into the map as a 📍 My Places layer. Managed from the **Data Backup** panel under the *Google Maps places* heading.
