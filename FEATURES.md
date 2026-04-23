@@ -1,7 +1,7 @@
 # Feature Backlog & To-Do
 
 Planned and proposed enhancements for the French Canals Interactive Map.
-*Last updated: 2026-04-19 (PWA shipped)*
+*Last updated: 2026-04-23 (IENC plan fully executed: bridges, locks, moorings, Garonne tidal data, attribution)*
 
 ---
 
@@ -137,8 +137,13 @@ Planned and proposed enhancements for the French Canals Interactive Map.
 | ~~VHF channel per lock~~ | Done | `_vhfChip()` renders on live + route-planner locks |
 | ~~Capitainerie tel: links~~ | Done | `_autoLinkPhones()` + `_telLink()` across mooring/lock/tunnel/POI popups |
 | ~~IENC bridge air clearances~~ | Done | 🌉 Bridges layer — see row above. 990 bridges with VERCLR; vessel-profile-aware colouring. |
+| ~~IENC locks reconciliation data~~ | Done | `data/ienc_locks.geojson` (192 locks with length/width/rise) + `bridges_locks_reconciliation.csv` for manual review. Source for cherry-picking lock waypoints missing from the app. |
+| ~~IENC moorings reconciliation data~~ | Done | `data/ienc_moorings.geojson` (625 quays + pontoons) + `bridges_moorings_reconciliation.csv`. Surfaces candidate matches (e.g. Chalon port position verified; Seurre, Toul positions worth reviewing). |
+| ~~Garonne tidal data constant~~ | Done | `TIDAL_DATA` JS constant in `french_canals_map.html` (~line 4934): Bordeaux → Castets tidal propagation table per coefficient (45/70/100), marnage per sector, mascaret warning. Data half of Tidal-section-warnings (UI still pending). |
+| VNF / OSM / Michelin attribution | Done | Data Backup panel now carries a permanent attribution block (Licence Ouverte 2.0, ODbL, etc.). |
 | Mobile / touch optimisation | Medium | Larger touch targets, swipe sidebar |
-| Tidal-section warnings | Medium | Data half covered by IENC plan Task 6 (Garonne tidal table transcribed from VNF README). UI half still TBD: show tide-window banner + mascaret warning when route crosses tidal PK zones on Garonne / Seine-Aval. |
+| Tidal-section warnings (UI) | Medium | Data half **shipped** as `TIDAL_DATA` (Garonne only — Seine-Aval README lacks a comparable table). UI half: show tide-window banner + mascaret warning when a route crosses tidal PK zones. Consume from `TIDAL_DATA['Garonne']`. |
+| Lock waypoints from IENC | Low-Med | `data/ienc_locks.geojson` gives 192 locks with chamber dimensions across Rhine/Moselle/Seine/Saône/Oise. Could be cherry-picked into `WAYPOINTS` where the app currently has 0 coverage for those rivers' locks. |
 | Voies vertes (towpath cycling) | Medium | OSM `route=bicycle` relations alongside canals — pair bike with the boat |
 | Download-area-for-offline button | Medium | Explicit "download this area" that warms the tile cache over the current viewport + zoom range |
 | Fuel price overlay | Low | Crowdsource via export/import pattern (mirrors Google Places) |
