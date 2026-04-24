@@ -30,6 +30,31 @@
   #header h1 { font-size: 18px; font-weight: 600; color: #e0c97f; letter-spacing: 0.5px; }
   #header .subtitle { font-size: 12px; color: #8ab4c2; margin-top: 2px; }
   #header .boat-icon { font-size: 28px; }
+  /* Right-aligned info block inside #header — holds the canals-navigability
+   * legend and the global stats readout that used to sit in their own row
+   * inside #controls. Moved here on 2026-04-24 to shrink the controls bar
+   * from 3 rows to 2. */
+  #header .h-right {
+    margin-left: auto;
+    display: flex; flex-direction: column; align-items: flex-end;
+    gap: 3px; font-size: 11px; color: #8ab4c2;
+    white-space: nowrap;
+  }
+  #header #waterway-nav-legend {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 11px; color: #8ab4c2;
+  }
+  #header #waterway-nav-legend > span {
+    display: inline-flex; align-items: center; gap: 3px;
+  }
+  #header #stats {
+    font-size: 11px; color: #7a9ab0; letter-spacing: 0.1px;
+  }
+  @media (max-width: 720px) {
+    /* On phones hide the stats line to save vertical space — legend still
+     * useful for interpreting the canal colours; stats are nice-to-know. */
+    #header .h-right { display: none; }
+  }
 
   #controls {
     background: #16213e;
@@ -1469,6 +1494,19 @@
     <h1>Through the French Canals</h1>
     <div class="subtitle">Interactive cruising guide · Based on David Jefferson's 14th edition</div>
   </div>
+  <!-- Right-aligned informational block: canal-navigability legend +
+       global stats. Moved here from #controls to collapse the controls
+       bar from 3 rows to 2. -->
+  <div class="h-right">
+    <div id="waterway-nav-legend" title="Canal navigability based on your vessel profile">
+      <span>Canals:</span>
+      <span><span class="wn-dot" style="background:#4fc3f7"></span>Navigable</span>
+      <span><span class="wn-dot" style="background:#ef5350"></span>Blocked</span>
+      <span><span class="wn-dot" style="background:#ffb74d"></span>Marginal</span>
+      <span><span class="wn-dot" style="background:#90a4ae"></span>No data</span>
+    </div>
+    <div id="stats">Loading…</div>
+  </div>
 </div>
 
 <div id="controls">
@@ -1566,29 +1604,19 @@
     </div>
   </div>
 
-  <!-- ═══ QUICK-ACCESS CHIPS ═══════════════════════════════════════════
-       The four layers users toggle most often, one tap away. Michelin
-       is the discoverable "try it" option; the other three are default-on. -->
+  <!-- ═══ SECONDARY ROW ════════════════════════════════════════════════
+       Quick-access layer chips (Canals / Ports / Locks / Michelin) +
+       vessel-dimension filter + waterway-dimensions lookup. Informational
+       items (canals legend, stats) moved to #header .h-right on
+       2026-04-24 so the whole controls bar fits in two rows. -->
   <div class="cb-row cb-row-chips">
     <span class="cb-row-label">Quick:</span>
     <button class="toggle-btn active" id="toggle-waterways" onclick="toggleLayer('waterways')" title="Canal network overlay">🌊 Canals</button>
     <button class="toggle-btn active" id="toggle-ports"     onclick="toggleLayer('ports')"     title="Ports de plaisance">⛵ Ports</button>
     <button class="toggle-btn active" id="toggle-locks"     onclick="toggleLayer('locks')"     title="Locks">🔒 Locks</button>
     <button class="toggle-btn"        id="toggle-michelin"  onclick="toggleLayer('michelin')"  title="Michelin-starred restaurants">⭐ Michelin</button>
-  </div>
 
-  <!-- ═══ FILTER ROW ═══════════════════════════════════════════════════
-       Canals legend, vessel-dimension filter, waterway dimensions
-       lookup, stats. Unchanged in function from the previous layout. -->
-  <div class="cb-row cb-row-filter">
-    <div class="control-group" id="waterway-nav-legend" title="Canal navigability based on your vessel profile">
-      <span style="font-size:11px;color:#8ab4c2;margin-right:4px">Canals:</span>
-      <span><span class="wn-dot" style="background:#4fc3f7"></span>Navigable</span>
-      <span><span class="wn-dot" style="background:#ef5350"></span>Blocked</span>
-      <span><span class="wn-dot" style="background:#ffb74d"></span>Marginal</span>
-      <span><span class="wn-dot" style="background:#90a4ae"></span>No data</span>
-    </div>
-    <div class="control-group" id="vessel-filter-group" style="background:#0d1e33;border:1px solid #1a4a7a;border-radius:6px;padding:4px 8px;gap:5px;align-items:center">
+    <div class="control-group" id="vessel-filter-group" style="background:#0d1e33;border:1px solid #1a4a7a;border-radius:6px;padding:4px 8px;gap:5px;align-items:center;margin-left:8px">
       <span style="font-size:12px;white-space:nowrap">🚢 Draft:</span>
       <input type="number" id="vf-draft" min="0" max="5" step="0.1" placeholder="0.0"
              style="width:46px;background:#16213e;border:1px solid #1a5276;border-radius:4px;color:#eee;font-size:12px;padding:3px 5px;text-align:center"
@@ -1602,13 +1630,13 @@
       <button onclick="applyProfileToFilter()" id="vf-profile-btn" title="Fill from your saved Profile dimensions" style="background:rgba(91,192,222,0.12);border:1px solid #1a5276;border-radius:4px;color:#5bc0de;font-size:11px;cursor:pointer;padding:2px 6px;white-space:nowrap">⛵ Profile</button>
       <button onclick="clearVesselFilter()" title="Clear filter" style="background:none;border:none;color:#e87a7a;font-size:14px;cursor:pointer;padding:0 2px;line-height:1" id="vf-clear-btn">✕</button>
     </div>
+
     <div class="control-group">
       <label>📐 Waterway:</label>
       <select id="dims-lookup" onchange="showWaterwayDims(this.value)" style="max-width:160px">
         <option value="">Dimensions…</option>
       </select>
     </div>
-    <div id="stats" class="cb-push-right">Loading…</div>
   </div>
 </div>
 
