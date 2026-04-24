@@ -1,0 +1,336 @@
+kind,id,name,waterway,lat,lon,distance_m,nearest_waterway_name
+mooring,m172,Halte Fluviale de Besançon,Canal du Doubs,47.235,6.03,38355.8,River Saône
+waypoint,w323,Besançon,,47.235,6.0233,37998.5,River Saône
+waypoint,w110,Royan,,45.6294,-1.0192,31604.6,River Charente
+waypoint,w038,Tonnerre,,47.4869,4.0561,23835.5,Canal de Bourgogne
+mooring,m115,Tonnerre – Halte Nautique,Canal de Bourgogne,47.487,4.056,23831.9,Canal de Bourgogne
+waypoint,w076,Arras,,50.2916,2.7791,23029.8,Liaison Dunkerque–Escaut
+mooring,m130,Arras – Port de Plaisance,Canal de la Scarpe,50.292,2.779,23005.5,Liaison Dunkerque–Escaut
+waypoint,w070,Dunkerque,,51.0344,2.3767,22136.0,Canal de Calais
+waypoint,w060,Lunel,,43.667,3.8453,15849.3,Canal du Rhône à Sète
+waypoint,w036,Decize,,46.5613,3.462,15577.7,Canal latéral à la Loire
+waypoint,w091,Colmar,,48.0807,7.3561,13893.1,Canal du Rhône au Rhin
+waypoint,w230,Lille,,50.6292,3.0573,12528.8,River Lys
+mooring,m131,Lille – Port de Plaisance,Canal de la Deûle,50.63,3.057,12454.3,River Lys
+waypoint,w202,Châtel-Censoir,,47.553,3.8294,12364.9,Canal du Nivernais
+mooring,m082,Châtel-Censoir – Halte,Canal du Nivernais,47.553,3.829,12337.6,Canal du Nivernais
+waypoint,w029,Pontoise,,49.2017,2.0967,12242.6,River Oise
+mooring,m224,Port de Plaisance d'Amiens,Canal de la Somme,49.8942,2.2958,11671.0,La Somme Canalisée
+waypoint,w074,Amiens,,49.8942,2.2958,11671.0,La Somme Canalisée
+waypoint,w276,Amiens,,49.8942,2.2958,11671.0,La Somme Canalisée
+waypoint,w233,Aire-sur-la-Lys,,50.5317,2.6404,11625.8,River Lys
+waypoint,w001,Le Havre,,49.4903,0.1077,10757.1,River Seine
+waypoint,lk014,Écluse de Stenay (Meuse),,49.687,5.155,10079.2,La Meuse
+waypoint,w263,Gravelines,,50.9869,2.1311,9923.3,Canal de Calais
+waypoint,lk010,Écluse de la Jonction (Decize),,47.245,3.526,8991.6,Canal du Nivernais
+waypoint,w122,Montauban,,43.96,1.353,8106.5,Canal Latéral à la Garonne
+waypoint,w030,Montargis,,48.007,2.8356,6955.8,Canal de Briare
+waypoint,w228,Orange,,44.144,4.8062,6879.7,River Rhône
+waypoint,w102,Rennes,,47.9968,-1.6677,6229.5,La Vilaine
+mooring,m110,Laroche-Migennes – Port,Canal de Bourgogne,47.762,3.512,5829.0,L'Yonne - Canal du Nivernais
+waypoint,w037,Laroche-Migennes,,47.7624,3.5128,5784.4,L'Yonne - Canal du Nivernais
+mooring,m081,Arcy-sur-Cure – Halte,Canal du Nivernais,47.605,3.76,5580.3,Canal du Nivernais
+waypoint,w004,Duclair,,49.3065,0.9044,5528.7,River Seine
+waypoint,w201,Arcy-sur-Cure,,47.6044,3.7592,5527.9,Canal du Nivernais
+waypoint,w355,Maxilly-sur-Saône,,47.3,5.55,5484.8,River Saône
+waypoint,w344,Vieux-lès-Asfeld,,49.4833,4.0,5325.7,L'Aisne
+waypoint,w200,Vermenton,,47.7145,3.7377,4970.5,River Yonne
+mooring,m080,Vermenton – Halte Nautique,Canal du Nivernais,47.714,3.738,4954.7,River Yonne
+waypoint,w262,Watten,,50.8317,2.2083,4932.5,Canal de Calais
+waypoint,w264,Watten,,50.8317,2.2083,4932.5,Canal de Calais
+waypoint,w313,Sinceny,,49.5467,3.4783,4914.8,Canal de l’Oise à l’Aisne
+waypoint,w111,Bordeaux,,44.8378,-0.5792,4792.7,La Garonne
+waypoint,lk003,Arzviller Inclined Plane (Plan incliné),,48.7749,7.2305,4681.9,Canal de la Marne au Rhin
+waypoint,w080,Givet,,50.1389,4.7203,4581.6,Canal de la Meuse
+mooring,m111,Tanlay – Halte,Canal de Bourgogne,47.852,3.912,4579.5,Canal de Bourgogne
+waypoint,w210,Tanlay,,47.8517,3.9123,4574.6,Canal de Bourgogne
+waypoint,w061,Aigues-Mortes,,43.5698,4.0187,4384.3,Canal du Rhône à Sète
+waypoint,w401,Langon,,44.5561,-0.2456,4335.7,La Garonne
+waypoint,w268,Deûlémont,,50.7167,3.0,4283.8,River Lys
+waypoint,w288,Bains-les-Bains,,47.9833,6.2833,4036.4,Canal des Vosges
+waypoint,w305,Vieux-lès-Asfeld,,49.51,4.0833,3996.1,L'Aisne
+waypoint,w398,Bordeaux (Pont de Pierre),,44.8384,-0.5628,3871.1,La Garonne
+waypoint,w117,Fonserannes Locks,,43.2965,3.2176,3797.5,Canal du Midi
+waypoint,lk008,Fonserannes Locks,,43.2965,3.2176,3797.5,Canal du Midi
+waypoint,lk007,Avignon Lock (Écluse des Sorgues),,44.033,4.75,3745.1,River Rhône
+waypoint,w272,Ham,,49.91,2.9933,3738.7,La Somme Rivière
+waypoint,w251,Romilly-sur-Seine,,48.5183,3.7333,3501.7,River Seine
+waypoint,w325,St-Jean-de-Losne,,47.1317,5.2683,3454.5,River Saône
+mooring,m010,St Étienne-des-Sorts – Halte,Rhône,44.192,4.651,3061.1,River Rhône
+waypoint,w226,Montélimar,,44.5567,4.7533,2970.1,Le Rhône - Canal de Châteauneuf-du-Rhône
+mooring,m127,Montélimar – Halte Nautique,Rhône,44.557,4.753,2952.8,Le Rhône - Canal de Châteauneuf-du-Rhône
+mooring,m204,Halte Fluviale de Carhaix,Canal de Nantes à Brest,48.2786,-3.5706,2925.5,Canal de Nantes à Brest
+waypoint,w382,Carhaix-Plouguer,,48.2786,-3.5706,2925.5,Canal de Nantes à Brest
+waypoint,w100,St-Malo,,48.6493,-2.0137,2839.2,Canal d'Ille-et-Rance
+waypoint,w242,Laval,,47.9739,-0.7727,2825.2,River Mayenne
+waypoint,w395,Sallèles-d'Aude,,43.27,2.95,2718.2,Canal du Midi
+waypoint,w059,Sète,,43.4,3.6953,2685.7,Canal du Rhône à Sète
+waypoint,w314,Condé-sur-Marne,,49.3583,3.695,2556.0,Canal latéral à l'Aisne
+mooring,m011,Laudun-l'Ardoise – Port 2,Rhône,44.0985,4.682,2415.4,Le Rhône - Bras de la Piboulette
+mooring,m015,Port St Louis – Halte,Rhône,43.393,4.831,2363.4,River Rhône
+waypoint,w028,Chauny,,49.6117,3.32,2345.3,River Oise
+waypoint,w275,Chauny,,49.6117,3.32,2345.3,River Oise
+waypoint,lk005,Rogny-les-Sept-Écluses (historic),,47.639,2.791,2202.6,Canal de Briare
+mooring,m133,Douai – Port de Plaisance,Canal de la Sensée,50.371,3.08,2052.9,Liaison Dunkerque–Escaut
+waypoint,w231,Douai,,50.3713,3.0802,2019.2,Liaison Dunkerque–Escaut
+mooring,m192,Halte Fluviale de Langres,Canal entre Champagne et Bourgogne,47.8617,5.3317,2015.0,River Marne
+waypoint,w353,Langres,,47.8617,5.3317,2015.0,River Marne
+waypoint,w399,Portets,,44.7139,-0.4267,1980.6,La Garonne
+mooring,m013,Aramon – Halte,Rhône,43.883,4.715,1959.7,River Rhône
+mooring,m016,Port Napoleon (Port St Louis),Rhône,43.388,4.829,1790.2,River Rhône
+waypoint,w032,Nevers,,47.0,3.1572,1727.6,River Loire
+waypoint,w390,St-Nazaire,,47.2833,-2.2,1707.7,River Loire
+waypoint,w362,Fénétrange,,48.9567,7.0783,1672.0,La Sarre
+waypoint,w289,Fontenoy-le-Château,,47.9333,6.0667,1669.6,Canal des Vosges
+waypoint,w123,Port Lauragais,,43.205,2.3636,1651.2,Canal du Midi
+waypoint,w384,Mûr-de-Bretagne,,48.19,-3.06,1647.7,Le Blavet
+mooring,m024,Honfleur – Vieux Bassin Port,Seine Maritime,49.419,0.233,1581.5,River Seine
+waypoint,w002,Honfleur,,49.4189,0.2317,1570.7,River Seine
+mooring,m144,Blain – Halte Nautique,Canal de Nantes à Brest,47.479,-1.762,1520.4,Canal de Nantes à Brest
+waypoint,w402,Castets-en-Dorthe (maritime),,44.5722,-0.1736,1509.0,Canal de Garonne
+waypoint,w224,Belleville-en-Beaujolais,,46.1122,4.7468,1489.2,River Saône
+waypoint,w241,Blain,,47.4787,-1.7625,1471.6,Canal de Nantes à Brest
+mooring,m125,Belleville-en-Beaujolais – Port,Saône,46.112,4.747,1463.3,River Saône
+waypoint,w007,Vernon,,49.0839,1.4794,1460.9,River Seine
+waypoint,w310,Abbécourt,,49.5267,2.9917,1452.3,River Oise
+waypoint,w009,Conflans-Ste-Honorine,,49.0024,2.0979,1407.0,River Seine
+waypoint,w056,Valence,,44.9235,4.8957,1390.7,River Rhône
+mooring,m191,Halte Fluviale de Chaumont,Canal entre Champagne et Bourgogne,48.1167,5.1333,1384.0,River Marne
+waypoint,w352,Chaumont,,48.1167,5.1333,1384.0,River Marne
+waypoint,w303,Attichy,,49.42,3.0467,1333.8,L'Aisne
+waypoint,w040,Dijon,,47.322,5.0415,1329.3,Canal de Bourgogne
+waypoint,w041,St-Jean-de-Losne,,47.1121,5.27,1319.5,River Saône
+waypoint,w073,St-Valery-sur-Somme,,50.1864,1.6356,1310.7,La Somme Canalisée
+mooring,m052,St-Jean-de-Losne – Grand Bassin,Saône,47.112,5.27,1308.4,River Saône
+mooring,m114,Dijon – Port du Canal,Canal de Bourgogne,47.322,5.041,1298.7,Canal de Bourgogne
+mooring,m033,Agde – Port de Plaisance,Canal du Midi,43.309,3.476,1295.0,Canal du Midi
+mooring,m171,Port de Plaisance de Montbéliard,Canal du Rhône au Rhin,47.5167,6.8,1291.6,Canal du Rhône au Rhin - Branche Sud
+waypoint,w322,Montbéliard,,47.5167,6.8,1291.6,Canal du Rhône au Rhin - Branche Sud
+mooring,m121,Gray – Port de Plaisance,Saône,47.438,5.59,1272.0,River Saône
+waypoint,w051,Gray,,47.4381,5.59,1260.9,River Saône
+waypoint,lk009,Agde Round Lock (Écluse Ronde),,43.3094,3.4747,1241.3,Canal du Midi
+waypoint,w104,Nantes,,47.2184,-1.5536,1214.9,River Loire
+waypoint,w116,Agde,,43.3098,3.4757,1211.5,Canal du Midi
+waypoint,w054,Lyon,,45.7485,4.8467,1175.9,River Rhône
+waypoint,w321,Dannemarie,,47.6617,7.1467,1169.9,Canal du Rhône au Rhin - Branche Sud
+mooring,m085,Corbigny – Halte Nautique,Canal du Nivernais,47.253,3.675,1142.5,River Yonne
+waypoint,w203,Corbigny,,47.253,3.675,1142.5,River Yonne
+waypoint,w023,Meaux,,48.9556,2.855,1136.5,Canal de l'Ourcq
+mooring,m222,Halte Fluviale de Péronne,Canal du Nord,50.08,3.0183,1134.2,Canal du Nord
+waypoint,w271,Péronne,,50.08,3.0183,1134.2,Canal du Nord
+mooring,m213,Port-la-Nouvelle Marina,Canal de la Robine,43.0167,3.0506,1125.4,Canal de la Robine
+waypoint,w397,Port-la-Nouvelle,,43.0167,3.0506,1125.4,Canal de la Robine
+waypoint,w043,Gien,,47.693,2.6287,1124.8,River Loire
+waypoint,w381,Châteauneuf-du-Faou,,48.1897,-3.8147,1122.7,Canal de Nantes à Brest
+waypoint,w016,Villeneuve-sur-Yonne,,48.0744,3.3026,1104.7,River Yonne
+mooring,m091,Villeneuve-sur-Yonne – Halte,River Yonne,48.074,3.302,1085.9,River Yonne
+waypoint,w400,Cadillac,,44.6349,-0.322,1072.9,La Garonne
+waypoint,w370,Strasbourg,,48.5833,7.75,1069.5,Canal du Rhône au Rhin
+waypoint,w312,Cuts,,49.5833,3.2167,1042.8,Canal de l'Oise à l'Aisne
+waypoint,w013,Bray-sur-Seine,,48.4083,3.2361,1025.4,River Seine
+waypoint,w113,Toulouse,,43.6047,1.4442,1021.4,Canal du Midi
+waypoint,w075,Cambrai,,50.176,3.2375,1020.1,L'Escaut Canalisé
+waypoint,w115,Béziers,,43.3446,3.2145,1018.9,Canal du Midi
+waypoint,w006,Les Andelys,,49.2465,1.4101,1012.6,River Seine
+mooring,m162,Halte Fluviale de Noyon,Canal de l'Oise à l'Aisne,49.5833,3.0,996.8,Canal du Nord
+waypoint,w311,Noyon,,49.5833,3.0,996.8,Canal du Nord
+waypoint,w393,Nantes,,47.26,-1.55,992.9,L'Erdre
+waypoint,w392,Angers,,47.4667,-0.55,988.3,La Maine
+waypoint,w092,Mulhouse,,47.7508,7.3359,986.6,Canal du Rhône au Rhin - Branche Sud
+mooring,m231,Port de Plaisance de Troyes,Petite Seine,48.2992,4.0683,978.9,River Seine
+waypoint,w252,Troyes,,48.2992,4.0683,978.9,River Seine
+waypoint,w250,Nogent-sur-Seine,,48.4833,3.495,977.2,River Seine
+mooring,m003,Andancette – Halte,Rhône,45.236,4.793,967.1,River Rhône
+mooring,m151,Homps – Halte Nautique,Canal du Midi,43.255,2.742,952.3,Canal du Midi
+mooring,m112,Ancy-le-Franc – Port de Plaisance,Canal de Bourgogne,47.778,4.161,940.0,Canal de Bourgogne
+waypoint,w273,Cambrai,,50.1767,3.2367,927.1,L'Escaut Canalisé
+mooring,m086,Châtillon-en-Bazois – Halte,Canal du Nivernais,47.025,3.64,922.0,Canal du Nivernais
+waypoint,w296,Nort-sur-Erdre,,47.4583,-1.6183,921.1,Canal de Nantes à Brest
+waypoint,w324,Dole,,47.0997,5.4912,919.1,Canal du Rhône au Rhin - Branche Sud
+mooring,m223,Port de Plaisance de Saint-Quentin,Canal de Saint-Quentin,49.8467,3.285,909.0,Canal de Saint-Quentin
+waypoint,w274,Saint-Quentin,,49.8467,3.285,909.0,Canal de Saint-Quentin
+waypoint,w211,Ancy-le-Franc,,47.7776,4.1612,903.9,Canal de Bourgogne
+waypoint,w204,Châtillon-en-Bazois,,47.0245,3.6403,887.6,Canal du Nivernais
+mooring,m008,Cruas – Port,Rhône,44.648,4.763,883.2,River Rhône
+waypoint,w371,Offendorf,,48.4983,7.7317,873.9,Canal du Rhône au Rhin
+mooring,m070,Nancy – Port de Plaisance,Canal de la Marne au Rhin,48.692,6.184,863.0,Canal de la Marne au Rhin
+waypoint,lk001,Pouilly-en-Auxois Tunnel,,47.27,4.558,847.6,Canal de Bourgogne
+waypoint,w270,Arleux,,50.2817,3.105,843.2,Canal du Nord
+waypoint,w372,Rhinau,,48.3167,7.7,841.8,Grand Canal d'Alsace
+mooring,m160,Halte Fluviale de Soissons,Canal latéral à l'Aisne,49.3767,3.3233,838.4,L'Aisne
+waypoint,w301,Soissons,,49.3767,3.3233,838.4,L'Aisne
+waypoint,w084,Nancy,,48.6921,6.1844,837.3,Canal de la Marne au Rhin
+waypoint,w285,Nancy,,48.6921,6.1844,837.3,Canal de la Marne au Rhin
+mooring,m211,Port de Plaisance d'Angers,River Maine,47.4667,-0.555,833.2,La Maine
+waypoint,w027,Compiègne,,49.4127,2.8264,828.0,River Oise
+waypoint,w112,Agen,,44.2019,0.621,816.8,Canal de Garonne
+mooring,m170,Port de Plaisance de Mulhouse,Canal du Rhône au Rhin,47.7483,7.335,813.4,Canal du Rhône au Rhin - Branche Sud
+waypoint,w320,Mulhouse,,47.7483,7.335,813.4,Canal du Rhône au Rhin - Branche Sud
+waypoint,w083,Metz,,49.1193,6.1757,810.7,River Moselle
+mooring,m040,Agen – Port de Plaisance,Canal de Garonne,44.202,0.621,806.1,Canal de Garonne
+mooring,m228,Halte Fluviale de Josselin,Canal de Nantes à Brest,47.955,-2.5467,802.4,Canal de Nantes à Brest
+waypoint,w294,Josselin,,47.955,-2.5467,802.4,Canal de Nantes à Brest
+waypoint,w340,Pont-à-Bar,,49.7033,4.9533,781.0,La Meuse
+waypoint,w284,Bar-le-Duc,,48.77,5.16,769.4,Canal de la Marne au Rhin
+mooring,m173,Port Fluvial de Dole,Canal du Rhône au Rhin,47.0997,5.495,762.4,Canal du Rhône au Rhin - Branche Sud
+mooring,m161,Port de Plaisance de Compiègne,Canal latéral à l'Aisne,49.415,2.83,761.1,River Oise
+waypoint,w024,Épernay,,49.0427,3.9558,750.4,River Marne
+waypoint,w304,Compiègne,,49.4167,2.8333,749.4,River Oise
+mooring,m140,Dinan – Port de Plaisance,Canal d'Ille-et-Rance,48.458,-2.048,743.8,Canal d'Ille-et-Rance
+mooring,m032,Béziers – Port Neuf,Canal du Midi,43.342,3.213,738.8,Canal du Midi
+waypoint,w243,Le Mans,,47.9958,0.1975,737.9,River Sarthe
+waypoint,w022,Joigny,,47.9839,3.4063,730.6,River Yonne
+waypoint,w360,Gondrexange,,48.7167,7.0333,723.2,La Sarre
+mooring,m021,Rouen – Port Bassin St Gervais,Seine Maritime,49.449,1.073,715.1,River Seine
+mooring,m180,Halte Fluviale de Sedan,Canal des Ardennes,49.6983,4.7683,710.6,Canal de la Meuse
+waypoint,w341,Sedan,,49.6983,4.7683,710.6,Canal de la Meuse
+mooring,m221,Port de Plaisance de Saint-Omer,Canal de Calais / River Aa,50.7467,2.255,707.9,River Aa
+waypoint,w261,Saint-Omer,,50.7467,2.255,707.9,River Aa
+waypoint,w265,Saint-Omer,,50.7467,2.255,707.9,River Aa
+mooring,m014,Vallabrègues – Halte,Rhône,43.827,4.618,706.3,River Rhône
+mooring,m001,Givors – Halte,Rhône,45.591,4.769,694.6,River Rhône
+mooring,m132,Saint-Omer – Port de Plaisance,River Aa,50.746,2.256,686.4,River Aa
+waypoint,w331,St-Gilles,,43.6745,4.4302,685.2,Canal du Rhône à Sète
+waypoint,w005,Rouen,,49.4432,1.093,680.9,River Seine
+mooring,m090,Sens – Port de Plaisance,River Yonne,48.197,3.285,659.4,River Yonne
+waypoint,w072,Saint-Omer,,50.7461,2.2564,656.9,River Aa
+mooring,m101,Moret-sur-Loing – Halte Nautique,Canal du Loing,48.372,2.815,652.3,Canal du Loing
+mooring,m200,Halte Fluviale de Sarrebourg,Canal de la Sarre,48.7317,7.0583,649.2,La Sarre
+waypoint,w361,Sarrebourg,,48.7317,7.0583,649.2,La Sarre
+mooring,m031,Carcassonne – Port de Plaisance,Canal du Midi,43.211,2.353,644.6,Canal du Midi
+waypoint,w012,Moret-sur-Loing,,48.3724,2.8145,640.2,Canal du Loing
+waypoint,w101,Dinan,,48.4568,-2.0471,638.7,Canal d'Ille-et-Rance
+mooring,m092,Joigny – Port de Plaisance,River Yonne,47.983,3.406,628.4,River Yonne
+waypoint,w267,Armentières,,50.6883,2.8817,614.7,River Lys
+waypoint,w025,Châlons-en-Champagne,,48.9575,4.3651,611.5,Canal Saint-Martin
+waypoint,w383,Gouarec,,48.2078,-3.2069,609.5,Canal de Nantes à Brest
+waypoint,w120,Angoulême,,45.6489,0.1594,592.7,River Charente
+mooring,m006,Valence – Port de Plaisance,Rhône,44.934,4.893,584.8,River Rhône
+waypoint,w015,Sens,,48.1975,3.2841,583.5,River Yonne
+waypoint,w225,Tournon-sur-Rhône,,45.0694,4.8425,580.0,River Rhône
+mooring,m050,Auxerre – Port de Plaisance,Canal de Bourgogne,47.798,3.568,573.5,River Yonne
+mooring,m087,Cercy-la-Tour – Halte,Canal du Nivernais,46.862,3.643,572.8,Canal du Nivernais
+mooring,m020,Rouen – Halte de Plaisance,Seine Maritime,49.442,1.094,571.9,River Seine
+waypoint,w302,Vic-sur-Aisne,,49.3983,3.1267,567.1,L'Aisne
+waypoint,w035,Clamecy,,47.4596,3.5158,564.8,L'Yonne - Canal du Nivernais
+mooring,m084,Clamecy – Port de Plaisance,Canal du Nivernais,47.46,3.516,554.1,Canal du Nivernais
+waypoint,w021,Auxerre,,47.798,3.5683,553.3,River Yonne
+waypoint,lk011,Écluse de l'Arsenal (Paris),,48.8831,2.3619,548.0,Canals of Paris
+waypoint,w081,Charleville-Mézières,,49.7692,4.7229,542.9,Canal de la Meuse
+mooring,m023,Caudebec-en-Caux – Halte,Seine Maritime,49.527,0.727,541.2,River Seine
+waypoint,w044,Cosne-Cours-sur-Loire,,47.4121,2.9258,536.3,River Loire
+mooring,m203,Port de Plaisance de Châteaulin,Canal de Nantes à Brest,48.195,-4.0983,535.2,Canal de Nantes à Brest
+waypoint,w380,Châteaulin,,48.195,-4.0983,535.2,Canal de Nantes à Brest
+mooring,m104,Auxerre – Halte Nautique,River Yonne,47.799,3.568,535.0,River Yonne
+mooring,m152,Capestang – Halte Nautique,Canal du Midi,43.326,3.046,523.2,Canal du Midi
+mooring,m220,Port de Plaisance de Calais,Canal de Calais,50.95,1.855,508.6,Canal de Calais à Saint-Omer
+mooring,m153,Moissac – Port de Plaisance,Canal de Garonne,44.107,1.083,502.8,Canal de Garonne
+waypoint,w058,Arles,,43.676,4.6275,502.3,River Rhône
+mooring,m009,Viviers – Port,Rhône,44.481,4.693,499.9,Le Rhône - Canal de Châteauneuf-du-Rhône
+waypoint,w057,Avignon,,43.9493,4.8055,490.4,River Rhône
+waypoint,w033,Digoin,,46.4833,3.9776,483.0,River Loire
+mooring,m141,Rennes – Port de Plaisance,Canal d'Ille-et-Rance,48.113,-1.68,482.7,La Vilaine
+waypoint,w220,Port-sur-Saône,,47.6884,6.0482,480.4,Dérivation de Port-sur-Saône
+mooring,m120,Port-sur-Saône – Halte,Petite Saône,47.688,6.048,476.9,River Saône
+mooring,m230,Halte Fluviale de Sablé-sur-Sarthe,River Sarthe,47.8333,-0.3333,476.1,River Sarthe
+waypoint,w298,Sablé-sur-Sarthe,,47.8333,-0.3333,476.1,River Sarthe
+waypoint,w118,Rochefort,,45.9386,-0.9599,474.0,River Charente
+waypoint,w003,Caudebec-en-Caux,,49.5261,0.7274,465.8,River Seine
+waypoint,w343,Vouziers,,49.3967,4.6997,460.8,L'Aisne
+waypoint,w280,Sierck-les-Bains,,49.4383,6.3567,456.2,River Moselle
+mooring,m054,Mâcon – Port de Plaisance,Saône,46.305,4.831,454.7,River Saône
+waypoint,w330,Arles,,43.6765,4.6278,447.2,River Rhône
+waypoint,w018,Canal Saint-Martin,,48.87,2.36,443.7,Canals of Paris
+mooring,m225,Halte Fluviale de Toul,River Moselle,48.675,5.8917,441.0,La Moselle Canalisée
+waypoint,w282,Toul,,48.675,5.8917,441.0,La Moselle Canalisée
+waypoint,lk013,Rennes Lock (Canal d'Ille-et-Rance),,48.114,-1.682,438.5,Canal d'Ille-et-Rance
+mooring,m190,Port de Plaisance Vitry-le-François,Canal entre Champagne et Bourgogne,48.7239,4.5817,433.6,River Marne
+waypoint,w350,Vitry-le-François,,48.7239,4.5817,433.6,River Marne
+mooring,m071,Strasbourg – Port de Plaisance,Canal de la Marne au Rhin,48.573,7.752,431.7,Canal du Rhône au Rhin
+waypoint,w053,Tournus,,46.5663,4.9071,430.2,River Saône
+waypoint,w031,Briare,,47.6368,2.7391,427.4,Canal latéral à la Loire
+waypoint,w052,Mâcon,,46.3052,4.8314,427.0,River Saône
+waypoint,w240,Messac-Guipry,,47.8218,-1.8325,426.5,La Vilaine
+mooring,m142,Messac-Guipry – Halte Nautique,Canal d'Ille-et-Rance,47.822,-1.832,416.2,La Vilaine
+mooring,m083,Coulanges-sur-Yonne – Halte,Canal du Nivernais,47.527,3.536,413.8,River Yonne
+waypoint,w090,Strasbourg,,48.5734,7.7521,404.9,Canal du Rhône au Rhin
+waypoint,w014,Nogent-sur-Seine,,48.4929,3.5033,396.4,River Seine
+waypoint,w071,Calais,,50.9513,1.8587,393.5,Canal de Calais à Saint-Omer
+mooring,m202,Port du Rhin Strasbourg,Canal du Rhône au Rhin,48.5767,7.7617,392.1,Canal du Rhône au Rhin
+waypoint,w260,Calais,,50.9514,1.8587,383.5,Canal de Calais à Saint-Omer
+waypoint,w213,Auxonne,,47.1981,5.3893,356.9,River Saône
+waypoint,w008,Mantes-la-Jolie,,48.9906,1.717,354.4,River Seine
+waypoint,lk015,Écluse de la Presque'île (Chalon junction),,46.759,4.868,354.1,River Saône
+mooring,m005,La Roche de Glun – Halte,Rhône,44.998,4.851,354.0,River Rhône
+mooring,m210,Halte Fluviale d'Ancenis,Loire & Maine,47.365,-1.1783,339.3,River Loire
+waypoint,w391,Ancenis,,47.365,-1.1783,339.3,River Loire
+mooring,m002,Les Roches de Condrieu – Port,Rhône,45.46,4.762,335.1,River Rhône
+waypoint,w019,Pantin,,48.8967,2.3883,329.9,Canals of Paris
+waypoint,w055,Vienne,,45.5245,4.8744,323.6,River Rhône
+mooring,m051,Montbard – Port de Plaisance,Canal de Bourgogne,47.62,4.34,314.1,Canal de Bourgogne
+mooring,m116,Montbard – Halte Nautique,Canal de Bourgogne,47.62,4.34,314.1,Canal de Bourgogne
+waypoint,w103,Redon,,47.6526,-2.0837,312.6,La Vilaine
+mooring,m100,Melun – Port de Plaisance,River Seine,48.54,2.66,310.9,La Seine - Bras
+mooring,m004,Tournon-sur-Rhône – Port,Rhône,45.068,4.83,306.2,River Rhône
+waypoint,w119,Saintes,,45.7458,-0.6335,302.9,River Charente
+waypoint,w034,Chalon-sur-Saône,,46.7803,4.8541,302.6,River Saône
+mooring,m123,Seurre – Halte Nautique,Saône,47.002,5.145,298.2,River Saône
+waypoint,w351,St-Dizier,,48.6383,4.9497,292.5,Canal entre Champagne et Bourgogne
+mooring,m150,Castelnaudary – Grand Bassin,Canal du Midi,43.317,1.957,289.2,Canal du Midi
+waypoint,w039,Montbard,,47.6204,4.3397,287.5,Canal de Bourgogne
+waypoint,w222,Verdun-sur-le-Doubs,,46.8975,5.0267,280.0,River Saône
+mooring,m226,Port de Plaisance d'Épinal,Canal des Vosges,48.1744,6.4506,278.7,River Moselle
+waypoint,w287,Épinal,,48.1744,6.4506,278.7,River Moselle
+mooring,m122,Pontailler-sur-Saône – Halte,Saône,47.298,5.41,278.3,River Saône
+waypoint,w121,Moissac,,43.1859,3.0028,278.0,Canal de la Robine
+mooring,m124,Verdun-sur-le-Doubs – Port,Saône,46.897,5.027,275.1,River Saône
+waypoint,w050,Corre,,47.703,6.0454,273.5,River Saône
+waypoint,w221,Pontailler-sur-Saône,,47.298,5.4101,273.5,River Saône
+waypoint,w223,Seurre,,47.0018,5.1448,272.0,River Saône
+mooring,m053,Chalon-sur-Saône – Port de Plaisance,Saône,46.78,4.854,269.5,River Saône
+mooring,m214,Arsenal Marina Paris,Canal Saint-Martin,48.8517,2.365,264.3,Canals of Paris
+waypoint,w114,Carcassonne,,43.213,2.3491,261.6,Canal du Midi
+mooring,m103,Montereau – Halte,River Seine,48.386,2.957,252.4,River Yonne
+waypoint,w011,Melun,,48.5396,2.6592,241.9,La Seine - Bras
+waypoint,w020,Montereau-Fault-Yonne,,48.3864,2.9571,228.4,River Yonne
+waypoint,w017,Bassin de la Villette (Paris),,48.8848,2.3738,226.6,Canals of Paris
+waypoint,w045,La Charité-sur-Loire,,47.1773,3.0162,225.7,River Loire
+waypoint,w010,Paris – Port de l'Arsenal,,48.8534,2.3483,224.8,River Seine
+mooring,m113,Pouilly-en-Auxois – Halte,Canal de Bourgogne,47.265,4.55,224.4,Canal de Bourgogne
+waypoint,w232,Valenciennes,,50.3577,3.5241,222.9,Vieil Escaut de Valenciennes
+mooring,m030,Toulouse – Port Saint-Sauveur,Canal du Midi,43.601,1.459,217.6,Canal du Midi
+mooring,m060,Paris – Port de l'Arsenal,Canal St-Martin,48.851,2.366,215.0,Canals of Paris
+mooring,m212,Port de Plaisance de Narbonne,Canal de la Robine,43.1833,3.0,215.0,Canal de la Robine
+waypoint,w396,Narbonne,,43.1833,3.0,215.0,Canal de la Robine
+waypoint,lk006,Bollène Lock (Écluse de Bollène),,44.305,4.745,213.6,Canal Donzère-Mondragon
+waypoint,w300,Berry-au-Bac,,49.395,3.92,210.5,Canal de l'Aisne à la Marne
+waypoint,w354,Gray,,47.4483,5.5933,208.5,River Saône
+mooring,m041,Buzet-sur-Baïse – Port de Plaisance,Canal de Garonne,44.258,0.304,207.4,Canal de Garonne
+waypoint,w085,Épinal,,48.1715,6.4494,199.1,River Moselle
+waypoint,w042,Nemours,,48.2651,2.6941,198.8,Canal du Loing
+mooring,m143,Redon – Port de Plaisance,Canal de Vilaine,47.65,-2.085,198.5,Canal de Nantes à Brest
+mooring,m181,Halte Fluviale de Rethel,Canal des Ardennes,49.5117,4.3617,197.9,L'Aisne
+waypoint,w342,Rethel,,49.5117,4.3617,197.9,L'Aisne
+mooring,m102,Nemours – Halte Nautique,Canal du Loing,48.265,2.694,186.8,Canal du Loing
+waypoint,w212,Pouilly-en-Auxois,,47.2653,4.5495,174.5,Canal de Bourgogne
+mooring,m227,Port de Redon,Canal de Nantes à Brest,47.65,-2.0833,153.5,La Vilaine
+waypoint,w293,Redon,,47.65,-2.0833,153.5,La Vilaine
+waypoint,w295,Redon,,47.65,-2.0833,153.5,La Vilaine
+mooring,m126,Pont-Saint-Esprit – Halte,Rhône,44.256,4.652,151.8,River Rhône
+waypoint,w082,Verdun,,49.1561,5.3832,146.4,Canal de la Meuse
+waypoint,w026,Vitry-le-François,,48.7235,4.5772,145.3,River Marne
+waypoint,w086,Bar-le-Duc,,48.7235,4.5772,145.3,River Marne
+mooring,m154,Trèbes – Halte Nautique,Canal du Midi,43.213,2.435,140.8,Canal du Midi
+mooring,m022,Duclair – Halte,Seine Maritime,49.479,0.877,137.0,River Seine
+waypoint,w292,Basel (Bâle),,47.5596,7.5886,130.3,Rhein
+mooring,m007,La Voulte-sur-Rhône – Halte,Rhône,44.801,4.784,122.0,River Rhône
+waypoint,lk012,Vitry-le-François Lock (Canal-Marne Junction),,48.736,4.581,119.9,River Marne
+mooring,m229,Port de Plaisance de Laval,River Mayenne,48.07,-0.7717,114.7,River Mayenne
+waypoint,w297,Laval,,48.07,-0.7717,114.7,River Mayenne
+waypoint,w227,Pont-Saint-Esprit,,44.2557,4.6524,106.0,River Rhône
+waypoint,w281,Thionville,,49.3567,6.1683,85.5,River Moselle
+mooring,m012,Avignon – Halte Nautique,Rhône,43.958,4.799,63.0,River Rhône
+mooring,m201,Port de Plaisance de Sarreguemines,Canal de la Sarre,49.1133,7.0667,44.3,Canal des Houillères de la Sarre
+waypoint,w363,Sarreguemines,,49.1133,7.0667,44.3,Canal des Houillères de la Sarre
+waypoint,lk002,Écluse de la Chapelle,,48.3741,-1.999,36.5,La Rance
+waypoint,w266,Aire-sur-la-Lys,,50.6417,2.395,36.0,River Lys

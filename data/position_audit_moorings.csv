@@ -1,0 +1,115 @@
+kind,id,name,waterway,lat,lon,distance_m,nearest_waterway_name
+mooring,m172,Halte Fluviale de Besançon,Canal du Doubs,47.2396,6.0266,37813.7,River Saône
+mooring,m130,Arras – Port de Plaisance,Canal de la Scarpe,50.2953,2.8088,21166.4,Canal du Nord
+mooring,m131,Lille – Port de Plaisance,Canal de la Deûle,50.6434,3.0587,11627.9,River Lys
+mooring,m224,Port de Plaisance d'Amiens,Canal de la Somme,49.8964,2.3057,10939.8,La Somme Canalisée
+mooring,m081,Arcy-sur-Cure – Halte,Canal du Nivernais,47.605,3.76,5580.3,Canal du Nivernais
+mooring,m010,St Étienne-des-Sorts – Halte,Rhône,44.192,4.651,3061.1,River Rhône
+mooring,m127,Montélimar – Halte Nautique,Rhône,44.557,4.753,2952.8,Le Rhône - Canal de Châteauneuf-du-Rhône
+mooring,m204,Halte Fluviale de Carhaix,Canal de Nantes à Brest,48.2786,-3.5706,2925.5,Canal de Nantes à Brest
+mooring,m011,Laudun-l'Ardoise – Port 2,Rhône,44.0985,4.682,2415.4,Le Rhône - Bras de la Piboulette
+mooring,m015,Port St Louis – Halte,Rhône,43.393,4.831,2363.4,River Rhône
+mooring,m082,Châtel-Censoir – Halte,Canal du Nivernais,47.5473,3.5483,2279.9,River Yonne
+mooring,m133,Douai – Port de Plaisance,Canal de la Sensée,50.371,3.08,2052.9,Liaison Dunkerque–Escaut
+mooring,m080,Vermenton – Halte Nautique,Canal du Nivernais,47.679,3.7418,2049.0,Canal du Nivernais Embranchement de Vermenton
+mooring,m192,Halte Fluviale de Langres,Canal entre Champagne et Bourgogne,47.8617,5.3317,2015.0,River Marne
+mooring,m013,Aramon – Halte,Rhône,43.883,4.715,1959.7,River Rhône
+mooring,m016,Port Napoleon (Port St Louis),Rhône,43.388,4.829,1790.2,River Rhône
+mooring,m024,Honfleur – Vieux Bassin Port,Seine Maritime,49.419,0.233,1581.5,River Seine
+mooring,m144,Blain – Halte Nautique,Canal de Nantes à Brest,47.479,-1.762,1520.4,Canal de Nantes à Brest
+mooring,m125,Belleville-en-Beaujolais – Port,Saône,46.112,4.747,1463.3,River Saône
+mooring,m191,Halte Fluviale de Chaumont,Canal entre Champagne et Bourgogne,48.1167,5.1333,1384.0,River Marne
+mooring,m052,St-Jean-de-Losne – Grand Bassin,Saône,47.112,5.27,1308.4,River Saône
+mooring,m114,Dijon – Port du Canal,Canal de Bourgogne,47.322,5.041,1298.7,Canal de Bourgogne
+mooring,m033,Agde – Port de Plaisance,Canal du Midi,43.309,3.476,1295.0,Canal du Midi
+mooring,m171,Port de Plaisance de Montbéliard,Canal du Rhône au Rhin,47.5167,6.8,1291.6,Canal du Rhône au Rhin - Branche Sud
+mooring,m121,Gray – Port de Plaisance,Saône,47.438,5.59,1272.0,River Saône
+mooring,m085,Corbigny – Halte Nautique,Canal du Nivernais,47.253,3.675,1142.5,River Yonne
+mooring,m222,Halte Fluviale de Péronne,Canal du Nord,50.08,3.0183,1134.2,Canal du Nord
+mooring,m213,Port-la-Nouvelle Marina,Canal de la Robine,43.0167,3.0506,1125.4,Canal de la Robine
+mooring,m091,Villeneuve-sur-Yonne – Halte,River Yonne,48.074,3.302,1085.9,River Yonne
+mooring,m162,Halte Fluviale de Noyon,Canal de l'Oise à l'Aisne,49.5833,3.0,996.8,Canal du Nord
+mooring,m231,Port de Plaisance de Troyes,Petite Seine,48.2992,4.0683,978.9,River Seine
+mooring,m003,Andancette – Halte,Rhône,45.236,4.793,967.1,River Rhône
+mooring,m151,Homps – Halte Nautique,Canal du Midi,43.255,2.742,952.3,Canal du Midi
+mooring,m112,Ancy-le-Franc – Port de Plaisance,Canal de Bourgogne,47.778,4.161,940.0,Canal de Bourgogne
+mooring,m086,Châtillon-en-Bazois – Halte,Canal du Nivernais,47.025,3.64,922.0,Canal du Nivernais
+mooring,m223,Port de Plaisance de Saint-Quentin,Canal de Saint-Quentin,49.8467,3.285,909.0,Canal de Saint-Quentin
+mooring,m008,Cruas – Port,Rhône,44.648,4.763,883.2,River Rhône
+mooring,m070,Nancy – Port de Plaisance,Canal de la Marne au Rhin,48.692,6.184,863.0,Canal de la Marne au Rhin
+mooring,m115,Tonnerre – Halte Nautique,Canal de Bourgogne,47.8584,3.974,852.9,Canal de Bourgogne
+mooring,m160,Halte Fluviale de Soissons,Canal latéral à l'Aisne,49.3767,3.3233,838.4,L'Aisne
+mooring,m211,Port de Plaisance d'Angers,River Maine,47.4667,-0.555,833.2,La Maine
+mooring,m170,Port de Plaisance de Mulhouse,Canal du Rhône au Rhin,47.7483,7.335,813.4,Canal du Rhône au Rhin - Branche Sud
+mooring,m040,Agen – Port de Plaisance,Canal de Garonne,44.202,0.621,806.1,Canal de Garonne
+mooring,m228,Halte Fluviale de Josselin,Canal de Nantes à Brest,47.955,-2.5467,802.4,Canal de Nantes à Brest
+mooring,m173,Port Fluvial de Dole,Canal du Rhône au Rhin,47.0997,5.495,762.4,Canal du Rhône au Rhin - Branche Sud
+mooring,m161,Port de Plaisance de Compiègne,Canal latéral à l'Aisne,49.415,2.83,761.1,River Oise
+mooring,m140,Dinan – Port de Plaisance,Canal d'Ille-et-Rance,48.458,-2.048,743.8,Canal d'Ille-et-Rance
+mooring,m032,Béziers – Port Neuf,Canal du Midi,43.342,3.213,738.8,Canal du Midi
+mooring,m021,Rouen – Port Bassin St Gervais,Seine Maritime,49.449,1.073,715.1,River Seine
+mooring,m180,Halte Fluviale de Sedan,Canal des Ardennes,49.6983,4.7683,710.6,Canal de la Meuse
+mooring,m221,Port de Plaisance de Saint-Omer,Canal de Calais / River Aa,50.7467,2.255,707.9,River Aa
+mooring,m014,Vallabrègues – Halte,Rhône,43.827,4.618,706.3,River Rhône
+mooring,m001,Givors – Halte,Rhône,45.591,4.769,694.6,River Rhône
+mooring,m132,Saint-Omer – Port de Plaisance,River Aa,50.746,2.256,686.4,River Aa
+mooring,m090,Sens – Port de Plaisance,River Yonne,48.197,3.285,659.4,River Yonne
+mooring,m101,Moret-sur-Loing – Halte Nautique,Canal du Loing,48.372,2.815,652.3,Canal du Loing
+mooring,m200,Halte Fluviale de Sarrebourg,Canal de la Sarre,48.7317,7.0583,649.2,La Sarre
+mooring,m031,Carcassonne – Port de Plaisance,Canal du Midi,43.211,2.353,644.6,Canal du Midi
+mooring,m110,Laroche-Migennes – Port,Canal de Bourgogne,47.968,3.52,636.1,Canal de Bourgogne
+mooring,m092,Joigny – Port de Plaisance,River Yonne,47.983,3.406,628.4,River Yonne
+mooring,m006,Valence – Port de Plaisance,Rhône,44.934,4.893,584.8,River Rhône
+mooring,m050,Auxerre – Port de Plaisance,Canal de Bourgogne,47.798,3.568,573.5,River Yonne
+mooring,m087,Cercy-la-Tour – Halte,Canal du Nivernais,46.862,3.643,572.8,Canal du Nivernais
+mooring,m020,Rouen – Halte de Plaisance,Seine Maritime,49.442,1.094,571.9,River Seine
+mooring,m084,Clamecy – Port de Plaisance,Canal du Nivernais,47.46,3.516,554.1,Canal du Nivernais
+mooring,m023,Caudebec-en-Caux – Halte,Seine Maritime,49.527,0.727,541.2,River Seine
+mooring,m203,Port de Plaisance de Châteaulin,Canal de Nantes à Brest,48.195,-4.0983,535.2,Canal de Nantes à Brest
+mooring,m104,Auxerre – Halte Nautique,River Yonne,47.799,3.568,535.0,River Yonne
+mooring,m152,Capestang – Halte Nautique,Canal du Midi,43.326,3.046,523.2,Canal du Midi
+mooring,m220,Port de Plaisance de Calais,Canal de Calais,50.95,1.855,508.6,Canal de Calais à Saint-Omer
+mooring,m153,Moissac – Port de Plaisance,Canal de Garonne,44.107,1.083,502.8,Canal de Garonne
+mooring,m009,Viviers – Port,Rhône,44.481,4.693,499.9,Le Rhône - Canal de Châteauneuf-du-Rhône
+mooring,m141,Rennes – Port de Plaisance,Canal d'Ille-et-Rance,48.113,-1.68,482.7,La Vilaine
+mooring,m120,Port-sur-Saône – Halte,Petite Saône,47.688,6.048,476.9,River Saône
+mooring,m230,Halte Fluviale de Sablé-sur-Sarthe,River Sarthe,47.8333,-0.3333,476.1,River Sarthe
+mooring,m054,Mâcon – Port de Plaisance,Saône,46.305,4.831,454.7,River Saône
+mooring,m225,Halte Fluviale de Toul,River Moselle,48.675,5.8917,441.0,La Moselle Canalisée
+mooring,m190,Port de Plaisance Vitry-le-François,Canal entre Champagne et Bourgogne,48.7239,4.5817,433.6,River Marne
+mooring,m071,Strasbourg – Port de Plaisance,Canal de la Marne au Rhin,48.573,7.752,431.7,Canal du Rhône au Rhin
+mooring,m142,Messac-Guipry – Halte Nautique,Canal d'Ille-et-Rance,47.822,-1.832,416.2,La Vilaine
+mooring,m083,Coulanges-sur-Yonne – Halte,Canal du Nivernais,47.527,3.536,413.8,River Yonne
+mooring,m202,Port du Rhin Strasbourg,Canal du Rhône au Rhin,48.5767,7.7617,392.1,Canal du Rhône au Rhin
+mooring,m005,La Roche de Glun – Halte,Rhône,44.998,4.851,354.0,River Rhône
+mooring,m210,Halte Fluviale d'Ancenis,Loire & Maine,47.365,-1.1783,339.3,River Loire
+mooring,m002,Les Roches de Condrieu – Port,Rhône,45.46,4.762,335.1,River Rhône
+mooring,m051,Montbard – Port de Plaisance,Canal de Bourgogne,47.62,4.34,314.1,Canal de Bourgogne
+mooring,m116,Montbard – Halte Nautique,Canal de Bourgogne,47.62,4.34,314.1,Canal de Bourgogne
+mooring,m111,Tanlay – Halte,Canal de Bourgogne,47.8424,4.0819,311.4,Canal de Bourgogne
+mooring,m100,Melun – Port de Plaisance,River Seine,48.54,2.66,310.9,La Seine - Bras
+mooring,m004,Tournon-sur-Rhône – Port,Rhône,45.068,4.83,306.2,River Rhône
+mooring,m123,Seurre – Halte Nautique,Saône,47.002,5.145,298.2,River Saône
+mooring,m150,Castelnaudary – Grand Bassin,Canal du Midi,43.317,1.957,289.2,Canal du Midi
+mooring,m226,Port de Plaisance d'Épinal,Canal des Vosges,48.1744,6.4506,278.7,River Moselle
+mooring,m122,Pontailler-sur-Saône – Halte,Saône,47.298,5.41,278.3,River Saône
+mooring,m124,Verdun-sur-le-Doubs – Port,Saône,46.897,5.027,275.1,River Saône
+mooring,m053,Chalon-sur-Saône – Port de Plaisance,Saône,46.78,4.854,269.5,River Saône
+mooring,m214,Arsenal Marina Paris,Canal Saint-Martin,48.8517,2.365,264.3,Canals of Paris
+mooring,m103,Montereau – Halte,River Seine,48.386,2.957,252.4,River Yonne
+mooring,m113,Pouilly-en-Auxois – Halte,Canal de Bourgogne,47.265,4.55,224.4,Canal de Bourgogne
+mooring,m030,Toulouse – Port Saint-Sauveur,Canal du Midi,43.601,1.459,217.6,Canal du Midi
+mooring,m060,Paris – Port de l'Arsenal,Canal St-Martin,48.851,2.366,215.0,Canals of Paris
+mooring,m212,Port de Plaisance de Narbonne,Canal de la Robine,43.1833,3.0,215.0,Canal de la Robine
+mooring,m041,Buzet-sur-Baïse – Port de Plaisance,Canal de Garonne,44.258,0.304,207.4,Canal de Garonne
+mooring,m143,Redon – Port de Plaisance,Canal de Vilaine,47.65,-2.085,198.5,Canal de Nantes à Brest
+mooring,m181,Halte Fluviale de Rethel,Canal des Ardennes,49.5117,4.3617,197.9,L'Aisne
+mooring,m102,Nemours – Halte Nautique,Canal du Loing,48.265,2.694,186.8,Canal du Loing
+mooring,m227,Port de Redon,Canal de Nantes à Brest,47.65,-2.0833,153.5,La Vilaine
+mooring,m126,Pont-Saint-Esprit – Halte,Rhône,44.256,4.652,151.8,River Rhône
+mooring,m154,Trèbes – Halte Nautique,Canal du Midi,43.213,2.435,140.8,Canal du Midi
+mooring,m022,Duclair – Halte,Seine Maritime,49.479,0.877,137.0,River Seine
+mooring,m007,La Voulte-sur-Rhône – Halte,Rhône,44.801,4.784,122.0,River Rhône
+mooring,m229,Port de Plaisance de Laval,River Mayenne,48.07,-0.7717,114.7,River Mayenne
+mooring,m012,Avignon – Halte Nautique,Rhône,43.958,4.799,63.0,River Rhône
+mooring,m201,Port de Plaisance de Sarreguemines,Canal de la Sarre,49.1133,7.0667,44.3,Canal des Houillères de la Sarre

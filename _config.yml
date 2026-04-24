@@ -30,9 +30,11 @@ exclude:
   - ienc/
   - "VNF Charts/"
 
-  # Reconciliation CSVs — manual-review artefacts only
+  # Reconciliation + audit CSVs — manual-review artefacts only
   - data/bridges_locks_reconciliation.csv
   - data/bridges_moorings_reconciliation.csv
+  - data/position_audit.csv
+  - data/position_audit_moorings.csv
 
   # Cherry-pick sources — the browser doesn't fetch these
   - data/ienc_locks.geojson
@@ -40,6 +42,7 @@ exclude:
 
   # Python tooling + scripts (run locally only)
   - extract_ienc.py
+  - audit_positions.py
   - fill_waterways.py
   - fill_michelin.py
   - patch_lyon_waterways.py
