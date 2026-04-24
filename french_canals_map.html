@@ -370,6 +370,21 @@
   .rp-tidal-table td.station { text-align: left; color: #eaf4ff; font-weight: 600; }
   .rp-tidal-table td.na { color: #5a7a8a; font-style: italic; }
   .rp-tidal-src { font-size: 9px; color: #5a7a8a; margin-top: 6px; font-style: italic; }
+  .rp-tidal-live {
+    margin-top: 10px; padding-top: 8px;
+    border-top: 1px dashed rgba(122,212,239,0.25);
+  }
+  .rp-tidal-live-title {
+    font-size: 11px; color: #7ad4ef; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 6px;
+  }
+  .rp-tidal-live-link {
+    display: block; font-size: 11px; color: #a0e0ff;
+    text-decoration: none; padding: 3px 0;
+    border-bottom: 1px solid rgba(122,212,239,0.08);
+  }
+  .rp-tidal-live-link:hover { color: #d0f0ff; background: rgba(122,212,239,0.06); }
+  .rp-tidal-live-link:last-of-type { border-bottom: none; }
 
   /* Sidebar tidal badge — compact variant for waypoint info panel */
   .info-tidal-badge {
@@ -379,6 +394,13 @@
   }
   .info-tidal-badge .t-title { color: #7ad4ef; font-weight: 700; margin-bottom: 4px; }
   .info-tidal-badge .t-warn  { color: #ffd28a; margin-top: 5px; font-size: 10.5px; }
+  .info-tidal-badge .t-live  {
+    display: inline-block; margin-top: 6px; padding: 4px 8px;
+    background: rgba(122,212,239,0.12); color: #a0e0ff;
+    border: 1px solid rgba(122,212,239,0.30); border-radius: 4px;
+    font-size: 11px; font-weight: 600; text-decoration: none;
+  }
+  .info-tidal-badge .t-live:hover { background: rgba(122,212,239,0.22); color: #d0f0ff; }
 
   #loading { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); z-index: 9999; color: #e0c97f; font-size: 14px; }
 
@@ -5107,6 +5129,14 @@ const TIDAL_DATA = {
       { type: 'mascaret',
         note: 'A significant tidal bore (mascaret) can be felt below km 30 on the Garonne downstream of Bordeaux.',
         pk_below: 30 }
+    ],
+    // SHOM's official tide-prediction pages (free, Licence Ouverte 2.0).
+    // Ordered downstream → upstream so a skipper planning the Gironde
+    // approach sees the entrance port first. Label: harbour name + role.
+    live_sources: [
+      { label: 'Le Verdon (Gironde entrance)', url: 'https://maree.shom.fr/harbor/LE_VERDON/hlt/today' },
+      { label: 'Pauillac (mid-estuary)',       url: 'https://maree.shom.fr/harbor/PAUILLAC/hlt/today' },
+      { label: 'Bordeaux (reference port)',    url: 'https://maree.shom.fr/harbor/BORDEAUX/hlt/today' }
     ]
   }
   // Future: Seine Aval when a comparable data source is found;
@@ -5244,6 +5274,19 @@ function _buildTidalCardHTML(tidalsList) {
     var influence = td.tidal_influence_to
       ? '; tidal influence felt up to ' + td.tidal_influence_to : '';
 
+    // SHOM live tide-prediction links (opens maree.shom.fr in new tab).
+    var liveHtml = '';
+    if (Array.isArray(td.live_sources) && td.live_sources.length) {
+      liveHtml = '<div class="rp-tidal-live">' +
+        '<div class="rp-tidal-live-title">📅 Today\'s tide times (SHOM)</div>' +
+        td.live_sources.map(function(src) {
+          return '<a class="rp-tidal-live-link" href="' + src.url +
+                 '" target="_blank" rel="noopener">→ ' + src.label + '</a>';
+        }).join('') +
+        '<div class="rp-tidal-src">Tap a port to see official high/low tide times. Use the propagation table above to shift to your station.</div>' +
+        '</div>';
+    }
+
     html += '<div class="rp-tidal-card">' +
       '<div class="rp-tidal-title">🌊 Tidal section: ' + entry.waterway + '</div>' +
       '<div class="rp-tidal-sub">This leg crosses the tidal Garonne (' + range + ')' +
@@ -5252,6 +5295,7 @@ function _buildTidalCardHTML(tidalsList) {
       warnHtml +
       '<div class="rp-tidal-section">' + chipHtml + '</div>' +
       tableHtml +
+      liveHtml +
       '</div>';
   });
   return html;
@@ -5267,11 +5311,21 @@ function _buildTidalBadgeHTML(waterwayName) {
     for (var k in td.marnage_min_m) parts.push(k + ' ' + td.marnage_min_m[k] + 'm');
     marnageLine = 'Min tidal range (étiage): ' + parts.join(' · ');
   }
+  // Pick the reference-port SHOM link if present, else the first one.
+  var liveLink = '';
+  if (Array.isArray(td.live_sources) && td.live_sources.length) {
+    var ref = td.live_sources.find(function(s) {
+      return td.reference_port && s.label.toLowerCase().indexOf(td.reference_port.toLowerCase()) >= 0;
+    }) || td.live_sources[0];
+    liveLink = '<a class="t-live" href="' + ref.url + '" target="_blank" rel="noopener">📅 Today\'s tides at ' +
+      (td.reference_port || 'the reference port') + ' (SHOM) →</a>';
+  }
   return '<div class="info-tidal-badge">' +
     '<div class="t-title">🌊 Tidal section</div>' +
     'Navigation depends on the tide at ' + (td.reference_port || 'the reference port') + '.' +
     (marnageLine ? '<br>' + marnageLine : '') +
     (firstWarn ? '<div class="t-warn">⚠ ' + firstWarn + '</div>' : '') +
+    liveLink +
     '</div>';
 }
 
