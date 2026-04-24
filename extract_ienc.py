@@ -53,6 +53,51 @@ VERCLR_SENTINEL = 9999.0
 
 
 # ──────────────────────────────────────────────────────────────────────
+# UTF-8 mojibake repair for S-57 strings
+# ──────────────────────────────────────────────────────────────────────
+# The French VNF IENC cells store text as UTF-8 bytes in their `ATTF`
+# attribute records. GDAL's S-57 driver reads them as Latin-1 (one
+# codepoint per byte), so a name like "Écluses" (UTF-8 bytes C3 89 63
+# 6C 75 73 65 73) comes back as the Python string "Ã\x89cluses" with
+# codepoints U+00C3, U+0089, 'c', 'l', ...  Left uncorrected, this
+# bleeds all the way into the front-end popups.
+#
+# `_safe_str` detects the pattern (any char ≤ U+00FF whose Latin-1
+# encoding decodes cleanly as UTF-8) and reverses it.  It is a no-op
+# for pure-ASCII strings and for strings already containing codepoints
+# above U+00FF (where the mojibake pattern cannot apply).
+def _safe_str(s):
+    # Some IENC cells are DOUBLE-mojibaked (the string was re-interpreted as
+    # Latin-1 twice before reaching us), so each pass only peels one layer
+    # off.  Iterate until the string stops changing — but cap at 3 rounds
+    # and reject any pass that introduces control characters.
+    if s is None or not isinstance(s, str) or not s:
+        return s
+    MAX_ROUNDS = 3
+    for _ in range(MAX_ROUNDS):
+        # Cheap early-out for pure ASCII
+        if all(ord(c) < 0x80 for c in s):
+            return s
+        # Only consider the candidate if every char fits in Latin-1 —
+        # strings already containing non-Latin-1 Unicode have been
+        # decoded correctly and should pass through.
+        if any(ord(c) > 0xFF for c in s):
+            return s
+        try:
+            cand = s.encode("latin-1").decode("utf-8")
+        except UnicodeError:
+            return s
+        # Reject round-trips that produce control characters — those
+        # usually mean the original wasn't mojibaked UTF-8 after all.
+        if any(ord(c) < 0x20 and c not in "\t\n" for c in cand):
+            return s
+        if cand == s:
+            return s
+        s = cand
+    return s
+
+
+# ──────────────────────────────────────────────────────────────────────
 # Waterway classification by cell-name prefix. Established in Task 1.
 # ──────────────────────────────────────────────────────────────────────
 def _waterway_for_cell(cell_name: str) -> str:
@@ -157,7 +202,7 @@ def extract_bridges_from_cell(cell_path: str, cell_name: str) -> list[dict]:
         horclr = feat.GetField("HORCLR")
         if horclr is not None and horclr <= 0.0:
             horclr = None
-        name = feat.GetField("OBJNAM") or feat.GetField("NOBJNM") or None
+        name = _safe_str(feat.GetField("OBJNAM")) or _safe_str(feat.GetField("NOBJNM")) or None
         catbrg = feat.GetField("catbrg")  # StringList → list or None
         out.append(
             {
@@ -324,10 +369,10 @@ def extract_locks_from_cell(cell_path: str, cell_name: str) -> list[dict]:
             continue
         lon, lat = c
         # Prefer French name (NOBJNM) since the app is Francophone; fall back.
-        name = feat.GetField("NOBJNM") or feat.GetField("OBJNAM") or None
+        name = _safe_str(feat.GetField("NOBJNM")) or _safe_str(feat.GetField("OBJNAM")) or None
         length = feat.GetField("horcll")
         width = feat.GetField("horclw") or feat.GetField("HORWID")
-        inform = feat.GetField("INFORM") or feat.GetField("NINFOM") or None
+        inform = _safe_str(feat.GetField("INFORM")) or _safe_str(feat.GetField("NINFOM")) or None
         rise = None
         if inform:
             import re as _re
@@ -417,8 +462,8 @@ def extract_moorings_from_cell(cell_path: str, cell_name: str) -> list[dict]:
             if c is None:
                 continue
             lon, lat = c
-            name = feat.GetField("NOBJNM") or feat.GetField("OBJNAM") or None
-            inform = feat.GetField("NINFOM") or feat.GetField("INFORM") or None
+            name = _safe_str(feat.GetField("NOBJNM")) or _safe_str(feat.GetField("OBJNAM")) or None
+            inform = _safe_str(feat.GetField("NINFOM")) or _safe_str(feat.GetField("INFORM")) or None
             out.append(
                 {
                     "type": type_label,
@@ -472,9 +517,9 @@ def extract_channel_axis_from_cell(cell_path: str, cell_name: str) -> list[dict]
         if n < 2:
             continue
         coords = [[round(geom.GetX(i), 6), round(geom.GetY(i), 6)] for i in range(n)]
-        name = feat.GetField("OBJNAM") or None
+        name = _safe_str(feat.GetField("OBJNAM")) or None
         # French is more useful to French-speaking cruisers; fall back to English.
-        inform = feat.GetField("NINFOM") or feat.GetField("INFORM") or None
+        inform = _safe_str(feat.GetField("NINFOM")) or _safe_str(feat.GetField("INFORM")) or None
         out.append(
             {
                 "name": name,
@@ -572,8 +617,8 @@ def extract_obstructions_from_cell(cell_path: str, cell_name: str) -> list[dict]
         catobs = feat.GetField("CATOBS")
         watlev = feat.GetField("WATLEV")
         valsou = feat.GetField("VALSOU")
-        name = feat.GetField("OBJNAM") or feat.GetField("NOBJNM") or None
-        inform = feat.GetField("NINFOM") or feat.GetField("INFORM") or None
+        name = _safe_str(feat.GetField("OBJNAM")) or _safe_str(feat.GetField("NOBJNM")) or None
+        inform = _safe_str(feat.GetField("NINFOM")) or _safe_str(feat.GetField("INFORM")) or None
         out.append(
             {
                 "name": name,
