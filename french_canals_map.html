@@ -224,6 +224,25 @@
   #data-panel .dp-attribution li { margin-bottom:3px; }
   #data-panel .dp-attribution a { color:#7ad4ef; text-decoration:none; }
   #data-panel .dp-attribution a:hover { text-decoration:underline; }
+  #data-panel .dp-companion {
+    margin-top:12px; padding-top:10px;
+    border-top:1px solid rgba(122,138,154,0.15);
+    font-size:11px; color:#b4c7d6; line-height:1.5;
+  }
+  #data-panel .dp-companion h5 {
+    font-size:10px; text-transform:uppercase; letter-spacing:0.6px;
+    color:#8ab4c2; margin-bottom:6px; font-weight:700;
+  }
+  #data-panel .dp-companion-item {
+    display:block; padding:6px 8px; margin-bottom:4px;
+    background:rgba(122,212,239,0.06); border:1px solid rgba(122,212,239,0.12);
+    border-radius:4px; text-decoration:none; color:inherit;
+  }
+  #data-panel .dp-companion-item:hover {
+    background:rgba(122,212,239,0.12); border-color:rgba(122,212,239,0.28);
+  }
+  #data-panel .dp-companion-item strong { color:#7ad4ef; font-weight:700; }
+  #data-panel .dp-companion-item .why { display:block; font-size:10px; color:#8ab4c2; margin-top:2px; }
   #data-panel .dp-close {
     position:absolute; top:8px; right:10px; background:none; border:none;
     color:#5a7a8a; font-size:16px; cursor:pointer; line-height:1;
@@ -9001,6 +9020,28 @@ function clearGooglePlaces() {
       <li>☀ Weather &mdash; <strong>Open-Meteo</strong></li>
       <li>💧 River levels &mdash; <strong>Vigicrues / Hub'Eau</strong> (French state data)</li>
     </ul>
+  </div>
+
+  <!-- Complementary apps — external tools that extend what this map offers.
+       Outbound links only; no tracking, no embedding. -->
+  <div class="dp-companion">
+    <h5>📱 Complementary apps</h5>
+    <a class="dp-companion-item" href="https://www.c-map.com/en/embark/" target="_blank" rel="noopener">
+      <strong>C-MAP Embark</strong>
+      <span class="why">Free coastal marine charts with depth-shading + buoys. Use for the Bordeaux–Gironde approach, Mediterranean ports, and Seine estuary where this map is inland-focused.</span>
+    </a>
+    <a class="dp-companion-item" href="https://www.navily.com/" target="_blank" rel="noopener">
+      <strong>Navily</strong>
+      <span class="why">Crowdsourced mooring reviews, photos, pricing, and skipper feedback. A great signal layer on top of the static halte/port data here.</span>
+    </a>
+    <a class="dp-companion-item" href="https://www.vnf.fr/itineraires/" target="_blank" rel="noopener">
+      <strong>VNF Itinéraires</strong>
+      <span class="why">The official VNF route calculator — authoritative distances, lock counts, and dimensions. Good for cross-checking a route plan against VNF's own engine.</span>
+    </a>
+    <a class="dp-companion-item" href="https://www.waterwayroutes.co.uk/" target="_blank" rel="noopener">
+      <strong>Waterway Routes</strong>
+      <span class="why">Detailed cruising-guide PDFs per waterway with distances, lock dimensions, and hazards. Useful as a paper/PDF companion when offline.</span>
+    </a>
   </div>
 </div>
 
