@@ -52,6 +52,97 @@
   .toggle-btn.active { background: #2a6496; color: #fff; border-color: #5bc0de; }
   .toggle-btn:hover { background: #1a5276; }
 
+  /* ── Re-organised controls bar (2026-04-24) ───────────────────
+   * Top row holds global state (Section, Search, Plan Route,
+   * Profile) and three dropdown triggers — 🗺 Map, 📍 Layers, ⋮ —
+   * each anchored to a .cb-drop containing a .cb-popover. The
+   * popovers use the existing .toggle-btn styling so button state
+   * continues to work through toggleLayer().
+   * The second row is a "quick-access" chip strip for the four
+   * most-used layer toggles.  The filter row stays unchanged.
+   */
+  #controls {
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .cb-row {
+    display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+    padding: 2px 0;
+  }
+  .cb-row-chips {
+    padding-top: 5px; padding-bottom: 5px;
+    border-top: 1px solid rgba(91,192,222,0.10);
+  }
+  .cb-row-label {
+    font-size: 11px; color: #7a9ab0; text-transform: uppercase;
+    letter-spacing: 0.5px; font-weight: 600; margin-right: 2px;
+  }
+  .cb-push-right { margin-left: auto; }
+
+  /* Dropdown primitive: <div class="cb-drop"> wraps a <button
+   * class="cb-trigger"> and a <div class="cb-popover">. */
+  .cb-drop { position: relative; display: inline-block; }
+  .cb-trigger {
+    padding: 4px 12px; border-radius: 4px; border: 1px solid #1a4a7a;
+    background: #0f3460; color: #ccd6df; font-size: 12px; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 5px;
+    transition: background 0.15s;
+  }
+  .cb-trigger:hover { background: #1a5276; }
+  .cb-drop.open > .cb-trigger { background: #1a5276; border-color: #5bc0de; color: #fff; }
+  .cb-trigger-icon { padding: 4px 9px; }
+  .cb-badge {
+    display: inline-block; min-width: 16px; height: 16px; line-height: 16px;
+    padding: 0 5px; background: #5bc0de; color: #0a1a2a;
+    border-radius: 10px; font-size: 10px; font-weight: 700;
+    text-align: center;
+  }
+  .cb-badge:empty { display: none; }
+  .cb-chev { font-size: 10px; color: #7a9ab0; }
+  .cb-drop.open .cb-chev { color: #5bc0de; }
+
+  .cb-popover {
+    position: absolute; top: calc(100% + 6px); left: 0;
+    min-width: 240px; max-width: 380px;
+    background: #0b1a2d; border: 1px solid #1a4a7a; border-radius: 6px;
+    box-shadow: 0 8px 28px rgba(0,0,0,0.65);
+    padding: 8px 10px 10px; z-index: 3000;
+    display: none;
+  }
+  /* Layers popover is wider so three category buttons can sit on one row */
+  #cb-layers-popover { min-width: 330px; }
+  .cb-popover.align-right { left: auto; right: 0; }
+  .cb-drop.open > .cb-popover { display: block; }
+  .cb-popover h5 {
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.6px;
+    color: #8ab4c2; margin: 8px 0 4px; font-weight: 700;
+  }
+  .cb-popover h5:first-child { margin-top: 2px; }
+  .cb-popover-section { display: flex; flex-wrap: wrap; gap: 4px; }
+  .cb-popover-section .toggle-btn { font-size: 11px; }
+  .cb-popover hr {
+    border: none; border-top: 1px solid rgba(91,192,222,0.14);
+    margin: 6px 0;
+  }
+  /* Tool popover: stack buttons vertically, make them full-width */
+  .cb-popover.stacked .toggle-btn {
+    width: 100%; text-align: left; padding: 6px 10px;
+  }
+
+  /* Mobile: open popovers as a centred bottom-sheet-ish panel fixed
+   * to the viewport. position:fixed so positioning is independent of
+   * the .cb-drop ancestor's x-coordinate.  A tiny opening nudge via
+   * .cb-drop.open > .cb-popover makes them appear smoothly. */
+  @media (max-width: 720px) {
+    .cb-popover {
+      position: fixed;
+      top: auto; bottom: auto;
+      left: 4vw; right: 4vw;
+      width: auto; min-width: 0; max-width: none;
+    }
+    .cb-popover.align-right { left: 4vw; right: 4vw; }
+    /* When open, JS sets top via inline style (see _positionPopover) */
+  }
+
   #search-box {
     background: #0f3460; border: 1px solid #1a4a7a; color: #eee;
     padding: 4px 10px; border-radius: 16px; font-size: 12px; width: 180px;
@@ -1381,85 +1472,144 @@
 </div>
 
 <div id="controls">
-  <div class="control-group">
-    <label>Section:</label>
-    <select id="section-filter">
-      <option value="all">All Sections</option>
-      <option value="1">1 · Seine</option>
-      <option value="2">2 · Bassin de la Seine</option>
-      <option value="3">3 · Centre-Est</option>
-      <option value="4">4 · Rhône–Saône</option>
-      <option value="5">5 · Northern</option>
-      <option value="6">6 · Nord-Est</option>
-      <option value="7">7 · Rhine</option>
-      <option value="8">8 · Brittany</option>
-      <option value="9">9 · Entre Deux Mers</option>
-    </select>
+  <!-- ═══ MAIN ROW ═════════════════════════════════════════════════════
+       Global state + primary actions + 3 dropdown triggers (Map, Layers,
+       Tools). The individual layer toggles moved into the Layers popover
+       below; their IDs are unchanged so toggleLayer() + CSS still work. -->
+  <div class="cb-row">
+    <div class="control-group">
+      <label>Section:</label>
+      <select id="section-filter">
+        <option value="all">All Sections</option>
+        <option value="1">1 · Seine</option>
+        <option value="2">2 · Bassin de la Seine</option>
+        <option value="3">3 · Centre-Est</option>
+        <option value="4">4 · Rhône–Saône</option>
+        <option value="5">5 · Northern</option>
+        <option value="6">6 · Nord-Est</option>
+        <option value="7">7 · Rhine</option>
+        <option value="8">8 · Brittany</option>
+        <option value="9">9 · Entre Deux Mers</option>
+      </select>
+    </div>
+
+    <div id="search-wrap">
+      <input type="text" id="search-box" placeholder="🔍 Search place…"
+             oninput="searchPlaces(this.value)"
+             onkeydown="searchKeyNav(event)"
+             autocomplete="off">
+      <div id="search-dropdown"></div>
+    </div>
+
+    <button class="cb-trigger" id="btn-plan-route" onclick="openRoutePlanner()"
+            style="background:#1f4f8f;border-color:#5bc0de;color:#fff;font-weight:600">
+      📍 Plan Route
+    </button>
+
+    <button class="cb-trigger" id="toggle-vessel" onclick="openProfileModal()"
+            title="Your vessel profile &amp; cruise settings">⛵ Profile</button>
+
+    <!-- 🗺 Map — base-layer + seamarks overlay -->
+    <div class="cb-drop" data-cb-drop="map">
+      <button class="cb-trigger" id="cb-map-trigger" title="Map background">
+        🗺 Map <span class="cb-chev">▾</span>
+      </button>
+      <div class="cb-popover stacked" id="cb-map-popover" role="menu">
+        <h5>Base map</h5>
+        <button class="toggle-btn active" id="btn-map-ign"     onclick="setBaseLayer('ign')"       title="IGN France — best detail on French waterways">🗺 IGN France</button>
+        <button class="toggle-btn"        id="btn-map-sat"     onclick="setBaseLayer('satellite')" title="ESRI satellite imagery">🛰 Satellite</button>
+        <button class="toggle-btn"        id="btn-map-topo"    onclick="setBaseLayer('topo')"      title="OpenTopoMap — terrain &amp; contours">🏔 Topographic</button>
+        <button class="toggle-btn"        id="btn-map-carto"   onclick="setBaseLayer('carto')"     title="CartoDB Voyager (OSM-based)">🗺 OpenStreetMap</button>
+        <hr>
+        <h5>Overlay</h5>
+        <button class="toggle-btn"        id="btn-map-seamark" onclick="toggleSeamark()"           title="OpenSeaMap nautical overlay — locks, lights, buoys, bridge heights">⚓ SeaMarks</button>
+      </div>
+    </div>
+
+    <!-- 📍 Layers — categorised layer toggles -->
+    <div class="cb-drop" data-cb-drop="layers">
+      <button class="cb-trigger" id="cb-layers-trigger" title="Show/hide map layers">
+        📍 Layers <span class="cb-badge" id="cb-layers-badge"></span> <span class="cb-chev">▾</span>
+      </button>
+      <div class="cb-popover align-right" id="cb-layers-popover" role="menu">
+        <h5>Markers</h5>
+        <div class="cb-popover-section">
+          <button class="toggle-btn active" id="toggle-towns"        onclick="toggleLayer('towns')">🏘 Towns</button>
+          <button class="toggle-btn active" id="toggle-haltes"       onclick="toggleLayer('haltes')">⚓ Haltes</button>
+          <button class="toggle-btn"        id="toggle-googleplaces" onclick="toggleLayer('googleplaces')" title="Places you imported from Google Maps">📍 My Places</button>
+        </div>
+
+        <h5>Points of interest</h5>
+        <div class="cb-popover-section">
+          <button class="toggle-btn" id="toggle-fuel"     onclick="toggleLayer('fuel')"     title="Boat fuel &amp; water stations">⛽ Fuel</button>
+          <button class="toggle-btn" id="toggle-chomages" onclick="toggleLayer('chomages')" title="VNF maintenance closures">🚧 Chômages</button>
+          <button class="toggle-btn" id="toggle-tunnels"  onclick="toggleLayer('tunnels')"  title="Canal tunnels with convoy schedules">🚇 Tunnels</button>
+        </div>
+
+        <h5>Charts &amp; hazards</h5>
+        <div class="cb-popover-section">
+          <button class="toggle-btn" id="toggle-bridges"      onclick="toggleLayer('bridges')"      title="Bridge air clearances (VNF IENC)">🌉 Bridges</button>
+          <button class="toggle-btn" id="toggle-channel-axis" onclick="toggleLayer('channel-axis')" title="Official dredged-channel centerline (VNF IENC)">🧭 Channel</button>
+          <button class="toggle-btn" id="toggle-obstructions" onclick="toggleLayer('obstructions')" title="IENC navigation hazards">⚠ Hazards</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ⋮ Overflow tools -->
+    <div class="cb-drop" data-cb-drop="tools">
+      <button class="cb-trigger cb-trigger-icon" id="cb-tools-trigger" title="Notes, edit, backup" style="font-size:16px;line-height:1">⋮</button>
+      <div class="cb-popover stacked align-right" id="cb-tools-popover" role="menu">
+        <button class="toggle-btn" id="toggle-notes"         onclick="toggleNotesPanel()">📌 My Notes</button>
+        <button class="toggle-btn" id="btn-edit-locations"   onclick="toggleEditMode()"      title="Drag markers to exact positions">✏️ Edit locations</button>
+        <button class="toggle-btn" id="btn-data-panel"       onclick="toggleDataPanel()"     title="Backup &amp; restore your data">💾 Backup / restore</button>
+      </div>
+    </div>
   </div>
-  <div class="control-group">
-    <label>Show:</label>
-    <button class="toggle-btn active" id="toggle-towns" onclick="toggleLayer('towns')">🏘 Towns</button>
-    <button class="toggle-btn active" id="toggle-locks" onclick="toggleLayer('locks')">🔒 Locks</button>
-    <button class="toggle-btn active" id="toggle-routes" onclick="toggleLayer('waterways')">🌊 Canals</button>
-    <button class="toggle-btn active" id="toggle-haltes" onclick="toggleLayer('haltes')">⚓ Haltes</button>
-    <button class="toggle-btn active" id="toggle-ports" onclick="toggleLayer('ports')">⛵ Ports</button>
-    <button class="toggle-btn" id="btn-plan-route" onclick="openRoutePlanner()">📍 Plan Route</button>
-    <button class="toggle-btn" id="toggle-notes" onclick="toggleNotesPanel()">📌 My Notes</button>
-    <button class="toggle-btn" id="btn-edit-locations" onclick="toggleEditMode()" title="Drag markers to exact positions">✏️ Edit Locations</button>
-    <button class="toggle-btn" id="btn-data-panel" onclick="toggleDataPanel()" title="Backup &amp; restore your data">💾 Backup</button>
-    <button class="toggle-btn" id="toggle-michelin" onclick="toggleLayer('michelin')" title="Show Michelin-starred restaurants">⭐ Michelin</button>
-    <button class="toggle-btn" id="toggle-fuel" onclick="toggleLayer('fuel')" title="Show boat fuel &amp; water stations">⛽ Fuel</button>
-    <button class="toggle-btn" id="toggle-vessel" onclick="openProfileModal()" title="Your vessel profile &amp; cruise settings">⛵ Profile</button>
-    <button class="toggle-btn" id="toggle-chomages" onclick="toggleLayer('chomages')" title="Show VNF maintenance closures">🚧 Chômages</button>
-    <button class="toggle-btn" id="toggle-tunnels" onclick="toggleLayer('tunnels')" title="Show canal tunnels with convoy schedules">🚇 Tunnels</button>
-    <button class="toggle-btn" id="toggle-bridges" onclick="toggleLayer('bridges')" title="Show bridge air clearances (VNF IENC data)">🌉 Bridges</button>
-    <button class="toggle-btn" id="toggle-channel-axis" onclick="toggleLayer('channel-axis')" title="Show official dredged-channel centerline (VNF IENC — Rhine / Moselle / Seine / Saône / Oise / Garonne tidal)">🧭 Channel</button>
-    <button class="toggle-btn" id="toggle-obstructions" onclick="toggleLayer('obstructions')" title="Show IENC navigation hazards — rocks, shoals, submerged obstructions">⚠ Hazards</button>
-    <button class="toggle-btn" id="toggle-googleplaces" onclick="toggleLayer('googleplaces')" title="Show places imported from Google Maps">📍 My Places</button>
+
+  <!-- ═══ QUICK-ACCESS CHIPS ═══════════════════════════════════════════
+       The four layers users toggle most often, one tap away. Michelin
+       is the discoverable "try it" option; the other three are default-on. -->
+  <div class="cb-row cb-row-chips">
+    <span class="cb-row-label">Quick:</span>
+    <button class="toggle-btn active" id="toggle-waterways" onclick="toggleLayer('waterways')" title="Canal network overlay">🌊 Canals</button>
+    <button class="toggle-btn active" id="toggle-ports"     onclick="toggleLayer('ports')"     title="Ports de plaisance">⛵ Ports</button>
+    <button class="toggle-btn active" id="toggle-locks"     onclick="toggleLayer('locks')"     title="Locks">🔒 Locks</button>
+    <button class="toggle-btn"        id="toggle-michelin"  onclick="toggleLayer('michelin')"  title="Michelin-starred restaurants">⭐ Michelin</button>
   </div>
-  <div class="control-group">
-    <label>Map:</label>
-    <button class="toggle-btn active" id="btn-map-ign"       onclick="setBaseLayer('ign')"       title="IGN France — best detail on French waterways">🗺 IGN</button>
-    <button class="toggle-btn"        id="btn-map-sat"       onclick="setBaseLayer('satellite')"  title="ESRI satellite imagery">🛰 Satellite</button>
-    <button class="toggle-btn"        id="btn-map-topo"      onclick="setBaseLayer('topo')"       title="OpenTopoMap — terrain &amp; contours">🏔 Topo</button>
-    <button class="toggle-btn"        id="btn-map-carto"     onclick="setBaseLayer('carto')"      title="CartoDB Voyager (OSM-based)">🗺 OSM</button>
-    <button class="toggle-btn"        id="btn-map-seamark"   onclick="toggleSeamark()"            title="OpenSeaMap nautical overlay — locks, lights, buoys, bridge heights">⚓ SeaMarks</button>
+
+  <!-- ═══ FILTER ROW ═══════════════════════════════════════════════════
+       Canals legend, vessel-dimension filter, waterway dimensions
+       lookup, stats. Unchanged in function from the previous layout. -->
+  <div class="cb-row cb-row-filter">
+    <div class="control-group" id="waterway-nav-legend" title="Canal navigability based on your vessel profile">
+      <span style="font-size:11px;color:#8ab4c2;margin-right:4px">Canals:</span>
+      <span><span class="wn-dot" style="background:#4fc3f7"></span>Navigable</span>
+      <span><span class="wn-dot" style="background:#ef5350"></span>Blocked</span>
+      <span><span class="wn-dot" style="background:#ffb74d"></span>Marginal</span>
+      <span><span class="wn-dot" style="background:#90a4ae"></span>No data</span>
+    </div>
+    <div class="control-group" id="vessel-filter-group" style="background:#0d1e33;border:1px solid #1a4a7a;border-radius:6px;padding:4px 8px;gap:5px;align-items:center">
+      <span style="font-size:12px;white-space:nowrap">🚢 Draft:</span>
+      <input type="number" id="vf-draft" min="0" max="5" step="0.1" placeholder="0.0"
+             style="width:46px;background:#16213e;border:1px solid #1a5276;border-radius:4px;color:#eee;font-size:12px;padding:3px 5px;text-align:center"
+             oninput="applyVesselFilter()">
+      <span style="font-size:11px;color:#5a7a8a">m</span>
+      <span style="font-size:12px;white-space:nowrap;margin-left:4px">Air:</span>
+      <input type="number" id="vf-air" min="0" max="20" step="0.1" placeholder="0.0"
+             style="width:46px;background:#16213e;border:1px solid #1a5276;border-radius:4px;color:#eee;font-size:12px;padding:3px 5px;text-align:center"
+             oninput="applyVesselFilter()">
+      <span style="font-size:11px;color:#5a7a8a">m</span>
+      <button onclick="applyProfileToFilter()" id="vf-profile-btn" title="Fill from your saved Profile dimensions" style="background:rgba(91,192,222,0.12);border:1px solid #1a5276;border-radius:4px;color:#5bc0de;font-size:11px;cursor:pointer;padding:2px 6px;white-space:nowrap">⛵ Profile</button>
+      <button onclick="clearVesselFilter()" title="Clear filter" style="background:none;border:none;color:#e87a7a;font-size:14px;cursor:pointer;padding:0 2px;line-height:1" id="vf-clear-btn">✕</button>
+    </div>
+    <div class="control-group">
+      <label>📐 Waterway:</label>
+      <select id="dims-lookup" onchange="showWaterwayDims(this.value)" style="max-width:160px">
+        <option value="">Dimensions…</option>
+      </select>
+    </div>
+    <div id="stats" class="cb-push-right">Loading…</div>
   </div>
-  <div class="control-group" id="waterway-nav-legend" title="Canal navigability based on your vessel profile">
-    <span style="font-size:11px;color:#8ab4c2;margin-right:4px">Canals:</span>
-    <span><span class="wn-dot" style="background:#4fc3f7"></span>Navigable</span>
-    <span><span class="wn-dot" style="background:#ef5350"></span>Blocked</span>
-    <span><span class="wn-dot" style="background:#ffb74d"></span>Marginal</span>
-    <span><span class="wn-dot" style="background:#90a4ae"></span>No data</span>
-  </div>
-  <div class="control-group" id="vessel-filter-group" style="background:#0d1e33;border:1px solid #1a4a7a;border-radius:6px;padding:4px 8px;gap:5px;align-items:center">
-    <span style="font-size:12px;white-space:nowrap">🚢 Draft:</span>
-    <input type="number" id="vf-draft" min="0" max="5" step="0.1" placeholder="0.0"
-           style="width:46px;background:#16213e;border:1px solid #1a5276;border-radius:4px;color:#eee;font-size:12px;padding:3px 5px;text-align:center"
-           oninput="applyVesselFilter()">
-    <span style="font-size:11px;color:#5a7a8a">m</span>
-    <span style="font-size:12px;white-space:nowrap;margin-left:4px">Air:</span>
-    <input type="number" id="vf-air" min="0" max="20" step="0.1" placeholder="0.0"
-           style="width:46px;background:#16213e;border:1px solid #1a5276;border-radius:4px;color:#eee;font-size:12px;padding:3px 5px;text-align:center"
-           oninput="applyVesselFilter()">
-    <span style="font-size:11px;color:#5a7a8a">m</span>
-    <button onclick="applyProfileToFilter()" id="vf-profile-btn" title="Fill from your saved Profile dimensions" style="background:rgba(91,192,222,0.12);border:1px solid #1a5276;border-radius:4px;color:#5bc0de;font-size:11px;cursor:pointer;padding:2px 6px;white-space:nowrap">⛵ Profile</button>
-    <button onclick="clearVesselFilter()" title="Clear filter" style="background:none;border:none;color:#e87a7a;font-size:14px;cursor:pointer;padding:0 2px;line-height:1" id="vf-clear-btn">✕</button>
-  </div>
-  <div id="search-wrap">
-    <input type="text" id="search-box" placeholder="🔍 Search place…"
-           oninput="searchPlaces(this.value)"
-           onkeydown="searchKeyNav(event)"
-           autocomplete="off">
-    <div id="search-dropdown"></div>
-  </div>
-  <div class="control-group">
-    <label>📐 Waterway:</label>
-    <select id="dims-lookup" onchange="showWaterwayDims(this.value)" style="max-width:160px">
-      <option value="">Dimensions…</option>
-    </select>
-  </div>
-  <div id="stats">Loading…</div>
 </div>
 
 <div id="main">
@@ -4267,6 +4417,8 @@ function toggleLayer(type) {
   layerState[type] = !layerState[type];
   const btn = document.getElementById(`toggle-${type}`);
   if (btn) btn.classList.toggle('active', layerState[type]);
+  // Reflect the layer's on-state in the "📍 Layers" button badge.
+  if (typeof _updateLayersBadge === 'function') _updateLayersBadge();
 
   if (type === 'towns') {
     layerState[type] ? map.addLayer(clusterGroup) : map.removeLayer(clusterGroup);
@@ -4339,6 +4491,83 @@ function toggleLayer(type) {
       map.removeLayer(googlePlacesGroup);
     }
   }
+}
+
+// ============================================================
+//  Controls-bar dropdowns (🗺 Map / 📍 Layers / ⋮ Tools popovers)
+// ============================================================
+/* Popover open/close — every .cb-drop has exactly one .cb-trigger
+ * (tap-to-toggle) and one .cb-popover (sibling, hidden until the
+ * parent has class "open").  Click-outside and Esc both close any
+ * open popover.  Triggers' IDs follow the pattern cb-<key>-trigger.
+ */
+(function _initControlsDropdowns() {
+  function closeAll(except) {
+    document.querySelectorAll('.cb-drop.open').forEach(function(d) {
+      if (d !== except) d.classList.remove('open');
+      var p = d && d.querySelector('.cb-popover');
+      if (p && d !== except) p.style.top = '';
+    });
+  }
+  // On mobile (≤ 720 px) we position each opened popover below its
+  // trigger via inline style, keeping it inside the viewport regardless
+  // of where the .cb-drop sits in the main row.
+  function positionPopoverOnMobile(drop) {
+    if (window.innerWidth > 720) return;
+    var pop = drop.querySelector('.cb-popover');
+    var trig = drop.querySelector('.cb-trigger');
+    if (!pop || !trig) return;
+    var r = trig.getBoundingClientRect();
+    pop.style.top = (r.bottom + 6) + 'px';
+  }
+  document.addEventListener('click', function(e) {
+    var trigger = e.target.closest('.cb-trigger');
+    if (trigger) {
+      var drop = trigger.closest('.cb-drop');
+      if (drop) {
+        var willOpen = !drop.classList.contains('open');
+        closeAll(drop);
+        drop.classList.toggle('open');
+        if (willOpen) positionPopoverOnMobile(drop);
+        e.stopPropagation();
+        return;
+      }
+    }
+    // Click inside an open popover — leave it open
+    if (e.target.closest('.cb-popover')) return;
+    // Click anywhere else — close all
+    closeAll(null);
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeAll(null);
+  });
+  // Re-position any open popover if the window resizes.
+  window.addEventListener('resize', function() {
+    document.querySelectorAll('.cb-drop.open').forEach(function(d) {
+      var p = d.querySelector('.cb-popover');
+      if (p) p.style.top = '';
+      positionPopoverOnMobile(d);
+    });
+  });
+})();
+
+/* _updateLayersBadge — count active toggles *inside* the Layers
+ * popover. The 4 quick-access chips (Canals/Ports/Locks/Michelin)
+ * are excluded because they're always visible; this badge only
+ * signals "something non-default is on behind the menu". */
+function _updateLayersBadge() {
+  var pop = document.getElementById('cb-layers-popover');
+  var badge = document.getElementById('cb-layers-badge');
+  if (!pop || !badge) return;
+  // Default-on layers in the popover (towns, haltes) shouldn't count
+  // toward the badge — the badge is an attention marker for state
+  // changes the user has made, not an always-on indicator.
+  var DEFAULT_ON = ['toggle-towns', 'toggle-haltes'];
+  var active = 0;
+  pop.querySelectorAll('.toggle-btn.active').forEach(function(b) {
+    if (DEFAULT_ON.indexOf(b.id) === -1) active++;
+  });
+  badge.textContent = active > 0 ? String(active) : '';
 }
 
 // ============================================================
