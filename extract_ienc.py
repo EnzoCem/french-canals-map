@@ -120,18 +120,36 @@ def _waterway_for_cell(cell_name: str) -> str:
         return "Saône"
     if re.match(r"^4V5RHO\d{2}$", name):
         return "Rhône"
+    # CNR (Compagnie Nationale du Rhône) cells covering Lyon → Mediterranean
+    # — the gap that the VNF "RHONE_LYON_EDITION_1" bundle does NOT close.
+    # Includes variant-edition cells like 3T5RHO01_2 (revision overlay).
+    if re.match(r"^3T5RHO\d{2}(_\d+)?$", name):
+        return "Rhône"
     if re.match(r"^(4V5|4V6)GA\d{3}$", name):
         return "Garonne (tidal)"
     if re.match(r"^1W7RH\d{3}$", name):
         return "Rhine"
+    # 1W7SR is the SAAR (German Saarland), not the Saône — confirmed when
+    # the 2022 European IENC bundle revealed the same prefix. Earlier
+    # versions of this map labelled these cells "Saône (upper)" by
+    # mistake; locks at Saarbrücken consequently failed the position
+    # audit.  See FEATURES.md backlog note from 2026-04-24.
     if re.match(r"^1W7SR\d{3}$", name):
-        return "Saône (upper)"
+        return "Saar"
+    if re.match(r"^1W7MO\d{3}$", name):
+        return "Mosel"   # German Moselle (downstream of FR Apach border)
     if re.match(r"^1W7RRS\d{2}$", name):
         return "Canal du Rhône au Rhin"
     if name.startswith("7V7LEIE"):
         return "Leie"
     if name.startswith("7V7PLDU"):
         return "Canal Nieuwpoort–Dunkerque"
+    if name.startswith("7V7ALB"):
+        return "Albertkanaal"   # Albert Canal (Liège → Antwerp)
+    # Generic catch-all for other Belgian cells (BE flemish-region 7V7
+    # prefixes + the BE-prefix 06.2022 patch format like BE7GT017).
+    if name.startswith("7V7") or re.match(r"^BE[A-Z0-9]+$", name):
+        return "Belgium waterway"
     return "Unknown waterway"
 
 

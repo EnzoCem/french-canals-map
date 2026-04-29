@@ -22,11 +22,15 @@ waterways_overpass.json
 # Claude Code session state
 .claude/
 
-# IENC working files — keep ienc/FR.zip tracked (the pinned snapshot);
-# ignore extracted cells and the local per-river staging folder.
+# IENC working files — keep ienc/FR.zip + ienc/Rhone_Lyon_Med.zip tracked
+# (the pinned snapshots); ignore extracted cells + the bulk source folders.
 ienc/*/
 *.000
+*.rar
 VNF Charts/
+IENC France 2021/
+Inland ENC Europe/
+Inland ENC Europe 05.2022/
 
 # Editor
 .idea/

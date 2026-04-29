@@ -30,7 +30,12 @@ def test_waterway_for_cell_other_waterways():
     assert ei._waterway_for_cell("4V5RHO00") == "Rhône"
     assert ei._waterway_for_cell("4V5SAO05") == "Saône"
     assert ei._waterway_for_cell("1W7RH160") == "Rhine"  # NOT Rhône — spike finding
-    assert ei._waterway_for_cell("1W7SR080") == "Saône (upper)"
+    assert ei._waterway_for_cell("1W7SR080") == "Saar"   # corrected 2026-04-25 — not Saône
+    assert ei._waterway_for_cell("1W7MO050") == "Mosel"
+    assert ei._waterway_for_cell("3T5RHO15") == "Rhône"   # CNR Rhône Lyon→Med
+    assert ei._waterway_for_cell("7V7ALB10") == "Albertkanaal"
+    assert ei._waterway_for_cell("7V7BEDIJ") == "Belgium waterway"
+    assert ei._waterway_for_cell("BE7GT017") == "Belgium waterway"
     assert ei._waterway_for_cell("4V7OIS03") == "Oise"
     assert ei._waterway_for_cell("4V5GA040") == "Garonne (tidal)"
     assert ei._waterway_for_cell("4V6GA070") == "Garonne (tidal)"

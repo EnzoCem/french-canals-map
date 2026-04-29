@@ -49,6 +49,14 @@ TARGETS = [
     # original Laudun-l'Ardoise user report. Force because "Le Rhône"
     # already exists elsewhere in the geojson but skips this stretch.
     ("Le Rhône",            (43.95, 4.55, 44.25, 4.85), True),
+    # Full Rhône Lyon → Mediterranean (covers all 3T5RHO* cell range
+    # 45.7°N Lyon down to 43.4°N Port-Saint-Louis). Force because
+    # mid-valley already partially fetched.
+    ("Le Rhône",            (43.30, 4.50, 45.80, 5.00), True),
+    # Saar (Saarbrücken area + Sarreguemines) — adds river line under the
+    # 16 newly-imported IENC Saar locks. OSM tags it "Die Saar".
+    ("Die Saar",            (49.10, 6.50, 49.50, 7.10), False),
+    ("Saar",                (49.10, 6.50, 49.50, 7.10), False),
 ]
 
 
