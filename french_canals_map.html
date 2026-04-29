@@ -1573,12 +1573,15 @@
         <h5>Markers</h5>
         <div class="cb-popover-section">
           <button class="toggle-btn active" id="toggle-towns"        onclick="toggleLayer('towns')">🏘 Towns</button>
+          <button class="toggle-btn active" id="toggle-locks"        onclick="toggleLayer('locks')"  title="Locks">🔒 Locks</button>
           <button class="toggle-btn active" id="toggle-haltes"       onclick="toggleLayer('haltes')">⚓ Haltes</button>
+          <button class="toggle-btn active" id="toggle-ports"        onclick="toggleLayer('ports')"  title="Ports de plaisance">⛵ Ports</button>
           <button class="toggle-btn"        id="toggle-googleplaces" onclick="toggleLayer('googleplaces')" title="Places you imported from Google Maps">📍 My Places</button>
         </div>
 
         <h5>Points of interest</h5>
         <div class="cb-popover-section">
+          <button class="toggle-btn" id="toggle-michelin" onclick="toggleLayer('michelin')" title="Michelin-starred restaurants">⭐ Michelin</button>
           <button class="toggle-btn" id="toggle-fuel"     onclick="toggleLayer('fuel')"     title="Boat fuel &amp; water stations">⛽ Fuel</button>
           <button class="toggle-btn" id="toggle-chomages" onclick="toggleLayer('chomages')" title="VNF maintenance closures">🚧 Chômages</button>
           <button class="toggle-btn" id="toggle-tunnels"  onclick="toggleLayer('tunnels')"  title="Canal tunnels with convoy schedules">🚇 Tunnels</button>
@@ -1586,9 +1589,10 @@
 
         <h5>Charts &amp; hazards</h5>
         <div class="cb-popover-section">
-          <button class="toggle-btn" id="toggle-bridges"      onclick="toggleLayer('bridges')"      title="Bridge air clearances (VNF IENC)">🌉 Bridges</button>
-          <button class="toggle-btn" id="toggle-channel-axis" onclick="toggleLayer('channel-axis')" title="Official dredged-channel centerline (VNF IENC)">🧭 Channel</button>
-          <button class="toggle-btn" id="toggle-obstructions" onclick="toggleLayer('obstructions')" title="IENC navigation hazards">⚠ Hazards</button>
+          <button class="toggle-btn active" id="toggle-waterways"   onclick="toggleLayer('waterways')"   title="Canal network overlay">🌊 Canals</button>
+          <button class="toggle-btn"        id="toggle-bridges"     onclick="toggleLayer('bridges')"     title="Bridge air clearances (VNF IENC)">🌉 Bridges</button>
+          <button class="toggle-btn"        id="toggle-channel-axis" onclick="toggleLayer('channel-axis')" title="Official dredged-channel centerline (VNF IENC)">🧭 Channel</button>
+          <button class="toggle-btn"        id="toggle-obstructions" onclick="toggleLayer('obstructions')" title="IENC navigation hazards">⚠ Hazards</button>
         </div>
       </div>
     </div>
@@ -1605,18 +1609,12 @@
   </div>
 
   <!-- ═══ SECONDARY ROW ════════════════════════════════════════════════
-       Quick-access layer chips (Canals / Ports / Locks / Michelin) +
-       vessel-dimension filter + waterway-dimensions lookup. Informational
-       items (canals legend, stats) moved to #header .h-right on
-       2026-04-24 so the whole controls bar fits in two rows. -->
+       Vessel-dimension filter + waterway-dimensions lookup.  As of
+       2026-04-30 the four quick-access chips (Canals / Ports / Locks /
+       Michelin) live inside the Layers popover instead — see Markers /
+       Points of interest / Charts & hazards there. -->
   <div class="cb-row cb-row-chips">
-    <span class="cb-row-label">Quick:</span>
-    <button class="toggle-btn active" id="toggle-waterways" onclick="toggleLayer('waterways')" title="Canal network overlay">🌊 Canals</button>
-    <button class="toggle-btn active" id="toggle-ports"     onclick="toggleLayer('ports')"     title="Ports de plaisance">⛵ Ports</button>
-    <button class="toggle-btn active" id="toggle-locks"     onclick="toggleLayer('locks')"     title="Locks">🔒 Locks</button>
-    <button class="toggle-btn"        id="toggle-michelin"  onclick="toggleLayer('michelin')"  title="Michelin-starred restaurants">⭐ Michelin</button>
-
-    <div class="control-group" id="vessel-filter-group" style="background:#0d1e33;border:1px solid #1a4a7a;border-radius:6px;padding:4px 8px;gap:5px;align-items:center;margin-left:8px">
+    <div class="control-group" id="vessel-filter-group" style="background:#0d1e33;border:1px solid #1a4a7a;border-radius:6px;padding:4px 8px;gap:5px;align-items:center">
       <span style="font-size:12px;white-space:nowrap">🚢 Draft:</span>
       <input type="number" id="vf-draft" min="0" max="5" step="0.1" placeholder="0.0"
              style="width:46px;background:#16213e;border:1px solid #1a5276;border-radius:4px;color:#eee;font-size:12px;padding:3px 5px;text-align:center"
