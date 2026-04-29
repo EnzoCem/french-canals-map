@@ -1547,6 +1547,29 @@
     <button class="cb-trigger" id="toggle-vessel" onclick="openProfileModal()"
             title="Your vessel profile &amp; cruise settings">⛵ Profile</button>
 
+    <!-- Vessel-dimension quick filter (inline; applies live nav-status colouring) -->
+    <div class="control-group" id="vessel-filter-group" style="background:#0d1e33;border:1px solid #1a4a7a;border-radius:6px;padding:4px 8px;gap:5px;align-items:center">
+      <span style="font-size:12px;white-space:nowrap">🚢 Draft:</span>
+      <input type="number" id="vf-draft" min="0" max="5" step="0.1" placeholder="0.0"
+             style="width:46px;background:#16213e;border:1px solid #1a5276;border-radius:4px;color:#eee;font-size:12px;padding:3px 5px;text-align:center"
+             oninput="applyVesselFilter()">
+      <span style="font-size:11px;color:#5a7a8a">m</span>
+      <span style="font-size:12px;white-space:nowrap;margin-left:4px">Air:</span>
+      <input type="number" id="vf-air" min="0" max="20" step="0.1" placeholder="0.0"
+             style="width:46px;background:#16213e;border:1px solid #1a5276;border-radius:4px;color:#eee;font-size:12px;padding:3px 5px;text-align:center"
+             oninput="applyVesselFilter()">
+      <span style="font-size:11px;color:#5a7a8a">m</span>
+      <button onclick="applyProfileToFilter()" id="vf-profile-btn" title="Fill from your saved Profile dimensions" style="background:rgba(91,192,222,0.12);border:1px solid #1a5276;border-radius:4px;color:#5bc0de;font-size:11px;cursor:pointer;padding:2px 6px;white-space:nowrap">⛵</button>
+      <button onclick="clearVesselFilter()" title="Clear filter" style="background:none;border:none;color:#e87a7a;font-size:14px;cursor:pointer;padding:0 2px;line-height:1" id="vf-clear-btn">✕</button>
+    </div>
+
+    <!-- 📐 Waterway-dimensions lookup (compact) -->
+    <div class="control-group">
+      <select id="dims-lookup" onchange="showWaterwayDims(this.value)" title="Look up VNF dimensions for a waterway" style="max-width:170px">
+        <option value="">📐 Waterway dims…</option>
+      </select>
+    </div>
+
     <!-- 🗺 Map — base-layer + seamarks overlay -->
     <div class="cb-drop" data-cb-drop="map">
       <button class="cb-trigger" id="cb-map-trigger" title="Map background">
@@ -1608,34 +1631,6 @@
     </div>
   </div>
 
-  <!-- ═══ SECONDARY ROW ════════════════════════════════════════════════
-       Vessel-dimension filter + waterway-dimensions lookup.  As of
-       2026-04-30 the four quick-access chips (Canals / Ports / Locks /
-       Michelin) live inside the Layers popover instead — see Markers /
-       Points of interest / Charts & hazards there. -->
-  <div class="cb-row cb-row-chips">
-    <div class="control-group" id="vessel-filter-group" style="background:#0d1e33;border:1px solid #1a4a7a;border-radius:6px;padding:4px 8px;gap:5px;align-items:center">
-      <span style="font-size:12px;white-space:nowrap">🚢 Draft:</span>
-      <input type="number" id="vf-draft" min="0" max="5" step="0.1" placeholder="0.0"
-             style="width:46px;background:#16213e;border:1px solid #1a5276;border-radius:4px;color:#eee;font-size:12px;padding:3px 5px;text-align:center"
-             oninput="applyVesselFilter()">
-      <span style="font-size:11px;color:#5a7a8a">m</span>
-      <span style="font-size:12px;white-space:nowrap;margin-left:4px">Air:</span>
-      <input type="number" id="vf-air" min="0" max="20" step="0.1" placeholder="0.0"
-             style="width:46px;background:#16213e;border:1px solid #1a5276;border-radius:4px;color:#eee;font-size:12px;padding:3px 5px;text-align:center"
-             oninput="applyVesselFilter()">
-      <span style="font-size:11px;color:#5a7a8a">m</span>
-      <button onclick="applyProfileToFilter()" id="vf-profile-btn" title="Fill from your saved Profile dimensions" style="background:rgba(91,192,222,0.12);border:1px solid #1a5276;border-radius:4px;color:#5bc0de;font-size:11px;cursor:pointer;padding:2px 6px;white-space:nowrap">⛵ Profile</button>
-      <button onclick="clearVesselFilter()" title="Clear filter" style="background:none;border:none;color:#e87a7a;font-size:14px;cursor:pointer;padding:0 2px;line-height:1" id="vf-clear-btn">✕</button>
-    </div>
-
-    <div class="control-group">
-      <label>📐 Waterway:</label>
-      <select id="dims-lookup" onchange="showWaterwayDims(this.value)" style="max-width:160px">
-        <option value="">Dimensions…</option>
-      </select>
-    </div>
-  </div>
 </div>
 
 <div id="main">
