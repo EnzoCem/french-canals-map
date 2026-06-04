@@ -261,7 +261,7 @@ New script: `fill_auto_routes.py`. Walks `waterways.geojson`, groups contiguous 
 
 **Michelin.** Remove the `', France'` filter from `fill_michelin.py`. Re-run the GitHub Action. Expected growth: 1,007 → ~3,500 entries. File-size impact: ~1 MB embedded in HTML.
 
-**Tunnels.** `TUNNELS` migrated to `data/tunnels.json`. ~6 new entries: Strépy-Thieu boat lift (BE), Ronquières inclined plane (BE), Anderton boat lift (UK), Falkirk Wheel (UK), Niederfinow ship lift (DE), Henrichenburg (DE). Schedule + booking URL per entry where applicable.
+**Tunnels & boat lifts.** `TUNNELS` migrated to `data/tunnels.json` and the data structure generalised: each entry gains a `kind: 'tunnel' | 'lift' | 'inclined_plane'` discriminator (existing 5 French entries become `kind: 'tunnel'`). Six new entries added: Strépy-Thieu (BE, lift), Ronquières (BE, inclined_plane), Anderton (UK, lift), Falkirk Wheel (UK, lift), Niederfinow (DE, lift), Henrichenburg (DE, lift). Booking, transit-time, and dimension limits per entry. Popup template branches on `kind` to render appropriate fields (convoys for tunnels, transit slots for lifts). The layer toggle and icon palette get a small refresh — "🛠 Structures" replaces "Tunnels" as the layer name.
 
 **Tidal.** `TIDAL_DATA` migrated to `data/tidal.json`. New waterways (Thames, Zeeland, Scheldt, Severn) out of scope — the existing extension recipe in CLAUDE.md works as-is. Documented as future work.
 
