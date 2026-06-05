@@ -4338,55 +4338,7 @@ let waterwayLayer = null;
 // value means the tide is not measurable at that station at that
 // coefficient ("non accusé" in the VNF source).
 // ─────────────────────────────────────────────────────────────────────────
-const TIDAL_DATA = {
-  'Garonne': {
-    reference_port: 'Bordeaux',
-    navigable_from_km: 0,        // Pont de Pierre, Bordeaux
-    navigable_to_km: 54,         // Castets-en-Dorthe (start of Canal de Garonne)
-    tidal_influence_to: 'La Réole',
-    source: 'VNF IENC ENC_ROOT_GARONNE / Garonne_edition3 README',
-    stations: [
-      { name: 'Portets',  km_approx: 22,
-        offsets: {  45: { high:  30, low: 120 },
-                    70: { high:  40, low:  80 },
-                   100: { high:  50, low:  90 } } },
-      { name: 'Cadillac', km_approx: 36,
-        offsets: {  45: { high:  50, low: 160 },
-                    70: { high:  60, low: 140 },
-                   100: { high:  80, low: 150 } } },
-      { name: 'Langon',   km_approx: 47,
-        offsets: {  45: { high:  70, low: 220 },
-                    70: { high:  90, low: 220 },
-                   100: { high: 110, low: 220 } } },
-      { name: 'Castets-en-Dorthe', km_approx: 54,
-        offsets: {  45: { high: null, low: null },   // "non accusé"
-                    70: { high: 130,  low: 310 },
-                   100: { high: 130,  low: 310 } } }
-    ],
-    // Minimum marnage (tidal range) in metres during low-water period (étiage)
-    marnage_min_m: {
-      'Bordeaux': 4.0,
-      'Cadillac': 3.5,
-      'Langon':   2.5,
-      'Castets-en-Dorthe': 1.5
-    },
-    warnings: [
-      { type: 'mascaret',
-        note: 'A significant tidal bore (mascaret) can be felt below km 30 on the Garonne downstream of Bordeaux.',
-        pk_below: 30 }
-    ],
-    // SHOM's official tide-prediction pages (free, Licence Ouverte 2.0).
-    // Ordered downstream → upstream so a skipper planning the Gironde
-    // approach sees the entrance port first. Label: harbour name + role.
-    live_sources: [
-      { label: 'Le Verdon (Gironde entrance)', url: 'https://maree.shom.fr/harbor/LE_VERDON/hlt/today' },
-      { label: 'Pauillac (mid-estuary)',       url: 'https://maree.shom.fr/harbor/PAUILLAC/hlt/today' },
-      { label: 'Bordeaux (reference port)',    url: 'https://maree.shom.fr/harbor/BORDEAUX/hlt/today' }
-    ]
-  }
-  // Future: Seine Aval when a comparable data source is found;
-  // Rance, Vilaine, Loire estuary if ever added.
-};
+let TIDAL_DATA = {};
 
 // Normalised lookup into WATERWAY_CONSTRAINTS.
 // Strips leading articles/prefixes (River, La, Le, L', Les) and lowercases
@@ -4915,6 +4867,9 @@ function init() {
   _loadData('fc-colors-v1', './data/waterway_colors.json', function(data) {
     WATERWAY_COLORS = data;
     if (typeof buildWaterwayOverlay === 'function' && typeof WATERWAY_GEOJSON !== 'undefined' && WATERWAY_GEOJSON) buildWaterwayOverlay();
+  });
+  _loadData('fc-tidal-v1', './data/tidal.json', function(data) {
+    TIDAL_DATA = data;
   });
   buildMichelinMarkers();
   _loadData('fc-tunnels-v1', './data/tunnels.json', function(data) {
