@@ -1662,53 +1662,7 @@
 //  DATA  –  extracted from "Through the French Canals" (14th ed)
 // ============================================================
 
-const ROUTES = [
-  { num: 1,  section: 1, canal: "River Seine (Le Havre–Paris)",         from: "Le Havre",             to: "Paris",                  locks: 6,   dist_km: 365,  max_height: 7.0,  max_draught: 5.7,  color: "#e74c3c" },
-  { num: 2,  section: 2, canal: "Upper Seine",                           from: "Paris",                to: "Montereau",              locks: 8,   dist_km: 100,  max_height: 5.4,  max_draught: 3.0,  color: "#e67e22" },
-  { num: 3,  section: 2, canal: "Petite Seine",                          from: "Montereau",            to: "Marcilly",               locks: 4,   dist_km: 85,   max_height: 3.5,  max_draught: 1.8,  color: "#f39c12" },
-  { num: 4,  section: 2, canal: "River Yonne",                           from: "Montereau",            to: "Auxerre",                locks: 8,   dist_km: 105,  max_height: 3.5,  max_draught: 1.8,  color: "#f1c40f" },
-  { num: 5,  section: 2, canal: "River Marne & Canal latéral à la Marne",from: "Paris",               to: "Vitry-le-François",      locks: 33,  dist_km: 278,  max_height: 3.5,  max_draught: 2.2,  color: "#2ecc71" },
-  { num: 6,  section: 2, canal: "Canal latéral à l'Aisne",               from: "Vieux-lès-Asfeld",    to: "Compiègne",              locks: 8,   dist_km: 82,   max_height: 3.5,  max_draught: 2.2,  color: "#1abc9c" },
-  { num: 7,  section: 2, canal: "Canal de l'Oise à l'Aisne",             from: "Abbécourt",           to: "Condé-sur-Marne",        locks: 38,  dist_km: 126,  max_height: 3.5,  max_draught: 2.0,  color: "#16a085" },
-  { num: 8,  section: 2, canal: "Canal latéral à l'Oise & River Oise",   from: "Chauny",              to: "Conflans-Ste-Honorine",  locks: 11,  dist_km: 138,  max_height: 3.7,  max_draught: 3.0,  color: "#27ae60" },
-  { num: 9,  section: 2, canal: "Canals of Paris",                       from: "Paris",               to: "Paris",                  locks: 30,  dist_km: 60,   max_height: 3.5,  max_draught: 1.8,  color: "#3498db" },
-  { num: 10, section: 3, canal: "Bourbonnais Route",                     from: "St-Mammès",           to: "Chalon-sur-Saône",       locks: 149, dist_km: 414,  max_height: 3.5,  max_draught: 1.8,  color: "#9b59b6" },
-  { num: 11, section: 3, canal: "Canal de Nivernais",                    from: "Auxerre",             to: "Decize",                 locks: 110, dist_km: 174,  max_height: 2.7,  max_draught: 1.2,  color: "#8e44ad" },
-  { num: 12, section: 3, canal: "Canal de Bourgogne",                    from: "Laroche-Migennes",    to: "St-Jean-de-Losne",       locks: 189, dist_km: 242,  max_height: 3.4,  max_draught: 1.8,  color: "#6c3483" },
-  { num: 13, section: 4, canal: "Petite Saône",                          from: "Corre",               to: "St-Jean-de-Losne",       locks: 21,  dist_km: 192,  max_height: 3.5,  max_draught: 1.8,  color: "#e91e63" },
-  { num: 14, section: 4, canal: "Canal du Rhône au Rhin (Branche Sud)",  from: "Niffer/Mulhouse",     to: "St-Jean-de-Losne",       locks: 112, dist_km: 237,  max_height: 3.5,  max_draught: 1.8,  color: "#f06292" },
-  { num: 15, section: 4, canal: "Saône",                                 from: "St-Jean-de-Losne",    to: "Lyon",                   locks: 5,   dist_km: 170,  max_height: 7.0,  max_draught: 2.5,  color: "#ff7043" },
-  { num: 16, section: 4, canal: "Rhône",                                 from: "Lyon",                to: "Port-St-Louis",          locks: 14,  dist_km: 310,  max_height: 7.0,  max_draught: 3.5,  color: "#ff5722" },
-  { num: 17, section: 4, canal: "Petit Rhône",                           from: "Arles",               to: "St-Gilles",              locks: 1,   dist_km: 20,   max_height: 4.5,  max_draught: 1.5,  color: "#ff8a65" },
-  { num: 18, section: 4, canal: "Canal du Rhône à Sète",                 from: "Beaucaire",           to: "Sète",                   locks: 1,   dist_km: 100,  max_height: 4.5,  max_draught: 1.5,  color: "#ffa726" },
-  { num: 19, section: 5, canal: "Liaison Dunkerque–Escaut",              from: "Dunkerque",           to: "Valenciennes",           locks: 14,  dist_km: 202,  max_height: 5.25, max_draught: 3.5,  color: "#26c6da" },
-  { num: 20, section: 5, canal: "Canal de Calais",                       from: "Calais",              to: "Watten",                 locks: 2,   dist_km: 35,   max_height: 3.66, max_draught: 1.9,  color: "#00bcd4" },
-  { num: 21, section: 5, canal: "River Aa",                              from: "Gravelines",          to: "Saint-Omer",             locks: 0,   dist_km: 18,   max_height: 3.5,  max_draught: 1.5,  color: "#0097a7" },
-  { num: 24, section: 5, canal: "River Lys",                             from: "Aire-sur-la-Lys",     to: "Deûlémont",              locks: 7,   dist_km: 65,   max_height: 3.5,  max_draught: 2.2,  color: "#80deea" },
-  { num: 28, section: 5, canal: "Canal du Nord",                         from: "Arleux",              to: "Pont-l'Evêque",          locks: 19,  dist_km: 95,   max_height: 3.7,  max_draught: 2.2,  color: "#4dd0e1" },
-  { num: 29, section: 5, canal: "Canal de St-Quentin",                   from: "Cambrai",             to: "Chauny",                 locks: 35,  dist_km: 93,   max_height: 3.7,  max_draught: 2.2,  color: "#006064" },
-  { num: 31, section: 5, canal: "Canal de la Somme",                     from: "St-Valery-sur-Somme", to: "Péronne",                locks: 21,  dist_km: 126,  max_height: 3.5,  max_draught: 1.8,  color: "#aed6f1" },
-  { num: 32, section: 6, canal: "Canal des Ardennes",                    from: "Pont-à-Bar",          to: "Vieux-lès-Asfeld",       locks: 44,  dist_km: 88,   max_height: 3.5,  max_draught: 1.8,  color: "#a29bfe" },
-  { num: 33, section: 6, canal: "Canal de la Meuse",                     from: "Givet",               to: "Troussey",               locks: 59,  dist_km: 272,  max_height: 3.5,  max_draught: 1.8,  color: "#6c5ce7" },
-  { num: 34, section: 6, canal: "River Moselle",                         from: "Sierck-les-Bains",    to: "Neuves-Maisons",         locks: 16,  dist_km: 151,  max_height: 7.0,  max_draught: 2.8,  color: "#fd79a8" },
-  { num: 35, section: 6, canal: "Canal de la Marne au Rhin (Ouest)",     from: "Vitry-le-François",   to: "Réchicourt",             locks: 22,  dist_km: 133,  max_height: 3.5,  max_draught: 2.1,  color: "#e17055" },
-  { num: 36, section: 6, canal: "Canal entre Champagne et Bourgogne",    from: "Vitry-le-François",   to: "Maxilly-sur-Saône",      locks: 114, dist_km: 224,  max_height: 3.5,  max_draught: 1.8,  color: "#d63031" },
-  { num: 37, section: 6, canal: "Canal des Vosges",                      from: "Neuves-Maisons",      to: "Corre",                  locks: 93,  dist_km: 122,  max_height: 3.5,  max_draught: 1.8,  color: "#fab1a0" },
-  { num: 38, section: 7, canal: "Canal de la Sarre",                     from: "Gondrexange",         to: "Sarreguemines",          locks: 30,  dist_km: 76,   max_height: 3.5,  max_draught: 1.8,  color: "#55efc4" },
-  { num: 39, section: 7, canal: "Canal du Rhône au Rhin (Branche Nord)", from: "Strasbourg",          to: "Rhinau",                 locks: 13,  dist_km: 36,   max_height: 3.5,  max_draught: 2.0,  color: "#00b894" },
-  { num: 40, section: 7, canal: "Rhine & Grand Canal d'Alsace",          from: "Lauterbourg",         to: "Basel",                  locks: 10,  dist_km: 184,  max_height: null, max_draught: null, color: "#00cec9" },
-  { num: 41, section: 8, canal: "Liaison Manche–Océan",                  from: "St-Malo",             to: "La Roche-Bernard",       locks: 63,  dist_km: 371,  max_height: 2.5,  max_draught: 1.2,  color: "#fdcb6e" },
-  { num: 42, section: 8, canal: "Nantes à Brest (Ouest) / Blavet",       from: "Redon",               to: "Lorient",                locks: 28,  dist_km: 124,  max_height: 2.5,  max_draught: 1.1,  color: "#e2b96f" },
-  { num: 44, section: 8, canal: "Nantes à Brest Canal (Est section)",    from: "Châteaulin",          to: "Goariva",                locks: 45,  dist_km: 81,   max_height: 2.5,  max_draught: 1.1,  color: "#d4a017" },
-  { num: 45, section: 8, canal: "Nantes à Brest Canal / River Erdre",    from: "Redon",               to: "Nantes",                 locks: 16,  dist_km: 95,   max_height: 2.5,  max_draught: 1.2,  color: "#f9ca24" },
-  { num: 46, section: 8, canal: "Loire & Maine",                         from: "St-Nazaire",          to: "Angers",                 locks: 2,   dist_km: 150,  max_height: 5.0,  max_draught: 1.5,  color: "#6ab04c" },
-  { num: 47, section: 8, canal: "River Mayenne",                         from: "Angers",              to: "Mayenne",                locks: 45,  dist_km: 124,  max_height: 3.5,  max_draught: 1.4,  color: "#badc58" },
-  { num: 48, section: 8, canal: "River Sarthe",                          from: "Angers",              to: "Le Mans",                locks: 20,  dist_km: 133,  max_height: 3.5,  max_draught: 1.4,  color: "#7ed6df" },
-  { num: 49, section: 9, canal: "Canal des Deux Mers",                   from: "Royan",               to: "Sète",                   locks: 114, dist_km: 601,  max_height: 3.3,  max_draught: 1.4,  color: "#e55039" },
-  { num: 50, section: 9, canal: "Canal de la Robine",                    from: "Port-la-Robine",      to: "Port-la-Nouvelle",       locks: 13,  dist_km: 36,   max_height: 2.5,  max_draught: 1.2,  color: "#cb4335" },
-  { num: 51, section: 9, canal: "Garonne (tidal)",                       from: "Bordeaux",            to: "Castets-en-Dorthe",      locks: 0,   dist_km: 54,   max_height: 6.5,  max_draught: 3.5,  color: "#1a7a9a" },
-  { num: 52, section: 9, canal: "River Charente",                        from: "Rochefort",           to: "Angoulême",              locks: 21,  dist_km: 169,  max_height: 3.5,  max_draught: 1.8,  color: "#922b21" },
-];
+let ROUTES = [];
 
 // Key waypoints with coordinates extracted from "Through the French Canals"
 // lat/lon from well-known positions; descriptions from the book
@@ -5183,6 +5137,10 @@ function init() {
     MOORINGS = data;
     buildMooringMarkers();
   }, function() { showEditToast('⚠ Moorings failed to load'); });
+  _loadData('fc-routes-v1', './data/routes.json', function(data) {
+    ROUTES = data.routes || [];
+    ROUTE_CONNECTIONS = data.connections || [];
+  }, function() { showEditToast('⚠ Routes failed to load'); });
   buildMichelinMarkers();
   buildTunnelMarkers();
   if (googlePlaces.length > 0) {
@@ -5253,75 +5211,7 @@ init();
 
 // ── Route connection graph ────────────────────────────────────────────────
 // [routeA, routeB, junctionCity]  – symmetric; BFS will traverse both dirs
-const ROUTE_CONNECTIONS = [
-  // Seine–Paris network
-  [1, 2, 'Paris'],
-  [1, 5, 'Paris'],
-  [1, 8, 'Conflans-Ste-Honorine'],
-  [2, 4, 'Montereau'],
-  [2, 5, 'Paris'],
-  [2, 10, 'St-Mammès'],
-  [4, 10, 'Montereau'],
-  [4, 11, 'Auxerre'],
-  [4, 12, 'Laroche-Migennes'],
-  [5, 35, 'Vitry-le-François'],
-  [5, 36, 'Vitry-le-François'],
-  // Northern canals
-  [6, 8, 'Compiègne'],
-  [6, 32, 'Vieux-lès-Asfeld'],
-  [7, 32, 'Vieux-lès-Asfeld'],
-  [8, 29, 'Chauny'],
-  [28, 29, 'Cambrai'],
-  [19, 28, 'Arleux'],
-  [31, 29, 'Péronne / Chauny'],
-  [19, 29, 'Valenciennes area'],
-  [20, 21, 'Watten / Saint-Omer'],
-  [31, 29, 'Péronne / Chauny area'],
-  // Centre / Burgundy
-  [10, 11, 'Decize'],
-  [10, 12, 'Laroche-Migennes'],
-  [10, 15, 'Chalon-sur-Saône'],
-  [11, 15, 'Decize / Digoin'],
-  [12, 13, 'St-Jean-de-Losne'],
-  [12, 14, 'St-Jean-de-Losne'],
-  [12, 15, 'St-Jean-de-Losne'],
-  [12, 36, 'St-Jean-de-Losne'],
-  [13, 14, 'St-Jean-de-Losne'],
-  [13, 15, 'St-Jean-de-Losne'],
-  [13, 37, 'Corre'],
-  [14, 15, 'St-Jean-de-Losne'],
-  [36, 15, 'Maxilly-sur-Saône'],
-  // Saône–Rhône–Med
-  [15, 16, 'Lyon'],
-  [16, 17, 'Arles'],
-  [16, 18, 'Beaucaire'],
-  [17, 18, 'St-Gilles'],
-  [18, 49, 'Sète'],
-  // Alsace / Vosges / Lorraine
-  [33, 35, 'Troussey'],
-  [33, 36, 'Troussey'],
-  [34, 37, 'Neuves-Maisons'],
-  [35, 36, 'Vitry-le-François'],
-  [35, 38, 'Réchicourt'],
-  [35, 39, 'Strasbourg'],
-  [37, 13, 'Corre'],
-  [38, 39, 'Strasbourg area'],
-  [39, 40, 'Strasbourg'],
-  // Brittany / Atlantic
-  [41, 42, 'Redon'],
-  [41, 45, 'Redon'],
-  [42, 45, 'Redon'],
-  [45, 46, 'Nantes'],
-  [46, 47, 'Angers'],
-  [46, 48, 'Angers'],
-  [47, 48, 'Angers'],
-  // South-West
-  [49, 18, 'Sète'],
-  [49, 50, 'Port-la-Robine'],
-  [49, 52, 'Royan / Bordeaux'],
-  [51, 49, 'Castets-en-Dorthe'],   // Tidal Garonne joins Canal de Garonne
-  [51, 52, 'Bordeaux / Gironde'],  // Tidal Garonne ↔ Gironde estuary / Charente via coastal
-];
+let ROUTE_CONNECTIONS = [];
 
 // ── Graph builder & BFS ───────────────────────────────────────────────────
 function buildRouteGraph() {
