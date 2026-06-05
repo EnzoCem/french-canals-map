@@ -1,7 +1,7 @@
 {
-  "name": "French Canals Map",
-  "short_name": "Canals",
-  "description": "Interactive map for cruising the French inland waterways — towns, locks, haltes, ports, route planning, Michelin restaurants.",
+  "name": "Inland Europe",
+  "short_name": "Inland Europe",
+  "description": "Interactive map of European inland waterways — plan canal trips across France, Benelux, Germany, the Alps, the Danube and the British Isles.",
   "start_url": "./french_canals_map.html",
   "scope": "./",
   "display": "standalone",

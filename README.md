@@ -1,6 +1,6 @@
-# 🚢 French Canals Interactive Map
+# Inland Europe — Interactive Canal Map
 
-An interactive, self-contained web map for planning canal boat cruises through France, based on **David Jefferson's** *Through the French Canals* (14th edition).
+Interactive map of European inland waterways. France's data is hand-curated from David Jefferson's *Through the French Canals* (14th edition). Other countries are OpenStreetMap-derived with selective curation.
 
 **Live:** https://enzocem.github.io/french-canals-map/french_canals_map.html
 

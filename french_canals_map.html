@@ -11,7 +11,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Canals">
-<title>Through the French Canals – Interactive Map</title>
+<title>Inland Europe — Cruising the European Waterways</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"/>
 <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"/>
@@ -1491,7 +1491,7 @@
   <span class="boat-icon">⛵</span>
   <div>
     <div class="boat-icon" style="display:inline"></div>
-    <h1>Through the French Canals</h1>
+    <h1>Inland Europe</h1>
     <div class="subtitle">Interactive cruising guide · Based on David Jefferson's 14th edition</div>
   </div>
   <!-- Right-aligned informational block: canal-navigability legend +
@@ -5734,7 +5734,7 @@ function exportRouteAsGPX() {
   var fromWp = stops[0], toWp = stops[stops.length - 1];
   var title  = _escXml(fromWp.name + ' \u2192 ' + toWp.name);
   var gpx = '<?xml version="1.0" encoding="UTF-8"?>\n' +
-    '<gpx version="1.1" creator="French Canals Map" xmlns="http://www.topografix.com/GPX/1/1">\n' +
+    '<gpx version="1.1" creator="Inland Europe" xmlns="http://www.topografix.com/GPX/1/1">\n' +
     '  <metadata><name>' + title + '</name></metadata>\n' +
     wpts + '\n' +
     '  <trk>\n' +
