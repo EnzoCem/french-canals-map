@@ -6081,6 +6081,68 @@ function init() {
       }
     })();
   }
+
+  // ───────────────────────────────────────────────────────────────────
+  // Generic data-file loader: cache-first + background ETag refresh.
+  // Used by all data/*.json files (waypoints, moorings, routes, etc.).
+  // - cacheKey:   string like 'fc-waypoints-v1' — bump to invalidate.
+  // - url:        relative URL of the JSON file.
+  // - onLoad:     callback receiving parsed JSON; called once on cache
+  //               hit AND again if the background refresh finds newer data.
+  // - onError:    optional callback; receives the error.
+  // ───────────────────────────────────────────────────────────────────
+  async function _loadData(cacheKey, url, onLoad, onError) {
+    var etagLsKey = 'fc_etag_' + cacheKey;
+    var data = null;
+    if ('caches' in window) {
+      try {
+        var _c = await caches.open(cacheKey);
+        var _hit = await _c.match(url);
+        if (_hit) { data = await _hit.json(); }
+      } catch(e) { /* cache blocked — fall through */ }
+    }
+    if (data) {
+      try { onLoad(data); } catch(e) { console.warn('onLoad failed for', url, e); }
+      (async function() {
+        try {
+          var _h = await fetch(url, { method: 'HEAD' });
+          var _new = _h.headers.get('ETag') || _h.headers.get('Last-Modified') || '';
+          var _old = localStorage.getItem(etagLsKey) || '';
+          if (_new && _new !== _old) {
+            var _f = await fetch(url);
+            if (_f.ok) {
+              if ('caches' in window) {
+                try { var _cu = await caches.open(cacheKey);
+                  await _cu.put(url, _f.clone()); } catch(e) {}
+              }
+              var fresh = await _f.json();
+              localStorage.setItem(etagLsKey, _new);
+              try { onLoad(fresh); } catch(e) { console.warn('onLoad refresh failed for', url, e); }
+            }
+          } else if (_new) {
+            localStorage.setItem(etagLsKey, _new);
+          }
+        } catch(e) { /* offline — ignore */ }
+      })();
+    } else {
+      try {
+        var _r = await fetch(url);
+        if (!_r.ok) throw new Error(url + ' returned ' + _r.status);
+        var _e = _r.headers.get('ETag') || _r.headers.get('Last-Modified') || '';
+        if (_e) localStorage.setItem(etagLsKey, _e);
+        if ('caches' in window) {
+          try { var _c2 = await caches.open(cacheKey);
+            await _c2.put(url, _r.clone()); } catch(e) {}
+        }
+        var parsed = await _r.json();
+        onLoad(parsed);
+      } catch(err) {
+        console.warn('Data file failed to load:', url, err);
+        if (onError) onError(err);
+      }
+    }
+  }
+
   buildMarkers();
   buildMooringMarkers();
   buildMichelinMarkers();
