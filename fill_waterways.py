@@ -218,17 +218,24 @@ def _norm_name(name):
     return _PREFIX_RE.sub('', (name or '').lower()).strip()
 
 
-# Patterns that reliably identify non-navigable waterway structures.
-# These should never appear in the cruising overlay.
+# Pattern matching non-navigable waterway-segment names across languages.
+# Each language group cites its source so future maintainers can audit.
+# Word boundaries are loose because OSM names are not consistent
+# (e.g. "Ancien Canal", "L'Ancien Bras", "Bras Mort").
 _NON_NAVIGABLE_RE = re.compile(
-    r'\bancien(ne)?\b'       # Ancien Canal de…, Ancienne Dérivation de…
-    r'|\bbras[ -]mort\b'     # Bras Mort, Bras-Mort (dead arms)
-    r'|\bvieux\b|\bvieille\b'# Vieux Rhin, Vieille Lys, Le Vieux Rhône
-    r'|\bécluse\b'           # Écluse n°X — lock structures, not canal segments
-    r'|pont-canal'           # Pont-Canal (aqueduct bridges)
-    r'|\baqueduc\b'          # Aqueduc du Loing
-    r"|prise\s+d'eau"        # Prise d'Eau (water intake channels)
-    r'|\bsouterrain\b',      # Souterrain (tunnel segments)
+    r'\b('
+    # French (original set) — Ancien Canal de…, Bras Mort, Vieux Rhin, Écluse n°X,
+    # Pont-Canal (aqueduct bridges), Aqueduc du Loing, Prise d'Eau, Souterrain
+    r'ancien(ne)?|bras[ -]mort|vieux|vieille|[ée]cluse|pont-canal|aqueduc|prise\s+d.eau|souterrain'
+    # Dutch — sources: PDOK BRT-Achtergrondkaart, Wikipedia NL on canal naming
+    r'|voorhaven|oude|verlaten|gedempt|stuw'
+    # German — sources: WSV waterway register, Wikipedia DE on Wasserstraßen
+    r'|alter|altes|alte|wehr|schleusenkanal'
+    # English (UK/IE) — disused canal terminology
+    r'|disused|abandoned|former|filled[-\s]in'
+    # Italian — Naviglio terminology
+    r'|abbandonat[oa]|antic[oa]'
+    r')\b',
     re.I,
 )
 
