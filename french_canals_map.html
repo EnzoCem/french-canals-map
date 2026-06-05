@@ -4481,80 +4481,7 @@ const WATERWAY_COLORS = {
 };
 
 // VNF dimension constraints per waterway name (air draught, water draught, beam, length — all in metres)
-const WATERWAY_CONSTRAINTS = {
-  // Canal du Midi & connections
-  'Canal du Midi':                    { air: 3.50, draft: 1.60, beam: 5.45, length: 30 },
-  'Canal de la Robine':               { air: 3.50, draft: 1.20, beam: 5.20, length: 30 },
-  'Canal du Rhône à Sète':            { air: 3.50, draft: 1.60, beam: 5.50, length: 38.5 },
-  // Canal Latéral à la Garonne
-  'Canal latéral à la Garonne':       { air: 3.50, draft: 1.60, beam: 5.45, length: 38.5 },
-  'Canal de Garonne':                 { air: 3.50, draft: 1.60, beam: 5.45, length: 38.5 },
-  // Tidal river: generous filter limits — actual constraints are time-
-  // dependent and surfaced via the Tidal section warning card.
-  'Garonne':                          { air: 6.50, draft: 3.50, beam: 12.0, length: 110 },
-  // Bourgogne network
-  'Canal de Bourgogne':               { air: 3.50, draft: 1.80, beam: 5.20, length: 38.5 },
-  'Canal du Nivernais':               { air: 3.10, draft: 1.20, beam: 3.10, length: 27 },
-  'Canal du Centre':                  { air: 3.50, draft: 1.80, beam: 5.20, length: 38.5 },
-  'Canal latéral à la Loire':         { air: 3.30, draft: 1.60, beam: 5.20, length: 38.5 },
-  'Canal de Briare':                  { air: 3.30, draft: 1.60, beam: 5.20, length: 38.5 },
-  'Canal du Loing':                   { air: 3.50, draft: 1.60, beam: 5.20, length: 38.5 },
-  // Marne / Saône network
-  'Canal de la Marne à la Saône':     { air: 3.50, draft: 1.80, beam: 5.20, length: 38.5 },
-  'Canal entre Champagne et Bourgogne':{ air: 3.50, draft: 1.80, beam: 5.20, length: 38.5 },
-  'Canal de la Marne au Rhin':        { air: 3.60, draft: 1.80, beam: 5.20, length: 38.5 },
-  'Canal de la Marne au Rhin (Est)':  { air: 3.60, draft: 1.80, beam: 5.20, length: 38.5 },
-  "Canal de l'Aisne à la Marne":      { air: 3.50, draft: 1.80, beam: 5.20, length: 38.5 },
-  // Rhine / Moselle / Est
-  'Canal du Rhône au Rhin':           { air: 3.50, draft: 1.60, beam: 5.05, length: 38.5 },
-  'Canal des Vosges':                 { air: 3.50, draft: 1.60, beam: 5.20, length: 38.5 },
-  "Canal de l'Est":                   { air: 3.50, draft: 1.60, beam: 5.20, length: 38.5 },
-  "Grand Canal d'Alsace":             { air: 7.00, draft: 3.00, beam: 12.0, length: 110 },
-  'Canal de Colmar':                  { air: 3.50, draft: 1.60, beam: 5.20, length: 38.5 },
-  // North / Pas-de-Calais
-  'Canal du Nord':                    { air: 4.50, draft: 2.20, beam: 6.00, length: 57 },
-  'Canal de Saint-Quentin':           { air: 3.70, draft: 2.20, beam: 5.20, length: 38.5 },
-  "Canal de la Sambre à l'Oise":      { air: 3.70, draft: 1.80, beam: 5.20, length: 38.5 },
-  "Canal de l'Escaut":                { air: 4.80, draft: 2.50, beam: 6.00, length: 57 },
-  'Canal de Roubaix':                 { air: 3.50, draft: 1.60, beam: 5.20, length: 38.5 },
-  // Seine system
-  'La Seine':                         { air: 6.70, draft: 3.40, beam: 12.0, length: 110 },
-  'Seine':                            { air: 6.70, draft: 3.40, beam: 12.0, length: 110 },
-  'Petite Seine':                     { air: 3.50, draft: 1.80, beam: 5.20, length: 38.5 },
-  'Yonne':                            { air: 4.50, draft: 2.00, beam: 6.00, length: 57 },
-  'Rivière Yonne':                    { air: 4.50, draft: 2.00, beam: 6.00, length: 57 },
-  // Oise / Marne
-  'Oise':                             { air: 5.00, draft: 2.50, beam: 8.00, length: 80 },
-  'Marne':                            { air: 5.00, draft: 2.20, beam: 6.00, length: 57 },
-  // Saône / Rhône
-  'Saône':                            { air: 5.60, draft: 2.80, beam: 11.4, length: 110 },
-  'La Saône':                         { air: 5.60, draft: 2.80, beam: 11.4, length: 110 },
-  'Rhône':                            { air: 7.50, draft: 3.50, beam: 12.0, length: 110 },
-  'Grand Rhône':                      { air: 7.50, draft: 3.50, beam: 12.0, length: 110 },
-  'Petit Rhône':                      { air: 3.50, draft: 1.60, beam: 6.00, length: 57 },
-  'Canal de Miribel':                 { air: 7.00, draft: 3.50, beam: 12.0, length: 110 },
-  'Canal de Jonage':                  { air: 7.00, draft: 3.50, beam: 12.0, length: 110 },
-  'Le Rhône - Bras de Caluire':       { air: 7.00, draft: 3.50, beam: 12.0, length: 110 },
-  'Canal de Donzère-Mondragon':       { air: 7.00, draft: 3.50, beam: 12.0, length: 110 },
-  // Doubs / Alsace
-  'Doubs':                            { air: 3.50, draft: 1.80, beam: 5.20, length: 38.5 },
-  // Charente / Atlantic
-  'Charente':                         { air: 3.50, draft: 1.20, beam: 5.20, length: 38.5 },
-  'Canal de Charente':                { air: 3.50, draft: 1.20, beam: 5.20, length: 38.5 },
-  // Brittany
-  'Canal de Nantes à Brest':          { air: 2.50, draft: 1.20, beam: 4.60, length: 25 },
-  "Canal d'Ille-et-Rance":           { air: 2.65, draft: 1.20, beam: 4.60, length: 25 },
-  'Canal du Blavet':                  { air: 2.65, draft: 1.20, beam: 4.60, length: 25 },
-  'La Vilaine':                       { air: 3.50, draft: 1.40, beam: 5.00, length: 30 },
-  'Canal de la Vilaine':              { air: 3.50, draft: 1.40, beam: 5.00, length: 30 },
-  // Lot / Garonne tributaries
-  'Lot':                              { air: 3.50, draft: 1.00, beam: 5.20, length: 38.5 },
-  'Baise':                            { air: 3.50, draft: 0.80, beam: 5.20, length: 30 },
-  // Paris canals
-  'Canal Saint-Martin':               { air: 3.70, draft: 1.80, beam: 6.00, length: 40 },
-  'Canal Saint-Denis':                { air: 6.00, draft: 2.60, beam: 8.00, length: 80 },
-  "Canal de l'Ourcq":                 { air: 2.70, draft: 0.80, beam: 3.00, length: 18 },
-};
+let WATERWAY_CONSTRAINTS = {};
 
 let waterwayLayer = null;
 
@@ -5141,6 +5068,10 @@ function init() {
     ROUTES = data.routes || [];
     ROUTE_CONNECTIONS = data.connections || [];
   }, function() { showEditToast('⚠ Routes failed to load'); });
+  _loadData('fc-constraints-v1', './data/waterway_constraints.json', function(data) {
+    WATERWAY_CONSTRAINTS = data;
+    if (typeof buildWaterwayOverlay === 'function' && typeof WATERWAY_GEOJSON !== 'undefined' && WATERWAY_GEOJSON) buildWaterwayOverlay();
+  });
   buildMichelinMarkers();
   buildTunnelMarkers();
   if (googlePlaces.length > 0) {
