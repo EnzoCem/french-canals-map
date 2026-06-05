@@ -3930,107 +3930,7 @@ function buildChomagesMarkers() {
 
 // Five major French canal tunnels that require convoy passage.
 // Convoy times are typical for the April–October season; verify annually at vnf.fr.
-const TUNNELS = [
-  {
-    id: 't001',
-    name: 'Riqueval',
-    fullName: 'Souterrain de Riqueval',
-    canal: 'Canal de Saint-Quentin',
-    route: 29,
-    lat: 49.9714,
-    lon: 3.2500,
-    length_m: 5670,
-    pk: '97',
-    tug_required: true,
-    // Electric tug (train électrique) mandatory — no self-propulsion.
-    // Convoys typically operate twice daily each direction (April–Oct).
-    convoys: [
-      { label: 'S-bound (St-Quentin → Oise)', times: ['07:30', '13:30'] },
-      { label: 'N-bound (Oise → St-Quentin)', times: ['10:00', '16:00'] },
-    ],
-    booking: '48 h advance booking required',
-    contact: 'VNF HAF: 03 23 09 17 70',
-    vnf_url: 'https://www.vnf.fr/vnf/naviguer-sur-le-reseau/naviguer/les-souterrains/',
-  },
-  {
-    id: 't002',
-    name: 'Mauvages',
-    fullName: 'Souterrain de Mauvages',
-    canal: 'Canal de la Marne au Rhin (Ouest)',
-    route: 35,
-    lat: 48.6817,
-    lon: 5.6224,
-    length_m: 4877,
-    pk: '239',
-    tug_required: true,
-    convoys: [
-      { label: 'E-bound (Toul → Nancy)', times: ['08:30', '14:30'] },
-      { label: 'W-bound (Nancy → Toul)', times: ['11:00', '17:00'] },
-    ],
-    booking: 'Advance booking recommended',
-    contact: 'VNF Est: 03 83 48 73 40',
-    vnf_url: 'https://www.vnf.fr/vnf/naviguer-sur-le-reseau/naviguer/les-souterrains/',
-  },
-  {
-    id: 't003',
-    name: 'Foug',
-    fullName: 'Souterrain de Foug',
-    canal: 'Canal de la Marne au Rhin',
-    route: 35,
-    lat: 48.6728,
-    lon: 5.8910,
-    length_m: 866,
-    pk: '313',
-    tug_required: false,
-    // Shorter tunnel — guide available, motor required.
-    convoys: [
-      { label: 'Guided convoy (both directions)', times: ['Contact VNF for schedule'] },
-    ],
-    booking: 'Contact VNF Est for current schedule',
-    contact: 'VNF Est: 03 83 48 73 40',
-    vnf_url: 'https://www.vnf.fr/vnf/naviguer-sur-le-reseau/naviguer/les-souterrains/',
-  },
-  {
-    id: 't004',
-    name: 'Pouilly-en-Auxois',
-    fullName: 'Souterrain de Pouilly',
-    canal: 'Canal de Bourgogne',
-    route: 12,
-    lat: 47.2654,
-    lon: 4.5590,
-    length_m: 3333,
-    pk: '229',
-    tug_required: false,
-    // No electric tug — boats pass under own power. Motor required, no sail.
-    convoys: [
-      { label: 'S-bound (Dijon → Pouilly)', times: ['08:00', '14:00'] },
-      { label: 'N-bound (Pouilly → Dijon)', times: ['11:00', '17:00'] },
-    ],
-    booking: 'No advance booking — arrive before convoy',
-    contact: 'VNF Bourgogne: 03 80 63 10 30',
-    vnf_url: 'https://www.vnf.fr/vnf/naviguer-sur-le-reseau/naviguer/les-souterrains/',
-  },
-  {
-    id: 't005',
-    name: 'Saint-Albin',
-    fullName: 'Souterrain de Balesmes (Saint-Albin)',
-    canal: 'Canal entre Champagne et Bourgogne',
-    route: 36,
-    lat: 47.9930,
-    lon: 5.3893,
-    length_m: 2306,
-    pk: '109',
-    tug_required: true,
-    // Electric aspirateur (tug) required.
-    convoys: [
-      { label: 'S-bound (Vitry → Gray)', times: ['08:00', '14:30'] },
-      { label: 'N-bound (Gray → Vitry)', times: ['10:30', '17:00'] },
-    ],
-    booking: 'Advance booking required',
-    contact: 'VNF Est: 03 25 04 91 00',
-    vnf_url: 'https://www.vnf.fr/vnf/naviguer-sur-le-reseau/naviguer/les-souterrains/',
-  },
-];
+let TUNNELS = [];
 
 function buildTunnelMarkers() {
   tunnelGroup.clearLayers();
@@ -5017,7 +4917,10 @@ function init() {
     if (typeof buildWaterwayOverlay === 'function' && typeof WATERWAY_GEOJSON !== 'undefined' && WATERWAY_GEOJSON) buildWaterwayOverlay();
   });
   buildMichelinMarkers();
-  buildTunnelMarkers();
+  _loadData('fc-tunnels-v1', './data/tunnels.json', function(data) {
+    TUNNELS = data;
+    if (typeof buildTunnelMarkers === 'function') buildTunnelMarkers();
+  });
   if (googlePlaces.length > 0) {
     layerState.googleplaces = true;
     buildGooglePlacesMarkers();
