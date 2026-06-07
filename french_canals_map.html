@@ -3129,8 +3129,13 @@ function buildMarkers() {
     const note = userNotes[w.id] || '';
     const hasNote = note.trim().length > 0;
 
+    const isOsmSource = w.source === 'osm';
     const icon = w.is_lock ? createLockIcon() : createTownIcon(w.section);
-    const marker = L.marker([w.lat, w.lon], {icon, draggable: false});
+    const marker = L.marker([w.lat, w.lon], {
+      icon,
+      draggable: false,
+      opacity: isOsmSource ? 0.5 : 1.0,
+    });
 
     const routeLabel = routeInfo
       ? `Route ${w.route}: ${routeInfo.canal}`
@@ -3140,9 +3145,9 @@ function buildMarkers() {
     const popupHTML = `
       <div style="min-width:200px;max-width:260px">
         <div class="popup-title">${w.name}${isOverridden ? ' <span style="color:#e8a100;font-size:10px">✏️ repositioned</span>' : ''}</div>
-        <div class="popup-canal">${routeLabel}</div>
+        <div class="popup-canal">${routeLabel}${isOsmSource ? ' · <span style="color:#7a8a9a;font-size:10px">🅾️ OSM</span>' : ''}</div>
         ${w.is_lock ? `<div class="popup-lock">🔒 Lock${w.lock_number ? ' #'+w.lock_number : ''}</div>` : ''}
-        ${w.desc ? `<div class="popup-desc">${w.desc.substring(0,180)}${w.desc.length>180?'…':''}</div>` : ''}
+        ${w.desc ? `<div class="popup-desc">${w.desc.substring(0,180)}${w.desc.length>180?'…':''}</div>` : (isOsmSource ? '<div class="popup-desc" style="color:#7a8a9a;font-style:italic;font-size:11px">No curated description — based on OpenStreetMap</div>' : '')}
         ${w.pk ? `<div class="popup-desc" style="margin-top:4px;color:#7f8c8d;font-size:11px">PK ${w.pk}</div>` : ''}
         ${hasNote ? `<div style="margin-top:6px;padding:4px 6px;background:#1a1a2e;border-left:2px solid #e74c3c;font-size:11px;color:#eee">📌 ${note.substring(0,80)}${note.length>80?'…':''}</div>` : ''}
         <span class="popup-link" onclick="openSidebar('${w.id}')">📋 Details & Notes →</span>
