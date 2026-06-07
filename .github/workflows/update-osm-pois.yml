@@ -1,0 +1,47 @@
+name: Update OSM POIs
+
+on:
+  schedule:
+    # Annual run: Feb 15 at 03:00 UTC (same cadence as Michelin update)
+    - cron: '0 3 15 2 *'
+  workflow_dispatch:   # also runnable manually from the Actions tab
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  fetch-and-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Run OSM sweep
+        run: python3 fill_osm_pois.py
+        timeout-minutes: 30
+
+      - name: Create PR if anything changed
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: "data(osm): annual OSM POI re-sync"
+          title: "Annual OSM POI re-sync"
+          body: |
+            Automated annual re-sync of OSM-sourced waypoints and moorings via
+            `fill_osm_pois.py`. Review the diff before merging.
+
+            See `.github/workflows/update-osm-pois.yml`.
+          branch: chore/osm-pois-resync
+          delete-branch: true
+          base: main
+          add-paths: |
+            data/waypoints.json
+            data/moorings.json
