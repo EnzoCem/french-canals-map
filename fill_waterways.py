@@ -415,10 +415,19 @@ def clean_geojson(geojson):
 # ── Network functions (not unit-tested — make real Overpass calls) ────────────
 
 def _overpass_query(ql, retries=3):
-    """POST an Overpass QL query, return parsed JSON. Retries on failure."""
+    """POST an Overpass QL query, return parsed JSON. Retries on failure.
+
+    The User-Agent header is required: Overpass returns HTTP 406 for the
+    default python-requests UA. Identify ourselves so the operators can
+    contact us if our usage causes problems.
+    """
+    headers = {
+        'User-Agent': 'inland-europe-map/1.0 (https://github.com/EnzoCem/french-canals-map; contact: a.cem.ugur@gmail.com)',
+        'Accept': 'application/json',
+    }
     for attempt in range(retries):
         try:
-            resp = requests.post(OVERPASS_URL, data={'data': ql}, timeout=180)
+            resp = requests.post(OVERPASS_URL, data={'data': ql}, headers=headers, timeout=180)
             resp.raise_for_status()
             return resp.json()
         except Exception as exc:
