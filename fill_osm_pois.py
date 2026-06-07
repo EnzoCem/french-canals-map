@@ -206,6 +206,121 @@ out center tags;'''
     return out
 
 
+def fetch_lock_gates_for_country(cc):
+    """Fetch waterway lock gates (the user-visible "🔒 Lock" markers) for a country.
+
+    Returns: list of waypoint-shaped dicts with is_lock=True."""
+    s, w, n, e = COUNTRY_BBOX[cc]
+    ql = f'''[out:json][timeout:180];
+(
+  node["waterway"="lock_gate"]({s},{w},{n},{e});
+  node["lock"="yes"]({s},{w},{n},{e});
+);
+out tags;'''
+    data = _overpass_query(ql)
+    out = []
+    for el in data.get('elements', []):
+        if el.get('type') != 'node':
+            continue
+        tags = el.get('tags', {})
+        name = tags.get('name', '').strip()
+        if not name:
+            continue
+        osm_id = el['id']
+        out.append({
+            'id': f'w_osm_{osm_id}',
+            'name': name,
+            'route': 0,       # 0 = no curated route number (Wave 5 will assign)
+            'section': 0,
+            'lat': el['lat'], 'lon': el['lon'],
+            'is_lock': True,
+            'pk': '',
+            'desc': '',
+            'country': cc,
+            'source': 'osm',
+            'osm_id': osm_id,
+        })
+    return out
+
+
+def _load_waterway_segments():
+    """Load every navigable waterway segment from waterways.geojson into a
+    flat list of (lat, lon) sample points. Used for "is this town near a
+    waterway?" proximity checks.
+
+    Returns: list of (lat, lon) tuples. May be smallish if waterways.geojson
+    has not yet been regenerated with EU coverage — in that case riverside
+    town discovery will be sparse for non-French countries, which is OK
+    (Wave 5 / future curation will catch the gaps)."""
+    path = os.path.join(PROJECT_ROOT, 'waterways.geojson')
+    with open(path) as f:
+        gj = json.load(f)
+    pts = []
+    for feat in gj.get('features', []):
+        geom = feat.get('geometry') or {}
+        coords = geom.get('coordinates') or []
+        gtype = geom.get('type')
+        if gtype == 'LineString':
+            for lon, lat in coords:
+                pts.append((lat, lon))
+        elif gtype == 'MultiLineString':
+            for line in coords:
+                for lon, lat in line:
+                    pts.append((lat, lon))
+    return pts
+
+
+def _is_near_any(lat, lon, waterway_pts, radius_m=500):
+    """O(N) proximity test. N is large (~50k+) but we run this once per
+    candidate town (~1000 towns/country), and each test is just arithmetic —
+    fast enough in pure Python."""
+    for plat, plon in waterway_pts:
+        if haversine_m(lat, lon, plat, plon) <= radius_m:
+            return True
+    return False
+
+
+def fetch_riverside_towns_for_country(cc, waterway_pts):
+    """Fetch villages/towns/cities within 500 m of a navigable waterway in
+    waterway_pts.
+
+    waterway_pts: list of (lat, lon) tuples from _load_waterway_segments()."""
+    s, w, n, e = COUNTRY_BBOX[cc]
+    ql = f'''[out:json][timeout:180];
+(
+  node["place"~"^(village|town|city)$"]["name"]({s},{w},{n},{e});
+);
+out tags;'''
+    data = _overpass_query(ql)
+    out = []
+    skipped_far = 0
+    for el in data.get('elements', []):
+        tags = el.get('tags', {})
+        name = tags.get('name', '').strip()
+        if not name:
+            continue
+        lat, lon = el['lat'], el['lon']
+        if not _is_near_any(lat, lon, waterway_pts):
+            skipped_far += 1
+            continue
+        osm_id = el['id']
+        out.append({
+            'id': f'w_osm_{osm_id}',
+            'name': name,
+            'route': 0,
+            'section': 0,
+            'lat': lat, 'lon': lon,
+            'is_lock': False,
+            'pk': '',
+            'desc': '',
+            'country': cc,
+            'source': 'osm',
+            'osm_id': osm_id,
+        })
+    print(f'    [{cc}] {len(out)} riverside towns kept, {skipped_far} skipped (too far from any waterway)', flush=True)
+    return out
+
+
 def main():
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument('--countries', nargs='+', default=ALL_COUNTRIES,
