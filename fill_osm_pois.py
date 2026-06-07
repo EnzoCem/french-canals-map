@@ -19,6 +19,7 @@ import os
 import re
 import sys
 import time
+import unicodedata
 from collections import defaultdict
 from math import radians, sin, cos, sqrt, atan2
 
@@ -55,6 +56,63 @@ DEDUP_RADIUS_M = 200
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 WAYPOINTS_PATH = os.path.join(PROJECT_ROOT, 'data', 'waypoints.json')
 MOORINGS_PATH  = os.path.join(PROJECT_ROOT, 'data', 'moorings.json')
+
+
+# ── Pure helpers ─────────────────────────────────────────────────────────────
+
+def norm_name(s):
+    """Lowercase, strip diacritics, collapse whitespace. Used for dedup."""
+    if not s:
+        return ''
+    # Decompose accents, drop combining marks
+    nfd = unicodedata.normalize('NFD', s)
+    no_accents = ''.join(c for c in nfd if not unicodedata.combining(c))
+    return re.sub(r'\s+', ' ', no_accents.lower().strip())
+
+
+def haversine_m(lat1, lon1, lat2, lon2):
+    """Great-circle distance in metres between two WGS84 points."""
+    R = 6_371_000  # mean Earth radius in metres
+    phi1, phi2 = radians(lat1), radians(lat2)
+    dphi = radians(lat2 - lat1)
+    dlambda = radians(lon2 - lon1)
+    a = sin(dphi / 2) ** 2 + cos(phi1) * cos(phi2) * sin(dlambda / 2) ** 2
+    return 2 * R * atan2(sqrt(a), sqrt(1 - a))
+
+
+# OSM tag → our facilities code mapping.
+# Codes: W (water), E (electric), S (shower), T (toilet), P (pump-out).
+# We keep this order stable in the output string for visual consistency.
+_FACILITY_TAG_TO_CODE = [
+    ('drinking_water', 'W'),
+    ('electricity',    'E'),
+    ('shower',         'S'),
+    ('toilets',        'T'),
+    ('waste_disposal', 'P'),
+]
+
+def osm_tags_to_facilities(tags):
+    """Convert an OSM tag dict to our slash-separated facility code string.
+
+    Anything that isn't explicitly 'no' counts as present (some marinas tag
+    'limited' or describe the facility — those still mean it's available)."""
+    codes = []
+    for tag_key, code in _FACILITY_TAG_TO_CODE:
+        v = tags.get(tag_key, '').strip().lower()
+        if v and v != 'no':
+            codes.append(code)
+    return '/'.join(codes)
+
+
+def osm_tags_to_mooring_type(tags):
+    """Classify an OSM-tagged mooring point into our 'port' | 'halte' | 'fuel' type.
+
+    Order of precedence: marina (port) > fuel > anything else (halte)."""
+    if tags.get('leisure') == 'marina':
+        return 'port'
+    if tags.get('waterway') == 'fuel':
+        return 'fuel'
+    return 'halte'
 
 
 def main():
