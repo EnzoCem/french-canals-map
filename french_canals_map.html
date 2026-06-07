@@ -3309,6 +3309,7 @@ function openSidebar(wid) {
   const w = WAYPOINTS.find(x => x.id === wid);
   if (!w) return;
   currentWaypointId = wid;
+  const isOsmSource = w.source === 'osm';
 
   const sidebar = document.getElementById('sidebar');
   sidebar.classList.remove('collapsed');
@@ -3325,7 +3326,7 @@ function openSidebar(wid) {
     if (routeInfo.max_draught) metaHTML += `<span>Max draught ${routeInfo.max_draught}m</span>`;
   }
 
-  document.getElementById('sidebar-title').textContent = w.name;
+  document.getElementById('sidebar-title').innerHTML = `${w.name}${isOsmSource ? ' <span style="font-size:10px;color:#7a8a9a;font-weight:normal">🅾️ OSM</span>' : ''}`;
   document.getElementById('place-info').innerHTML = `
     <div class="sidebar-endpoint-btns">
       <button class="sep-btn from" onclick="setRouteEndpoint('from','${w.id}')">🟢 Set as From</button>
@@ -3377,6 +3378,14 @@ function openSidebar(wid) {
         <a href="https://www.openstreetmap.org/?mlat=${w.lat}&mlon=${w.lon}&zoom=14" target="_blank" style="color:#5bc0de">🗺 OpenStreetMap</a><br>
         <a href="https://www.google.com/search?q=${encodeURIComponent(w.name + ' France canal moorings')}" target="_blank" style="color:#5bc0de">🔍 Search for moorings</a>
       </div>
+      ${isOsmSource && w.osm_id ? `
+      <div style="margin-top:12px;padding:8px;background:#1c1c2a;border-radius:4px;font-size:11px;color:#8ab4c2">
+        This entry is auto-imported from OpenStreetMap. If the details are wrong, you can
+        <a href="https://www.openstreetmap.org/edit?node=${w.osm_id}" target="_blank" rel="noopener" style="color:#7ad4ef">
+          suggest an edit on OSM ↗
+        </a>
+        — corrections flow back to this map on the next sync (annually).
+      </div>` : ''}
     </div>
 
     ${vnfLinksHTML(w.section, routeInfo ? routeInfo.from : '', routeInfo ? routeInfo.to : '')}
