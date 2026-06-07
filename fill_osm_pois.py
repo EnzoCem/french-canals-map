@@ -336,8 +336,115 @@ def main():
             print(f'  {c}: bbox {COUNTRY_BBOX[c]}')
         return
 
-    # Real work follows in later tasks.
-    raise NotImplementedError('Body added in Task 8')
+    # ── Load existing waypoints + moorings ───────────────────────────────────
+    with open(WAYPOINTS_PATH) as f:
+        existing_wp = json.load(f)
+    with open(MOORINGS_PATH) as f:
+        existing_mr = json.load(f)
+    print(f'Loaded {len(existing_wp)} existing waypoints, {len(existing_mr)} existing moorings.', flush=True)
+
+    # Curated subset (source != 'osm') for dedup purposes
+    curated_wp = [w for w in existing_wp if w.get('source') != 'osm']
+    curated_mr = [m for m in existing_mr if m.get('source') != 'osm']
+    print(f'  Curated subset for dedup: {len(curated_wp)} waypoints, {len(curated_mr)} moorings.', flush=True)
+
+    # Pre-load waterway sample points once (used for every country)
+    waterway_pts = _load_waterway_segments()
+    print(f'  Waterway sample points: {len(waterway_pts)}.', flush=True)
+
+    # ── Track which OSM IDs we already have, to update vs append ──────────────
+    existing_wp_by_id = {w['id']: w for w in existing_wp}
+    existing_mr_by_id = {m['id']: m for m in existing_mr}
+
+    # ── Per-country sweep ─────────────────────────────────────────────────────
+    new_wp_total = 0
+    new_mr_total = 0
+    updated_wp_total = 0
+    updated_mr_total = 0
+    skipped_dup = 0
+
+    for cc in args.countries:
+        print(f'\n=== Country {cc} ===', flush=True)
+
+        # Moorings
+        try:
+            moorings = fetch_moorings_for_country(cc)
+        except Exception as exc:
+            print(f'  [{cc}] mooring fetch FAILED ({exc}) — skipping moorings', flush=True)
+            moorings = []
+        print(f'    [{cc}] {len(moorings)} raw mooring candidates', flush=True)
+
+        for m in moorings:
+            if is_duplicate_of_curated(m['name'], m['lat'], m['lon'], curated_mr):
+                skipped_dup += 1
+                continue
+            if m['id'] in existing_mr_by_id:
+                existing_mr_by_id[m['id']].update(m)
+                updated_mr_total += 1
+            else:
+                existing_mr.append(m)
+                existing_mr_by_id[m['id']] = m
+                new_mr_total += 1
+
+        time.sleep(2)
+
+        # Lock gates
+        try:
+            locks = fetch_lock_gates_for_country(cc)
+        except Exception as exc:
+            print(f'  [{cc}] lock fetch FAILED ({exc}) — skipping locks', flush=True)
+            locks = []
+        print(f'    [{cc}] {len(locks)} raw lock candidates', flush=True)
+
+        for lk in locks:
+            if is_duplicate_of_curated(lk['name'], lk['lat'], lk['lon'], curated_wp):
+                skipped_dup += 1
+                continue
+            if lk['id'] in existing_wp_by_id:
+                existing_wp_by_id[lk['id']].update(lk)
+                updated_wp_total += 1
+            else:
+                existing_wp.append(lk)
+                existing_wp_by_id[lk['id']] = lk
+                new_wp_total += 1
+
+        time.sleep(2)
+
+        # Riverside towns (depend on waterway_pts coverage for this country)
+        try:
+            towns = fetch_riverside_towns_for_country(cc, waterway_pts)
+        except Exception as exc:
+            print(f'  [{cc}] town fetch FAILED ({exc}) — skipping towns', flush=True)
+            towns = []
+
+        for t in towns:
+            if is_duplicate_of_curated(t['name'], t['lat'], t['lon'], curated_wp):
+                skipped_dup += 1
+                continue
+            if t['id'] in existing_wp_by_id:
+                existing_wp_by_id[t['id']].update(t)
+                updated_wp_total += 1
+            else:
+                existing_wp.append(t)
+                existing_wp_by_id[t['id']] = t
+                new_wp_total += 1
+
+        time.sleep(2)
+
+    # ── Atomic writes ─────────────────────────────────────────────────────────
+    tmp_wp = WAYPOINTS_PATH + '.tmp'
+    tmp_mr = MOORINGS_PATH  + '.tmp'
+    with open(tmp_wp, 'w') as f:
+        json.dump(existing_wp, f, indent=2, ensure_ascii=False)
+    os.replace(tmp_wp, WAYPOINTS_PATH)
+    with open(tmp_mr, 'w') as f:
+        json.dump(existing_mr, f, indent=2, ensure_ascii=False)
+    os.replace(tmp_mr, MOORINGS_PATH)
+
+    print(f'\n=== Done ===')
+    print(f'  Waypoints: +{new_wp_total} new, ~{updated_wp_total} updated, total now {len(existing_wp)}')
+    print(f'  Moorings:  +{new_mr_total} new, ~{updated_mr_total} updated, total now {len(existing_mr)}')
+    print(f'  Duplicates skipped: {skipped_dup}')
 
 
 if __name__ == '__main__':
