@@ -455,41 +455,49 @@ def _extract_ways(elements):
     return ways
 
 
-def fetch_waterway(app_name, osm_names, bbox=None):
+# EU-wide bbox for way[name=X] fallback queries — covers Spain to Bulgaria,
+# Sicily to Scandinavia. Only used when a waterway has no OSM relation,
+# which is rare for major waterways. The OSM dataset is well-indexed by
+# name+geometry so this is fast in practice.
+EU_BBOX = (35.0, -11.0, 60.0, 19.0)
+
+
+def fetch_waterway(app_name, osm_names, bbox=EU_BBOX):
     """
     Fetch OSM ways for a waterway, trying each osm_name in order.
-    For each name: tries relation[type=waterway] first (global, no bbox),
-    then a way fallback constrained to bbox.
 
-    bbox: (south, west, north, east) tuple in WGS84 degrees. Defaults to
-          FRANCE_BBOX (legacy behaviour) when not supplied.
+    Strategy (one query per name, max two phases):
+      1. Relation query (no bbox) — most major waterways have a
+         relation[type=waterway][name=...]. The relation aggregates all
+         the constituent ways across countries.
+      2. Way fallback (bbox-restricted) — only used if the relation
+         lookup returns nothing. Restricted to EU_BBOX by default.
+
+    bbox: (south, west, north, east) tuple in WGS84 degrees. Used ONLY
+          for the way fallback. Defaults to EU_BBOX.
 
     Returns list of ways (each a list of [lon, lat] pairs), or [] if nothing found.
     """
-    if bbox is None:
-        # Legacy default — covers all of France (42.3,-5.2,51.1,8.3)
-        s, w, n, e = 42.3, -5.2, 51.1, 8.3
-    else:
-        s, w, n, e = bbox
+    s, w, n, e = bbox
     bbox_str = f'({s},{w},{n},{e})'
 
     for osm_name in osm_names:
-        # ── 1. Relation query (no bbox — relations span borders) ──────────
+        # ── 1. Relation query (no bbox — relations are name-keyed globally) ──
         ql_relation = f'''[out:json][timeout:180];
 relation[type=waterway][name="{osm_name}"];
-way(r)({s},{w},{n},{e});
+way(r);
 out geom;'''
         try:
             data = _overpass_query(ql_relation)
             ways = _extract_ways(data.get('elements', []))
             if ways:
-                print(f'  {app_name}: {len(ways)} ways via relation[name="{osm_name}"]')
+                print(f'  {app_name}: {len(ways)} ways via relation[name="{osm_name}"]', flush=True)
                 return ways
         except Exception as exc:
-            print(f'  {app_name}: relation query failed ({exc})')
-        time.sleep(2)
+            print(f'  {app_name}: relation query failed ({exc})', flush=True)
+        time.sleep(1)
 
-        # ── 2. Way fallback ───────────────────────────────────────────────
+        # ── 2. Way fallback (bbox-restricted) ─────────────────────────────
         ql_ways = f'''[out:json][timeout:180];
 way[waterway][name="{osm_name}"]{bbox_str};
 out geom;'''
@@ -497,13 +505,13 @@ out geom;'''
             data = _overpass_query(ql_ways)
             ways = _extract_ways(data.get('elements', []))
             if ways:
-                print(f'  {app_name}: {len(ways)} ways via way[name="{osm_name}"]')
+                print(f'  {app_name}: {len(ways)} ways via way[name="{osm_name}"]', flush=True)
                 return ways
         except Exception as exc:
-            print(f'  {app_name}: way query failed ({exc})')
-        time.sleep(2)
+            print(f'  {app_name}: way query failed ({exc})', flush=True)
+        time.sleep(1)
 
-    print(f'  WARNING: {app_name}: no OSM data found for {osm_names}')
+    print(f'  WARNING: {app_name}: no OSM data found for {osm_names}', flush=True)
     return []
 
 
@@ -527,55 +535,35 @@ def main(dry_run=False):
     print(f'Loaded {old_total} features ({old_navigable} are navigable waterways to replace).')
 
     if dry_run:
-        print(f'\n-- DRY RUN: would sweep {len(REGIONS)} regions × {len(WATERWAY_ROUTES)} waterways --')
-        print('\nRegions:')
-        for region_name, bbox in REGIONS.items():
-            print(f'  {region_name}: {bbox}')
+        print(f'\n-- DRY RUN: would fetch {len(NAVIGABLE_WATERWAYS)} waterways (one global relation query each, EU-bbox fallback only on miss) --')
         print('\nWaterways:')
         for app_name in NAVIGABLE_WATERWAYS:
             osm_names = OSM_NAME_MAP.get(app_name, [app_name])
             print(f'  {app_name}  →  OSM names: {osm_names}')
+        print(f'\nREGIONS table ({len(REGIONS)} entries) is kept for documentation but not used by the default main path.')
+        print(f'Way fallback uses EU_BBOX: {EU_BBOX}')
         return
 
+    print(f'\nFetching {len(NAVIGABLE_WATERWAYS)} waterways (relation-first, EU-bbox fallback)...\n', flush=True)
     all_new_features = []
-    # Track which (app_name, region) combos already yielded data to avoid
-    # re-fetching a waterway that spans multiple region tiles.
-    seen_ways: dict[str, set] = defaultdict(set)  # app_name → set of way coord hashes
 
-    for region_name, bbox in REGIONS.items():
-        print(f'\n=== Region {region_name} {bbox} ===')
-        for app_name in NAVIGABLE_WATERWAYS:
-            osm_names = OSM_NAME_MAP.get(app_name, [app_name])
-            route_num = WATERWAY_ROUTES[app_name]
+    for app_name in NAVIGABLE_WATERWAYS:
+        osm_names = OSM_NAME_MAP.get(app_name, [app_name])
+        route_num = WATERWAY_ROUTES[app_name]
 
-            try:
-                ways = fetch_waterway(app_name, osm_names, bbox=bbox)
-            except Exception as exc:
-                print(f'  {app_name}: FAILED ({exc}) — skipping')
-                continue
+        try:
+            ways = fetch_waterway(app_name, osm_names)
+        except Exception as exc:
+            print(f'  {app_name}: FAILED ({exc}) — skipping', flush=True)
+            continue
 
-            if not ways:
-                continue
+        if not ways:
+            continue
 
-            # Deduplicate ways across regions using first+last coord as key
-            new_ways = []
-            for way in ways:
-                key = (tuple(way[0]), tuple(way[-1]))
-                rev_key = (tuple(way[-1]), tuple(way[0]))
-                if key not in seen_ways[app_name] and rev_key not in seen_ways[app_name]:
-                    seen_ways[app_name].add(key)
-                    new_ways.append(way)
-
-            if not new_ways:
-                print(f'  {app_name}: {len(ways)} ways (all duplicates of earlier region — skipped)')
-                continue
-
-            chains = stitch_ways(new_ways)
-            features = build_features(app_name, chains, route_num)
-            all_new_features.extend(features)
-            print(f'  {app_name}: {len(new_ways)} new ways → {len(chains)} chains, {len(features)} features')
-
-        time.sleep(2)  # be polite to Overpass between regions
+        chains = stitch_ways(ways)
+        features = build_features(app_name, chains, route_num)
+        all_new_features.extend(features)
+        print(f'  {app_name}: {len(ways)} ways → {len(chains)} chains, {len(features)} features', flush=True)
 
     print(f'\nTotal raw features: {len(all_new_features)}')
 
