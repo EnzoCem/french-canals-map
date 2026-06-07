@@ -131,6 +131,81 @@ def is_duplicate_of_curated(name, lat, lon, curated_list, radius_m=DEDUP_RADIUS_
     return False
 
 
+# ── Network-dependent helpers ────────────────────────────────────────────────
+
+def _overpass_query(ql, retries=3):
+    """POST an Overpass QL query, return parsed JSON. Retries on transient failure.
+
+    Overpass returns HTTP 406 if you use python-requests's default User-Agent,
+    so we identify ourselves. See fill_waterways.py for the original discovery."""
+    for attempt in range(retries):
+        try:
+            resp = requests.post(OVERPASS_URL, data={'data': ql},
+                                 headers=OVERPASS_HEADERS, timeout=180)
+            resp.raise_for_status()
+            return resp.json()
+        except Exception as exc:
+            if attempt < retries - 1:
+                wait = 15 * (attempt + 1)
+                print(f'    Overpass error ({exc}), retrying in {wait}s…', flush=True)
+                time.sleep(wait)
+            else:
+                raise
+
+
+def fetch_moorings_for_country(cc):
+    """Fetch all "where to tie up" POIs for a country (marinas, public moorings, fuel).
+
+    cc: 2-letter country code (must be a key of COUNTRY_BBOX).
+
+    Returns: list of dicts shaped like data/moorings.json entries:
+      { 'id': 'm_osm_<osm_id>', 'name': str, 'type': 'port'|'halte'|'fuel',
+        'lat': float, 'lon': float, 'waterway': str or '',
+        'cost': 'unknown', 'facilities': str, 'max_vessel': None, 'contact': '',
+        'country': cc, 'source': 'osm', 'osm_id': int }"""
+    s, w, n, e = COUNTRY_BBOX[cc]
+    ql = f'''[out:json][timeout:180];
+(
+  node["leisure"="marina"]({s},{w},{n},{e});
+  way["leisure"="marina"]({s},{w},{n},{e});
+  node["mooring"~"^(yes|public|guest)$"]({s},{w},{n},{e});
+  node["waterway"="fuel"]({s},{w},{n},{e});
+);
+out center tags;'''
+    data = _overpass_query(ql)
+    out = []
+    for el in data.get('elements', []):
+        if el.get('type') == 'way':
+            lat = el.get('center', {}).get('lat')
+            lon = el.get('center', {}).get('lon')
+        else:
+            lat, lon = el.get('lat'), el.get('lon')
+        if lat is None or lon is None:
+            continue
+        tags = el.get('tags', {})
+        name = tags.get('name', '').strip()
+        if not name:
+            # Skip unnamed POIs — they're noise; without a name the user can't
+            # distinguish them from each other on the map.
+            continue
+        osm_id = el['id']
+        out.append({
+            'id': f'm_osm_{osm_id}',
+            'name': name,
+            'type': osm_tags_to_mooring_type(tags),
+            'lat': lat, 'lon': lon,
+            'waterway': tags.get('waterway') or tags.get('addr:waterway') or '',
+            'cost': 'unknown',
+            'facilities': osm_tags_to_facilities(tags),
+            'max_vessel': None,
+            'contact': (tags.get('phone') or tags.get('contact:phone') or '').strip(),
+            'country': cc,
+            'source': 'osm',
+            'osm_id': osm_id,
+        })
+    return out
+
+
 def main():
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument('--countries', nargs='+', default=ALL_COUNTRIES,
