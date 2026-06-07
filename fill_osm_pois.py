@@ -216,7 +216,7 @@ def fetch_lock_gates_for_country(cc):
   node["waterway"="lock_gate"]({s},{w},{n},{e});
   node["lock"="yes"]({s},{w},{n},{e});
 );
-out tags;'''
+out;'''
     data = _overpass_query(ql)
     out = []
     for el in data.get('elements', []):
@@ -290,7 +290,7 @@ def fetch_riverside_towns_for_country(cc, waterway_pts):
 (
   node["place"~"^(village|town|city)$"]["name"]({s},{w},{n},{e});
 );
-out tags;'''
+out;'''
     data = _overpass_query(ql)
     out = []
     skipped_far = 0
