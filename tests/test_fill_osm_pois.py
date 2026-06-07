@@ -8,6 +8,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from fill_osm_pois import (
     norm_name, haversine_m, osm_tags_to_facilities, osm_tags_to_mooring_type,
+    is_duplicate_of_curated,
 )
 
 
@@ -84,3 +85,28 @@ def test_mooring_type_marina_beats_mooring():
 def test_mooring_type_unknown_returns_halte():
     # Default fallback for any "moored boat" OSM tag we didn't anticipate
     assert osm_tags_to_mooring_type({'amenity': 'boat_storage'}) == 'halte'
+
+
+# ── is_duplicate_of_curated ──────────────────────────────────────────────────
+
+def test_dedup_exact_match_within_radius():
+    curated = [{'name': 'Port de Plaisance Auxerre', 'lat': 47.7980, 'lon': 3.5670}]
+    # Same name, 50 m away — should be flagged as duplicate
+    assert is_duplicate_of_curated('Port de Plaisance Auxerre', 47.7984, 3.5673, curated) is True
+
+def test_dedup_name_match_too_far():
+    curated = [{'name': 'Port de Plaisance Auxerre', 'lat': 47.7980, 'lon': 3.5670}]
+    # Same name but 5 km away — not a duplicate (different place)
+    assert is_duplicate_of_curated('Port de Plaisance Auxerre', 47.84, 3.62, curated) is False
+
+def test_dedup_close_but_different_name():
+    curated = [{'name': 'Port de Plaisance Auxerre', 'lat': 47.7980, 'lon': 3.5670}]
+    # 50 m away, different name — probably a different mooring nearby, keep
+    assert is_duplicate_of_curated('Quai du Maréchal Joffre', 47.7984, 3.5673, curated) is False
+
+def test_dedup_diacritic_insensitive():
+    curated = [{'name': 'Tübingen Hafen', 'lat': 48.520, 'lon': 9.057}]
+    assert is_duplicate_of_curated('Tubingen Hafen', 48.5201, 9.0571, curated) is True
+
+def test_dedup_empty_curated():
+    assert is_duplicate_of_curated('Anything', 48.0, 2.0, []) is False

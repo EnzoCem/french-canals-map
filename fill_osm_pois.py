@@ -115,6 +115,22 @@ def osm_tags_to_mooring_type(tags):
     return 'halte'
 
 
+def is_duplicate_of_curated(name, lat, lon, curated_list, radius_m=DEDUP_RADIUS_M):
+    """Return True if an entry matching (name, lat, lon) is within radius_m of
+    an entry in curated_list with a normalised-name match.
+
+    curated_list: iterable of dicts with 'name', 'lat', 'lon' keys."""
+    target = norm_name(name)
+    if not target:
+        return False
+    for c in curated_list:
+        if norm_name(c.get('name')) != target:
+            continue
+        if haversine_m(lat, lon, c['lat'], c['lon']) <= radius_m:
+            return True
+    return False
+
+
 def main():
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument('--countries', nargs='+', default=ALL_COUNTRIES,
