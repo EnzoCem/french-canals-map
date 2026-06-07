@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """
-fill_waterways.py — Re-fetch the 42 navigable waterways from OSM,
-stitch ways into continuous LineStrings, RDP-simplify, and update
-waterways.geojson.
+fill_waterways.py — Re-fetch navigable waterways from OSM across multiple
+European regions, stitch ways into continuous LineStrings, RDP-simplify,
+and update waterways.geojson.
 
 Usage:
-    python fill_waterways.py               # full run (~15–30 min)
+    python fill_waterways.py               # full multi-region run (~30–60 min)
     python fill_waterways.py --dry-run     # print what would be fetched, no network calls
     python fill_waterways.py --clean-geojson  # remove non-navigable / duplicate features only
 """
@@ -24,8 +24,43 @@ from rdp import rdp as _rdp
 # ── Constants ────────────────────────────────────────────────────────────────
 
 OVERPASS_URL = "https://overpass-api.de/api/interpreter"
-FRANCE_BBOX  = "(42.3,-5.2,51.1,8.3)"  # south,west,north,east — covers all of France
+FRANCE_BBOX  = "(42.3,-5.2,51.1,8.3)"  # south,west,north,east — covers all of France (legacy)
 RDP_EPSILON  = 0.0003                   # ~33 m at French latitudes
+
+
+# ── Geographic regions for the Overpass sweep ────────────────────────────────
+# Each entry is (south, west, north, east) in WGS84 degrees. Smaller regions
+# keep individual Overpass queries under the 180 s timeout and reduce memory
+# pressure on the server. Regions overlap slightly — dedup handles joins.
+
+REGIONS = {
+    # France — split into 4 quadrants for query budget
+    'FR-NW':  (47.0, -5.5, 51.5,  3.0),
+    'FR-NE':  (47.0,  3.0, 51.5,  8.5),
+    'FR-SW':  (42.0, -2.5, 47.0,  3.5),
+    'FR-SE':  (42.0,  3.5, 47.0,  8.0),
+
+    # Benelux
+    'BE':     (49.5,  2.5, 51.6,  6.5),
+    'NL':     (50.7,  3.3, 53.7,  7.3),
+    'LU':     (49.4,  5.7, 50.2,  6.6),
+
+    # Germany — split E/W due to size
+    'DE-W':   (47.2,  5.8, 54.0, 10.5),
+    'DE-E':   (47.2, 10.5, 54.9, 15.1),
+
+    # Alpine
+    'CH':     (45.8,  5.9, 47.9, 10.5),
+    'AT':     (46.3,  9.5, 49.1, 17.2),
+
+    # Italy — only northern (Po) is navigable
+    'IT-N':   (44.0,  6.5, 46.6, 13.6),
+
+    # British Isles
+    'UK-S':   (49.9, -6.5, 53.5,  1.8),
+    'UK-N':   (53.5, -8.5, 59.0,  1.8),
+    'IE':     (51.4, -10.6, 55.4, -5.9),
+}
 
 
 # ── OSM name overrides ───────────────────────────────────────────────────────
@@ -52,6 +87,35 @@ OSM_NAME_MAP = {
     'Canal entre Champagne et Bourgogne': ['Canal Entre Champagne et Bourgogne', 'Canal entre Champagne et Bourgogne', 'Canal de la Marne à la Saône'],
     'Liaison Dunkerque\u2013Escaut': ['Liaison Dunkerque\u2013Escaut', 'Canal Dunkerque-Escaut'],
     'Canal de la Marne à la Saône':  ['Canal de la Marne à la Saône', 'Canal entre Champagne et Bourgogne'],
+
+    # ── EU waterways added Wave 1 ─────────────────────────────────────────────
+    'Rhine':                         ['Rhine', 'Rhein', 'Rijn', 'Le Rhin'],
+    'Moselle (DE/LU)':               ['Mosel', 'Musel'],
+    'Main':                          ['Main'],
+    'Main-Donau-Kanal':              ['Main-Donau-Kanal', 'Rhein-Main-Donau-Kanal'],
+    'Danube':                        ['Danube', 'Donau'],
+    'Standing Mast Route':           ['Staande Mastroute'],
+    'IJsselmeer':                    ['IJsselmeer'],
+    'Markermeer':                    ['Markermeer'],
+    'Amsterdam-Rijnkanaal':          ['Amsterdam-Rijnkanaal'],
+    'Albert Canal':                  ['Albertkanaal', 'Albert Canal'],
+    'Scheldt':                       ['Schelde', 'Escaut', 'Scheldt'],
+    'Meuse (BE/NL)':                 ['Maas'],
+    'Po':                            ['Po'],
+    'Thames':                        ['River Thames', 'Thames'],
+    'Kennet and Avon Canal':         ['Kennet and Avon Canal'],
+    'Caledonian Canal':              ['Caledonian Canal'],
+    'Grand Union Canal':             ['Grand Union Canal'],
+    'Shannon':                       ['River Shannon', 'Shannon'],
+    'Erne':                          ['River Erne', 'Erne'],
+    'Shannon-Erne Waterway':         ['Shannon–Erne Waterway', 'Shannon-Erne Waterway'],
+    'Royal Canal':                   ['Royal Canal'],
+    'Grand Canal (IE)':              ['Grand Canal'],
+    'Mittellandkanal':               ['Mittellandkanal'],
+    'Elbe-Lübeck-Kanal':        ['Elbe-Lübeck-Kanal'],
+    'Nord-Ostsee-Kanal':             ['Nord-Ostsee-Kanal', 'Kiel Canal'],
+    'Dortmund-Ems-Kanal':            ['Dortmund-Ems-Kanal'],
+    'Hochrhein':                     ['Hochrhein'],
 }
 
 
@@ -101,6 +165,35 @@ WATERWAY_ROUTES = {
     'Canal de la Robine':            50,
     'River Charente':                52,
     'River Rhine':                   40,
+
+    # ── EU waterways added Wave 1 (route=0 = no French route number) ──────────
+    'Rhine':                          0,
+    'Moselle (DE/LU)':                0,
+    'Main':                           0,
+    'Main-Donau-Kanal':               0,
+    'Danube':                         0,
+    'Standing Mast Route':            0,
+    'IJsselmeer':                     0,
+    'Markermeer':                     0,
+    'Amsterdam-Rijnkanaal':           0,
+    'Albert Canal':                   0,
+    'Scheldt':                        0,
+    'Meuse (BE/NL)':                  0,
+    'Po':                             0,
+    'Thames':                         0,
+    'Kennet and Avon Canal':          0,
+    'Caledonian Canal':               0,
+    'Grand Union Canal':              0,
+    'Shannon':                        0,
+    'Erne':                           0,
+    'Shannon-Erne Waterway':          0,
+    'Royal Canal':                    0,
+    'Grand Canal (IE)':               0,
+    'Mittellandkanal':                0,
+    'Elbe-Lübeck-Kanal':              0,
+    'Nord-Ostsee-Kanal':              0,
+    'Dortmund-Ems-Kanal':             0,
+    'Hochrhein':                      0,
 }
 
 NAVIGABLE_WATERWAYS = list(WATERWAY_ROUTES.keys())
@@ -125,17 +218,24 @@ def _norm_name(name):
     return _PREFIX_RE.sub('', (name or '').lower()).strip()
 
 
-# Patterns that reliably identify non-navigable waterway structures.
-# These should never appear in the cruising overlay.
+# Pattern matching non-navigable waterway-segment names across languages.
+# Each language group cites its source so future maintainers can audit.
+# Word boundaries are loose because OSM names are not consistent
+# (e.g. "Ancien Canal", "L'Ancien Bras", "Bras Mort").
 _NON_NAVIGABLE_RE = re.compile(
-    r'\bancien(ne)?\b'       # Ancien Canal de…, Ancienne Dérivation de…
-    r'|\bbras[ -]mort\b'     # Bras Mort, Bras-Mort (dead arms)
-    r'|\bvieux\b|\bvieille\b'# Vieux Rhin, Vieille Lys, Le Vieux Rhône
-    r'|\bécluse\b'           # Écluse n°X — lock structures, not canal segments
-    r'|pont-canal'           # Pont-Canal (aqueduct bridges)
-    r'|\baqueduc\b'          # Aqueduc du Loing
-    r"|prise\s+d'eau"        # Prise d'Eau (water intake channels)
-    r'|\bsouterrain\b',      # Souterrain (tunnel segments)
+    r'\b('
+    # French (original set) — Ancien Canal de…, Bras Mort, Vieux Rhin, Écluse n°X,
+    # Pont-Canal (aqueduct bridges), Aqueduc du Loing, Prise d'Eau, Souterrain
+    r'ancien(ne)?|bras[ -]mort|vieux|vieille|[ée]cluse|pont-canal|aqueduc|prise\s+d.eau|souterrain'
+    # Dutch — sources: PDOK BRT-Achtergrondkaart, Wikipedia NL on canal naming
+    r'|voorhaven|oude|verlaten|gedempt|stuw'
+    # German — sources: WSV waterway register, Wikipedia DE on Wasserstraßen
+    r'|alter|altes|alte|wehr|schleusenkanal'
+    # English (UK/IE) — disused canal terminology
+    r'|disused|abandoned|former|filled[-\s]in'
+    # Italian — Naviglio terminology
+    r'|abbandonat[oa]|antic[oa]'
+    r')\b',
     re.I,
 )
 
@@ -315,10 +415,19 @@ def clean_geojson(geojson):
 # ── Network functions (not unit-tested — make real Overpass calls) ────────────
 
 def _overpass_query(ql, retries=3):
-    """POST an Overpass QL query, return parsed JSON. Retries on failure."""
+    """POST an Overpass QL query, return parsed JSON. Retries on failure.
+
+    The User-Agent header is required: Overpass returns HTTP 406 for the
+    default python-requests UA. Identify ourselves so the operators can
+    contact us if our usage causes problems.
+    """
+    headers = {
+        'User-Agent': 'inland-europe-map/1.0 (https://github.com/EnzoCem/french-canals-map; contact: a.cem.ugur@gmail.com)',
+        'Accept': 'application/json',
+    }
     for attempt in range(retries):
         try:
-            resp = requests.post(OVERPASS_URL, data={'data': ql}, timeout=180)
+            resp = requests.post(OVERPASS_URL, data={'data': ql}, headers=headers, timeout=180)
             resp.raise_for_status()
             return resp.json()
         except Exception as exc:
@@ -346,15 +455,34 @@ def _extract_ways(elements):
     return ways
 
 
-def fetch_waterway(app_name, osm_names):
+# EU-wide bbox for way[name=X] fallback queries — covers Spain to Bulgaria,
+# Sicily to Scandinavia. Only used when a waterway has no OSM relation,
+# which is rare for major waterways. The OSM dataset is well-indexed by
+# name+geometry so this is fast in practice.
+EU_BBOX = (35.0, -11.0, 60.0, 19.0)
+
+
+def fetch_waterway(app_name, osm_names, bbox=EU_BBOX):
     """
     Fetch OSM ways for a waterway, trying each osm_name in order.
-    For each name: tries relation[type=waterway] first, then way fallback.
+
+    Strategy (one query per name, max two phases):
+      1. Relation query (no bbox) — most major waterways have a
+         relation[type=waterway][name=...]. The relation aggregates all
+         the constituent ways across countries.
+      2. Way fallback (bbox-restricted) — only used if the relation
+         lookup returns nothing. Restricted to EU_BBOX by default.
+
+    bbox: (south, west, north, east) tuple in WGS84 degrees. Used ONLY
+          for the way fallback. Defaults to EU_BBOX.
 
     Returns list of ways (each a list of [lon, lat] pairs), or [] if nothing found.
     """
+    s, w, n, e = bbox
+    bbox_str = f'({s},{w},{n},{e})'
+
     for osm_name in osm_names:
-        # ── 1. Relation query ─────────────────────────────────────────────
+        # ── 1. Relation query (no bbox — relations are name-keyed globally) ──
         ql_relation = f'''[out:json][timeout:180];
 relation[type=waterway][name="{osm_name}"];
 way(r);
@@ -363,27 +491,27 @@ out geom;'''
             data = _overpass_query(ql_relation)
             ways = _extract_ways(data.get('elements', []))
             if ways:
-                print(f'  {app_name}: {len(ways)} ways via relation[name="{osm_name}"]')
+                print(f'  {app_name}: {len(ways)} ways via relation[name="{osm_name}"]', flush=True)
                 return ways
         except Exception as exc:
-            print(f'  {app_name}: relation query failed ({exc})')
-        time.sleep(2)
+            print(f'  {app_name}: relation query failed ({exc})', flush=True)
+        time.sleep(1)
 
-        # ── 2. Way fallback ───────────────────────────────────────────────
+        # ── 2. Way fallback (bbox-restricted) ─────────────────────────────
         ql_ways = f'''[out:json][timeout:180];
-way[waterway][name="{osm_name}"]{FRANCE_BBOX};
+way[waterway][name="{osm_name}"]{bbox_str};
 out geom;'''
         try:
             data = _overpass_query(ql_ways)
             ways = _extract_ways(data.get('elements', []))
             if ways:
-                print(f'  {app_name}: {len(ways)} ways via way[name="{osm_name}"]')
+                print(f'  {app_name}: {len(ways)} ways via way[name="{osm_name}"]', flush=True)
                 return ways
         except Exception as exc:
-            print(f'  {app_name}: way query failed ({exc})')
-        time.sleep(2)
+            print(f'  {app_name}: way query failed ({exc})', flush=True)
+        time.sleep(1)
 
-    print(f'  WARNING: {app_name}: no OSM data found for {osm_names}')
+    print(f'  WARNING: {app_name}: no OSM data found for {osm_names}', flush=True)
     return []
 
 
@@ -407,28 +535,37 @@ def main(dry_run=False):
     print(f'Loaded {old_total} features ({old_navigable} are navigable waterways to replace).')
 
     if dry_run:
-        print('\n-- DRY RUN: would fetch these waterways --')
-        for name in NAVIGABLE_WATERWAYS:
-            osm_names = OSM_NAME_MAP.get(name, [name])
-            print(f'  {name}  →  OSM names: {osm_names}')
+        print(f'\n-- DRY RUN: would fetch {len(NAVIGABLE_WATERWAYS)} waterways (one global relation query each, EU-bbox fallback only on miss) --')
+        print('\nWaterways:')
+        for app_name in NAVIGABLE_WATERWAYS:
+            osm_names = OSM_NAME_MAP.get(app_name, [app_name])
+            print(f'  {app_name}  →  OSM names: {osm_names}')
+        print(f'\nREGIONS table ({len(REGIONS)} entries) is kept for documentation but not used by the default main path.')
+        print(f'Way fallback uses EU_BBOX: {EU_BBOX}')
         return
 
+    print(f'\nFetching {len(NAVIGABLE_WATERWAYS)} waterways (relation-first, EU-bbox fallback)...\n', flush=True)
     all_new_features = []
 
     for app_name in NAVIGABLE_WATERWAYS:
         osm_names = OSM_NAME_MAP.get(app_name, [app_name])
         route_num = WATERWAY_ROUTES[app_name]
 
-        print(f'\nFetching: {app_name}')
-        ways = fetch_waterway(app_name, osm_names)
+        try:
+            ways = fetch_waterway(app_name, osm_names)
+        except Exception as exc:
+            print(f'  {app_name}: FAILED ({exc}) — skipping', flush=True)
+            continue
+
         if not ways:
             continue
 
         chains = stitch_ways(ways)
         features = build_features(app_name, chains, route_num)
         all_new_features.extend(features)
-        print(f'  → {len(chains)} chains, {len(features)} features after RDP simplification')
-        time.sleep(2)  # be polite to Overpass
+        print(f'  {app_name}: {len(ways)} ways → {len(chains)} chains, {len(features)} features', flush=True)
+
+    print(f'\nTotal raw features: {len(all_new_features)}')
 
     new_geojson = merge_geojson(old_geojson, all_new_features, waterway_set)
     new_total = len(new_geojson['features'])

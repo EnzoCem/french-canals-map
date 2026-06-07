@@ -1,0 +1,110 @@
+{
+  "Garonne": {
+    "reference_port": "Bordeaux",
+    "navigable_from_km": 0,
+    "navigable_to_km": 54,
+    "tidal_influence_to": "La Réole",
+    "source": "VNF IENC ENC_ROOT_GARONNE / Garonne_edition3 README",
+    "stations": [
+      {
+        "name": "Portets",
+        "km_approx": 22,
+        "offsets": {
+          "45": {
+            "high": 30,
+            "low": 120
+          },
+          "70": {
+            "high": 40,
+            "low": 80
+          },
+          "100": {
+            "high": 50,
+            "low": 90
+          }
+        }
+      },
+      {
+        "name": "Cadillac",
+        "km_approx": 36,
+        "offsets": {
+          "45": {
+            "high": 50,
+            "low": 160
+          },
+          "70": {
+            "high": 60,
+            "low": 140
+          },
+          "100": {
+            "high": 80,
+            "low": 150
+          }
+        }
+      },
+      {
+        "name": "Langon",
+        "km_approx": 47,
+        "offsets": {
+          "45": {
+            "high": 70,
+            "low": 220
+          },
+          "70": {
+            "high": 90,
+            "low": 220
+          },
+          "100": {
+            "high": 110,
+            "low": 220
+          }
+        }
+      },
+      {
+        "name": "Castets-en-Dorthe",
+        "km_approx": 54,
+        "offsets": {
+          "45": {
+            "high": null,
+            "low": null
+          },
+          "70": {
+            "high": 130,
+            "low": 310
+          },
+          "100": {
+            "high": 130,
+            "low": 310
+          }
+        }
+      }
+    ],
+    "marnage_min_m": {
+      "Bordeaux": 4,
+      "Cadillac": 3.5,
+      "Langon": 2.5,
+      "Castets-en-Dorthe": 1.5
+    },
+    "warnings": [
+      {
+        "type": "mascaret",
+        "note": "A significant tidal bore (mascaret) can be felt below km 30 on the Garonne downstream of Bordeaux.",
+        "pk_below": 30
+      }
+    ],
+    "live_sources": [
+      {
+        "label": "Le Verdon (Gironde entrance)",
+        "url": "https://maree.shom.fr/harbor/LE_VERDON/hlt/today"
+      },
+      {
+        "label": "Pauillac (mid-estuary)",
+        "url": "https://maree.shom.fr/harbor/PAUILLAC/hlt/today"
+      },
+      {
+        "label": "Bordeaux (reference port)",
+        "url": "https://maree.shom.fr/harbor/BORDEAUX/hlt/today"
+      }
+    ]
+  }
+}

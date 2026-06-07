@@ -1,0 +1,338 @@
+{
+  "Canal du Midi": {
+    "air": 3.5,
+    "draft": 1.6,
+    "beam": 5.45,
+    "length": 30
+  },
+  "Canal de la Robine": {
+    "air": 3.5,
+    "draft": 1.2,
+    "beam": 5.2,
+    "length": 30
+  },
+  "Canal du Rhône à Sète": {
+    "air": 3.5,
+    "draft": 1.6,
+    "beam": 5.5,
+    "length": 38.5
+  },
+  "Canal latéral à la Garonne": {
+    "air": 3.5,
+    "draft": 1.6,
+    "beam": 5.45,
+    "length": 38.5
+  },
+  "Canal de Garonne": {
+    "air": 3.5,
+    "draft": 1.6,
+    "beam": 5.45,
+    "length": 38.5
+  },
+  "Garonne": {
+    "air": 6.5,
+    "draft": 3.5,
+    "beam": 12,
+    "length": 110
+  },
+  "Canal de Bourgogne": {
+    "air": 3.5,
+    "draft": 1.8,
+    "beam": 5.2,
+    "length": 38.5
+  },
+  "Canal du Nivernais": {
+    "air": 3.1,
+    "draft": 1.2,
+    "beam": 3.1,
+    "length": 27
+  },
+  "Canal du Centre": {
+    "air": 3.5,
+    "draft": 1.8,
+    "beam": 5.2,
+    "length": 38.5
+  },
+  "Canal latéral à la Loire": {
+    "air": 3.3,
+    "draft": 1.6,
+    "beam": 5.2,
+    "length": 38.5
+  },
+  "Canal de Briare": {
+    "air": 3.3,
+    "draft": 1.6,
+    "beam": 5.2,
+    "length": 38.5
+  },
+  "Canal du Loing": {
+    "air": 3.5,
+    "draft": 1.6,
+    "beam": 5.2,
+    "length": 38.5
+  },
+  "Canal de la Marne à la Saône": {
+    "air": 3.5,
+    "draft": 1.8,
+    "beam": 5.2,
+    "length": 38.5
+  },
+  "Canal entre Champagne et Bourgogne": {
+    "air": 3.5,
+    "draft": 1.8,
+    "beam": 5.2,
+    "length": 38.5
+  },
+  "Canal de la Marne au Rhin": {
+    "air": 3.6,
+    "draft": 1.8,
+    "beam": 5.2,
+    "length": 38.5
+  },
+  "Canal de la Marne au Rhin (Est)": {
+    "air": 3.6,
+    "draft": 1.8,
+    "beam": 5.2,
+    "length": 38.5
+  },
+  "Canal de l'Aisne à la Marne": {
+    "air": 3.5,
+    "draft": 1.8,
+    "beam": 5.2,
+    "length": 38.5
+  },
+  "Canal du Rhône au Rhin": {
+    "air": 3.5,
+    "draft": 1.6,
+    "beam": 5.05,
+    "length": 38.5
+  },
+  "Canal des Vosges": {
+    "air": 3.5,
+    "draft": 1.6,
+    "beam": 5.2,
+    "length": 38.5
+  },
+  "Canal de l'Est": {
+    "air": 3.5,
+    "draft": 1.6,
+    "beam": 5.2,
+    "length": 38.5
+  },
+  "Grand Canal d'Alsace": {
+    "air": 7,
+    "draft": 3,
+    "beam": 12,
+    "length": 110
+  },
+  "Canal de Colmar": {
+    "air": 3.5,
+    "draft": 1.6,
+    "beam": 5.2,
+    "length": 38.5
+  },
+  "Canal du Nord": {
+    "air": 4.5,
+    "draft": 2.2,
+    "beam": 6,
+    "length": 57
+  },
+  "Canal de Saint-Quentin": {
+    "air": 3.7,
+    "draft": 2.2,
+    "beam": 5.2,
+    "length": 38.5
+  },
+  "Canal de la Sambre à l'Oise": {
+    "air": 3.7,
+    "draft": 1.8,
+    "beam": 5.2,
+    "length": 38.5
+  },
+  "Canal de l'Escaut": {
+    "air": 4.8,
+    "draft": 2.5,
+    "beam": 6,
+    "length": 57
+  },
+  "Canal de Roubaix": {
+    "air": 3.5,
+    "draft": 1.6,
+    "beam": 5.2,
+    "length": 38.5
+  },
+  "La Seine": {
+    "air": 6.7,
+    "draft": 3.4,
+    "beam": 12,
+    "length": 110
+  },
+  "Seine": {
+    "air": 6.7,
+    "draft": 3.4,
+    "beam": 12,
+    "length": 110
+  },
+  "Petite Seine": {
+    "air": 3.5,
+    "draft": 1.8,
+    "beam": 5.2,
+    "length": 38.5
+  },
+  "Yonne": {
+    "air": 4.5,
+    "draft": 2,
+    "beam": 6,
+    "length": 57
+  },
+  "Rivière Yonne": {
+    "air": 4.5,
+    "draft": 2,
+    "beam": 6,
+    "length": 57
+  },
+  "Oise": {
+    "air": 5,
+    "draft": 2.5,
+    "beam": 8,
+    "length": 80
+  },
+  "Marne": {
+    "air": 5,
+    "draft": 2.2,
+    "beam": 6,
+    "length": 57
+  },
+  "Saône": {
+    "air": 5.6,
+    "draft": 2.8,
+    "beam": 11.4,
+    "length": 110
+  },
+  "La Saône": {
+    "air": 5.6,
+    "draft": 2.8,
+    "beam": 11.4,
+    "length": 110
+  },
+  "Rhône": {
+    "air": 7.5,
+    "draft": 3.5,
+    "beam": 12,
+    "length": 110
+  },
+  "Grand Rhône": {
+    "air": 7.5,
+    "draft": 3.5,
+    "beam": 12,
+    "length": 110
+  },
+  "Petit Rhône": {
+    "air": 3.5,
+    "draft": 1.6,
+    "beam": 6,
+    "length": 57
+  },
+  "Canal de Miribel": {
+    "air": 7,
+    "draft": 3.5,
+    "beam": 12,
+    "length": 110
+  },
+  "Canal de Jonage": {
+    "air": 7,
+    "draft": 3.5,
+    "beam": 12,
+    "length": 110
+  },
+  "Le Rhône - Bras de Caluire": {
+    "air": 7,
+    "draft": 3.5,
+    "beam": 12,
+    "length": 110
+  },
+  "Canal de Donzère-Mondragon": {
+    "air": 7,
+    "draft": 3.5,
+    "beam": 12,
+    "length": 110
+  },
+  "Doubs": {
+    "air": 3.5,
+    "draft": 1.8,
+    "beam": 5.2,
+    "length": 38.5
+  },
+  "Charente": {
+    "air": 3.5,
+    "draft": 1.2,
+    "beam": 5.2,
+    "length": 38.5
+  },
+  "Canal de Charente": {
+    "air": 3.5,
+    "draft": 1.2,
+    "beam": 5.2,
+    "length": 38.5
+  },
+  "Canal de Nantes à Brest": {
+    "air": 2.5,
+    "draft": 1.2,
+    "beam": 4.6,
+    "length": 25
+  },
+  "Canal d'Ille-et-Rance": {
+    "air": 2.65,
+    "draft": 1.2,
+    "beam": 4.6,
+    "length": 25
+  },
+  "Canal du Blavet": {
+    "air": 2.65,
+    "draft": 1.2,
+    "beam": 4.6,
+    "length": 25
+  },
+  "La Vilaine": {
+    "air": 3.5,
+    "draft": 1.4,
+    "beam": 5,
+    "length": 30
+  },
+  "Canal de la Vilaine": {
+    "air": 3.5,
+    "draft": 1.4,
+    "beam": 5,
+    "length": 30
+  },
+  "Lot": {
+    "air": 3.5,
+    "draft": 1,
+    "beam": 5.2,
+    "length": 38.5
+  },
+  "Baise": {
+    "air": 3.5,
+    "draft": 0.8,
+    "beam": 5.2,
+    "length": 30
+  },
+  "Canal Saint-Martin": {
+    "air": 3.7,
+    "draft": 1.8,
+    "beam": 6,
+    "length": 40
+  },
+  "Canal Saint-Denis": {
+    "air": 6,
+    "draft": 2.6,
+    "beam": 8,
+    "length": 80
+  },
+  "Canal de l'Ourcq": {
+    "air": 2.7,
+    "draft": 0.8,
+    "beam": 3,
+    "length": 18
+  }
+}
