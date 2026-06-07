@@ -2981,11 +2981,24 @@ function createPortIcon() {
 function buildMooringMarkers() {
   halteGroup.clearLayers();
   portGroup.clearLayers();
+  fuelGroup.clearLayers();
   allMooringMarkers = [];
 
   MOORINGS.forEach(m => {
-    const icon = m.type === 'halte' ? createHalteIcon() : createPortIcon();
-    const marker = L.marker([m.lat, m.lon], {icon, draggable: false});
+    const isOsmSource = m.source === 'osm';
+    let icon;
+    if (m.type === 'fuel') {
+      icon = createHalteIcon();   // fuel reuses the halte icon for now; Wave 2.x can add a 🛢 variant
+    } else if (m.type === 'halte') {
+      icon = createHalteIcon();
+    } else {
+      icon = createPortIcon();
+    }
+    const marker = L.marker([m.lat, m.lon], {
+      icon,
+      draggable: false,
+      opacity: isOsmSource ? 0.5 : 1.0,
+    });
 
     const typeLabel = m.type === 'halte' ? '⚓ Halte Fluviale' : '⛵ Port de Plaisance';
     const costColor = m.cost === 'free' ? '#52d68a' : '#7ad4ef';
@@ -2994,9 +3007,9 @@ function buildMooringMarkers() {
     const popupHTML = `
       <div style="min-width:200px;max-width:280px">
         <div class="popup-title">${m.name}${isOverridden ? ' <span style="color:#e8a100;font-size:10px">✏️ repositioned</span>' : ''}</div>
-        <div class="popup-canal">${typeLabel} · ${m.waterway}${m.pk ? ' · ' + m.pk : ''}</div>
+        <div class="popup-canal">${typeLabel} · ${m.waterway}${m.pk ? ' · ' + m.pk : ''}${isOsmSource ? ' · <span style="color:#7a8a9a;font-size:10px">🅾️ OSM</span>' : ''}</div>
         <div class="popup-cost" style="color:${costColor}">💶 ${m.cost}</div>
-        ${m.facilities && m.facilities !== 'none' ? `<div class="popup-facilities">🔌 ${m.facilities.split('/').join(' · ')}</div>` : ''}
+        ${m.facilities && m.facilities !== 'none' ? `<div class="popup-facilities">🔌 ${m.facilities.split('/').join(' · ')}</div>` : (isOsmSource ? '<div style="font-size:10px;color:#7a8a9a;font-style:italic">No facilities info on OSM — verify locally</div>' : '')}
         ${m.max_vessel ? `<div style="font-size:11px;color:#8ab4c2;margin-top:2px">Max vessel: ${m.max_vessel}</div>` : ''}
         ${m.contact ? `<div style="font-size:11px;color:#5a7a8a;margin-top:3px">${_autoLinkPhones(m.contact)}</div>` : ''}
       </div>`;
@@ -3016,6 +3029,8 @@ function buildMooringMarkers() {
 
     if (m.type === 'halte') {
       halteGroup.addLayer(marker);
+    } else if (m.type === 'fuel') {
+      fuelGroup.addLayer(marker);
     } else {
       portGroup.addLayer(marker);
     }
