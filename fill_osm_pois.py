@@ -295,11 +295,16 @@ out tags;'''
     out = []
     skipped_far = 0
     for el in data.get('elements', []):
+        if el.get('type') != 'node':
+            continue
+        lat = el.get('lat')
+        lon = el.get('lon')
+        if lat is None or lon is None:
+            continue
         tags = el.get('tags', {})
         name = tags.get('name', '').strip()
         if not name:
             continue
-        lat, lon = el['lat'], el['lon']
         if not _is_near_any(lat, lon, waterway_pts):
             skipped_far += 1
             continue
