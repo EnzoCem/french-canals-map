@@ -4877,11 +4877,11 @@ function init() {
     }
   }
 
-  _loadData('fc-waypoints-v1', './data/waypoints.json', function(data) {
+  _loadData('fc-waypoints-v2', './data/waypoints.json', function(data) {
     WAYPOINTS = data;
     buildMarkers();
   }, function() { showEditToast('⚠ Waypoints failed to load'); });
-  _loadData('fc-moorings-v1', './data/moorings.json', function(data) {
+  _loadData('fc-moorings-v2', './data/moorings.json', function(data) {
     MOORINGS = data;
     buildMooringMarkers();
   }, function() { showEditToast('⚠ Moorings failed to load'); });
