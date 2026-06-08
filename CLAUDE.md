@@ -513,6 +513,44 @@ git push
 
 ---
 
+## OSM bulk imports (Wave 2)
+
+Non-French waypoints and moorings come from `fill_osm_pois.py`, which queries Overpass per-country, normalises the hits, deduplicates against the curated French data (200 m proximity + name match), and writes back to `data/waypoints.json` + `data/moorings.json`.
+
+### Schema additions
+
+Every OSM-sourced entry has:
+- `source: 'osm'` (curated entries have either no `source` field or `'curated'`)
+- `country: 'BE' | 'NL' | 'DE' | 'CH' | 'AT' | 'IT' | 'LU' | 'UK' | 'IE'`
+- `osm_id: <integer>` — stable across re-syncs, used as the dedup key
+
+### Re-syncing
+
+```bash
+python3 fill_osm_pois.py                   # all 9 countries
+python3 fill_osm_pois.py --countries NL DE # subset
+python3 fill_osm_pois.py --dry-run         # print plan, no network calls
+```
+
+Idempotent — re-runs preserve user location overrides (keyed on the entry's `id`, which is stable across syncs because `osm_id` doesn't change).
+
+An annual GitHub Action (`.github/workflows/update-osm-pois.yml`) runs the sweep on Feb 15 and opens a PR if anything changed.
+
+### Rendering
+
+`source: 'osm'` markers render at 50% opacity. Popups show a `🅾️ OSM` badge. Waypoint popups without a `desc` show "No curated description — based on OpenStreetMap". The sidebar of an OSM-source entry includes a "Suggest an edit on OSM" deep-link to `openstreetmap.org/edit?node=<osm_id>`. Curated French markers are untouched.
+
+### Curation upgrade path
+
+If you've researched an OSM-imported town/mooring and want it to render at full opacity with a real description:
+
+1. Find its entry in `data/waypoints.json` or `data/moorings.json` (search by `osm_id` or `name`).
+2. Add a `desc: '...'` field (or, for moorings, fill in `facilities`, `max_vessel`, `contact`, `cost`).
+3. Either remove `source: 'osm'` OR change it to `source: 'curated'`. From that point the entry renders at full opacity and the OSM badge / hint go away.
+4. The next `fill_osm_pois.py` run will NOT overwrite it (the script only updates entries whose `id` matches an OSM hit; if you removed `osm_id` or otherwise diverged, the OSM hit becomes a new sibling entry — usually the right behaviour).
+
+---
+
 ## Common tasks
 
 ### Add a new mooring
