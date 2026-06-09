@@ -4838,7 +4838,7 @@ function init() {
     }
   }
 
-  _loadData('fc-waypoints-v2', './data/waypoints.json', function(data) {
+  _loadData('fc-waypoints-v3', './data/waypoints.json', function(data) {
     WAYPOINTS = data;
     buildMarkers();
   }, function() { showEditToast('⚠ Waypoints failed to load'); });
@@ -4846,11 +4846,11 @@ function init() {
     MOORINGS = data;
     buildMooringMarkers();
   }, function() { showEditToast('⚠ Moorings failed to load'); });
-  _loadData('fc-routes-v1', './data/routes.json', function(data) {
+  _loadData('fc-routes-v2', './data/routes.json', function(data) {
     ROUTES = data.routes || [];
     ROUTE_CONNECTIONS = data.connections || [];
   }, function() { showEditToast('⚠ Routes failed to load'); });
-  _loadData('fc-constraints-v1', './data/waterway_constraints.json', function(data) {
+  _loadData('fc-constraints-v2', './data/waterway_constraints.json', function(data) {
     WATERWAY_CONSTRAINTS = data;
     if (typeof buildWaterwayOverlay === 'function' && typeof WATERWAY_GEOJSON !== 'undefined' && WATERWAY_GEOJSON) buildWaterwayOverlay();
   });
