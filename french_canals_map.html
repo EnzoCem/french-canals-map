@@ -3858,6 +3858,7 @@ let CLOSURES = [];
 
 function buildClosuresMarkers() {
   closuresGroup.clearLayers();
+  var FLAG = { FR:'🇫🇷', NL:'🇳🇱', DE:'🇩🇪', BE:'🇧🇪', AT:'🇦🇹' };
   var now = new Date();
   CHOMAGES_SEED.forEach(function(ch) {
     var startDate = new Date(ch.start);
@@ -3888,15 +3889,23 @@ function buildClosuresMarkers() {
     var typeLabel   = ch.type === 'hivernage' ? 'Hivernage (winter closure)' : ch.type === 'travaux' ? 'Travaux (maintenance works)' : ch.type || '';
     var dateStr     = ch.start + ' → ' + ch.end;
     var sectionHtml = ch.section ? '<div style="font-size:11px;color:#c0d0e0;margin-bottom:4px">📍 ' + ch.section + '</div>' : '';
+    var flag = FLAG[ch.country] || '🏳';
+    var authorityLabel = ch.country === 'FR' ? 'VNF'
+                       : ch.country === 'NL' ? 'Rijkswaterstaat'
+                       : ch.country === 'DE' ? 'WSV / ELWIS'
+                       : ch.country === 'BE' ? 'DVW / SPW'
+                       : ch.country === 'AT' ? 'viadonau / DoRIS'
+                       : 'authority';
+    var sourceUrl = ch.source_url || '#';
     var popupHtml = '<div style="min-width:210px">' +
-      '<div style="font-size:10px;color:#e87a7a;margin-bottom:4px;font-weight:600">⚠ Curated data — always verify on VNF</div>' +
-      '<div style="font-weight:700;font-size:13px;margin-bottom:4px">🚧 Chômage · ' + statusLabel + '</div>' +
+      '<div style="font-size:10px;color:#e87a7a;margin-bottom:4px;font-weight:600">⚠ Curated — always verify with the ' + authorityLabel + '</div>' +
+      '<div style="font-weight:700;font-size:13px;margin-bottom:4px">' + flag + ' 🚧 Closure · ' + statusLabel + '</div>' +
       '<div style="font-size:12px;color:#f0ad4e;margin-bottom:4px;font-weight:600">' + ch.waterway + '</div>' +
       sectionHtml +
       '<div style="font-size:11px;color:#8ab4c2;margin-bottom:2px">' + typeLabel + '</div>' +
       '<div style="font-size:11px;color:#aaa;margin-bottom:6px">' + dateStr + '</div>' +
       '<div style="font-size:12px;margin-bottom:8px">' + ch.desc + '</div>' +
-      '<a href="https://www.vnf.fr/vnf/vnf-gere-le-reseau/les-chomages/" target="_blank" style="font-size:11px;color:#5bc0de">📋 View on VNF →</a>' +
+      '<a href="' + sourceUrl + '" target="_blank" style="font-size:11px;color:#5bc0de">📋 View on ' + authorityLabel + ' →</a>' +
       '</div>';
 
     var marker = L.marker([ch.lat, ch.lon], { icon: icon });
