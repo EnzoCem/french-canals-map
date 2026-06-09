@@ -274,6 +274,13 @@ Each tunnel popup shows: length, tug requirement, northbound/southbound convoy t
 
 The 🌉 Bridges layer shows 990 bridge air-clearance points extracted from official VNF IENC (Inland ENC, S-57) cells.
 
+**IENC country coverage as of Wave 3 (Jun 2026):**
+- 🇫🇷 France — full VNF coverage (Seine, Rhône, Saône, Garonne, Rhin, Oise, Marne, Moselle, Dunkerque–Escaut)
+- 🇳🇱 Netherlands — Rijkswaterstaat IENC (inland network: Maas, Waal, Rhine delta, Amsterdam-Rijnkanaal, Standing Mast Route; plus Zeeland + Waddenzee bundles)
+- 🇩🇪 Germany — WSV / ELWIS IENC (Rhein, Mosel, Main, Main-Donau-Kanal, Donau, Saar)
+- 🇧🇪 Belgium, 🇦🇹 Austria — deferred (separate future wave)
+- 🇬🇧 UK, 🇮🇪 Ireland, 🇮🇹 Italy, 🇨🇭 Switzerland, 🇱🇺 Luxembourg — no IENC published by their authorities; OSM bridge tags only (Wave 2)
+
 ### Pipeline
 ```
 ienc/FR.zip  +  VNF Charts/*.zip  →  extract_ienc.py  →  data/bridges.geojson
@@ -562,25 +569,32 @@ Append an entry to `data/waypoints.json`. Give it a unique `id` starting with `w
 ### Add a tunnel
 Append an entry to `data/tunnels.json`. Give it a unique `id` starting with `t0` and include `"kind": "tunnel"`. To force re-fetch, bump `'fc-tunnels-v1'` to `'fc-tunnels-v2'`.
 
-### Refresh IENC bridge data (after new VNF release)
+### Refresh IENC bridge data (after new authority release)
+
+Edit `docs/IENC-SOURCES.md` first if any download URLs have changed. Then drop new ZIPs into the appropriate directory:
+
+- France:  `ienc/` or `VNF Charts/` (existing)
+- NL: `ienc/nl/`
+- DE: `ienc/de/`
+
+Run the full extraction:
+
 ```bash
-source venv/bin/activate   # system GDAL + Python binding must be installed
-python3 extract_ienc.py \
-  --zip ienc/FR.zip \
-  --zip "VNF Charts/ENC_ROOT_SEINE_AVAL_ED2.zip" \
-  --zip "VNF Charts/ENC_ROOT_SEINE_AMONT_ED1.zip" \
-  --zip "VNF Charts/ENC_ROOT_SAONE_ED_2.zip" \
-  --zip "VNF Charts/Garonne_edition3.zip" \
-  --zip "VNF Charts/ENC_ROOT_GARONNE_MAJ1.zip" \
-  --zip "VNF Charts/ENC_ROOT_OISE.zip" \
-  --zip "VNF Charts/ENC_ROOT_OISE_MAJ1.zip" \
+source venv/bin/activate
+ZIPS=(ienc/FR.zip "VNF Charts/ENC_ROOT_SEINE_AVAL_ED2.zip" "VNF Charts/ENC_ROOT_SEINE_AMONT_ED1.zip" "VNF Charts/ENC_ROOT_SAONE_ED_2.zip" "VNF Charts/Garonne_edition3.zip" "VNF Charts/ENC_ROOT_GARONNE_MAJ1.zip" "VNF Charts/ENC_ROOT_OISE.zip" "VNF Charts/ENC_ROOT_OISE_MAJ1.zip" "VNF Charts/ENC_ROOT_MOSELLE_ED2_24.zip" "VNF Charts/ENC_ROOT_Rhin_Ed3.zip" "VNF Charts/ENC_ROOT_RHONE_LYON_EDITION_1.zip" "VNF Charts/ENC_ROOT_DK_ESCAUT_Edtion2.zip" "VNF Charts/ENC_ROOT_Niffer_Mulhouse_Ed2.zip")
+for z in ienc/nl/*.zip ienc/de/*.zip; do [ -f "$z" ] && ZIPS+=("$z"); done
+ZIP_ARGS=()
+for z in "${ZIPS[@]}"; do ZIP_ARGS+=(--zip "$z"); done
+python3 extract_ienc.py "${ZIP_ARGS[@]}" \
   --out data/bridges.geojson \
-  --out-locks data/ienc_locks.geojson \
-  --out-moorings data/ienc_moorings.geojson \
   --out-channel-axis data/ienc_channel_axis.geojson \
   --out-obstructions data/ienc_obstructions.geojson \
+  --out-locks data/ienc_locks.geojson \
+  --out-moorings data/ienc_moorings.geojson \
   --reconcile french_canals_map.html
 ```
+
+After the run, bump the SW `VERSION` (sw.js line 17) so existing clients re-fetch.
 
 ### Fix a waterway gap
 Edit `waterways.geojson` directly, or re-run `fill_waterways.py` for a fresh Overpass sweep. The ETag check will push the update to all browsers automatically.
