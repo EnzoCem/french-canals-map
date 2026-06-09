@@ -1,193 +1,645 @@
 match_status,distance_m,ienc_name,ienc_waterway,ienc_lat,ienc_lon,ienc_length_m,ienc_width_m,ienc_rise_m,app_id,app_name,app_lat,app_lon
-no_match,8676.0,Ecluse de Saint-Maurice,Seine,48.816706,2.424184,125.0,11.4,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,9521.4,Petite écluse de Suresnes,Seine,48.870888,2.233033,160.5,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,9521.4,"Ecluse n°2 de Suresnes - 160,5x12m",Seine,48.870888,2.233033,160.5,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,9534.5,Ecluse de Rive Gauche de Suresnes,Seine,48.870987,2.232831,160.5,17.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,9534.5,"Ecluse n°1 de Suresnes - 160,5x17m",Seine,48.870987,2.232831,160.5,17.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,9541.3,Nouvelle écluse de Suresnes,Seine,48.870329,2.232884,180.0,18.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,9541.3,Ecluse n°3 de Suresnes - 180x18m,Seine,48.870329,2.232884,180.0,18.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,10226.4,Ecluse RD n°10 de Port-à-l'Anglais,Seine,48.798953,2.41829,180.0,16.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,10322.0,Ecluse RG n°10 de Port-à-l'Anglais,Seine,48.797621,2.416899,180.0,15.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,10478.7,Ecluse n°17 de Saint-Maur,Seine,48.812819,2.457301,125.0,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,12316.7,Ecluse de Créteil,Seine,48.798276,2.470131,125.0,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,13315.4,Ancienne écluse de Gigny,Saône,46.654502,4.95328,160.0,16.1,,lk015,Écluse de la Presque'île (Chalon junction),46.759,4.868
-no_match,14446.7,Ecluse de Chatou,Seine,48.8943,2.165042,185.0,18.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,16687.4,écluse d'Ormes,Saône,46.619312,4.947972,185.0,12.0,,lk015,Écluse de la Presque'île (Chalon junction),46.759,4.868
-no_match,16908.3,Ecluse non exploitée de Bougival,Seine,48.869874,2.131571,113.5,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,17016.7,Petite écluse de Bougival,Seine,48.870424,2.130011,51.0,8.2,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,17016.7,Ecluse n°2 de Bougival - 51x8m,Seine,48.870424,2.130011,51.0,8.2,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,17086.5,Grande écluse de Bougival,Seine,48.870899,2.128994,219.6,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,17086.5,Ecluse n°1 de Bougival - 220x12m,Seine,48.870899,2.128994,219.6,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,18609.7,Ecluse RG n°9 d'Ablon-Vigneux,Seine (Amont),48.719556,2.415854,172.0,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,18749.3,Ecluse RD n°9 d'Ablon-Vigneux,Seine (Amont),48.718544,2.41774,180.0,16.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,19846.1,ancienne écluse de Verdun accolée au barrage,Saône,46.897933,5.031756,185.0,12.0,,lk015,Écluse de la Presque'île (Chalon junction),46.759,4.868
-no_match,19929.7,anc écluse de Verdun sur le Doubs,Saône,46.898596,5.032307,185.0,12.0,,lk015,Écluse de la Presque'île (Chalon junction),46.759,4.868
-no_match,24295.7,Nouvelle écluse d'Andrésy,Seine,48.977374,2.061871,185.0,24.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,24295.7,Ecluse n°1 d'Andrésy - 185x24m,Seine,48.977374,2.061871,185.0,24.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,24303.5,Ancienne écluse de Carrières-Sous-Poissy,Seine,48.950695,2.045608,141.0,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,24323.1,Ecluse d'Andrésy,Seine,48.977624,2.061637,160.0,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,24323.1,Ecluse n°2 d'Andrésy - 160x12m,Seine,48.977624,2.061637,160.0,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,25078.8,Ancienne écluse de dérivation de Charnay-les-Chalon,Saône,46.934422,5.075261,185.0,12.0,,lk015,Écluse de la Presque'île (Chalon junction),46.759,4.868
-no_match,25680.7,Ecluse n°7 de Pontoise,Oise,49.034675,2.096514,125.0,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,25739.7,Ecluse n°7 de Pontoise,Oise,49.035247,2.0962,185.0,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,25843.1,écluse d'Ecuelles,Saône,46.94325,5.075137,185.0,12.0,,lk015,Écluse de la Presque'île (Chalon junction),46.759,4.868
-no_match,25898.3,Ancienne écluse de Pontoise,Oise,49.038482,2.097646,42.0,8.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,27491.7,Ecluse côté Seine n°8 d'Evry,Seine (Amont),48.642008,2.445014,172.0,18.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,27506.7,Ecluse côté terre n°8 d'Evry,Seine (Amont),48.641801,2.444556,180.0,16.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,27903.0,Ecluse de la Truchère,Saône,46.513467,4.943439,30.4,5.17,,lk015,Écluse de la Presque'île (Chalon junction),46.759,4.868
-no_match,28279.7,Ecluse n°6 de l'Isle-Adam,Oise,49.11807,2.213562,125.0,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,28346.8,Ecluse de l'Isle-Adam,Oise,49.118675,2.213386,185.0,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,29560.8,Ecluse n°5 de Boran,Oise,49.148938,2.358638,180.0,11.4,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,29564.0,Ecluse n°5 de Boran,Oise,49.148965,2.358316,120.0,11.4,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,31581.0,Ancienne écluse de Trugny dite de Seurre,Saône,46.978039,5.132445,38.5,5.05,,lk015,Écluse de la Presque'île (Chalon junction),46.759,4.868
-no_match,34343.4,écluse de Seurre,Saône,47.005555,5.14016,185.0,12.0,,lk015,Écluse de la Presque'île (Chalon junction),46.759,4.868
-no_match,35569.9,Ecluse RD n°7 du Coudray,Seine (Amont),48.573298,2.482713,180.0,18.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,35582.9,Ecluse RG n°7 du Coudray,Seine (Amont),48.572916,2.481165,172.0,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,36707.4,Ancienne écluse des Mureaux dite d'Hardicourt,Seine,48.995686,1.889458,42.0,8.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,36787.9,Ancienne écluse des Mureaux,Seine,48.994677,1.887738,141.0,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,39492.3,Saargemünd (N° 28),Saône (upper),49.113503,7.067304,38.5,5.1,,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
-no_match,40407.2,Welferding (NÃÂ° 29),Saône (upper),49.117368,7.045462,38.5,5.1,,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
-no_match,40628.6,Ecluse n°4 de Creil,Oise,49.243717,2.451662,120.0,11.4,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,43324.1,Ecluse côté Seine n°4 de Vives-Eaux,Seine (Amont),48.522525,2.58558,185.0,18.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,43356.7,Ecluse côté terre n°4 de Vives-Eaux,Seine (Amont),48.522173,2.585449,172.0,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,45901.3,Ancienne écluse de Chaugey dite de dérivation de Saint Jean de Losnes,Saône,47.087474,5.234073,9999.0,9999.0,,lk015,Écluse de la Presque'île (Chalon junction),46.759,4.868
-no_match,45902.5,Grosbliederstroff (NÃÂ° 30),Saône (upper),49.166085,7.029627,38.5,5.1,,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
-no_match,46159.3,,Rhine,48.58969,7.793203,109.0,12.0,,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
-no_match,46174.5,,Rhine,48.589932,7.793618,128.0,13.0,,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
-no_match,48373.0,écluse St-Jean-de-Losne,Saône,47.102703,5.258526,38.6,5.0,,lk015,Écluse de la Presque'île (Chalon junction),46.759,4.868
-no_match,49495.3,Güdingen,Saône (upper),49.199111,7.025039,39.0,5.15,,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
-no_match,49900.5,Écluses de Strasbourg,Rhine,48.524755,7.79446,185.0,22.9,,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
-no_match,50495.1,Ecluse n°3 de Sarron,Oise,49.306193,2.613821,120.0,11.4,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,50599.2,Ecluse n°3 de Sarron,Oise,49.306733,2.61564,180.0,11.4,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,50907.7,Écluses de Gambsheim,Rhine,48.684994,7.911071,270.0,24.0,,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
-no_match,51083.2,Ecluse de la Tuilerie,Saône,47.099992,5.318811,43.45,5.2,,lk015,Écluse de la Presque'île (Chalon junction),46.759,4.868
-no_match,51270.3,Ecluse 4.1 de la Cave (185 x 18),Seine (Amont),48.482148,2.70675,185.0,18.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,51294.9,Ecluse 4.1 de la Cave (172 x 12),Seine (Amont),48.481812,2.70653,172.0,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,51349.3,Ecluse de Laperrière,Saône,47.105016,5.315857,43.3,5.33,,lk015,Écluse de la Presque'île (Chalon junction),46.759,4.868
-no_match,51459.7,écluse St-Symphorien,Saône,47.107676,5.313635,43.15,5.22,,lk015,Écluse de la Presque'île (Chalon junction),46.759,4.868
-no_match,55475.0,Écluses de Gerstheim,Rhine,48.400672,7.729285,185.0,11.45,,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
-no_match,55598.0,Ecluse n°2 de Verberie,Oise,49.32135,2.729564,120.0,11.4,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,56236.8,Saarbrücken,Saône (upper),49.240594,6.929772,190.0,12.04,,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
-no_match,56259.6,Saarbrücken,Saône (upper),49.240692,6.929323,190.0,12.04,,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
-no_match,56326.9,Saarbrücken,Saône (upper),49.240982,6.928004,190.0,12.04,,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
-no_match,56736.0,Ecluse de 185x12 de Méricourt,Seine,49.028722,1.617168,185.0,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,56736.0,Ecluse n°3 de Méricourt - 185x12m,Seine,49.028722,1.617168,185.0,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,56763.3,Ecluse de 165x17 de Méricourt,Seine,49.02881,1.616818,160.0,16.4,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,56763.3,Ecluse n°2 de Méricourt - 165x17m,Seine,49.02881,1.616818,160.0,16.4,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,56783.1,Ancienne écluse de Méricourt,Seine,49.029284,1.616746,140.0,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,62326.8,Ecluse côté Seine n°2 de Champagne-sur-Seine,Seine (Amont),48.40035,2.79298,185.0,18.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,62338.7,Ecluse côté terre n°2 de Champagne-sur-Seine,Seine (Amont),48.400477,2.793625,172.0,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,63925.6,,Seine,49.056502,1.526923,141.0,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,64120.4,Écluses de Rhinau,Rhine,48.280662,7.679084,183.0,11.45,,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
-no_match,64946.1,Ãcluses de Iffezheim,Rhine,48.831207,8.11315,270.0,24.0,,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
-no_match,67145.2,,Seine (Amont),48.374415,2.854219,180.0,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,67217.6,écluse de Dracé,Saône,46.156363,4.799109,185.0,12.0,,lk015,Écluse de la Presque'île (Chalon junction),46.759,4.868
-no_match,67328.6,Ecluse n°1 de Venette,Oise,49.414141,2.806652,120.0,11.4,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,67389.5,Ecluse n°1 de Venette,Oise,49.413898,2.809066,180.0,11.4,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,68064.4,Ancienne écluse de Thoissey dite de Mogneneins,Saône,46.148549,4.802466,160.0,16.0,,lk015,Écluse de la Presque'île (Chalon junction),46.759,4.868
-no_match,69511.4,Ecluse RD n°1 de Varennes-sur-Seine,Seine (Amont),48.376159,2.915356,180.0,16.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,73859.2,Ecluse côté Seine n°13 de Marolles,Seine (Amont),48.388286,3.032461,185.0,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,73885.9,,Seine (Amont),48.388055,3.032615,61.5,9.9,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,74413.7,Écluses de Marckolsheim,Rhine,48.149559,7.589922,183.0,11.45,,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
-no_match,77264.4,Ecluse n°12 de la Tombe,Seine (Amont),48.392912,3.107182,40.0,7.8,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,77720.5,Ecluse de Notre Dame de la Garenne,Seine,49.167029,1.387872,185.0,24.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,77720.5,Ecluse n°3 de Notre Dame de la Garenne - 185x24 m,Seine,49.167029,1.387872,185.0,24.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,77738.9,Ecluse n°2 de Notre Dame de la Garenne - 42x8m,Seine,49.166826,1.38746,42.0,8.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,77753.8,Ecluse n°4 de Notre Dame de la Garenne - 185x12m,Seine,49.167647,1.387785,185.0,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,77754.5,Ecluse de Notre Dame de la Garenne,Seine,49.16765,1.387777,185.0,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,77792.6,Ecluse de Notre Dame de la Garenne,Seine,49.166966,1.386748,141.0,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,77792.6,Ecluse n°1 de Notre Dame de la Garenne - 141x12m,Seine,49.166966,1.386748,141.0,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,79287.6,Ecluse RG de la Grande Bosse,Seine (Amont),48.424465,3.188397,185.0,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,79774.0,Sas Petite Ecluse n°27,Moselle,48.7571,6.142393,38.5,6.0,,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
-no_match,79841.3,Ecluse de CLEVANT,Moselle,48.761571,6.141279,120.0,12.0,2.7,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
-no_match,79893.2,Petite Ecluse de CLEVANT,Moselle,48.761478,6.140575,38.5,6.0,2.7,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
-no_match,80092.3,Ecluse n°11 de Bazoches,Seine (Amont),48.41206,3.186687,40.0,7.8,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,81189.8,Ecluse de CUSTINES,Moselle,48.788868,6.122593,175.03,12.0,3.85,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
-no_match,81653.9,Ecluse de POMPEY-FROUARD,Moselle,48.762323,6.116514,184.04,12.0,2.7,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
-no_match,81916.7,Ecluse n°10 de Bray-sur-Seine,Seine (Amont),48.419074,3.228023,40.0,7.8,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,82242.4,Petite Ecluse de THIONVILLE,Moselle,49.345592,6.165614,38.5,5.9,4.28,lk014,Écluse de Stenay (Meuse),49.687,5.155
-no_match,82365.3,Ecluse de THIONVILLE,Moselle,49.344101,6.166321,174.84,12.0,4.28,lk014,Écluse de Stenay (Meuse),49.687,5.155
-no_match,82928.7,Sas écluse n°47 de Messein CVOSGES,Moselle,48.609703,6.128736,39.0,5.1,,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
-no_match,83293.5,Ecluse n°4 de Nogent-sur-Seine,Seine (Amont),48.500612,3.505263,38.0,7.8,,lk012,Vitry-le-François Lock (Canal-Marne Junction),48.736,4.581
-no_match,84196.3,Ecluse n°9 de Jaulnes,Seine (Amont),48.420171,3.268924,120.0,10.4,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,84672.8,Ecluse de NEUVES-MAISONS,Moselle,48.607277,6.105231,184.46,12.0,7.1,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
-no_match,85451.2,Ecluse n°8 du Vezoult,Seine (Amont),48.449524,3.322617,185.0,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,85548.8,Ecluse de BLENOD-LES-PAM,Moselle,48.871904,6.071254,175.14,12.0,5.7,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
-no_match,85732.8,Ecluse à Nacelle de KOENIGSMACKER,Moselle,49.401039,6.258518,21.0,3.6,,lk014,Écluse de Stenay (Meuse),49.687,5.155
-no_match,86022.4,Écluse de Neuf-Brisach,Rhine,48.033761,7.564621,40.0,6.0,,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
-no_match,86235.8,Ecluse n°5 de Beaulieu,Seine (Amont),48.495302,3.465827,120.0,10.3,,lk012,Vitry-le-François Lock (Canal-Marne Junction),48.736,4.581
-no_match,86303.2,Ecluse de KOENIGSMACKER,Moselle,49.39898,6.265741,176.67,12.0,3.9,lk014,Écluse de Stenay (Meuse),49.687,5.155
-no_match,86856.4,Petite Ecluse de l'ORNE-RICHEMONT,Moselle,49.281083,6.182273,38.5,6.0,4.35,lk014,Écluse de Stenay (Meuse),49.687,5.155
-no_match,86857.0,Ecluse de l'ORNE-RICHEMONT,Moselle,49.280604,6.181829,175.18,12.0,4.35,lk014,Écluse de Stenay (Meuse),49.687,5.155
-no_match,87022.4,Ecluse de METZ,Moselle,49.128761,6.167518,175.12,12.0,4.6,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
-no_match,87024.1,Ecluse n°7 de Villiers-sur-Seine,Seine (Amont),48.465941,3.364711,121.0,10.5,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,87031.2,Petite Ecluse de METZ,Moselle,49.129435,6.167896,38.5,6.0,4.6,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
-no_match,87679.7,Ecluse d'AINGERAY,Moselle,48.756331,6.034531,184.46,12.0,7.3,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
-no_match,87740.9,Écluse à Barrage agricole de Breisach,Rhine,48.021677,7.584669,67.0,8.2,,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
-no_match,87837.8,Écluses de Vogelgrun,Rhine,48.019532,7.578654,183.0,11.45,,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
-no_match,87850.1,Écluses de Vogelgrun,Rhine,48.019348,7.578315,183.0,22.8,,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
-no_match,89257.0,Ecluse n°6 de Metz,Seine (Amont),48.487236,3.419643,120.0,10.3,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,90149.1,Petite Ecluse de TALANGE,Moselle,49.228466,6.183629,38.5,6.0,3.15,lk014,Écluse de Stenay (Meuse),49.687,5.155
-no_match,90168.0,Ecluse de ARS-SUR-MOSELLE,Moselle,49.073499,6.083061,175.07,12.0,4.02,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
-no_match,90175.5,Ecluse de TALANGE,Moselle,49.227551,6.183095,175.28,12.0,3.15,lk014,Écluse de Stenay (Meuse),49.687,5.155
-no_match,90687.6,Ecluse à Nacelle bief APACH,Moselle,49.467099,6.366211,24.5,3.6,,lk014,Écluse de Stenay (Meuse),49.687,5.155
-no_match,90730.1,Ecluse de PAGNY-SUR-MOSELLE,Moselle,48.983351,6.03094,175.4,12.0,8.65,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
-no_match,90848.5,Ecluse de APACH,Moselle,49.467449,6.368683,176.36,12.0,4.4,lk014,Écluse de Stenay (Meuse),49.687,5.155
-no_match,93126.8,Ecluse de FONTENOY,Moselle,48.708263,5.964512,179.86,12.0,4.4,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
-no_match,93142.0,Ecluse de VILLEY-LE-SEC,Moselle,48.649764,5.975262,184.54,12.0,7.2,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
-no_match,94258.2,Ancienne écluse de Port Bernalin,Saône,45.912217,4.811385,185.0,12.0,,lk015,Écluse de la Presque'île (Chalon junction),46.759,4.868
-no_match,94332.2,Sas écluse n°23 d' Ecrouves CMRO,Moselle,48.675206,5.863229,39.0,5.1,,lk012,Vitry-le-François Lock (Canal-Marne Junction),48.736,4.581
-no_match,94797.4,Grande écluse d'Amfreville,Seine,49.312421,1.236987,220.0,17.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,94797.4,Ecluse n°3 d'Amfreville - 220x17m,Seine,49.312421,1.236987,220.0,17.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,94807.4,Moyenne écluse d'Amfreville,Seine,49.312006,1.236465,141.0,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,94807.4,Ecluse n°1 d'Amfreville - 141x12m,Seine,49.312006,1.236465,141.0,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,94978.7,Sas écluse n°24 d' Ecrouves CMRO,Moselle,48.677203,5.8723,39.0,5.1,,lk012,Vitry-le-François Lock (Canal-Marne Junction),48.736,4.581
-no_match,95681.1,Sas écluse n°25 de Toul CMRO,Moselle,48.677715,5.881955,39.0,5.1,,lk012,Vitry-le-François Lock (Canal-Marne Junction),48.736,4.581
-no_match,95956.9,Sas écluse n°26 de Toul CMRO,Moselle,48.67808,5.885764,39.0,5.1,,lk012,Vitry-le-François Lock (Canal-Marne Junction),48.736,4.581
-no_match,96691.2,Petite Ecluse de TOUL,Moselle,48.671233,5.89497,38.5,6.0,4.4,lk012,Vitry-le-François Lock (Canal-Marne Junction),48.736,4.581
-no_match,96694.3,Ecluse de TOUL,Moselle,48.670614,5.894934,188.44,12.0,4.4,lk012,Vitry-le-François Lock (Canal-Marne Junction),48.736,4.581
-no_match,96934.8,Sas écluse n°27 de Toul CMRO,Moselle,48.683608,5.899725,39.0,5.1,,lk012,Vitry-le-François Lock (Canal-Marne Junction),48.736,4.581
-no_match,97266.3,Sas écluse n°27 bis de Toul CMRO,Moselle,48.683866,5.904278,39.0,5.1,,lk012,Vitry-le-François Lock (Canal-Marne Junction),48.736,4.581
-no_match,99365.1,Écluses de Fessenheim,Rhine,47.910493,7.57142,183.0,22.8,,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
-no_match,99379.7,Écluses de Fessenheim,Rhine,47.910432,7.571848,183.0,11.45,,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
-no_match,101409.4,écluse de Couzon,Saône,45.847281,4.835412,185.0,12.0,,lk015,Écluse de la Presque'île (Chalon junction),46.759,4.868
-no_match,101421.2,,Saône,45.847183,4.834966,9999.0,9999.0,,lk015,Écluse de la Presque'île (Chalon junction),46.759,4.868
-no_match,114009.0,Écluses de Ottmarsheim,Rhine,47.768645,7.526101,183.0,22.8,,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
-no_match,114009.2,Écluses de Ottmarsheim,Rhine,47.768699,7.526528,183.0,11.45,,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
-no_match,120029.7,Écluse principale de Niffer-Mulhouse,Canal du Rhône au Rhin,47.710742,7.502405,190.0,12.0,,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
-no_match,120783.9,Écluse secondaire de Niffer,Canal du Rhône au Rhin,47.704112,7.504594,85.0,12.0,,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
-no_match,126716.1,Écluses de Kembs,Rhine,47.652511,7.526497,186.5,22.9,,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
-no_match,126736.9,Écluses de Kembs,Rhine,47.652269,7.526051,180.0,22.9,,lk003,Arzviller Inclined Plane (Plan incliné),48.7749,7.2305
-no_match,138907.4,Ecluse n°10 de Trith,Canal Dunkerque–Escaut,50.315419,3.475236,144.6,12.0,,lk014,Écluse de Stenay (Meuse),49.687,5.155
-no_match,139201.6,Ecluse n°13 de la Folie dite de Bruay,Canal Dunkerque–Escaut,50.387371,3.539412,144.6,12.0,,lk014,Écluse de Stenay (Meuse),49.687,5.155
-no_match,139248.7,Ecluse n°12 de Valenciennes dite de Folien,Canal Dunkerque–Escaut,50.366503,3.517523,144.6,12.0,,lk014,Écluse de Stenay (Meuse),49.687,5.155
-no_match,139330.9,Ecluse n°14 de Fresnes,Canal Dunkerque–Escaut,50.434015,3.587862,144.6,12.0,,lk014,Écluse de Stenay (Meuse),49.687,5.155
-no_match,144368.3,Ecluse n°8 de Denain,Canal Dunkerque–Escaut,50.318302,3.389817,144.6,12.0,,lk014,Écluse de Stenay (Meuse),49.687,5.155
-no_match,147404.3,Ecluse n°6 de Pont-Malin,Canal Dunkerque–Escaut,50.267298,3.301559,144.6,12.0,,lk014,Écluse de Stenay (Meuse),49.687,5.155
-no_match,149622.0,Ecluse n°6 de Thun,Canal Dunkerque–Escaut,50.482335,3.46337,6.05,40.0,,lk014,Écluse de Stenay (Meuse),49.687,5.155
-no_match,163923.7,Ecluse de Goeulzin,Canal Dunkerque–Escaut,50.315305,3.080108,144.6,12.0,,lk014,Écluse de Stenay (Meuse),49.687,5.155
-no_match,166251.5,Ecluse n°1 du Fort-de-Scarpe,Canal Dunkerque–Escaut,50.391166,3.101304,40.7,5.2,,lk014,Écluse de Stenay (Meuse),49.687,5.155
-no_match,166950.1,Ecluse de Courchelettes,Canal Dunkerque–Escaut,50.342544,3.052835,143.0,11.4,,lk014,Écluse de Stenay (Meuse),49.687,5.155
-no_match,166959.6,Ecluse de Courchelettes,Canal Dunkerque–Escaut,50.342288,3.052499,89.0,11.4,,lk014,Écluse de Stenay (Meuse),49.687,5.155
-no_match,167086.9,Ecluse n°36 de Corbehem,Canal Dunkerque–Escaut,50.336239,3.046116,38.8,5.05,,lk014,Écluse de Stenay (Meuse),49.687,5.155
-no_match,167346.4,Ecluse de Douai,Canal Dunkerque–Escaut,50.376269,3.072149,89.0,11.4,,lk014,Écluse de Stenay (Meuse),49.687,5.155
-no_match,184362.3,Ecluse du Grand Carré,Canal Dunkerque–Escaut,50.647889,3.045379,144.6,12.0,,lk014,Écluse de Stenay (Meuse),49.687,5.155
-no_match,184462.9,Ecluse de Cuinchy,Canal Dunkerque–Escaut,50.52249,2.754342,140.0,11.4,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,184919.4,Ecluse n°1 de Marquette,Canal Dunkerque–Escaut,50.676126,3.067073,38.5,5.05,,lk014,Écluse de Stenay (Meuse),49.687,5.155
-no_match,185937.5,Ecluse de Don,Canal Dunkerque–Escaut,50.545983,2.917405,144.6,12.0,,lk014,Écluse de Stenay (Meuse),49.687,5.155
-no_match,186177.4,Ancienne écluse de Don,Canal Dunkerque–Escaut,50.550847,2.917921,38.5,5.05,,lk014,Écluse de Stenay (Meuse),49.687,5.155
-no_match,189821.7,Ecluse de Quesnoy,Canal Dunkerque–Escaut,50.704337,3.013379,110.0,5.7,,lk014,Écluse de Stenay (Meuse),49.687,5.155
-no_match,190082.2,Ecluse de Menin,Canal Dunkerque–Escaut,50.780777,3.100968,195.0,12.5,,lk014,Écluse de Stenay (Meuse),49.687,5.155
-no_match,190082.5,Nieuwe stuwsluis Menen kolk,Leie,50.780789,3.100978,86.0,10.3,,lk014,Écluse de Stenay (Meuse),49.687,5.155
-no_match,194755.0,Ecluse n°2 de Cense à Witz,Canal Dunkerque–Escaut,50.632722,2.486558,38.5,5.05,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,194797.5,Ecluse de Comines,Canal Dunkerque–Escaut,50.760635,2.991065,185.0,12.5,,lk014,Écluse de Stenay (Meuse),49.687,5.155
-no_match,196075.7,Ecluse n°1 de Fort-Gassion,Canal Dunkerque–Escaut,50.646125,2.41441,38.5,5.05,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,205248.4,Ecluse des Fontinettes,Canal Dunkerque–Escaut,50.728608,2.307406,144.0,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,206907.0,Ecluse de Flandres,Canal Dunkerque–Escaut,50.743358,2.294964,144.6,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,207543.5,Ecluse du Saint-Bertin,Canal Dunkerque–Escaut,50.748647,2.270244,38.5,5.05,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,209471.3,Ecluse du Haut pont,Canal Dunkerque–Escaut,50.765802,2.261276,38.5,5.05,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,218004.9,Ecluse n°1 de Watten dite de Holque-Watten,Canal Dunkerque–Escaut,50.841215,2.209845,144.6,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,223777.6,Ecluse n°2 de Lynck,Canal Dunkerque–Escaut,50.894329,2.251722,38.5,8.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,229921.9,Ecluse de Bourbourg,Canal Dunkerque–Escaut,50.948244,2.201084,38.7,5.2,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
-no_match,234001.6,Nieuwpoortsluis te Veurne,Canal Nieuwpoort–Dunkerque,51.070605,2.668098,38.5,5.1,,lk014,Écluse de Stenay (Meuse),49.687,5.155
-no_match,238293.2,Ecluse de Mardyck,Canal Dunkerque–Escaut,51.025261,2.267437,114.6,12.0,,lk011,Écluse de l'Arsenal (Paris),48.8831,2.3619
+no_app_locks,,Écluses de Iffezheim,Rhine,48.831207,8.11315,270.0,24.0,,,,,
+no_app_locks,,écluse de Couzon,Saône,45.847281,4.835412,185.0,12.0,,,,,
+no_app_locks,,Ancienne écluse de Port Bernalin,Saône,45.912217,4.811385,185.0,12.0,,,,,
+no_app_locks,,,Saône,45.847183,4.834966,9999.0,9999.0,,,,,
+no_app_locks,,Ecluse de Comines,Canal Dunkerque–Escaut,50.760635,2.991065,185.0,12.5,,,,,
+no_app_locks,,Ecluse de Menin,Canal Dunkerque–Escaut,50.780777,3.100968,195.0,12.5,,,,,
+no_app_locks,,Ecluse n°6 de Thun,Canal Dunkerque–Escaut,50.482335,3.46337,6.05,40.0,,,,,
+no_app_locks,,Écluses de Gambsheim,Rhine,48.684994,7.911071,270.0,24.0,,,,,
+no_app_locks,,,Seine,49.056502,1.526923,141.0,12.0,,,,,
+no_app_locks,,Écluses de Fessenheim,Rhine,47.910432,7.571848,183.0,11.45,,,,,
+no_app_locks,,Écluses de Fessenheim,Rhine,47.910493,7.57142,183.0,22.8,,,,,
+no_app_locks,,Ecluse de Cuinchy,Canal Dunkerque–Escaut,50.52249,2.754342,140.0,11.4,,,,,
+no_app_locks,,Ecluse de FONTENOY,Moselle,48.708263,5.964512,179.86,12.0,4.4,,,,
+no_app_locks,,Ecluse de TOUL,Moselle,48.670614,5.894934,188.44,12.0,4.4,,,,
+no_app_locks,,Petite Ecluse de TOUL,Moselle,48.671233,5.89497,38.5,6.0,4.4,,,,
+no_app_locks,,Ecluse de VILLEY-LE-SEC,Moselle,48.649764,5.975262,184.54,12.0,7.2,,,,
+no_app_locks,,Sas écluse n°27 bis de Toul CMRO,Moselle,48.683866,5.904278,39.0,5.1,,,,,
+no_app_locks,,Sas écluse n°23 d' Ecrouves CMRO,Moselle,48.675206,5.863229,39.0,5.1,,,,,
+no_app_locks,,Sas écluse n°24 d' Ecrouves CMRO,Moselle,48.677203,5.8723,39.0,5.1,,,,,
+no_app_locks,,Sas écluse n°25 de Toul CMRO,Moselle,48.677715,5.881955,39.0,5.1,,,,,
+no_app_locks,,Sas écluse n°26 de Toul CMRO,Moselle,48.67808,5.885764,39.0,5.1,,,,,
+no_app_locks,,Sas écluse n°27 de Toul CMRO,Moselle,48.683608,5.899725,39.0,5.1,,,,,
+no_app_locks,,Écluses de Vogelgrun,Rhine,48.019348,7.578315,183.0,22.8,,,,,
+no_app_locks,,Écluses de Vogelgrun,Rhine,48.019532,7.578654,183.0,11.45,,,,,
+no_app_locks,,Écluse à Barrage agricole de Breisach,Rhine,48.021677,7.584669,67.0,8.2,,,,,
+no_app_locks,,Écluse de Neuf-Brisach,Rhine,48.033761,7.564621,40.0,6.0,,,,,
+no_app_locks,,Ecluse de Notre Dame de la Garenne,Seine,49.166966,1.386748,141.0,12.0,,,,,
+no_app_locks,,Ecluse de Notre Dame de la Garenne,Seine,49.167029,1.387872,185.0,24.0,,,,,
+no_app_locks,,Ecluse de Notre Dame de la Garenne,Seine,49.16765,1.387777,185.0,12.0,,,,,
+no_app_locks,,Ecluse de Don,Canal Dunkerque–Escaut,50.545983,2.917405,144.6,12.0,,,,,
+no_app_locks,,Ancienne écluse de Don,Canal Dunkerque–Escaut,50.550847,2.917921,38.5,5.05,,,,,
+no_app_locks,,Écluses de Strasbourg,Rhine,48.524755,7.79446,185.0,22.9,,,,,
+no_app_locks,,Ecluse de NEUVES-MAISONS,Moselle,48.607277,6.105231,184.46,12.0,7.1,,,,
+no_app_locks,,Sas écluse n°47 de Messein CVOSGES,Moselle,48.609703,6.128736,39.0,5.1,,,,,
+no_app_locks,,Ecluse n°1 de Watten dite de Holque-Watten,Canal Dunkerque–Escaut,50.841215,2.209845,144.6,12.0,,,,,
+no_app_locks,,Ecluse n°5 de Boran,Oise,49.148965,2.358316,120.0,11.4,,,,,
+no_app_locks,,Ecluse n°5 de Boran,Oise,49.148938,2.358638,180.0,11.4,,,,,
+no_app_locks,,Ecluse n°4 de Creil,Oise,49.243717,2.451662,120.0,11.4,,,,,
+no_app_locks,,Ecluse de THIONVILLE,Moselle,49.344101,6.166321,174.84,12.0,4.28,,,,
+no_app_locks,,Petite Ecluse de THIONVILLE,Moselle,49.345592,6.165614,38.5,5.9,4.28,,,,
+no_app_locks,,Ecluse de ARS-SUR-MOSELLE,Moselle,49.073499,6.083061,175.07,12.0,4.02,,,,
+no_app_locks,,Ecluse de Chatou,Seine,48.8943,2.165042,185.0,18.0,,,,,
+no_app_locks,,Grande écluse de Bougival,Seine,48.870899,2.128994,219.6,12.0,,,,,
+no_app_locks,,Petite écluse de Bougival,Seine,48.870424,2.130011,51.0,8.2,,,,,
+no_app_locks,,Ecluse non exploitée de Bougival,Seine,48.869874,2.131571,113.5,12.0,,,,,
+no_app_locks,,Nouvelle écluse d'Andrésy,Seine,48.977374,2.061871,185.0,24.0,,,,,
+no_app_locks,,Ecluse d'Andrésy,Seine,48.977624,2.061637,160.0,12.0,,,,,
+no_app_locks,,Ancienne écluse de Carrières-Sous-Poissy,Seine,48.950695,2.045608,141.0,12.0,,,,,
+no_app_locks,,Ecluse de METZ,Moselle,49.128761,6.167518,175.12,12.0,4.6,,,,
+no_app_locks,,Petite Ecluse de METZ,Moselle,49.129435,6.167896,38.5,6.0,4.6,,,,
+no_app_locks,,Ecluse de l'ORNE-RICHEMONT,Moselle,49.280604,6.181829,175.18,12.0,4.35,,,,
+no_app_locks,,Petite Ecluse de l'ORNE-RICHEMONT,Moselle,49.281083,6.182273,38.5,6.0,4.35,,,,
+no_app_locks,,Ecluse de TALANGE,Moselle,49.227551,6.183095,175.28,12.0,3.15,,,,
+no_app_locks,,Petite Ecluse de TALANGE,Moselle,49.228466,6.183629,38.5,6.0,3.15,,,,
+no_app_locks,,Ecluse n°3 de Sarron,Oise,49.306193,2.613821,120.0,11.4,,,,,
+no_app_locks,,Ecluse n°3 de Sarron,Oise,49.306733,2.61564,180.0,11.4,,,,,
+no_app_locks,,Ecluse de l'Isle-Adam,Oise,49.118675,2.213386,185.0,12.0,,,,,
+no_app_locks,,Ecluse n°6 de l'Isle-Adam,Oise,49.11807,2.213562,125.0,12.0,,,,,
+no_app_locks,,Écluses de Rhinau,Rhine,48.280662,7.679084,183.0,11.45,,,,,
+no_app_locks,,Écluse secondaire de Niffer,Canal du Rhône au Rhin,47.704112,7.504594,85.0,12.0,,,,,
+no_app_locks,,Écluse principale de Niffer-Mulhouse,Canal du Rhône au Rhin,47.710742,7.502405,190.0,12.0,,,,,
+no_app_locks,,Ecluse n°6 de Pont-Malin,Canal Dunkerque–Escaut,50.267298,3.301559,144.6,12.0,,,,,
+no_app_locks,,Ancienne écluse des Mureaux dite d'Hardicourt,Seine,48.995686,1.889458,42.0,8.0,,,,,
+no_app_locks,,Ancienne écluse des Mureaux,Seine,48.994677,1.887738,141.0,12.0,,,,,
+no_app_locks,,Ecluse de Rive Gauche de Suresnes,Seine,48.870987,2.232831,160.5,17.0,,,,,
+no_app_locks,,Petite écluse de Suresnes,Seine,48.870888,2.233033,160.5,12.0,,,,,
+no_app_locks,,Nouvelle écluse de Suresnes,Seine,48.870329,2.232884,180.0,18.0,,,,,
+no_app_locks,,Saarbrücken,Saar,49.240594,6.929772,190.0,12.04,,,,,
+no_app_locks,,Saarbrücken,Saar,49.240692,6.929323,190.0,12.04,,,,,
+no_app_locks,,Saarbrücken,Saar,49.240982,6.928004,190.0,12.04,,,,,
+no_app_locks,,écluse St-Jean-de-Losne,Saône,47.102703,5.258526,38.6,5.0,,,,,
+no_app_locks,,écluse St-Symphorien,Saône,47.107676,5.313635,43.15,5.22,,,,,
+no_app_locks,,Ecluse de Laperrière,Saône,47.105016,5.315857,43.3,5.33,,,,,
+no_app_locks,,Ecluse de la Tuilerie,Saône,47.099992,5.318811,43.45,5.2,,,,,
+no_app_locks,,Ancienne écluse de Chaugey dite de dérivation de Saint Jean de Losnes,Saône,47.087474,5.234073,9999.0,9999.0,,,,,
+no_app_locks,,Ecluse des Fontinettes,Canal Dunkerque–Escaut,50.728608,2.307406,144.0,12.0,,,,,
+no_app_locks,,Ecluse de Flandres,Canal Dunkerque–Escaut,50.743358,2.294964,144.6,12.0,,,,,
+no_app_locks,,Ecluse du Saint-Bertin,Canal Dunkerque–Escaut,50.748647,2.270244,38.5,5.05,,,,,
+no_app_locks,,Ecluse du Haut pont,Canal Dunkerque–Escaut,50.765802,2.261276,38.5,5.05,,,,,
+no_app_locks,,Ancienne écluse de Gigny,Saône,46.654502,4.95328,160.0,16.1,,,,,
+no_app_locks,,Ecluse de la Truchère,Saône,46.513467,4.943439,30.4,5.17,,,,,
+no_app_locks,,Nieuwpoortsluis te Veurne,Canal Nieuwpoort–Dunkerque,51.070605,2.668098,38.5,5.1,,,,,
+no_app_locks,,écluse d'Ormes,Saône,46.619312,4.947972,185.0,12.0,,,,,
+no_app_locks,,Ecluse de Douai,Canal Dunkerque–Escaut,50.376269,3.072149,89.0,11.4,,,,,
+no_app_locks,,Ecluse n°1 du Fort-de-Scarpe,Canal Dunkerque–Escaut,50.391166,3.101304,40.7,5.2,,,,,
+no_app_locks,,Écluses de Ottmarsheim,Rhine,47.768645,7.526101,183.0,22.8,,,,,
+no_app_locks,,Écluses de Ottmarsheim,Rhine,47.768699,7.526528,183.0,11.45,,,,,
+no_app_locks,,Nieuwe stuwsluis Menen kolk,Leie,50.780789,3.100978,86.0,10.3,,,,,
+no_app_locks,,Grosbliederstroff (N° 30),Saar,49.166085,7.029627,38.5,5.1,,,,,
+no_app_locks,,Welferding (N° 29),Saar,49.117368,7.045462,38.5,5.1,,,,,
+no_app_locks,,Saargemünd (N° 28),Saar,49.113503,7.067304,38.5,5.1,,,,,
+no_app_locks,,Güdingen,Saar,49.199111,7.025039,39.0,5.15,,,,,
+no_app_locks,,écluse de Dracé,Saône,46.156363,4.799109,185.0,12.0,,,,,
+no_app_locks,,Ancienne écluse de Thoissey dite de Mogneneins,Saône,46.148549,4.802466,160.0,16.0,,,,,
+no_app_locks,,Ecluse n°12 de Valenciennes dite de Folien,Canal Dunkerque–Escaut,50.366503,3.517523,144.6,12.0,,,,,
+no_app_locks,,Ecluse n°10 de Trith,Canal Dunkerque–Escaut,50.315419,3.475236,144.6,12.0,,,,,
+no_app_locks,,Ecluse n°8 de Denain,Canal Dunkerque–Escaut,50.318302,3.389817,144.6,12.0,,,,,
+no_app_locks,,Écluses de Marckolsheim,Rhine,48.149559,7.589922,183.0,11.45,,,,,
+no_app_locks,,Ecluse n°1 de Fort-Gassion,Canal Dunkerque–Escaut,50.646125,2.41441,38.5,5.05,,,,,
+no_app_locks,,Ecluse n°2 de Cense à Witz,Canal Dunkerque–Escaut,50.632722,2.486558,38.5,5.05,,,,,
+no_app_locks,,Ecluse de Mardyck,Canal Dunkerque–Escaut,51.025261,2.267437,114.6,12.0,,,,,
+no_app_locks,,Ecluse de Bourbourg,Canal Dunkerque–Escaut,50.948244,2.201084,38.7,5.2,,,,,
+no_app_locks,,Écluses de Gerstheim,Rhine,48.400672,7.729285,185.0,11.45,,,,,
+no_app_locks,,Grande écluse d'Amfreville,Seine,49.312421,1.236987,220.0,17.0,,,,,
+no_app_locks,,Moyenne écluse d'Amfreville,Seine,49.312006,1.236465,141.0,12.0,,,,,
+no_app_locks,,Ecluse de 165x17 de Méricourt,Seine,49.02881,1.616818,160.0,16.4,,,,,
+no_app_locks,,Ecluse de 185x12 de Méricourt,Seine,49.028722,1.617168,185.0,12.0,,,,,
+no_app_locks,,Ancienne écluse de Méricourt,Seine,49.029284,1.616746,140.0,12.0,,,,,
+no_app_locks,,Ecluse de Saint-Maurice,Seine,48.816706,2.424184,125.0,11.4,,,,,
+no_app_locks,,Ecluse RD n°10 de Port-à-l'Anglais,Seine,48.798953,2.41829,180.0,16.0,,,,,
+no_app_locks,,Ecluse RG n°10 de Port-à-l'Anglais,Seine,48.797621,2.416899,180.0,15.0,,,,,
+no_app_locks,,Ecluse n°17 de Saint-Maur,Seine,48.812819,2.457301,125.0,12.0,,,,,
+no_app_locks,,Ecluse de Créteil,Seine,48.798276,2.470131,125.0,12.0,,,,,
+no_app_locks,,Ecluse n°1 de Venette,Oise,49.414141,2.806652,120.0,11.4,,,,,
+no_app_locks,,Ecluse n°1 de Venette,Oise,49.413898,2.809066,180.0,11.4,,,,,
+no_app_locks,,Ecluse de CUSTINES,Moselle,48.788868,6.122593,175.03,12.0,3.85,,,,
+no_app_locks,,Ecluse de CLEVANT,Moselle,48.761571,6.141279,120.0,12.0,2.7,,,,
+no_app_locks,,Petite Ecluse de CLEVANT,Moselle,48.761478,6.140575,38.5,6.0,2.7,,,,
+no_app_locks,,Ecluse de POMPEY-FROUARD,Moselle,48.762323,6.116514,184.04,12.0,2.7,,,,
+no_app_locks,,Sas Petite Ecluse n°27,Moselle,48.7571,6.142393,38.5,6.0,,,,,
+no_app_locks,,Ecluse de Goeulzin,Canal Dunkerque–Escaut,50.315305,3.080108,144.6,12.0,,,,,
+no_app_locks,,Ecluse de Courchelettes,Canal Dunkerque–Escaut,50.342544,3.052835,143.0,11.4,,,,,
+no_app_locks,,Ecluse de Courchelettes,Canal Dunkerque–Escaut,50.342288,3.052499,89.0,11.4,,,,,
+no_app_locks,,Ecluse n°36 de Corbehem,Canal Dunkerque–Escaut,50.336239,3.046116,38.8,5.05,,,,,
+no_app_locks,,Ecluse du Grand Carré,Canal Dunkerque–Escaut,50.647889,3.045379,144.6,12.0,,,,,
+no_app_locks,,Ecluse de Quesnoy,Canal Dunkerque–Escaut,50.704337,3.013379,110.0,5.7,,,,,
+no_app_locks,,Ecluse n°1 de Marquette,Canal Dunkerque–Escaut,50.676126,3.067073,38.5,5.05,,,,,
+no_app_locks,,Ecluse de PAGNY-SUR-MOSELLE,Moselle,48.983351,6.03094,175.4,12.0,8.65,,,,
+no_app_locks,,,Rhine,48.58969,7.793203,109.0,12.0,,,,,
+no_app_locks,,,Rhine,48.589932,7.793618,128.0,13.0,,,,,
+no_app_locks,,Ecluse de APACH,Moselle,49.467449,6.368683,176.36,12.0,4.4,,,,
+no_app_locks,,Ecluse à Nacelle bief APACH,Moselle,49.467099,6.366211,24.5,3.6,,,,,
+no_app_locks,,Ecluse de KOENIGSMACKER,Moselle,49.39898,6.265741,176.67,12.0,3.9,,,,
+no_app_locks,,Ecluse à Nacelle de KOENIGSMACKER,Moselle,49.401039,6.258518,21.0,3.6,,,,,
+no_app_locks,,Ecluse n°14 de Fresnes,Canal Dunkerque–Escaut,50.434015,3.587862,144.6,12.0,,,,,
+no_app_locks,,Ecluse n°13 de la Folie dite de Bruay,Canal Dunkerque–Escaut,50.387371,3.539412,144.6,12.0,,,,,
+no_app_locks,,Ecluse de BLENOD-LES-PAM,Moselle,48.871904,6.071254,175.14,12.0,5.7,,,,
+no_app_locks,,Ecluse n°7 de Pontoise,Oise,49.034675,2.096514,125.0,12.0,,,,,
+no_app_locks,,Ecluse n°7 de Pontoise,Oise,49.035247,2.0962,185.0,12.0,,,,,
+no_app_locks,,Ecluse n°2 de Verberie,Oise,49.32135,2.729564,120.0,11.4,,,,,
+no_app_locks,,Ecluse d'AINGERAY,Moselle,48.756331,6.034531,184.46,12.0,7.3,,,,
+no_app_locks,,écluse de Seurre,Saône,47.005555,5.14016,185.0,12.0,,,,,
+no_app_locks,,écluse d'Ecuelles,Saône,46.94325,5.075137,185.0,12.0,,,,,
+no_app_locks,,Ancienne écluse de dérivation de Charnay-les-Chalon,Saône,46.934422,5.075261,185.0,12.0,,,,,
+no_app_locks,,Ancienne écluse de Trugny dite de Seurre,Saône,46.978039,5.132445,38.5,5.05,,,,,
+no_app_locks,,anc écluse de Verdun sur le Doubs,Saône,46.898596,5.032307,185.0,12.0,,,,,
+no_app_locks,,ancienne écluse de Verdun accolée au barrage,Saône,46.897933,5.031756,185.0,12.0,,,,,
+no_app_locks,,Ecluse n°2 de Lynck,Canal Dunkerque–Escaut,50.894329,2.251722,38.5,8.0,,,,,
+no_app_locks,,Écluses de Kembs,Rhine,47.652269,7.526051,180.0,22.9,,,,,
+no_app_locks,,Écluses de Kembs,Rhine,47.652511,7.526497,186.5,22.9,,,,,
+no_app_locks,,Ecluse n°2 de Méricourt - 165x17m,Seine,49.02881,1.616818,160.0,16.4,,,,,
+no_app_locks,,Ecluse n°3 de Méricourt - 185x12m,Seine,49.028722,1.617168,185.0,12.0,,,,,
+no_app_locks,,Ecluse n°3 d'Amfreville - 220x17m,Seine,49.312421,1.236987,220.0,17.0,,,,,
+no_app_locks,,Ecluse n°1 d'Amfreville - 141x12m,Seine,49.312006,1.236465,141.0,12.0,,,,,
+no_app_locks,,Ecluse n°1 de Notre Dame de la Garenne - 141x12m,Seine,49.166966,1.386748,141.0,12.0,,,,,
+no_app_locks,,Ecluse n°2 de Notre Dame de la Garenne - 42x8m,Seine,49.166826,1.38746,42.0,8.0,,,,,
+no_app_locks,,Ecluse n°3 de Notre Dame de la Garenne - 185x24 m,Seine,49.167029,1.387872,185.0,24.0,,,,,
+no_app_locks,,Ecluse n°4 de Notre Dame de la Garenne - 185x12m,Seine,49.167647,1.387785,185.0,12.0,,,,,
+no_app_locks,,Ecluse n°1 d'Andrésy - 185x24m,Seine,48.977374,2.061871,185.0,24.0,,,,,
+no_app_locks,,Ecluse n°2 d'Andrésy - 160x12m,Seine,48.977624,2.061637,160.0,12.0,,,,,
+no_app_locks,,"Ecluse n°1 de Suresnes - 160,5x17m",Seine,48.870987,2.232831,160.5,17.0,,,,,
+no_app_locks,,"Ecluse n°2 de Suresnes - 160,5x12m",Seine,48.870888,2.233033,160.5,12.0,,,,,
+no_app_locks,,Ecluse n°3 de Suresnes - 180x18m,Seine,48.870329,2.232884,180.0,18.0,,,,,
+no_app_locks,,Ecluse n°1 de Bougival - 220x12m,Seine,48.870899,2.128994,219.6,12.0,,,,,
+no_app_locks,,Ecluse n°2 de Bougival - 51x8m,Seine,48.870424,2.130011,51.0,8.2,,,,,
+no_app_locks,,Ecluse RG de la Grande Bosse,Seine (Amont),48.424465,3.188397,185.0,12.0,,,,,
+no_app_locks,,Ecluse n°12 de la Tombe,Seine (Amont),48.392912,3.107182,40.0,7.8,,,,,
+no_app_locks,,Ecluse n°11 de Bazoches,Seine (Amont),48.41206,3.186687,40.0,7.8,,,,,
+no_app_locks,,Ecluse n°10 de Bray-sur-Seine,Seine (Amont),48.419074,3.228023,40.0,7.8,,,,,
+no_app_locks,,Ecluse côté terre n°8 d'Evry,Seine (Amont),48.641801,2.444556,180.0,16.0,,,,,
+no_app_locks,,Ecluse côté Seine n°8 d'Evry,Seine (Amont),48.642008,2.445014,172.0,18.0,,,,,
+no_app_locks,,Ecluse RG n°9 d'Ablon-Vigneux,Seine (Amont),48.719556,2.415854,172.0,12.0,,,,,
+no_app_locks,,Ecluse RD n°9 d'Ablon-Vigneux,Seine (Amont),48.718544,2.41774,180.0,16.0,,,,,
+no_app_locks,,,Seine (Amont),48.388055,3.032615,61.5,9.9,,,,,
+no_app_locks,,Ecluse côté Seine n°13 de Marolles,Seine (Amont),48.388286,3.032461,185.0,12.0,,,,,
+no_app_locks,,Ecluse n°9 de Jaulnes,Seine (Amont),48.420171,3.268924,120.0,10.4,,,,,
+no_app_locks,,Ecluse n°8 du Vezoult,Seine (Amont),48.449524,3.322617,185.0,12.0,,,,,
+no_app_locks,,Ecluse n°7 de Villiers-sur-Seine,Seine (Amont),48.465941,3.364711,121.0,10.5,,,,,
+no_app_locks,,Ecluse n°6 de Metz,Seine (Amont),48.487236,3.419643,120.0,10.3,,,,,
+no_app_locks,,Ecluse n°5 de Beaulieu,Seine (Amont),48.495302,3.465827,120.0,10.3,,,,,
+no_app_locks,,Ecluse n°4 de Nogent-sur-Seine,Seine (Amont),48.500612,3.505263,38.0,7.8,,,,,
+no_app_locks,,,Seine (Amont),48.374415,2.854219,180.0,12.0,,,,,
+no_app_locks,,Ecluse RD n°1 de Varennes-sur-Seine,Seine (Amont),48.376159,2.915356,180.0,16.0,,,,,
+no_app_locks,,Ecluse côté terre n°2 de Champagne-sur-Seine,Seine (Amont),48.400477,2.793625,172.0,12.0,,,,,
+no_app_locks,,Ecluse côté Seine n°2 de Champagne-sur-Seine,Seine (Amont),48.40035,2.79298,185.0,18.0,,,,,
+no_app_locks,,Ecluse RG n°7 du Coudray,Seine (Amont),48.572916,2.481165,172.0,12.0,,,,,
+no_app_locks,,Ecluse RD n°7 du Coudray,Seine (Amont),48.573298,2.482713,180.0,18.0,,,,,
+no_app_locks,,Ecluse côté terre n°4 de Vives-Eaux,Seine (Amont),48.522173,2.585449,172.0,12.0,,,,,
+no_app_locks,,Ecluse côté Seine n°4 de Vives-Eaux,Seine (Amont),48.522525,2.58558,185.0,18.0,,,,,
+no_app_locks,,Ecluse 4.1 de la Cave (172 x 12),Seine (Amont),48.481812,2.70653,172.0,12.0,,,,,
+no_app_locks,,Ecluse 4.1 de la Cave (185 x 18),Seine (Amont),48.482148,2.70675,185.0,18.0,,,,,
+no_app_locks,,Ancienne écluse de Pontoise,Oise,49.038482,2.097646,42.0,8.0,,,,,
+no_app_locks,,Sluiskolk Noordersluis de Veenhoop (Schutsluis),Netherlands waterway,53.098732,5.948208,,5.5,,,,,
+no_app_locks,,Sluiskolk Reevesluis,Netherlands waterway,52.51881,5.857525,,10.7,,,,,
+no_app_locks,,Grote kolk Grote Sluis Spaarndam (Rijnlandsluizen),Netherlands waterway,52.412958,4.681422,,,,,,,
+no_app_locks,,Sluiskolk Middensluis IJmuiden,Netherlands waterway,52.465858,4.598931,,25.0,,,,,
+no_app_locks,,Sluiskolk Oude kolksluis Spaarndam,Netherlands waterway,52.413872,4.677585,,,,,,,
+no_app_locks,,Sluiskolk Noordersluis IJmuiden,Netherlands waterway,52.467497,4.608766,,47.3,,,,,
+no_app_locks,,Kleine kolk Zuidersluis IJmuiden,Netherlands waterway,52.463971,4.591515,,,,,,,
+no_app_locks,,Sluiskolk Zeesluis IJmuiden,Netherlands waterway,52.466509,4.610113,,70.0,,,,,
+no_app_locks,,Grote kolk Zuidersluis IJmuiden,Netherlands waterway,52.464169,4.591485,,18.0,,,,,
+no_app_locks,,Sluiskolk Spooldersluis,Netherlands waterway,52.509269,6.05387,,14.0,,,,,
+no_app_locks,,Sluiskolk sluis Hasselt,Netherlands waterway,52.589657,6.09194,,11.0,,,,,
+no_app_locks,,Sluiskolk Grote Kolksluis Zwartsluis,Netherlands waterway,52.639719,6.072464,,8.5,,,,,
+no_app_locks,,Sluiskolk Arembergersluis,Netherlands waterway,52.639912,6.063607,,4.6,,,,,
+no_app_locks,,Kolk Meppelerdiepsluis,Netherlands waterway,52.638919,6.078906,,47.5,,,,,
+no_app_locks,,Sluiskolk Grote Kolksluis Zwartsluis,Netherlands waterway,52.639364,6.071534,,8.5,,,,,
+no_app_locks,,Sluiskolk Arembergersluis,Netherlands waterway,52.639002,6.063835,,4.6,,,,,
+no_app_locks,,Westkolk Prinses Irenesluizen,Lek,51.967204,5.319588,,18.0,,,,,
+no_app_locks,,Oostkolk Prinses Irenesluizen,Lek,51.967682,5.32016,,24.0,,,,,
+no_app_locks,,,Lek,51.967681,5.320162,,,,,,,
+no_app_locks,,Sluiskolk Schermersluis,Netherlands waterway,52.440149,4.753828,,5.7,,,,,
+no_app_locks,,Sluiskolk Wilhelminasluis Zaandam,Netherlands waterway,52.43966,4.825686,,14.0,,,,,
+no_app_locks,,Sluiskolk Papenpadsluis,Netherlands waterway,52.447861,4.819667,,5.2,,,,,
+no_app_locks,,Sluiskolk Groote Hondsbossche schutsluis,Netherlands waterway,52.439595,4.825071,,5.1,,,,,
+no_app_locks,,Sluiskolk Weelsluis,Netherlands waterway,52.460795,4.763829,,4.3,,,,,
+no_app_locks,,Kolk Hanenpadsluis,Netherlands waterway,52.433079,4.834148,,4.8,,,,,
+no_app_locks,,Sluiskolk Mallegatsluis (Koog aan de Zaan),Netherlands waterway,52.455694,4.811171,,5.7,,,,,
+no_app_locks,,Kolk Westzaner Overtoomsluis,Netherlands waterway,52.430636,4.783564,,2.4,,,,,
+no_app_locks,,Sluiskolk Vrouwenverdrietsluis,Netherlands waterway,52.461465,4.762697,,4.1,,,,,
+no_app_locks,,Sluiskolk sluis Empel,Maas,51.739443,5.333647,,12.6,,,,,
+no_app_locks,,Sluiskolk Henriettesluis (Schutsluis Engelen),Maas,51.729717,5.258997,,18.0,,,,,
+no_app_locks,,Sluiskolk Grafelijkheidssluis,Netherlands waterway,52.463639,5.034301,,6.1,,,,,
+no_app_locks,,Sluiskolk Zeesluis Edam,Netherlands waterway,52.515946,5.06942,,9.0,,,,,
+no_app_locks,,Sluiskolk Zeesluis Edam,Netherlands waterway,52.515996,5.069632,,9.0,,,,,
+no_app_locks,,Sluiskolk Kloosterdijksluis,Netherlands waterway,52.46374,5.032096,,6.0,,,,,
+no_app_locks,,Sluiskolk Wilhelminasluis Andel,Netherlands waterway,51.794281,5.048425,,19.0,,,,,
+no_app_locks,,Sluiskolk Eilandensluis,Netherlands waterway,53.238227,6.526469,,4.0,,,,,
+no_app_locks,,Sluiskolk Gaarkeukensluis,Netherlands waterway,53.248891,6.311343,,16.0,,,,,
+no_app_locks,,,Netherlands waterway,53.225225,6.596295,,,,,,,
+no_app_locks,,Sluiskolk Westerhavensluis Groningen,Netherlands waterway,53.213345,6.557503,,12.1,,,,,
+no_app_locks,,Sluiskolk Dorkwerdersluis,Netherlands waterway,53.256092,6.509415,,12.5,,,,,
+no_app_locks,,Sluiskolk Beijumersluis,Netherlands waterway,53.250272,6.581187,,6.0,,,,,
+no_app_locks,,Sluiskolk Kleiwerdersluis,Netherlands waterway,53.245868,6.521746,,4.0,,,,,
+no_app_locks,,Sluiskolk Oostersluis,Netherlands waterway,53.226821,6.592768,,16.0,,,,,
+no_app_locks,,Sluiskolk sluis 10,Netherlands waterway,51.416295,5.701316,,9.8,,,,,
+no_app_locks,,Sluiskolk sluis 12,Netherlands waterway,51.350134,5.743335,,9.8,,,,,
+no_app_locks,,Sluiskolk sluis 15 Nederweert,Netherlands waterway,51.272968,5.750577,,15.5,,,,,
+no_app_locks,,,Netherlands waterway,51.278058,5.761077,,,,,,,
+no_app_locks,,Sluiskolk sluis 13,Netherlands waterway,51.330225,5.746698,,9.8,,,,,
+no_app_locks,,Sluiskolk sluis 11,Netherlands waterway,51.395746,5.727027,,9.8,,,,,
+no_app_locks,,Sluiskolk Sluishuissluis,Netherlands waterway,52.354685,5.006245,,,,,,,
+no_app_locks,,Sluiskolk Keetpoortsluis,Netherlands waterway,52.327136,5.06719,,4.9,,,,,
+no_app_locks,,Sluiskolk Krijgsmansluis,Netherlands waterway,52.332845,5.046488,,4.7,,,,,
+no_app_locks,,Sluiskolk Sluis naar Steigereiland,Netherlands waterway,52.364612,4.983802,,,,,,,
+no_app_locks,,Oostkolk Groote Zeesluis Muiden,Netherlands waterway,52.330196,5.069376,,7.7,,,,,
+no_app_locks,,Sluiskolk Betonsluis,Netherlands waterway,52.34591,5.011078,,6.0,,,,,
+no_app_locks,,Middenkolk Groote Zeesluis Muiden,Netherlands waterway,52.330244,5.069226,,6.5,,,,,
+no_app_locks,,Sluiskolk Nijlpaardsluis,Netherlands waterway,52.357298,4.989829,,6.0,,,,,
+no_app_locks,,Sluiskolk sluis Waalwijk,Beneden-Merwede,51.707106,5.056974,,8.6,,,,,
+no_app_locks,,Sluiskolk Stontelersluis,Netherlands waterway,52.921289,5.037838,,5.6,,,,,
+no_app_locks,,Sluiskolk Stevinsluis,Netherlands waterway,52.931322,5.046178,,13.5,,,,,
+no_app_locks,,Sluiskolk Stevinsluis,Netherlands waterway,52.930264,5.04753,,13.5,,,,,
+no_app_locks,,Sluiskolk Stevinsluis,Netherlands waterway,52.930792,5.046855,,13.5,,,,,
+no_app_locks,,Sluiskolk Prins Bernhardsluis Deventer,Netherlands waterway,52.244861,6.169157,,12.0,,,,,
+no_app_locks,,,Maas,50.862501,5.687323,,,,,,,
+no_app_locks,,,Maas,50.869466,5.697538,,,,,,,
+no_app_locks,,Sluiskolk sluis Bosscherveld,Maas,50.867231,5.687587,,16.0,,,,,
+no_app_locks,,Sluiskolk sluis 20 Maastricht,Maas,50.855985,5.693939,,,,,,,
+no_app_locks,,Sluiskolk Oude Zeesluis,Netherlands waterway,52.886135,5.358749,,7.0,,,,,
+no_app_locks,,Noordkolk Johan Frisosluis,Netherlands waterway,52.878917,5.362991,,9.0,,,,,
+no_app_locks,,Sluiskolk Zeesluis Workum,Netherlands waterway,52.972366,5.434525,,7.3,,,,,
+no_app_locks,,Zuidkolk Johan Frisosluis,Netherlands waterway,52.878549,5.362896,,7.0,,,,,
+no_app_locks,,Sluiskolk Zeesluis Hindeloopen,Netherlands waterway,52.943687,5.402536,,4.8,,,,,
+no_app_locks,,Sluiskolk sluis Roode Vaart,Hollands Diep,51.688422,4.614054,,15.5,,,,,
+no_app_locks,,Kleine kolk Noordersluis Utrecht,Amsterdam-Rijnkanaal,52.051775,5.107413,,7.0,,,,,
+no_app_locks,,Grote kolk Noordersluis Utrecht,Amsterdam-Rijnkanaal,52.052036,5.107865,,12.0,,,,,
+no_app_locks,,Sluiskolk Zuidersluis Nieuwegein,Amsterdam-Rijnkanaal,52.045826,5.103206,,12.0,,,,,
+no_app_locks,,Kleine kolk Noordersluis Utrecht,Amsterdam-Rijnkanaal,52.052026,5.107546,,7.0,,,,,
+no_app_locks,,Sluiskolk Weerdsluis,Amsterdam-Rijnkanaal,52.097827,5.114504,,18.0,,,,,
+no_app_locks,,Sluiskolk Doorslagsluis,Amsterdam-Rijnkanaal,52.032036,5.090443,,11.2,,,,,
+no_app_locks,,Sluiskolk Muntsluis,Amsterdam-Rijnkanaal,52.090272,5.089439,,25.0,,,,,
+no_app_locks,,Sluiskolk Marksluis,Netherlands waterway,51.648116,4.831946,,13.8,,,,,
+no_app_locks,,Sluiskolk sluis I,Netherlands waterway,51.643703,4.839686,,13.8,,,,,
+no_app_locks,,Sluiskolk Nije Griendykstersyl (Schutsluis),Netherlands waterway,53.043433,5.691009,,4.5,,,,,
+no_app_locks,,Sluiskolk Tersoalstersyl (Schutsluis),Netherlands waterway,53.05001,5.76798,,4.5,,,,,
+no_app_locks,,Zuidkolk Terhornstersluis,Netherlands waterway,53.044143,5.767863,,16.0,,,,,
+no_app_locks,,Sluiskolk Dompsluis,Netherlands waterway,53.034737,5.680531,,4.4,,,,,
+no_app_locks,,Noordkolk Terhornstersluis,Netherlands waterway,53.04434,5.767658,,16.0,,,,,
+no_app_locks,,Sluiskolk Dillesluis (Schutsluiskolk),Netherlands waterway,53.102862,5.73932,,4.5,,,,,
+no_app_locks,,Sluiskolk Beukerssluis,Netherlands waterway,52.663681,6.100361,,8.0,,,,,
+no_app_locks,,Sluiskolk sluis IV,Netherlands waterway,51.498359,5.207085,,16.2,,,,,
+no_app_locks,,Sluiskolk Helsluis,Netherlands waterway,51.810599,4.782227,,7.2,,,,,
+no_app_locks,,Sluiskolk Snellesluis,Netherlands waterway,51.977742,4.654872,,5.5,,,,,
+no_app_locks,,Sluiskolk Mallegatsluis Gouda,Netherlands waterway,52.006641,4.71165,,7.8,,,,,
+no_app_locks,,Sluiskolk Reeuwijksverlaat,Netherlands waterway,52.022433,4.720675,,3.0,,,,,
+no_app_locks,,Sluiskolk Ir. De Kock van Leeuwensluis,Netherlands waterway,52.012333,4.700971,,9.0,,,,,
+no_app_locks,,Oude kolk Julianasluis,Netherlands waterway,52.001582,4.693623,,13.0,,,,,
+no_app_locks,,Sluiskolk Algerasluis,Netherlands waterway,51.917281,4.578627,,23.9,,,,,
+no_app_locks,,Sluiskolk Waaiersluis,Netherlands waterway,52.008978,4.731707,,6.0,,,,,
+no_app_locks,,Nieuwe kolk Julianasluis,Netherlands waterway,52.0014,4.694014,,14.0,,,,,
+no_app_locks,,Sluiskolk sluis 's-Hertogenbosch,Netherlands waterway,51.688494,5.315842,,26.4,,,,,
+no_app_locks,,Sluiskolk sluis Hintham,Netherlands waterway,51.698917,5.358608,,12.6,,,,,
+no_app_locks,,Sluiskolk sluis Sint Andries,Maas,51.797933,5.357751,,14.0,,,,,
+no_app_locks,,Zuidkolk Prinses Maxima Sluizen,Maas,51.808477,5.453504,,14.0,,,,,
+no_app_locks,,,Maas,51.797933,5.357752,,,,,,,
+no_app_locks,,Noordkolk Prinses Maxima Sluizen,Maas,51.80889,5.454047,,18.0,,,,,
+no_app_locks,,Middenkolk sluis Sambeek,Maas,51.640414,5.982077,,16.0,,,,,
+no_app_locks,,Oostkolk sluis Sambeek,Maas,51.640935,5.982533,,16.0,,,,,
+no_app_locks,,Westkolk sluis Sambeek,Maas,51.640175,5.981855,,16.0,,,,,
+no_app_locks,,Sluiskolk van sluis De Spieghel,Netherlands waterway,52.351397,5.534296,,6.4,,,,,
+no_app_locks,,Sluiskolk Larsersluis,Netherlands waterway,52.414598,5.587913,,5.0,,,,,
+no_app_locks,,Sluiskolk sluis De Blauwe Dromer,Netherlands waterway,52.370642,5.614499,,5.0,,,,,
+no_app_locks,,Sluiskolk Biesboschsluis,Netherlands waterway,51.804615,4.876583,,6.8,,,,,
+no_app_locks,,Sluiskolk Biesboschsluis,Netherlands waterway,51.804314,4.876592,,6.8,,,,,
+no_app_locks,,Sluiskolk Ottersluis,Netherlands waterway,51.792718,4.762495,,7.0,,,,,
+no_app_locks,,Sluiskolk Spieringsluis,Netherlands waterway,51.778567,4.762349,,6.0,,,,,
+no_app_locks,,,Netherlands waterway,52.050091,6.113402,,,,,,,
+no_app_locks,,Sluiskolk sluis Doesburg,Netherlands waterway,52.007308,6.131566,,8.0,,,,,
+no_app_locks,,Sluiskolk sluis Grave,Maas,51.768947,5.738732,,16.0,,,,,
+no_app_locks,,Westkolk Prinses Marijkesluis,Netherlands waterway,51.954107,5.357595,,18.0,,,,,
+no_app_locks,,Oostkolk Prinses Marijkesluis,Netherlands waterway,51.954422,5.357943,,18.0,,,,,
+no_app_locks,,Sluiskolk sluis Amerongen,Netherlands waterway,51.976455,5.409113,,18.0,,,,,
+no_app_locks,,Sluiskolk sluis Almere-Haven,Netherlands waterway,52.333432,5.22178,,4.0,,,,,
+no_app_locks,,Sluiskolk Blaricumse sluis,Netherlands waterway,52.296714,5.290197,,6.0,,,,,
+no_app_locks,,Sluiskolk Kromme Weteringsluis,Netherlands waterway,52.349737,5.243193,,,,,,,
+no_app_locks,,Noordkolk sluis III Tilburg,Netherlands waterway,51.58224,5.033182,,16.0,,,,,
+no_app_locks,,,Netherlands waterway,51.582058,5.03425,,,,,,,
+no_app_locks,,Sluiskolk sluis II Tilburg,Netherlands waterway,51.596708,4.99181,,16.0,,,,,
+no_app_locks,,Zuidkolk sluis III Tilburg,Netherlands waterway,51.581774,5.034258,,10.5,,,,,
+no_app_locks,,,Netherlands waterway,51.582031,5.034787,,,,,,,
+no_app_locks,,Noordkolk sluis III Tilburg,Netherlands waterway,51.582149,5.033707,,16.0,,,,,
+no_app_locks,,Sluiskolk Nijkerkersluis,Netherlands waterway,52.262134,5.472775,,9.5,,,,,
+no_app_locks,,Sluiskolk Nijkerkersluis,Netherlands waterway,52.261998,5.472016,,9.5,,,,,
+no_app_locks,,Sluiskolk Nijkerkersluis,Netherlands waterway,52.261861,5.471256,,9.5,,,,,
+no_app_locks,,Sluiskolk Arkersluis,Netherlands waterway,52.254796,5.465957,,8.5,,,,,
+no_app_locks,,Sluiskolk Hellevoetsluis,Haringvliet,51.823241,4.13385,,25.0,,,,,
+no_app_locks,,Sluiskolk sluis Middelharnis,Haringvliet,51.773615,4.190063,,15.0,,,,,
+no_app_locks,,Sluiskolk Goereesesluis,Haringvliet,51.823868,4.039242,,16.0,,,,,
+no_app_locks,,Sluiskolk sluis Hengelo,Netherlands waterway,52.246073,6.804781,140.0,12.0,,,,,
+no_app_locks,,Sluiskolk Beatrixsluis,Netherlands waterway,52.383934,5.18903,,,,,,,
+no_app_locks,,Sluiskolk Vaartsluis,Netherlands waterway,52.406826,5.23256,,8.2,,,,,
+no_app_locks,,Sluiskolk Zuidersluis Almere,Netherlands waterway,52.417475,5.222622,,8.2,,,,,
+no_app_locks,,Sluiskolk Leeghwatersluis,Netherlands waterway,52.385486,5.238783,,,,,,,
+no_app_locks,,Sluiskolk Blokhuissluis,Netherlands waterway,52.528592,5.876542,,,,,,,
+no_app_locks,,Sluiskolk Scheeresluis,Netherlands waterway,52.531038,5.947615,,10.2,,,,,
+no_app_locks,,Sluiskolk Ganzensluis,Netherlands waterway,52.567622,5.915667,,6.0,,,,,
+no_app_locks,,Sluiskolk sluis Driel,Netherlands waterway,51.967017,5.80528,,18.0,,,,,
+no_app_locks,,Oostkolk sluis Born,Maas,51.035435,5.799099,,16.0,,,,,
+no_app_locks,,Westkolk sluis Born,Maas,51.035851,5.797432,,14.0,,,,,
+no_app_locks,,Middenkolk sluis Born,Maas,51.035139,5.798515,,16.0,,,,,
+no_app_locks,,Sluiskolk Kraaienestersluis,Amsterdam-Rijnkanaal,52.158947,5.019345,,5.5,,,,,
+no_app_locks,,Sluiskolk Weersluis,Amsterdam-Rijnkanaal,52.185326,5.008289,,3.5,,,,,
+no_app_locks,,Sluiskolk sluis Breukelen,Amsterdam-Rijnkanaal,52.17103,4.995838,,3.9,,,,,
+no_app_locks,,Sluiskolk Vechtsluis,Amsterdam-Rijnkanaal,52.127582,5.054004,,6.5,,,,,
+no_app_locks,,Sluiskolk Grote Merwedesluis,Netherlands waterway,51.830001,4.966403,,23.6,,,,,
+no_app_locks,,Sluiskolk Grote Merwedesluis,Netherlands waterway,51.830556,4.967139,,23.6,,,,,
+no_app_locks,,Sluiskolk Algemene Begraafplaatssluis,Netherlands waterway,51.837293,4.974951,,25.0,,,,,
+no_app_locks,,Sluiskolk Lingesluis,Netherlands waterway,51.827094,4.975644,,,,,,,
+no_app_locks,,Sluiskolk sluis Delden,Netherlands waterway,52.246725,6.677896,140.0,12.0,,,,,
+no_app_locks,,Sluiskolk sluis 5,Netherlands waterway,51.577012,5.5868,,12.6,,,,,
+no_app_locks,,Sluiskolk sluis 7 Helmond,Netherlands waterway,51.496094,5.652249,,7.0,,,,,
+no_app_locks,,Sluiskolk sluis Helmond,Netherlands waterway,51.466494,5.693759,,12.6,,,,,
+no_app_locks,,Sluiskolk sluis 9 Helmond,Netherlands waterway,51.447302,5.684798,,20.6,,,,,
+no_app_locks,,Sluiskolk sluis 10,Netherlands waterway,51.416703,5.701173,,9.8,,,,,
+no_app_locks,,Sluiskolk sluis 8 Helmond,Netherlands waterway,51.465689,5.662969,,14.0,,,,,
+no_app_locks,,Sluiskolk sluis 6,Netherlands waterway,51.537487,5.633582,,12.6,,,,,
+no_app_locks,,Oostkolk sluis Belfeld,Maas,51.32127,6.112744,,16.0,,,,,
+no_app_locks,,Westkolk sluis Belfeld,Maas,51.321623,6.111469,,16.0,,,,,
+no_app_locks,,Middenkolk sluis Belfeld,Maas,51.321488,6.111855,,16.0,,,,,
+no_app_locks,,Westkolk Houtribsluizen,Netherlands waterway,52.527684,5.434078,,17.5,,,,,
+no_app_locks,,Sluiskolk Noordersluis Lelystad,Netherlands waterway,52.503161,5.419,,8.5,,,,,
+no_app_locks,,Oostkolk Houtribsluizen,Netherlands waterway,52.527658,5.434715,,17.5,,,,,
+no_app_locks,,Sluiskolk Noordersluis Lelystad,Netherlands waterway,52.502865,5.419533,,8.5,,,,,
+no_app_locks,,,Netherlands waterway,52.496825,5.427405,,,,,,,
+no_app_locks,,Oostkolk sluis Maasbracht,Maas,51.141171,5.877929,,15.6,,,,,
+no_app_locks,,Westkolk sluis Maasbracht,Maas,51.141866,5.877316,,15.6,,,,,
+no_app_locks,,Middenkolk sluis Maasbracht,Maas,51.141647,5.877899,,15.6,,,,,
+no_app_locks,,Oostkolk sluis Weurt,Waal,51.853662,5.822807,,16.0,,,,,
+no_app_locks,,,Waal,51.853661,5.822807,,,,,,,
+no_app_locks,,Westkolk sluis Weurt,Waal,51.853432,5.821462,,16.0,,,,,
+no_app_locks,,Sluiskolk sluis Aadorp,Netherlands waterway,52.373072,6.632653,63.7,8.5,,,,,
+no_app_locks,,Sluiskolk Proostdijersluis,Amsterdam-Rijnkanaal,52.254582,4.950911,,5.2,,,,,
+no_app_locks,,Sluiskolk Weesperpoortsluis,Amsterdam-Rijnkanaal,52.328107,5.065303,,4.2,,,,,
+no_app_locks,,Sluiskolk Zanderijsluis,Amsterdam-Rijnkanaal,52.279608,5.063709,,8.0,,,,,
+no_app_locks,,Sluiskolk sluis Nigtevecht,Amsterdam-Rijnkanaal,52.274833,5.022794,,24.0,,,,,
+no_app_locks,,Sluiskolk Demmerikse sluis,Amsterdam-Rijnkanaal,52.220537,4.972605,,6.5,,,,,
+no_app_locks,,Sluiskolk sluis 't Hemeltje,Amsterdam-Rijnkanaal,52.243416,5.047813,,,,,,,
+no_app_locks,,Sluiskolk sluis Weesp,Amsterdam-Rijnkanaal,52.308903,5.041988,,8.0,,,,,
+no_app_locks,,Sluiskolk Mijndense sluis,Amsterdam-Rijnkanaal,52.20238,5.022206,,8.0,,,,,
+no_app_locks,,Sluiskolk sluis Driemond,Amsterdam-Rijnkanaal,52.304713,5.01887,,9.0,,,,,
+no_app_locks,,Sluiskolk Urkersluis,Netherlands waterway,52.657833,5.603283,,7.0,,,,,
+no_app_locks,,Westkolk Naviduct Krabbersgat,Netherlands waterway,52.690777,5.29531,,12.5,,,,,
+no_app_locks,,Sluiskolk Krabbersgatsluis,Netherlands waterway,52.691642,5.281638,,11.6,,,,,
+no_app_locks,,Oostkolk Naviduct Krabbersgat,Netherlands waterway,52.690842,5.295584,,12.5,,,,,
+no_app_locks,,Sluiskolk sluis 16 Weert,Netherlands waterway,51.245304,5.668157,,15.8,,,,,
+no_app_locks,,Oude kolk sluis Panheel,Netherlands waterway,51.17469,5.86155,,7.5,,,,,
+no_app_locks,,Nieuwe kolk sluis Panheel,Netherlands waterway,51.174296,5.861117,,12.6,,,,,
+no_app_locks,,Westkolk Prins Bernhardsluizen,Amsterdam-Rijnkanaal,51.901345,5.453908,,18.0,,,,,
+no_app_locks,,Oostkolk Prins Bernhardsluizen,Amsterdam-Rijnkanaal,51.901698,5.454522,,24.0,,,,,
+no_app_locks,,Sluiskolk sluis Lalleweer,Netherlands waterway,53.297262,6.998793,,6.5,,,,,
+no_app_locks,,Kleine kolk Zeesluis Farmsum,Netherlands waterway,53.320248,6.93992,,7.0,,,,,
+no_app_locks,,Sluiskolk Oosterdijkshornerverlaat,Netherlands waterway,53.287001,6.704797,,4.5,,,,,
+no_app_locks,,Sluiskolk Groevesluis Zuid,Netherlands waterway,53.303709,6.846044,,6.0,,,,,
+no_app_locks,,Sluiskolk Slochtersluis,Netherlands waterway,53.236019,6.650733,,6.0,,,,,
+no_app_locks,,Sluiskolk J. Slimsluis,Netherlands waterway,53.23669,6.644907,,3.0,,,,,
+no_app_locks,,Sluiskolk sluis Termunterzijldiep,Netherlands waterway,53.301298,7.0366,,8.0,,,,,
+no_app_locks,,Sluiskolk Groevesluis Noord,Netherlands waterway,53.306745,6.847489,,8.6,,,,,
+no_app_locks,,Sluiskolk Jan B. Bronssluis,Netherlands waterway,53.236459,6.64604,,6.0,,,,,
+no_app_locks,,Grote kolk Zeesluis Farmsum,Unknown waterway,53.320139,6.940191,174.0,16.0,,,,,
+no_app_locks,,Sluiskolk Roggenkampsluis,Netherlands waterway,53.321443,6.916556,,5.8,,,,,
+no_app_locks,,Sluiskolk sluis Termunterzijldiep,Netherlands waterway,53.301622,7.036761,,8.0,,,,,
+no_app_locks,,Noordkolk sluis Eefde,Netherlands waterway,52.160693,6.235051,141.5,12.5,,,,,
+no_app_locks,,Zuidkolk sluis Eefde,Netherlands waterway,52.160363,6.235084,140.0,12.0,,,,,
+no_app_locks,,Sluiskolk voorsluis Eefde,Netherlands waterway,52.159934,6.232164,200.0,24.0,,,,,
+no_app_locks,,Sluiskolk sluis 4 Veghel,Netherlands waterway,51.608686,5.531506,,12.6,,,,,
+no_app_locks,,Sluiskolk sluis Schijndel,Netherlands waterway,51.648587,5.444149,,12.6,,,,,
+no_app_locks,,,Unknown waterway,51.694013,4.401033,142.0,16.1,,,,,
+no_app_locks,,Oostkolk Volkeraksluizen,Hollands Diep,51.689985,4.410034,,24.1,,,,,
+no_app_locks,,Middenkolk Volkeraksluizen,Hollands Diep,51.690479,4.40934,,24.1,,,,,
+no_app_locks,,Sluiskolk Jachtensluis Volkeraksluizen,Hollands Diep,51.694021,4.401042,,16.0,,,,,
+no_app_locks,,Westkolk Volkeraksluizen,Hollands Diep,51.690993,4.40862,,24.0,,,,,
+no_app_locks,,Grote kolk Lorentzsluizen,Netherlands waterway,53.069865,5.336702,,13.0,,,,,
+no_app_locks,,Kleine kolk Lorentzsluizen,Netherlands waterway,53.069828,5.337181,,8.2,,,,,
+no_app_locks,,Kleine kolk Lorentzsluizen,Netherlands waterway,53.069187,5.33746,,8.2,,,,,
+no_app_locks,,Grote kolk Lorentzsluizen,Netherlands waterway,53.069151,5.337013,,13.0,,,,,
+no_app_locks,,Sluiskolk sluis Makkum,Netherlands waterway,53.05459,5.402492,,7.8,,,,,
+no_app_locks,,Sluiskolk Lemstersluis,Netherlands waterway,52.842634,5.710584,,8.0,,,,,
+no_app_locks,,Sluiskolk Joustersluis,Netherlands waterway,52.978565,5.765059,,,,,,,
+no_app_locks,,Sluiskolk Lemstersluis,Netherlands waterway,52.842347,5.710456,,8.0,,,,,
+no_app_locks,,Sluiskolk Prinses Margrietsluis,Netherlands waterway,52.851397,5.676396,,16.0,,,,,
+no_app_locks,,Sluiskolk Riensluis,Netherlands waterway,52.843022,5.715066,,9.0,,,,,
+no_app_locks,,Sluiskolk Friese sluis Lemmer,Netherlands waterway,52.837792,5.713661,,6.7,,,,,
+no_app_locks,,Sluiskolk sluis Linne,Maas,51.176235,5.924346,,16.0,,,,,
+no_app_locks,,Sluiskolk sluis Roermond,Maas,51.212148,5.981063,,16.0,,,,,
+no_app_locks,,Westkolk sluis Heel,Maas,51.175405,5.918777,,15.5,,,,,
+no_app_locks,,Oostkolk sluis Heel,Maas,51.174921,5.91894,,15.5,,,,,
+no_app_locks,,,Netherlands waterway,52.49952,6.057653,,,,,,,
+no_app_locks,,Sluiskolk Westerhavensluis Medemblik,Netherlands waterway,52.768933,5.102934,,7.0,,,,,
+no_app_locks,,Sluiskolk Overlekersluis,Netherlands waterway,52.769115,5.094807,,7.0,,,,,
+no_app_locks,,Sluiskolk (west) sluis Heumen,Unknown waterway,51.76946,5.851392,,16.0,,,,,
+no_app_locks,,Sluiskolk Peulensluis,Netherlands waterway,51.821571,4.826687,,6.3,,,,,
+no_app_locks,,Sluiskolk Steenenhoeksche Kanaalsluis,Netherlands waterway,51.821191,4.858237,,,,,,,
+no_app_locks,,,Netherlands waterway,51.828262,4.833548,,,,,,,
+no_app_locks,,Sluiskolk sluis Macharen,Maas,51.804898,5.548447,,13.5,,,,,
+no_app_locks,,Sluiskolk Westerkanaalschutsluis,IJssel,52.387005,4.883755,,40.0,,,,,
+no_app_locks,,Middenkolk Oranjesluizen,IJssel,52.381661,4.960611,,18.0,,,,,
+no_app_locks,,Sluiskolk Rapenburgersluis (Scharrebiersluis),IJssel,52.370116,4.911348,,8.8,,,,,
+no_app_locks,,Sluiskolk Nieuwe Entrepotdokschutsluis,IJssel,52.368637,4.934117,,10.0,,,,,
+no_app_locks,,Sluiskolk Zeeburgerschutsluis,IJssel,52.367425,4.95313,,,,,,,
+no_app_locks,,Westkolk sluis Willem I,IJssel,52.383997,4.908016,,,,,,,
+no_app_locks,,Noordkolk Oranjesluizen,IJssel,52.381822,4.960813,,14.0,,,,,
+no_app_locks,,Zuidkolk Oranjesluizen,IJssel,52.381495,4.960414,,14.0,,,,,
+no_app_locks,,Sluiskolk Nieuwendammersluis,IJssel,52.39122,4.938388,,4.3,,,,,
+no_app_locks,,Oostkolk sluis Willem I,IJssel,52.383797,4.908031,,5.3,,,,,
+no_app_locks,,Sluiskolk Oudezijds Kolksluis,IJssel,52.375808,4.900601,,,,,,,
+no_app_locks,,Sluiskolk Prins Willem-Alexandersluis,IJssel,52.3799,4.960152,,24.0,,,,,
+no_app_locks,,Sluiskolk Nieuwe Haarlemmerschutsluis,IJssel,52.379313,4.894703,,,,,,,
+no_app_locks,,Sluiskolk sluis Hagestein,Lek,51.9922,5.134805,,18.0,,,,,
+no_app_locks,,Westkolk Prinses Beatrixsluizen,Lek,52.014168,5.109365,,18.0,,,,,
+no_app_locks,,Oostkolk Prinses Beatrixsluizen,Lek,52.013383,5.11057,,25.0,,,,,
+no_app_locks,,Sluiskolk Grote sluis Vianen,Lek,51.994701,5.097488,,23.6,,,,,
+no_app_locks,,Sluiskolk sluis Hagestein,Lek,51.993068,5.133816,,18.0,,,,,
+no_app_locks,,Middenkolk Prinses Beatrixsluizen,Lek,52.014097,5.109757,,18.0,,,,,
+no_app_locks,,Sluiskolk Koninginnensluis,Lek,52.006451,5.092987,,24.0,,,,,
+no_app_locks,,Sluiskolk Ketelsluis,Netherlands waterway,52.579025,5.758055,,6.8,,,,,
+no_app_locks,,Sluiskolk Kampersluis,Netherlands waterway,52.573275,5.753197,,7.5,,,,,
+no_app_locks,,,Unknown waterway,52.930791,5.046858,120.0,13.0,,,,,
+no_app_locks,,,Unknown waterway,53.069145,5.337017,120.0,13.0,,,,,
+no_app_locks,,,Unknown waterway,53.069507,5.337321,67.0,8.0,,,,,
+no_app_locks,,,Unknown waterway,53.054588,5.402492,27.8,7.8,,,,,
+no_app_locks,,Tsjerk Hiddessluis,Unknown waterway,53.179233,5.420428,135.0,12.0,,,,,
+no_app_locks,,Zeedoksluis,Unknown waterway,52.960464,4.773677,42.0,20.1,,,,,
+no_app_locks,,,Unknown waterway,52.960492,4.773082,,,,,,,
+no_app_locks,,,Unknown waterway,52.960447,4.774149,,,,,,,
+no_app_locks,,,Unknown waterway,52.95923,4.772083,,,,,,,
+no_app_locks,,Sluiskolk Koopvaardersschutsluis,Unknown waterway,52.946997,4.787282,86.0,16.0,,,,,
+no_app_locks,,,Unknown waterway,53.297268,6.998784,25.0,6.5,,,,,
+no_app_locks,,,Unknown waterway,53.320248,6.93992,,,,,,,
+no_app_locks,,sluiskolk Robbengatsluis,Unknown waterway,53.408341,6.196571,74.6,9.1,,,,,
+no_app_locks,,Kleine Sluis - kolk 1,Unknown waterway,51.541679,3.66723,59.4,7.4,,,,,
+no_app_locks,,Grote Sluis - kolk 2,Unknown waterway,51.541365,3.667596,135.0,19.3,,,,,
+no_app_locks,,Roompotsluis,Unknown waterway,51.618567,3.684659,95.0,16.0,,,,,
+no_app_locks,,,Unknown waterway,51.537461,3.925305,86.0,10.0,,,,,
+no_app_locks,,Zandkreeksluis,Unknown waterway,51.543937,3.863943,121.0,20.0,,,,,
+no_app_locks,,,Unknown waterway,51.329368,3.818998,,55.0,,,,,
+no_app_locks,,Bergsediepsluis,Unknown waterway,51.510214,4.173669,34.0,6.0,,,,,
+no_app_locks,,,Unknown waterway,51.448048,4.229939,,,,,,,
+no_app_locks,,,Unknown waterway,51.448145,4.231139,,,,,,,
+no_app_locks,,Hansweert Westsluis,Unknown waterway,51.455713,4.009661,280.0,24.0,,,,,
+no_app_locks,,Hansweert Oostsluis,Unknown waterway,51.455756,4.010648,280.0,23.0,,,,,
+no_app_locks,,Manderssluis,Unknown waterway,51.652472,4.378452,12.0,,,,,,
+no_app_locks,,,Unknown waterway,51.676927,4.210509,,,,,,,
+no_app_locks,,Krammersluizen,Unknown waterway,51.661842,4.159513,280.0,24.0,,,,,
+no_app_locks,,Krammersluizen,Unknown waterway,51.661084,4.159573,280.0,24.0,,,,,
+no_app_locks,,,Unknown waterway,51.665027,4.160797,80.0,9.0,,,,,
+no_app_locks,,,Unknown waterway,51.625147,4.255717,,,,,,,
+no_app_locks,,Volkeraksluis,Unknown waterway,51.690993,4.408619,308.0,24.0,,,,,
+no_app_locks,,Geisling,Donau,48.977238,12.343984,230.0,24.0,,,,,
+no_app_locks,,"Kachlet, nördliche Kammer",Donau,48.579749,13.409758,226.5,24.0,,,,,
+no_app_locks,,"Kachlet, südliche Kammer",Donau,48.579491,13.409426,226.5,24.0,,,,,
+no_app_locks,,Bootschleuse Bad Abbach,Donau,48.944864,12.018067,20.0,4.0,,,,,
+no_app_locks,,Bad Abbach,Donau,48.946675,12.01262,190.0,12.0,,,,,
+no_app_locks,,Bootschleuse Regensburg,Donau,49.027443,12.076123,20.0,4.0,,,,,
+no_app_locks,,Straubing,Donau,48.899886,12.553767,230.0,24.0,,,,,
+no_app_locks,,Regensburg,Donau,49.026556,12.097263,190.0,12.0,,,,,
+no_app_locks,,Bootsgasse Bad Abbach,Donau,48.926124,12.013616,67.0,2.3,,,,,
+no_app_locks,,"Jochenstein, südliche Kammer",Donau,48.518569,13.709423,227.0,24.0,,,,,
+no_app_locks,,"Jochensteinn, nördliche Kammer",Donau,48.518822,13.709657,227.0,24.0,,,,,
+no_app_locks,,Leerstetten,Main-Donau-Kanal,49.291415,11.112606,190.0,12.0,,,,,
+no_app_locks,,Berching,Main-Donau-Kanal,49.091712,11.443173,190.0,12.0,,,,,
+no_app_locks,,Erlangen,Main-Donau-Kanal,49.622949,10.979683,190.0,12.0,,,,,
+no_app_locks,,Kriegenbrunn,Main-Donau-Kanal,49.555488,10.969823,190.0,12.0,,,,,
+no_app_locks,,Dietfurt,Main-Donau-Kanal,49.032956,11.560145,190.0,12.0,,,,,
+no_app_locks,,Eckersmühlen,Main-Donau-Kanal,49.210549,11.177547,190.0,12.0,,,,,
+no_app_locks,,Hilpoltstein,Main-Donau-Kanal,49.194297,11.226224,190.0,12.0,,,,,
+no_app_locks,,Nr. 12,Main-Donau-Kanal,49.01183,11.616009,33.5,4.4,,,,,
+no_app_locks,,Forchheim,Main-Donau-Kanal,49.743731,11.047964,190.0,12.0,,,,,
+no_app_locks,,Hausen,Main-Donau-Kanal,49.685361,11.037929,190.0,12.0,,,,,
+no_app_locks,,Sportbootschleuse Riedenburg,Main-Donau-Kanal,48.974745,11.687969,20.0,4.0,,,,,
+no_app_locks,,Riedenburg,Main-Donau-Kanal,48.975568,11.688601,190.0,12.0,,,,,
+no_app_locks,,Schleuse Nr. 5,Main-Donau-Kanal,48.939517,11.754423,31.5,2.7,,,,,
+no_app_locks,,Bamberg,Main-Donau-Kanal,49.879818,10.908366,190.0,12.0,,,,,
+no_app_locks,,Sportbootschleuse Kelheim,Main-Donau-Kanal,48.923969,11.851295,20.0,4.0,,,,,
+no_app_locks,,Kelheim,Main-Donau-Kanal,48.924274,11.850002,190.0,12.0,,,,,
+no_app_locks,,Schleuse Nr. 4,Main-Donau-Kanal,48.926534,11.814812,32.4,4.5,,,,,
+no_app_locks,,Strullendorf,Main-Donau-Kanal,49.83779,10.956993,190.0,12.0,,,,,
+no_app_locks,,Nürnberg,Main-Donau-Kanal,49.415028,11.057984,190.0,12.0,,,,,
+no_app_locks,,Bachhausen,Main-Donau-Kanal,49.152655,11.435774,190.0,12.0,,,,,
+no_app_locks,,Eibach,Main-Donau-Kanal,49.384745,11.064105,190.0,12.0,,,,,
+no_app_locks,,"Wipfeld, untere Kammer, Fallhöhe 4,31 m",Main,49.914559,10.183138,113.1,12.0,,,,,
+no_app_locks,,"Wipfeld, obere Kammer, Fallhöhe 4,31 m",Main,49.913279,10.184126,169.65,12.0,,,,,
+no_app_locks,,Sportbootschleuse Wipfeld,Main,49.912108,10.183422,12.5,2.5,,,,,
+no_app_locks,,"Marktbreit, obere Kammer",Main,49.667669,10.125891,110.5,12.0,,,,,
+no_app_locks,,"Marktbreit, untere Kammer",Main,49.667785,10.123698,163.5,12.0,,,,,
+no_app_locks,,Bootschleuse Marktbreit,Main,49.66739,10.124917,12.5,2.5,,,,,
+no_app_locks,,Sportbootschleuse Kleinostheim,Main,50.006521,9.045784,13.7,3.51,,,,,
+no_app_locks,,"Kleinostheim, rechte Kammer",Main,50.005509,9.047547,298.22,12.02,,,,,
+no_app_locks,,"Kleinostheim, linke Kammer",Main,50.005321,9.047441,298.36,12.04,,,,,
+no_app_locks,,Sportbootschleuse Klingenberg,Main,49.778482,9.180457,11.6,2.5,,,,,
+no_app_locks,,Klingenberg,Main,49.779308,9.179712,300.71,12.05,,,,,
+no_app_locks,,Sportbootsschleuse Wallstadt,Main,49.868759,9.159565,12.0,2.55,,,,,
+no_app_locks,,Wallstadt,Main,49.870194,9.15968,299.93,12.0,,,,,
+no_app_locks,,Sportbootschleuse Krotzenburg,Main,50.079288,8.960853,20.0,4.0,,,,,
+no_app_locks,,"Krotzenburg, rechte Kammer",Main,50.079805,8.962597,302.3,12.0,,,,,
+no_app_locks,,"Krotzenburg, linke Kammer",Main,50.079552,8.962681,300.0,12.0,,,,,
+no_app_locks,,Sportbootschleuse Goßmannsdorf,Main,49.677029,10.039275,12.5,2.5,,,,,
+no_app_locks,,"Goßmannsdorf,  untere Kammer",Main,49.677913,10.038796,168.5,12.0,,,,,
+no_app_locks,,"Goßmannsdorf,  obere Kammer",Main,49.676874,10.040283,110.0,12.0,,,,,
+no_app_locks,,Sportbootschleuse Volkach,Main,49.860342,10.218401,12.5,2.5,,,,,
+no_app_locks,,"Gerlachshausen, untere Kammer",Main,49.818276,10.221374,113.3,12.0,,,,,
+no_app_locks,,"Gerlachshausen, obere Kammer",Main,49.81687,10.221616,169.75,12.0,,,,,
+no_app_locks,,Sportbootschleuse Eddersheim,Main,50.040276,8.474668,22.0,3.5,,,,,
+no_app_locks,,"Eddersheim, rechte obere Kammer",Main,50.039346,8.477856,115.61,12.05,,,,,
+no_app_locks,,"Eddersheim, rechte untere Kammer",Main,50.038112,8.476226,215.78,12.05,,,,,
+no_app_locks,,"Eddersheim, linke obere Kammer Maximale Fallhöhe: 3,61 m",Main,50.039192,8.478122,114.69,15.05,,,,,
+no_app_locks,,"Eddersheim, linke untere Kammer",Main,50.037963,8.476497,213.75,15.05,,,,,
+no_app_locks,,Sportbootschleuse Lengfurt,Main,49.811495,9.59352,12.4,2.51,,,,,
+no_app_locks,,Lengfurt,Main,49.811213,9.594937,300.08,11.98,,,,,
+no_app_locks,,Sportbootschleuse Harrbach,Main,49.999926,9.717423,12.5,2.5,,,,,
+no_app_locks,,Harrbach,Main,50.000099,9.716631,299.45,12.0,,,,,
+no_app_locks,,Steinbach,Main,50.010942,9.605537,299.1,12.0,,,,,
+no_app_locks,,Sportbootschleuse Steinbach,Main,50.011836,9.606412,12.5,2.5,,,,,
+no_app_locks,,Sportbootschleuse Limbach,Main,49.980127,10.647545,12.5,2.5,,,,,
+no_app_locks,,"Limbach, obere Kammer",Main,49.980641,10.639867,112.8,12.0,,,,,
+no_app_locks,,"Limbach, untere Kammer",Main,49.981405,10.638009,168.3,12.0,,,,,
+no_app_locks,,Sportbootschleuse Eichel,Main,49.75564,9.552244,12.1,2.5,,,,,
+no_app_locks,,Eichel,Main,49.756673,9.551811,299.92,12.0,,,,,
+no_app_locks,,Sportbootschleuse Kostheim,Main,49.999837,8.334,22.3,3.5,,,,,
+no_app_locks,,"Kostheim, rechte untere Kammer",Main,49.999542,8.333568,214.57,15.05,,,,,
+no_app_locks,,"Kostheim, rechte obere Kammer",Main,49.999218,8.335998,111.64,15.05,,,,,
+no_app_locks,,"Kostheim, linke Kammer",Main,49.99909,8.334395,339.02,12.0,,,,,
+no_app_locks,,"Offenbach, rechte Kammer",Main,50.108125,8.727401,230.07,13.05,,,,,
+no_app_locks,,"Offenbach, linke untere Kammer",Main,50.107603,8.726338,210.2,12.09,,,,,
+no_app_locks,,"Offenbach, linke obere Kammer",Main,50.108245,8.72864,110.5,12.09,,,,,
+no_app_locks,,Sportbootschleuse Offenbach,Main,50.108154,8.726584,20.35,3.5,,,,,
+no_app_locks,,Sportbootschleuse Himmelstadt,Main,49.921518,9.801582,12.5,2.5,,,,,
+no_app_locks,,Himmelstadt,Main,49.922206,9.801605,299.5,12.0,,,,,
+no_app_locks,,"Knetzgau, obere Kammer",Main,50.002375,10.550058,111.8,12.0,,,,,
+no_app_locks,,Sportbootschleuse Knetzgau,Main,50.000801,10.550719,12.5,2.5,,,,,
+no_app_locks,,"Knetzgau, untere Kammer",Main,50.002693,10.547912,168.55,12.0,,,,,
+no_app_locks,,Sportbootschleuse Ottendorf,Main,50.016632,10.379771,12.5,2.5,,,,,
+no_app_locks,,Sportbootschleuse Rothenfels,Main,49.900208,9.588673,12.5,2.5,,,,,
+no_app_locks,,Rothenfels,Main,49.898963,9.589751,298.45,12.0,,,,,
+no_app_locks,,Viereth,Main,49.923829,10.784932,289.8,12.0,,,,,
+no_app_locks,,"Griesheim, rechte untere Kammer",Main,50.088409,8.598003,215.67,12.02,,,,,
+no_app_locks,,"Griesheim, linke untere Kammer",Main,50.088176,8.597994,214.26,15.04,,,,,
+no_app_locks,,"Griesheim, rechte obere Kammer",Main,50.088428,8.600495,113.75,12.02,,,,,
+no_app_locks,,"Griesheim, linke obere Kammer",Main,50.088196,8.600514,114.78,15.04,,,,,
+no_app_locks,,Sportbootschleuse Griesheim,Main,50.090339,8.599303,20.2,3.5,,,,,
+no_app_locks,,Faulbach,Main,49.78118,9.440628,299.8,12.1,,,,,
+no_app_locks,,Sportbootschleuse Faulbach,Main,49.780883,9.440635,12.1,2.5,,,,,
+no_app_locks,,Obernau,Main,49.934675,9.127243,299.18,12.0,,,,,
+no_app_locks,,Sportbootschleuse Obernau,Main,49.934024,9.128476,11.9,2.5,,,,,
+no_app_locks,,"Randersacker, untere Kammer,",Main,49.753803,9.981674,164.75,12.0,,,,,
+no_app_locks,,Würzburg,Main,49.791264,9.925427,293.1,12.0,,,,,
+no_app_locks,,"Randersacker, obere Kammer",Main,49.752543,9.982692,119.4,12.0,,,,,
+no_app_locks,,Alte Schleuse,Main,49.790285,9.925837,60.0,10.3,,,,,
+no_app_locks,,Sportbootschleuse Randersacker,Main,49.753824,9.981125,12.5,2.5,,,,,
+no_app_locks,,"Schweinfurt, obere Kammer",Main,50.039928,10.232493,113.5,12.0,,,,,
+no_app_locks,,"Schweinfurt, untere Kammer",Main,50.039107,10.230697,169.7,12.0,,,,,
+no_app_locks,,Sportbootschleuse Schweinfurt,Main,50.040167,10.229424,12.5,2.5,,,,,
+no_app_locks,,Freudenberg,Main,49.752741,9.3191,300.0,12.0,,,,,
+no_app_locks,,Sportbootschleuse Freudenberg,Main,49.753444,9.318562,12.5,2.5,,,,,
+no_app_locks,,Sportbootschleuse Mühlheim,Main,50.125195,8.870301,20.0,4.0,,,,,
+no_app_locks,,Mühlheim,Main,50.124868,8.872126,299.9,12.04,,,,,
+no_app_locks,,Bootsschleuse Dettelbach,Main,49.795105,10.182215,2.5,2.5,,,,,
+no_app_locks,,"Dettelbach, obere Kammer",Main,49.795448,10.182589,114.5,12.0,,,,,
+no_app_locks,,"Dettelbach, untere Kammer",Main,49.796158,10.180692,167.6,12.0,,,,,
+no_app_locks,,Sportbootschleuse Kitzingen,Main,49.720179,10.154821,12.5,2.5,,,,,
+no_app_locks,,"Kitzingen, untere Kammer",Main,49.718517,10.152105,166.25,12.0,,,,,
+no_app_locks,,"Kitzingen, obere Kammer",Main,49.719341,10.153902,114.9,12.0,,,,,
+no_app_locks,,Mainkur,Main,50.137115,8.791339,315.0,12.0,,,,,
+no_app_locks,,Heubach,Main,49.712766,9.231068,300.0,12.0,,,,,
+no_app_locks,,Sportbootschleuse Heubach,Main,49.712938,9.231017,12.0,2.5,,,,,
+no_app_locks,,"Garstadt, obere Kammer",Main,49.97752,10.175167,112.25,12.0,,,,,
+no_app_locks,,"Garstadt, untere Kammer",Main,49.9761,10.175367,168.9,12.0,,,,,
+no_app_locks,,Sportbootschleuse Garstadt,Main,49.978279,10.175908,12.5,2.5,,,,,
+no_app_locks,,Erlabrunn,Main,49.856561,9.854419,299.2,12.0,,,,,
+no_app_locks,,Sportbootschleuse Erlabrunn,Main,49.856431,9.854344,12.5,2.5,,,,,
+no_app_locks,,Schleuse Enkirch,Mosel,49.97533,7.126147,170.0,12.0,,,,,
+no_app_locks,,Bootsschleuse Enkirch,Mosel,49.975749,7.126138,18.0,32.0,,,,,
+no_app_locks,,Schleuse St. Aldegund,Mosel,50.086888,7.133389,170.0,12.0,,,,,
+no_app_locks,,Bootsschleuse St. Aldegund,Mosel,50.087402,7.133783,18.0,32.0,,,,,
+no_app_locks,,Sportbootschleuse Detzem,Mosel,49.811938,6.846168,18.0,33.0,,,,,
+no_app_locks,,Schleuse Detzem,Mosel,49.817679,6.845474,170.0,12.0,,,,,
+no_app_locks,,Schleuse Koblenz,Mosel,50.367418,7.583558,170.0,12.0,,,,,
+no_app_locks,,Bootsschleuse Koblenz,Mosel,50.366995,7.582939,18.0,32.0,,,,,
+no_app_locks,,Sportbootschleuse Grevenmacher,Mosel,49.672908,6.438125,18.0,33.0,,,,,
+no_app_locks,,Schleuse Grevenmacher,Mosel,49.673163,6.438243,170.0,12.0,,,,,
+no_app_locks,,Schleuse Lehmen,Mosel,50.275444,7.457371,170.0,12.0,,,,,
+no_app_locks,,Bootsschleuse Lehmen,Mosel,50.274798,7.45784,18.0,32.0,,,,,
+no_app_locks,,Sportbootschleuse Wintrich,Mosel,49.879474,6.947018,18.0,33.0,,,,,
+no_app_locks,,Schleuse Wintrich,Mosel,49.878692,6.946791,170.0,12.0,,,,,
+no_app_locks,,Sportbootschleuse Palzem,Mosel,49.56734,6.364524,18.0,33.0,,,,,
+no_app_locks,,Schleuse Palzem,Mosel,49.567165,6.364296,170.0,12.0,,,,,
+no_app_locks,, ,Mosel,49.729219,6.622444,170.0,12.0,,,,,
+no_app_locks,,Schleuse Müden,Mosel,50.183224,7.332036,170.0,12.0,,,,,
+no_app_locks,,Bootsschleuse Müden,Mosel,50.183478,7.332176,18.0,32.0,,,,,
+no_app_locks,,Sportbootschleuse Zeltingen,Mosel,49.949693,7.022245,18.0,33.0,,,,,
+no_app_locks,,Schleuse Zeltingen,Mosel,49.949214,7.021967,170.0,12.0,,,,,
+no_app_locks,,Schleuse Bruttig-Fankel,Mosel,50.124397,7.2283,170.0,12.0,,,,,
+no_app_locks,,Bootsschleuse Bruttig-Fankel,Mosel,50.124258,7.227904,18.0,32.0,,,,,
+no_app_locks,,Schleuse Bruttig-Fankel,Mosel,50.124221,7.228891,210.0,125.0,,,,,
+no_app_locks,,Schleuse Brienen,Rhine,51.82689,6.139693,67.0,8.2,,,,,
+no_app_locks,,Mettlach,Saar,49.490993,6.580399,40.0,6.79,,,,,
+no_app_locks,,Mettlach,Saar,49.491208,6.57931,190.0,12.04,,,,,
+no_app_locks,,Rehlingen,Saar,49.373527,6.698344,40.0,6.79,,,,,
+no_app_locks,,Rehlingen,Saar,49.372815,6.697974,190.0,12.04,,,,,
+no_app_locks,,Lisdorf,Saar,49.296848,6.765876,190.0,12.04,,,,,
+no_app_locks,,Kanzem,Saar,49.658923,6.560648,40.0,6.79,,,,,
+no_app_locks,,Kanzem,Saar,49.658239,6.561111,190.0,12.04,,,,,
+no_app_locks,,Serrig,Saar,49.566901,6.592912,40.0,6.79,,,,,
+no_app_locks,,Serrig,Saar,49.567359,6.593784,190.0,12.04,,,,,
