@@ -14,7 +14,7 @@
  * Bump `VERSION` to force every client to re-install.
  */
 
-const VERSION    = 'fc-v8';
+const VERSION    = 'fc-v9';
 const SHELL      = `fc-shell-${VERSION}`;
 const TILES      = `fc-tiles-${VERSION}`;
 const TILES_CAP  = 400; // roughly: 400 × 50 KB ≈ 20 MB
@@ -41,6 +41,8 @@ const SHELL_URLS = [
   './data/waterway_colors.json',
   './data/tunnels.json',
   './data/tidal.json',
+  // Wave 4 — multi-country closures (FR + NL + DE + BE + AT seeded)
+  './data/closures.json',
   'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css',
   'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js',
   'https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js',
