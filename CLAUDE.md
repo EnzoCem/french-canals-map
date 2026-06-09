@@ -345,6 +345,46 @@ Route 51 "Garonne (tidal)" with waypoints w398–w402 (Bordeaux, Portets, Cadill
 
 ---
 
+## Multi-country closures (Wave 4)
+
+Navigation closures live in `data/closures.json` as a single array, country-tagged. The Leaflet layer (`closuresGroup`, toggled via `🚧 Closures`) renders each entry as a coloured circle marker (red = active, orange = upcoming within 180 days).
+
+**Schema:**
+
+```jsonc
+{
+  "id":          "cl_fr_001",    // 'cl_<cc>_<NNN>' (or legacy 'ch_NNN' for pre-Wave-4 FR entries)
+  "country":     "FR | NL | DE | BE | AT",
+  "waterway":    "Canal du Midi",
+  "section":     "Béziers — Agde",
+  "lat":         43.344, "lon": 3.218,
+  "start":       "2026-06-01",   // ISO date
+  "end":         "2026-06-12",
+  "type":        "travaux | hivernage | incident",
+  "desc":        "1-line summary",
+  "source_url":  "https://www.vnf.fr/.../les-chomages/"
+}
+```
+
+**Refresh workflow.** Each country's closures change weekly during the season. Refresh by:
+
+1. Visiting the authority portal (see `source_url` in any existing entry of that country)
+2. Picking 4-8 representative active or imminent (within 90 days) closures
+3. Appending/replacing the country's entries in `data/closures.json`
+4. Bumping `'fc-closures-v1'` in `french_canals_map.html` to invalidate old caches
+
+**Authority portals (cached in `source_url` field):**
+
+- 🇫🇷 FR — VNF Chômages (`https://www.vnf.fr/vnf/vnf-gere-le-reseau/les-chomages/`)
+- 🇳🇱 NL — Rijkswaterstaat Stremmingen via vaarweginformatie.nl FTM API. Live listing: `https://www.vaarweginformatie.nl/frp/api/messages/nts/summaries?validFrom=<ms>&validUntil=<ms>&ntsTypes=FTM&limitationGroup=BLOCKED&ftmAreas=<id>` (each `ftmAreas` parameter accepts province IDs from `/frp/api/messages/ftm/areas`)
+- 🇩🇪 DE — ELWIS Schifffahrtspolizeiliche Bekanntmachungen
+- 🇧🇪 BE — DVW (Visuris.be for Flanders) + SPW (voies-hydrauliques.wallonie.be for Wallonia)
+- 🇦🇹 AT — viadonau DoRIS
+
+**Out-of-scope countries** (no curated closures, deep-link only via the data-sources panel "Closures (not curated)" section): 🇬🇧 UK (CRT), 🇮🇪 IE (Waterways Ireland), 🇮🇹 IT (AIPo), 🇨🇭 CH (Port of Switzerland), 🇱🇺 LU (covered by 🇩🇪 DE WSV on the Moselle).
+
+---
+
 ## Google Places import
 
 Users can bring their Google Maps "Saved Places" (Starred, Want to Go, lists) into the map as a 📍 My Places layer. Managed from the **Data Backup** panel under the *Google Maps places* heading.
