@@ -11,7 +11,11 @@
       "max_height": 7,
       "max_draught": 5.7,
       "color": "#e74c3c",
-      "description": "The lower Seine — commercial barges, big locks, broad tidal estuary upstream to Rouen and Paris."
+      "description": "The lower Seine — commercial barges, big locks, broad tidal estuary upstream to Rouen and Paris.",
+      "source": "curated",
+      "country": [
+        "FR"
+      ]
     },
     {
       "num": 2,
@@ -24,7 +28,11 @@
       "max_height": 5.4,
       "max_draught": 3,
       "color": "#e67e22",
-      "description": "Seine through Paris and upstream to Montereau — the classic Île-de-France approach."
+      "description": "Seine through Paris and upstream to Montereau — the classic Île-de-France approach.",
+      "source": "curated",
+      "country": [
+        "FR"
+      ]
     },
     {
       "num": 3,
@@ -37,7 +45,11 @@
       "max_height": 3.5,
       "max_draught": 1.8,
       "color": "#f39c12",
-      "description": "Petite Seine · Montereau → Marcilly"
+      "description": "Petite Seine · Montereau → Marcilly",
+      "source": "curated",
+      "country": [
+        "FR"
+      ]
     },
     {
       "num": 4,
@@ -50,7 +62,11 @@
       "max_height": 3.5,
       "max_draught": 1.8,
       "color": "#f1c40f",
-      "description": "The Yonne from Auxerre downstream to the Seine — small commercial scale, lots of locks, very pretty."
+      "description": "The Yonne from Auxerre downstream to the Seine — small commercial scale, lots of locks, very pretty.",
+      "source": "curated",
+      "country": [
+        "FR"
+      ]
     },
     {
       "num": 5,
@@ -63,7 +79,11 @@
       "max_height": 3.5,
       "max_draught": 2.2,
       "color": "#2ecc71",
-      "description": "The navigable Marne — wide and steady from Paris east to Vitry-le-François."
+      "description": "The navigable Marne — wide and steady from Paris east to Vitry-le-François.",
+      "source": "curated",
+      "country": [
+        "FR"
+      ]
     },
     {
       "num": 6,
@@ -76,7 +96,11 @@
       "max_height": 3.5,
       "max_draught": 2.2,
       "color": "#1abc9c",
-      "description": "Canal latéral à l'Aisne · Vieux-lès-Asfeld → Compiègne"
+      "description": "Canal latéral à l'Aisne · Vieux-lès-Asfeld → Compiègne",
+      "source": "curated",
+      "country": [
+        "FR"
+      ]
     },
     {
       "num": 7,
@@ -89,7 +113,11 @@
       "max_height": 3.5,
       "max_draught": 2,
       "color": "#16a085",
-      "description": "Canal de l'Oise à l'Aisne · Abbécourt → Condé-sur-Marne"
+      "description": "Canal de l'Oise à l'Aisne · Abbécourt → Condé-sur-Marne",
+      "source": "curated",
+      "country": [
+        "FR"
+      ]
     },
     {
       "num": 8,
@@ -102,7 +130,11 @@
       "max_height": 3.7,
       "max_draught": 3,
       "color": "#27ae60",
-      "description": "The Oise from the Belgian border down to Conflans — commercial spine north of Paris."
+      "description": "The Oise from the Belgian border down to Conflans — commercial spine north of Paris.",
+      "source": "curated",
+      "country": [
+        "FR"
+      ]
     },
     {
       "num": 9,
@@ -115,7 +147,11 @@
       "max_height": 3.5,
       "max_draught": 1.8,
       "color": "#3498db",
-      "description": "Canals of Paris · Paris → Paris"
+      "description": "Canals of Paris · Paris → Paris",
+      "source": "curated",
+      "country": [
+        "FR"
+      ]
     },
     {
       "num": 10,
@@ -128,7 +164,11 @@
       "max_height": 3.5,
       "max_draught": 1.8,
       "color": "#9b59b6",
-      "description": "Briare–Loing–Latéral à la Loire–Centre — the 'Bourbonnais route' linking Seine to Saône."
+      "description": "Briare–Loing–Latéral à la Loire–Centre — the 'Bourbonnais route' linking Seine to Saône.",
+      "source": "curated",
+      "country": [
+        "FR"
+      ]
     },
     {
       "num": 11,
@@ -141,7 +181,11 @@
       "max_height": 2.7,
       "max_draught": 1.2,
       "color": "#8e44ad",
-      "description": "Canal du Nivernais — the Burgundy backroad: narrow, hilly, gorgeous."
+      "description": "Canal du Nivernais — the Burgundy backroad: narrow, hilly, gorgeous.",
+      "source": "curated",
+      "country": [
+        "FR"
+      ]
     },
     {
       "num": 12,
@@ -154,7 +198,11 @@
       "max_height": 3.4,
       "max_draught": 1.8,
       "color": "#6c3483",
-      "description": "Canal de Bourgogne — Yonne → Saône via Pouilly-en-Auxois tunnel."
+      "description": "Canal de Bourgogne — Yonne → Saône via Pouilly-en-Auxois tunnel.",
+      "source": "curated",
+      "country": [
+        "FR"
+      ]
     },
     {
       "num": 13,
@@ -167,7 +215,11 @@
       "max_height": 3.5,
       "max_draught": 1.8,
       "color": "#e91e63",
-      "description": "The Saône — slow, broad commercial river from Saint-Symphorien to Lyon."
+      "description": "The Saône — slow, broad commercial river from Saint-Symphorien to Lyon.",
+      "source": "curated",
+      "country": [
+        "FR"
+      ]
     },
     {
       "num": 14,
@@ -180,7 +232,11 @@
       "max_height": 3.5,
       "max_draught": 1.8,
       "color": "#f06292",
-      "description": "Canal du Rhône au Rhin (Branche Sud) · Niffer/Mulhouse → St-Jean-de-Losne"
+      "description": "Canal du Rhône au Rhin (Branche Sud) · Niffer/Mulhouse → St-Jean-de-Losne",
+      "source": "curated",
+      "country": [
+        "FR"
+      ]
     },
     {
       "num": 15,
@@ -193,7 +249,11 @@
       "max_height": 7,
       "max_draught": 2.5,
       "color": "#ff7043",
-      "description": "Saône · St-Jean-de-Losne → Lyon"
+      "description": "Saône · St-Jean-de-Losne → Lyon",
+      "source": "curated",
+      "country": [
+        "FR"
+      ]
     },
     {
       "num": 16,
@@ -206,7 +266,11 @@
       "max_height": 7,
       "max_draught": 3.5,
       "color": "#ff5722",
-      "description": "The Rhône from Lyon to the Mediterranean — fast water, big locks, careful current management."
+      "description": "The Rhône from Lyon to the Mediterranean — fast water, big locks, careful current management.",
+      "source": "curated",
+      "country": [
+        "FR"
+      ]
     },
     {
       "num": 17,
@@ -219,7 +283,11 @@
       "max_height": 4.5,
       "max_draught": 1.5,
       "color": "#ff8a65",
-      "description": "Petit Rhône · Arles → St-Gilles"
+      "description": "Petit Rhône · Arles → St-Gilles",
+      "source": "curated",
+      "country": [
+        "FR"
+      ]
     },
     {
       "num": 18,
@@ -232,7 +300,11 @@
       "max_height": 4.5,
       "max_draught": 1.5,
       "color": "#ffa726",
-      "description": "Canal du Rhône à Sète — east-west across the Camargue to Sète."
+      "description": "Canal du Rhône à Sète — east-west across the Camargue to Sète.",
+      "source": "curated",
+      "country": [
+        "FR"
+      ]
     },
     {
       "num": 19,
@@ -245,7 +317,11 @@
       "max_height": 5.25,
       "max_draught": 3.5,
       "color": "#26c6da",
-      "description": "Liaison Dunkerque–Escaut · Dunkerque → Valenciennes"
+      "description": "Liaison Dunkerque–Escaut · Dunkerque → Valenciennes",
+      "source": "curated",
+      "country": [
+        "FR"
+      ]
     },
     {
       "num": 20,
@@ -258,7 +334,11 @@
       "max_height": 3.66,
       "max_draught": 1.9,
       "color": "#00bcd4",
-      "description": "Canal de Calais · Calais → Watten"
+      "description": "Canal de Calais · Calais → Watten",
+      "source": "curated",
+      "country": [
+        "FR"
+      ]
     },
     {
       "num": 21,
@@ -271,7 +351,11 @@
       "max_height": 3.5,
       "max_draught": 1.5,
       "color": "#0097a7",
-      "description": "River Aa · Gravelines → Saint-Omer"
+      "description": "River Aa · Gravelines → Saint-Omer",
+      "source": "curated",
+      "country": [
+        "FR"
+      ]
     },
     {
       "num": 24,
@@ -284,7 +368,11 @@
       "max_height": 3.5,
       "max_draught": 2.2,
       "color": "#80deea",
-      "description": "River Lys · Aire-sur-la-Lys → Deûlémont"
+      "description": "River Lys · Aire-sur-la-Lys → Deûlémont",
+      "source": "curated",
+      "country": [
+        "FR"
+      ]
     },
     {
       "num": 28,
@@ -297,7 +385,11 @@
       "max_height": 3.7,
       "max_draught": 2.2,
       "color": "#4dd0e1",
-      "description": "Canal du Nord · Arleux → Pont-l'Evêque"
+      "description": "Canal du Nord · Arleux → Pont-l'Evêque",
+      "source": "curated",
+      "country": [
+        "FR"
+      ]
     },
     {
       "num": 29,
@@ -310,7 +402,11 @@
       "max_height": 3.7,
       "max_draught": 2.2,
       "color": "#006064",
-      "description": "Canal de St-Quentin · Cambrai → Chauny"
+      "description": "Canal de St-Quentin · Cambrai → Chauny",
+      "source": "curated",
+      "country": [
+        "FR"
+      ]
     },
     {
       "num": 31,
@@ -323,7 +419,11 @@
       "max_height": 3.5,
       "max_draught": 1.8,
       "color": "#aed6f1",
-      "description": "Canal de la Somme · St-Valery-sur-Somme → Péronne"
+      "description": "Canal de la Somme · St-Valery-sur-Somme → Péronne",
+      "source": "curated",
+      "country": [
+        "FR"
+      ]
     },
     {
       "num": 32,
@@ -336,7 +436,11 @@
       "max_height": 3.5,
       "max_draught": 1.8,
       "color": "#a29bfe",
-      "description": "Canal des Ardennes · Pont-à-Bar → Vieux-lès-Asfeld"
+      "description": "Canal des Ardennes · Pont-à-Bar → Vieux-lès-Asfeld",
+      "source": "curated",
+      "country": [
+        "FR"
+      ]
     },
     {
       "num": 33,
@@ -349,7 +453,11 @@
       "max_height": 3.5,
       "max_draught": 1.8,
       "color": "#6c5ce7",
-      "description": "Canal de la Meuse · Givet → Troussey"
+      "description": "Canal de la Meuse · Givet → Troussey",
+      "source": "curated",
+      "country": [
+        "FR"
+      ]
     },
     {
       "num": 34,
@@ -362,7 +470,11 @@
       "max_height": 7,
       "max_draught": 2.8,
       "color": "#fd79a8",
-      "description": "The French Moselle from Frouard to Apach — connects Marne–Rhin to the German Mosel."
+      "description": "The French Moselle from Frouard to Apach — connects Marne–Rhin to the German Mosel.",
+      "source": "curated",
+      "country": [
+        "FR"
+      ]
     },
     {
       "num": 35,
@@ -375,7 +487,11 @@
       "max_height": 3.5,
       "max_draught": 2.1,
       "color": "#e17055",
-      "description": "Canal de la Marne au Rhin — east-west across Lorraine, two summit-level tunnels."
+      "description": "Canal de la Marne au Rhin — east-west across Lorraine, two summit-level tunnels.",
+      "source": "curated",
+      "country": [
+        "FR"
+      ]
     },
     {
       "num": 36,
@@ -388,7 +504,11 @@
       "max_height": 3.5,
       "max_draught": 1.8,
       "color": "#d63031",
-      "description": "Canal entre Champagne et Bourgogne · Vitry-le-François → Maxilly-sur-Saône"
+      "description": "Canal entre Champagne et Bourgogne · Vitry-le-François → Maxilly-sur-Saône",
+      "source": "curated",
+      "country": [
+        "FR"
+      ]
     },
     {
       "num": 37,
@@ -401,7 +521,11 @@
       "max_height": 3.5,
       "max_draught": 1.8,
       "color": "#fab1a0",
-      "description": "Canal des Vosges · Neuves-Maisons → Corre"
+      "description": "Canal des Vosges · Neuves-Maisons → Corre",
+      "source": "curated",
+      "country": [
+        "FR"
+      ]
     },
     {
       "num": 38,
@@ -414,7 +538,11 @@
       "max_height": 3.5,
       "max_draught": 1.8,
       "color": "#55efc4",
-      "description": "Canal de la Sarre · Gondrexange → Sarreguemines"
+      "description": "Canal de la Sarre · Gondrexange → Sarreguemines",
+      "source": "curated",
+      "country": [
+        "FR"
+      ]
     },
     {
       "num": 39,
@@ -427,7 +555,11 @@
       "max_height": 3.5,
       "max_draught": 2,
       "color": "#00b894",
-      "description": "Canal du Rhône au Rhin (Branche Nord) · Strasbourg → Rhinau"
+      "description": "Canal du Rhône au Rhin (Branche Nord) · Strasbourg → Rhinau",
+      "source": "curated",
+      "country": [
+        "FR"
+      ]
     },
     {
       "num": 40,
@@ -440,7 +572,11 @@
       "max_height": null,
       "max_draught": null,
       "color": "#00cec9",
-      "description": "The French Rhine (Rhin tronçon français) — Bâle to Lauterbourg, big commercial locks."
+      "description": "The French Rhine (Rhin tronçon français) — Bâle to Lauterbourg, big commercial locks.",
+      "source": "curated",
+      "country": [
+        "FR"
+      ]
     },
     {
       "num": 41,
@@ -453,7 +589,11 @@
       "max_height": 2.5,
       "max_draught": 1.2,
       "color": "#fdcb6e",
-      "description": "Canal d'Ille-et-Rance — Rennes to Saint-Malo, very pretty Breton link."
+      "description": "Canal d'Ille-et-Rance — Rennes to Saint-Malo, very pretty Breton link.",
+      "source": "curated",
+      "country": [
+        "FR"
+      ]
     },
     {
       "num": 42,
@@ -466,7 +606,11 @@
       "max_height": 2.5,
       "max_draught": 1.1,
       "color": "#e2b96f",
-      "description": "Canal de Nantes à Brest — long, lonely, scenic crossing of Brittany."
+      "description": "Canal de Nantes à Brest — long, lonely, scenic crossing of Brittany.",
+      "source": "curated",
+      "country": [
+        "FR"
+      ]
     },
     {
       "num": 44,
@@ -479,7 +623,11 @@
       "max_height": 2.5,
       "max_draught": 1.1,
       "color": "#d4a017",
-      "description": "Nantes à Brest Canal (Est section) · Châteaulin → Goariva"
+      "description": "Nantes à Brest Canal (Est section) · Châteaulin → Goariva",
+      "source": "curated",
+      "country": [
+        "FR"
+      ]
     },
     {
       "num": 45,
@@ -492,7 +640,11 @@
       "max_height": 2.5,
       "max_draught": 1.2,
       "color": "#f9ca24",
-      "description": "Nantes à Brest Canal / River Erdre · Redon → Nantes"
+      "description": "Nantes à Brest Canal / River Erdre · Redon → Nantes",
+      "source": "curated",
+      "country": [
+        "FR"
+      ]
     },
     {
       "num": 46,
@@ -505,7 +657,11 @@
       "max_height": 5,
       "max_draught": 1.5,
       "color": "#6ab04c",
-      "description": "Loire & Maine · St-Nazaire → Angers"
+      "description": "Loire & Maine · St-Nazaire → Angers",
+      "source": "curated",
+      "country": [
+        "FR"
+      ]
     },
     {
       "num": 47,
@@ -518,7 +674,11 @@
       "max_height": 3.5,
       "max_draught": 1.4,
       "color": "#badc58",
-      "description": "River Mayenne · Angers → Mayenne"
+      "description": "River Mayenne · Angers → Mayenne",
+      "source": "curated",
+      "country": [
+        "FR"
+      ]
     },
     {
       "num": 48,
@@ -531,7 +691,11 @@
       "max_height": 3.5,
       "max_draught": 1.4,
       "color": "#7ed6df",
-      "description": "River Sarthe · Angers → Le Mans"
+      "description": "River Sarthe · Angers → Le Mans",
+      "source": "curated",
+      "country": [
+        "FR"
+      ]
     },
     {
       "num": 49,
@@ -544,7 +708,11 @@
       "max_height": 3.3,
       "max_draught": 1.4,
       "color": "#e55039",
-      "description": "Canal du Midi + Canal de Garonne — the historic Toulouse–Sète/Bordeaux link."
+      "description": "Canal du Midi + Canal de Garonne — the historic Toulouse–Sète/Bordeaux link.",
+      "source": "curated",
+      "country": [
+        "FR"
+      ]
     },
     {
       "num": 50,
@@ -557,7 +725,11 @@
       "max_height": 2.5,
       "max_draught": 1.2,
       "color": "#cb4335",
-      "description": "Canal de la Robine · Port-la-Robine → Port-la-Nouvelle"
+      "description": "Canal de la Robine · Port-la-Robine → Port-la-Nouvelle",
+      "source": "curated",
+      "country": [
+        "FR"
+      ]
     },
     {
       "num": 51,
@@ -570,7 +742,11 @@
       "max_height": 6.5,
       "max_draught": 3.5,
       "color": "#1a7a9a",
-      "description": "Tidal Garonne — Bordeaux to Castets-en-Dorthe with mascaret considerations."
+      "description": "Tidal Garonne — Bordeaux to Castets-en-Dorthe with mascaret considerations.",
+      "source": "curated",
+      "country": [
+        "FR"
+      ]
     },
     {
       "num": 52,
@@ -583,7 +759,273 @@
       "max_height": 3.5,
       "max_draught": 1.8,
       "color": "#922b21",
-      "description": "The Charente — small-scale cruising on a quiet river to Cognac."
+      "description": "The Charente — small-scale cruising on a quiet river to Cognac.",
+      "source": "curated",
+      "country": [
+        "FR"
+      ]
+    },
+    {
+      "num": 60,
+      "section": 1,
+      "canal": "Hochrhein (Basel–Strasbourg)",
+      "from": "Basel",
+      "to": "Strasbourg",
+      "locks": 4,
+      "dist_km": 130,
+      "max_height": 6.0,
+      "max_draught": 2.1,
+      "color": "#1976d2",
+      "country": [
+        "CH",
+        "FR",
+        "DE"
+      ],
+      "source": "curated",
+      "description": "Upper Rhine — Swiss border up to Strasbourg. Smaller locks, mountain stretch with current management."
+    },
+    {
+      "num": 61,
+      "section": 1,
+      "canal": "Rhine — Middle (Strasbourg–Koblenz)",
+      "from": "Strasbourg",
+      "to": "Koblenz",
+      "locks": 0,
+      "dist_km": 460,
+      "max_height": 9.1,
+      "max_draught": 2.5,
+      "color": "#1565c0",
+      "country": [
+        "FR",
+        "DE"
+      ],
+      "source": "curated",
+      "description": "Free-flowing Rhine through the Rhine Gorge. No locks, very strong current at Bingen — plan downstream where possible."
+    },
+    {
+      "num": 62,
+      "section": 1,
+      "canal": "Rhine — Lower (Koblenz–Rotterdam)",
+      "from": "Koblenz",
+      "to": "Rotterdam",
+      "locks": 0,
+      "dist_km": 380,
+      "max_height": 9.1,
+      "max_draught": 3.0,
+      "color": "#0d47a1",
+      "country": [
+        "DE",
+        "NL"
+      ],
+      "source": "curated",
+      "description": "Lower Rhine via Duisburg and Nijmegen to the Dutch delta. Industrial corridor, busy commercial traffic."
+    },
+    {
+      "num": 63,
+      "section": 1,
+      "canal": "Mosel (German Moselle, Apach–Koblenz)",
+      "from": "Apach",
+      "to": "Koblenz",
+      "locks": 10,
+      "dist_km": 242,
+      "max_height": 6.2,
+      "max_draught": 2.7,
+      "color": "#0288d1",
+      "country": [
+        "DE",
+        "LU"
+      ],
+      "source": "curated",
+      "description": "German Mosel — continues the French Moselle from Apach. Vineyards, big locks, mostly downstream."
+    },
+    {
+      "num": 64,
+      "section": 1,
+      "canal": "Main (Mainz–Bamberg)",
+      "from": "Mainz",
+      "to": "Bamberg",
+      "locks": 34,
+      "dist_km": 388,
+      "max_height": 6.0,
+      "max_draught": 2.7,
+      "color": "#0277bd",
+      "country": [
+        "DE"
+      ],
+      "source": "curated",
+      "description": "The river Main from the Rhine confluence at Mainz up to Bamberg. Many locks, beer-country towns."
+    },
+    {
+      "num": 65,
+      "section": 1,
+      "canal": "Main-Donau-Kanal (Bamberg–Kelheim)",
+      "from": "Bamberg",
+      "to": "Kelheim",
+      "locks": 16,
+      "dist_km": 171,
+      "max_height": 6.0,
+      "max_draught": 2.7,
+      "color": "#01579b",
+      "country": [
+        "DE"
+      ],
+      "source": "curated",
+      "description": "The Rhine–Danube link across the Continental Divide. Pumping locks. Engineering tour-de-force completed 1992."
+    },
+    {
+      "num": 66,
+      "section": 1,
+      "canal": "Donau (Kelheim–Vienna)",
+      "from": "Kelheim",
+      "to": "Vienna",
+      "locks": 10,
+      "dist_km": 405,
+      "max_height": 6.5,
+      "max_draught": 2.7,
+      "color": "#00838f",
+      "country": [
+        "DE",
+        "AT"
+      ],
+      "source": "curated",
+      "description": "German + Austrian Danube. Big river, big locks, scenic from Passau to Vienna via the Wachau."
+    },
+    {
+      "num": 67,
+      "section": 1,
+      "canal": "Standing Mast Route (NL)",
+      "from": "Vlissingen",
+      "to": "Delfzijl",
+      "locks": 12,
+      "dist_km": 360,
+      "max_height": null,
+      "max_draught": 1.9,
+      "color": "#00897b",
+      "country": [
+        "NL"
+      ],
+      "source": "curated",
+      "description": "The Dutch coast-to-coast route for sailing yachts — opening bridges throughout, no fixed air-draft limit."
+    },
+    {
+      "num": 68,
+      "section": 1,
+      "canal": "IJsselmeer + Markermeer crossings",
+      "from": "Amsterdam",
+      "to": "Lemmer",
+      "locks": 2,
+      "dist_km": 90,
+      "max_height": null,
+      "max_draught": 3.8,
+      "color": "#26a69a",
+      "country": [
+        "NL"
+      ],
+      "source": "curated",
+      "description": "Big-water inland lakes north of Amsterdam. No air-draft limit on the lakes; bridge clearances at the entry locks."
+    },
+    {
+      "num": 69,
+      "section": 1,
+      "canal": "Albertkanaal (Liège–Antwerp)",
+      "from": "Liège",
+      "to": "Antwerp",
+      "locks": 6,
+      "dist_km": 130,
+      "max_height": 7.0,
+      "max_draught": 3.4,
+      "color": "#5d4037",
+      "country": [
+        "BE"
+      ],
+      "source": "curated",
+      "description": "Belgian commercial spine connecting the Meuse to the Schelde. Big locks, lots of barges."
+    },
+    {
+      "num": 70,
+      "section": 1,
+      "canal": "Maas / Meuse (NL/BE link)",
+      "from": "Maastricht",
+      "to": "Rotterdam",
+      "locks": 8,
+      "dist_km": 260,
+      "max_height": 9.1,
+      "max_draught": 3.5,
+      "color": "#43a047",
+      "country": [
+        "NL",
+        "BE"
+      ],
+      "source": "curated",
+      "description": "The lower Maas/Meuse from Maastricht via Venlo to the Dutch delta. Connects to French Meuse upstream."
+    },
+    {
+      "num": 71,
+      "section": 1,
+      "canal": "Caledonian Canal (Inverness–Fort William)",
+      "from": "Inverness",
+      "to": "Fort William",
+      "locks": 29,
+      "dist_km": 96,
+      "max_height": 8.0,
+      "max_draught": 4.1,
+      "color": "#4a148c",
+      "country": [
+        "UK"
+      ],
+      "source": "curated",
+      "description": "Scottish coast-to-coast via Loch Ness. Big lochs separated by short canal sections and Neptune's Staircase."
+    },
+    {
+      "num": 72,
+      "section": 1,
+      "canal": "Shannon-Erne Waterway",
+      "from": "Leitrim",
+      "to": "Belturbet",
+      "locks": 16,
+      "dist_km": 63,
+      "max_height": 2.5,
+      "max_draught": 1.2,
+      "color": "#43a047",
+      "country": [
+        "IE"
+      ],
+      "source": "curated",
+      "description": "Cross-border IE/NI inland waterway linking the Shannon and Erne systems. Restored 1994."
+    },
+    {
+      "num": 73,
+      "section": 1,
+      "canal": "Kennet & Avon Canal + Thames",
+      "from": "Bristol",
+      "to": "Reading",
+      "locks": 105,
+      "dist_km": 140,
+      "max_height": 2.4,
+      "max_draught": 1.07,
+      "color": "#7b1fa2",
+      "country": [
+        "UK"
+      ],
+      "source": "curated",
+      "description": "Historic K&A from Bristol to Reading then onto the Thames. Many locks, narrow boats only."
+    },
+    {
+      "num": 74,
+      "section": 1,
+      "canal": "Po (Italy)",
+      "from": "Cremona",
+      "to": "Venice (lagoon)",
+      "locks": 4,
+      "dist_km": 270,
+      "max_height": 6.5,
+      "max_draught": 2.5,
+      "color": "#c62828",
+      "country": [
+        "IT"
+      ],
+      "source": "curated",
+      "description": "The Po from Cremona to the Adriatic delta. Connects to the Venetian lagoon via the Idrovia Ferrarese."
     }
   ],
   "connections": [
