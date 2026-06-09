@@ -1606,7 +1606,7 @@
         <div class="cb-popover-section">
           <button class="toggle-btn" id="toggle-michelin" onclick="toggleLayer('michelin')" title="Michelin-starred restaurants">⭐ Michelin</button>
           <button class="toggle-btn" id="toggle-fuel"     onclick="toggleLayer('fuel')"     title="Boat fuel &amp; water stations">⛽ Fuel</button>
-          <button class="toggle-btn" id="toggle-chomages" onclick="toggleLayer('chomages')" title="VNF maintenance closures">🚧 Chômages</button>
+          <button class="toggle-btn" id="toggle-chomages" onclick="toggleLayer('closures')" title="VNF maintenance closures">🚧 Chômages</button>
           <button class="toggle-btn" id="toggle-tunnels"  onclick="toggleLayer('tunnels')"  title="Canal tunnels with convoy schedules">🚇 Tunnels</button>
         </div>
 
@@ -3471,7 +3471,7 @@ function saveNote(wid) {
 // ============================================================
 //  LAYER TOGGLES
 // ============================================================
-const layerState = { towns: true, locks: true, notes: true, haltes: true, ports: true, waterways: true, michelin: false, fuel: false, chomages: false, tunnels: false, bridges: false, 'channel-axis': false, obstructions: false, googleplaces: false };
+const layerState = { towns: true, locks: true, notes: true, haltes: true, ports: true, waterways: true, michelin: false, fuel: false, closures: false, tunnels: false, bridges: false, 'channel-axis': false, obstructions: false, googleplaces: false };
 
 function toggleLayer(type) {
   layerState[type] = !layerState[type];
@@ -3507,13 +3507,13 @@ function toggleLayer(type) {
     } else {
       map.removeLayer(fuelGroup);
     }
-  } else if (type === 'chomages') {
+  } else if (type === 'closures') {
     // Feature 4: Chômages Overlay
-    if (layerState.chomages) {
-      buildChomagesMarkers();
-      map.addLayer(chomagesGroup);
+    if (layerState.closures) {
+      buildClosuresMarkers();
+      map.addLayer(closuresGroup);
     } else {
-      map.removeLayer(chomagesGroup);
+      map.removeLayer(closuresGroup);
     }
   } else if (type === 'tunnels') {
     if (layerState.tunnels) {
@@ -3852,12 +3852,12 @@ function clearVesselFilter() {
 // ============================================================
 //  FEATURE 4: Chômages Overlay
 // ============================================================
-let chomagesGroup = L.layerGroup();
+let closuresGroup = L.layerGroup();
 
 let CLOSURES = [];
 
-function buildChomagesMarkers() {
-  chomagesGroup.clearLayers();
+function buildClosuresMarkers() {
+  closuresGroup.clearLayers();
   var now = new Date();
   CHOMAGES_SEED.forEach(function(ch) {
     var startDate = new Date(ch.start);
@@ -3901,7 +3901,7 @@ function buildChomagesMarkers() {
 
     var marker = L.marker([ch.lat, ch.lon], { icon: icon });
     marker.bindPopup(popupHtml, { maxWidth: 290 });
-    chomagesGroup.addLayer(marker);
+    closuresGroup.addLayer(marker);
   });
 }
 
@@ -4859,8 +4859,8 @@ function init() {
   });
   _loadData('fc-closures-v1', './data/closures.json', function(data) {
     CLOSURES = data;
-    if (layerState.chomages && typeof buildChomagesMarkers === 'function') {
-      buildChomagesMarkers();
+    if (layerState.closures && typeof buildClosuresMarkers === 'function') {
+      buildClosuresMarkers();
     }
   }, function() { showEditToast('⚠ Closures failed to load'); });
   if (googlePlaces.length > 0) {
