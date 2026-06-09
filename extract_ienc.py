@@ -138,6 +138,43 @@ def _waterway_for_cell(cell_name: str) -> str:
         return "Saar"
     if re.match(r"^1W7MO\d{3}$", name):
         return "Mosel"   # German Moselle (downstream of FR Apach border)
+    # ── German waterways added Wave 3 (Jun 2026) ───────────────────────
+    if re.match(r"^1W7MA\d{3}$", name):
+        return "Main"
+    if re.match(r"^1W7MD\d{3}$", name):
+        return "Main-Donau-Kanal"
+    if re.match(r"^1W7D\d{4}$", name):
+        return "Donau"
+    # ── Dutch waterways added Wave 3 — Rijkswaterstaat IENC ────────────
+    # Cells follow `1R7<TWO_LETTER_CODE><NUMBER>` per RWS IENC naming.
+    # We map the major navigation arteries; everything else falls
+    # through to "Netherlands waterway".
+    if re.match(r"^1R7AR\d{3}$", name):
+        return "Amsterdam-Rijnkanaal"
+    if re.match(r"^1R7MA\d{3}$", name):
+        return "Maas"
+    if re.match(r"^1R7WA\d{3}$", name):
+        return "Waal"
+    if re.match(r"^1R7BR\d{3}$", name):
+        return "Boven-Rijn / Pannerdens Kanaal"
+    if re.match(r"^1R7LE\d{3}$", name):
+        return "Lek"
+    if re.match(r"^1R7IJ\d{3}$", name):
+        return "IJssel"
+    if re.match(r"^1R7BM\d{3}$", name):
+        return "Beneden-Merwede"
+    if re.match(r"^1R7NM\d{3}$", name):
+        return "Nieuwe Merwede"
+    if re.match(r"^1R7HD\d{3}$", name):
+        return "Hollands Diep"
+    if re.match(r"^1R7HV\d{3}$", name):
+        return "Haringvliet"
+    if re.match(r"^1R7DK\d{3}$", name):
+        return "Dordtsche Kil"
+    # Catch-all for other Dutch cells (Eemskanaal, Prinses Margrietkanaal,
+    # Frisian/Zeeland delta cells, etc.). Better than "Unknown waterway".
+    if re.match(r"^1R7[A-Z]{2}\d{3}$", name):
+        return "Netherlands waterway"
     if re.match(r"^1W7RRS\d{2}$", name):
         return "Canal du Rhône au Rhin"
     if name.startswith("7V7LEIE"):
