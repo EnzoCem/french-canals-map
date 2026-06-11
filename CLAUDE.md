@@ -598,6 +598,56 @@ If you've researched an OSM-imported town/mooring and want it to render at full 
 
 ---
 
+## Routes architecture (Wave 5)
+
+`data/routes.json` is a single file with two arrays:
+
+```jsonc
+{
+  "routes": [ { "num": 1, "canal": "...", "from": "...", "to": "...",
+                "locks": 6, "dist_km": 365, "max_height": 7, "max_draught": 5.7,
+                "color": "#e74c3c", "country": ["FR"],
+                "source": "curated | osm", "description": "..." } ],
+  "connections": [ [routeA, routeB, "junctionCity"] ]
+}
+```
+
+**Route numbering:**
+- `1-52` — curated French routes (existing, unchanged since Wave 1)
+- `60-74` — curated EU routes (Wave 5)
+- `200+` — auto-derived from `waterways.geojson` via `fill_auto_routes.py`
+
+**Auto-derive workflow:**
+```bash
+python3 fill_auto_routes.py --dry-run    # preview
+python3 fill_auto_routes.py              # write
+```
+
+Idempotent — re-running replaces previous `source: 'osm'` entries; curated entries (`source: 'curated'`) are never touched. Curated routes are matched by `canal` name; if you curate a new route whose canonical name matches an OSM waterway, that waterway is automatically excluded from the auto-derived set on the next run.
+
+**Anchor waypoints (id prefix `w_a<route>_<city>`):** Each curated EU route has 1-3 hand-curated waypoints with the route's `num` set, so the BFS planner has source/destination candidates. OSM-imported EU waypoints keep `route: 0` to avoid accidentally anchoring routes they don't actually represent.
+
+**Verifying Auxerre → Amsterdam:**
+
+```python
+import json
+from collections import deque
+r = json.load(open('data/routes.json'))
+adj = {}
+for a, b, _ in r['connections']:
+    adj.setdefault(a, []).append(b); adj.setdefault(b, []).append(a)
+def bfs(start, end):
+    q, seen = deque([(start, [start])]), {start}
+    while q:
+        cur, path = q.popleft()
+        if cur == end: return path
+        for nb in adj.get(cur, []):
+            if nb not in seen: seen.add(nb); q.append((nb, path + [nb]))
+print(bfs(4, 67))   # Auxerre (Yonne) → Amsterdam (SMR)
+```
+
+---
+
 ## Common tasks
 
 ### Add a new mooring

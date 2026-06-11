@@ -3,336 +3,707 @@
     "air": 3.5,
     "draft": 1.6,
     "beam": 5.45,
-    "length": 30
+    "length": 30,
+    "source": "VNF"
   },
   "Canal de la Robine": {
     "air": 3.5,
     "draft": 1.2,
     "beam": 5.2,
-    "length": 30
+    "length": 30,
+    "source": "VNF"
   },
   "Canal du Rhône à Sète": {
     "air": 3.5,
     "draft": 1.6,
     "beam": 5.5,
-    "length": 38.5
+    "length": 38.5,
+    "source": "VNF"
   },
   "Canal latéral à la Garonne": {
     "air": 3.5,
     "draft": 1.6,
     "beam": 5.45,
-    "length": 38.5
+    "length": 38.5,
+    "source": "VNF"
   },
   "Canal de Garonne": {
     "air": 3.5,
     "draft": 1.6,
     "beam": 5.45,
-    "length": 38.5
+    "length": 38.5,
+    "source": "VNF"
   },
   "Garonne": {
     "air": 6.5,
     "draft": 3.5,
     "beam": 12,
-    "length": 110
+    "length": 110,
+    "source": "VNF"
   },
   "Canal de Bourgogne": {
     "air": 3.5,
     "draft": 1.8,
     "beam": 5.2,
-    "length": 38.5
+    "length": 38.5,
+    "source": "VNF"
   },
   "Canal du Nivernais": {
     "air": 3.1,
     "draft": 1.2,
     "beam": 3.1,
-    "length": 27
+    "length": 27,
+    "source": "VNF"
   },
   "Canal du Centre": {
     "air": 3.5,
     "draft": 1.8,
     "beam": 5.2,
-    "length": 38.5
+    "length": 38.5,
+    "source": "VNF"
   },
   "Canal latéral à la Loire": {
     "air": 3.3,
     "draft": 1.6,
     "beam": 5.2,
-    "length": 38.5
+    "length": 38.5,
+    "source": "VNF"
   },
   "Canal de Briare": {
     "air": 3.3,
     "draft": 1.6,
     "beam": 5.2,
-    "length": 38.5
+    "length": 38.5,
+    "source": "VNF"
   },
   "Canal du Loing": {
     "air": 3.5,
     "draft": 1.6,
     "beam": 5.2,
-    "length": 38.5
+    "length": 38.5,
+    "source": "VNF"
   },
   "Canal de la Marne à la Saône": {
     "air": 3.5,
     "draft": 1.8,
     "beam": 5.2,
-    "length": 38.5
+    "length": 38.5,
+    "source": "VNF"
   },
   "Canal entre Champagne et Bourgogne": {
     "air": 3.5,
     "draft": 1.8,
     "beam": 5.2,
-    "length": 38.5
+    "length": 38.5,
+    "source": "VNF"
   },
   "Canal de la Marne au Rhin": {
     "air": 3.6,
     "draft": 1.8,
     "beam": 5.2,
-    "length": 38.5
+    "length": 38.5,
+    "source": "VNF"
   },
   "Canal de la Marne au Rhin (Est)": {
     "air": 3.6,
     "draft": 1.8,
     "beam": 5.2,
-    "length": 38.5
+    "length": 38.5,
+    "source": "VNF"
   },
   "Canal de l'Aisne à la Marne": {
     "air": 3.5,
     "draft": 1.8,
     "beam": 5.2,
-    "length": 38.5
+    "length": 38.5,
+    "source": "VNF"
   },
   "Canal du Rhône au Rhin": {
     "air": 3.5,
     "draft": 1.6,
     "beam": 5.05,
-    "length": 38.5
+    "length": 38.5,
+    "source": "VNF"
   },
   "Canal des Vosges": {
     "air": 3.5,
     "draft": 1.6,
     "beam": 5.2,
-    "length": 38.5
+    "length": 38.5,
+    "source": "VNF"
   },
   "Canal de l'Est": {
     "air": 3.5,
     "draft": 1.6,
     "beam": 5.2,
-    "length": 38.5
+    "length": 38.5,
+    "source": "VNF"
   },
   "Grand Canal d'Alsace": {
     "air": 7,
     "draft": 3,
     "beam": 12,
-    "length": 110
+    "length": 110,
+    "source": "VNF"
   },
   "Canal de Colmar": {
     "air": 3.5,
     "draft": 1.6,
     "beam": 5.2,
-    "length": 38.5
+    "length": 38.5,
+    "source": "VNF"
   },
   "Canal du Nord": {
     "air": 4.5,
     "draft": 2.2,
     "beam": 6,
-    "length": 57
+    "length": 57,
+    "source": "VNF"
   },
   "Canal de Saint-Quentin": {
     "air": 3.7,
     "draft": 2.2,
     "beam": 5.2,
-    "length": 38.5
+    "length": 38.5,
+    "source": "VNF"
   },
   "Canal de la Sambre à l'Oise": {
     "air": 3.7,
     "draft": 1.8,
     "beam": 5.2,
-    "length": 38.5
+    "length": 38.5,
+    "source": "VNF"
   },
   "Canal de l'Escaut": {
     "air": 4.8,
     "draft": 2.5,
     "beam": 6,
-    "length": 57
+    "length": 57,
+    "source": "VNF"
   },
   "Canal de Roubaix": {
     "air": 3.5,
     "draft": 1.6,
     "beam": 5.2,
-    "length": 38.5
+    "length": 38.5,
+    "source": "VNF"
   },
   "La Seine": {
     "air": 6.7,
     "draft": 3.4,
     "beam": 12,
-    "length": 110
+    "length": 110,
+    "source": "VNF"
   },
   "Seine": {
     "air": 6.7,
     "draft": 3.4,
     "beam": 12,
-    "length": 110
+    "length": 110,
+    "source": "VNF"
   },
   "Petite Seine": {
     "air": 3.5,
     "draft": 1.8,
     "beam": 5.2,
-    "length": 38.5
+    "length": 38.5,
+    "source": "VNF"
   },
   "Yonne": {
     "air": 4.5,
     "draft": 2,
     "beam": 6,
-    "length": 57
+    "length": 57,
+    "source": "VNF"
   },
   "Rivière Yonne": {
     "air": 4.5,
     "draft": 2,
     "beam": 6,
-    "length": 57
+    "length": 57,
+    "source": "VNF"
   },
   "Oise": {
     "air": 5,
     "draft": 2.5,
     "beam": 8,
-    "length": 80
+    "length": 80,
+    "source": "VNF"
   },
   "Marne": {
     "air": 5,
     "draft": 2.2,
     "beam": 6,
-    "length": 57
+    "length": 57,
+    "source": "VNF"
   },
   "Saône": {
     "air": 5.6,
     "draft": 2.8,
     "beam": 11.4,
-    "length": 110
+    "length": 110,
+    "source": "VNF"
   },
   "La Saône": {
     "air": 5.6,
     "draft": 2.8,
     "beam": 11.4,
-    "length": 110
+    "length": 110,
+    "source": "VNF"
   },
   "Rhône": {
     "air": 7.5,
     "draft": 3.5,
     "beam": 12,
-    "length": 110
+    "length": 110,
+    "source": "VNF"
   },
   "Grand Rhône": {
     "air": 7.5,
     "draft": 3.5,
     "beam": 12,
-    "length": 110
+    "length": 110,
+    "source": "VNF"
   },
   "Petit Rhône": {
     "air": 3.5,
     "draft": 1.6,
     "beam": 6,
-    "length": 57
+    "length": 57,
+    "source": "VNF"
   },
   "Canal de Miribel": {
     "air": 7,
     "draft": 3.5,
     "beam": 12,
-    "length": 110
+    "length": 110,
+    "source": "VNF"
   },
   "Canal de Jonage": {
     "air": 7,
     "draft": 3.5,
     "beam": 12,
-    "length": 110
+    "length": 110,
+    "source": "VNF"
   },
   "Le Rhône - Bras de Caluire": {
     "air": 7,
     "draft": 3.5,
     "beam": 12,
-    "length": 110
+    "length": 110,
+    "source": "VNF"
   },
   "Canal de Donzère-Mondragon": {
     "air": 7,
     "draft": 3.5,
     "beam": 12,
-    "length": 110
+    "length": 110,
+    "source": "VNF"
   },
   "Doubs": {
     "air": 3.5,
     "draft": 1.8,
     "beam": 5.2,
-    "length": 38.5
+    "length": 38.5,
+    "source": "VNF"
   },
   "Charente": {
     "air": 3.5,
     "draft": 1.2,
     "beam": 5.2,
-    "length": 38.5
+    "length": 38.5,
+    "source": "VNF"
   },
   "Canal de Charente": {
     "air": 3.5,
     "draft": 1.2,
     "beam": 5.2,
-    "length": 38.5
+    "length": 38.5,
+    "source": "VNF"
   },
   "Canal de Nantes à Brest": {
     "air": 2.5,
     "draft": 1.2,
     "beam": 4.6,
-    "length": 25
+    "length": 25,
+    "source": "VNF"
   },
   "Canal d'Ille-et-Rance": {
     "air": 2.65,
     "draft": 1.2,
     "beam": 4.6,
-    "length": 25
+    "length": 25,
+    "source": "VNF"
   },
   "Canal du Blavet": {
     "air": 2.65,
     "draft": 1.2,
     "beam": 4.6,
-    "length": 25
+    "length": 25,
+    "source": "VNF"
   },
   "La Vilaine": {
     "air": 3.5,
     "draft": 1.4,
     "beam": 5,
-    "length": 30
+    "length": 30,
+    "source": "VNF"
   },
   "Canal de la Vilaine": {
     "air": 3.5,
     "draft": 1.4,
     "beam": 5,
-    "length": 30
+    "length": 30,
+    "source": "VNF"
   },
   "Lot": {
     "air": 3.5,
     "draft": 1,
     "beam": 5.2,
-    "length": 38.5
+    "length": 38.5,
+    "source": "VNF"
   },
   "Baise": {
     "air": 3.5,
     "draft": 0.8,
     "beam": 5.2,
-    "length": 30
+    "length": 30,
+    "source": "VNF"
   },
   "Canal Saint-Martin": {
     "air": 3.7,
     "draft": 1.8,
     "beam": 6,
-    "length": 40
+    "length": 40,
+    "source": "VNF"
   },
   "Canal Saint-Denis": {
     "air": 6,
     "draft": 2.6,
     "beam": 8,
-    "length": 80
+    "length": 80,
+    "source": "VNF"
   },
   "Canal de l'Ourcq": {
     "air": 2.7,
     "draft": 0.8,
     "beam": 3,
-    "length": 18
+    "length": 18,
+    "source": "VNF"
+  },
+  "Rhine": {
+    "air": 9.1,
+    "draft": 2.5,
+    "beam": 22.8,
+    "length": 135,
+    "source": "ZKR fairway specifications 2024"
+  },
+  "Hochrhein": {
+    "air": 6.0,
+    "draft": 2.1,
+    "beam": 11.4,
+    "length": 105,
+    "source": "Port of Switzerland / ZKR"
+  },
+  "Mosel": {
+    "air": 6.2,
+    "draft": 2.7,
+    "beam": 11.45,
+    "length": 110,
+    "source": "WSV Wasserstraßensteckbrief Mosel"
+  },
+  "Main": {
+    "air": 6.0,
+    "draft": 2.7,
+    "beam": 11.45,
+    "length": 110,
+    "source": "WSV Wasserstraßensteckbrief Main"
+  },
+  "Main-Donau-Kanal": {
+    "air": 6.0,
+    "draft": 2.7,
+    "beam": 11.45,
+    "length": 110,
+    "source": "WSV Wasserstraßensteckbrief MDK"
+  },
+  "Donau": {
+    "air": 6.5,
+    "draft": 2.7,
+    "beam": 22.8,
+    "length": 135,
+    "source": "viadonau Donau-Profil"
+  },
+  "Saar": {
+    "air": 5.25,
+    "draft": 2.5,
+    "beam": 11.45,
+    "length": 110,
+    "source": "WSV Wasserstraßensteckbrief Saar"
+  },
+  "Standing Mast Route": {
+    "air": null,
+    "draft": 1.9,
+    "beam": 4.5,
+    "length": 17,
+    "source": "Vaarwegen in Nederland 2024 — air via opening bridges"
+  },
+  "IJsselmeer": {
+    "air": null,
+    "draft": 4.0,
+    "beam": null,
+    "length": null,
+    "source": "Vaarwegen in Nederland 2024 (lake)"
+  },
+  "Markermeer": {
+    "air": null,
+    "draft": 3.8,
+    "beam": null,
+    "length": null,
+    "source": "Vaarwegen in Nederland 2024"
+  },
+  "Amsterdam-Rijnkanaal": {
+    "air": 9.1,
+    "draft": 4.0,
+    "beam": 22.8,
+    "length": 135,
+    "source": "Vaarwegen in Nederland 2024"
+  },
+  "Maas": {
+    "air": 9.1,
+    "draft": 3.5,
+    "beam": 11.45,
+    "length": 110,
+    "source": "Vaarwegen in Nederland 2024 (NL Maas)"
+  },
+  "Waal": {
+    "air": 9.1,
+    "draft": 3.5,
+    "beam": 22.8,
+    "length": 135,
+    "source": "Vaarwegen in Nederland 2024"
+  },
+  "Lek": {
+    "air": 9.1,
+    "draft": 3.0,
+    "beam": 22.8,
+    "length": 135,
+    "source": "Vaarwegen in Nederland 2024"
+  },
+  "IJssel": {
+    "air": 7.0,
+    "draft": 2.8,
+    "beam": 11.45,
+    "length": 110,
+    "source": "Vaarwegen in Nederland 2024"
+  },
+  "Boven-Rijn / Pannerdens Kanaal": {
+    "air": 9.1,
+    "draft": 3.0,
+    "beam": 22.8,
+    "length": 135,
+    "source": "Vaarwegen in Nederland 2024"
+  },
+  "Beneden-Merwede": {
+    "air": 9.1,
+    "draft": 4.0,
+    "beam": 22.8,
+    "length": 135,
+    "source": "Vaarwegen in Nederland 2024"
+  },
+  "Nieuwe Merwede": {
+    "air": 9.1,
+    "draft": 4.0,
+    "beam": 22.8,
+    "length": 135,
+    "source": "Vaarwegen in Nederland 2024"
+  },
+  "Hollands Diep": {
+    "air": null,
+    "draft": 4.0,
+    "beam": null,
+    "length": null,
+    "source": "Vaarwegen in Nederland 2024 (open water)"
+  },
+  "Haringvliet": {
+    "air": null,
+    "draft": 3.5,
+    "beam": null,
+    "length": null,
+    "source": "Vaarwegen in Nederland 2024"
+  },
+  "Dordtsche Kil": {
+    "air": 9.1,
+    "draft": 4.0,
+    "beam": 22.8,
+    "length": 135,
+    "source": "Vaarwegen in Nederland 2024"
+  },
+  "Noordzeekanaal": {
+    "air": 11.35,
+    "draft": 5.5,
+    "beam": 22.8,
+    "length": 200,
+    "source": "Vaarwegen in Nederland 2024"
+  },
+  "Julianakanaal": {
+    "air": 9.1,
+    "draft": 3.0,
+    "beam": 11.45,
+    "length": 110,
+    "source": "Vaarwegen in Nederland 2024"
+  },
+  "Maas-Waalkanaal": {
+    "air": 9.1,
+    "draft": 3.5,
+    "beam": 11.45,
+    "length": 110,
+    "source": "Vaarwegen in Nederland 2024"
+  },
+  "Zuid-Willemsvaart": {
+    "air": 4.5,
+    "draft": 2.3,
+    "beam": 7.1,
+    "length": 50,
+    "source": "Vaarwegen in Nederland 2024"
+  },
+  "Twentekanalen": {
+    "air": 4.5,
+    "draft": 2.5,
+    "beam": 11.45,
+    "length": 110,
+    "source": "Vaarwegen in Nederland 2024"
+  },
+  "Wilhelminakanaal": {
+    "air": 6.1,
+    "draft": 3.0,
+    "beam": 9.0,
+    "length": 67,
+    "source": "Vaarwegen in Nederland 2024"
+  },
+  "Albertkanaal": {
+    "air": 7.0,
+    "draft": 3.4,
+    "beam": 11.4,
+    "length": 110,
+    "source": "De Vlaamse Waterweg fairway spec"
+  },
+  "Schelde": {
+    "air": null,
+    "draft": 4.5,
+    "beam": null,
+    "length": null,
+    "source": "Belgian Maritime + DVW"
+  },
+  "Leie": {
+    "air": 5.25,
+    "draft": 2.5,
+    "beam": 11.4,
+    "length": 110,
+    "source": "De Vlaamse Waterweg"
+  },
+  "Brussels–Charleroi Canal": {
+    "air": 5.25,
+    "draft": 3.4,
+    "beam": 11.4,
+    "length": 90,
+    "source": "SPW / De Vlaamse Waterweg"
+  },
+  "Po": {
+    "air": 6.5,
+    "draft": 2.5,
+    "beam": 11.4,
+    "length": 110,
+    "source": "AIPo Po river fairway spec"
+  },
+  "Thames": {
+    "air": null,
+    "draft": 2.0,
+    "beam": null,
+    "length": null,
+    "source": "Port of London Authority / Environment Agency"
+  },
+  "Kennet and Avon Canal": {
+    "air": 2.4,
+    "draft": 1.07,
+    "beam": 4.27,
+    "length": 21.95,
+    "source": "CRT Kennet & Avon dimensions"
+  },
+  "Caledonian Canal": {
+    "air": 8.0,
+    "draft": 4.1,
+    "beam": 10.0,
+    "length": 45.7,
+    "source": "Scottish Canals Caledonian dimensions"
+  },
+  "Grand Union Canal": {
+    "air": 2.3,
+    "draft": 1.0,
+    "beam": 4.27,
+    "length": 21.34,
+    "source": "CRT Grand Union dimensions"
+  },
+  "Shannon": {
+    "air": null,
+    "draft": 1.8,
+    "beam": 6.0,
+    "length": 30,
+    "source": "Waterways Ireland Shannon Master Plan"
+  },
+  "Erne": {
+    "air": null,
+    "draft": 1.8,
+    "beam": 6.0,
+    "length": 30,
+    "source": "Waterways Ireland Erne"
+  },
+  "Shannon-Erne Waterway": {
+    "air": 2.5,
+    "draft": 1.2,
+    "beam": 4.6,
+    "length": 18,
+    "source": "Waterways Ireland S-EW dimensions"
+  },
+  "Royal Canal": {
+    "air": 2.6,
+    "draft": 1.2,
+    "beam": 4.3,
+    "length": 18.3,
+    "source": "Waterways Ireland Royal Canal"
+  },
+  "Grand Canal (IE)": {
+    "air": 2.75,
+    "draft": 1.2,
+    "beam": 4.3,
+    "length": 18.3,
+    "source": "Waterways Ireland Grand Canal"
+  },
+  "Mittellandkanal": {
+    "air": 5.25,
+    "draft": 2.8,
+    "beam": 11.45,
+    "length": 110,
+    "source": "WSV Wasserstraßensteckbrief MLK"
+  },
+  "Elbe-Lübeck-Kanal": {
+    "air": 4.2,
+    "draft": 2.1,
+    "beam": 8.6,
+    "length": 80,
+    "source": "WSV Wasserstraßensteckbrief ELK"
+  },
+  "Nord-Ostsee-Kanal": {
+    "air": 40.0,
+    "draft": 9.5,
+    "beam": 32.5,
+    "length": 235,
+    "source": "WSV Wasserstraßensteckbrief NOK / Kiel"
+  },
+  "Dortmund-Ems-Kanal": {
+    "air": 5.25,
+    "draft": 2.8,
+    "beam": 11.45,
+    "length": 110,
+    "source": "WSV Wasserstraßensteckbrief DEK"
   }
 }
