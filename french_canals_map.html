@@ -3308,6 +3308,37 @@ function vnfLinksHTML(section, fromName, toName) {
     </div>`;
 }
 
+/* National waterway authorities for non-FR countries. FR keeps the richer
+ * VNF_TERRITORIES treatment. URLs mirror the data-sources panel deep-links. */
+const AUTHORITIES = {
+  NL: { flag:'🇳🇱', name:'Rijkswaterstaat', notices:'https://www.vaarweginformatie.nl/', home:'https://www.rijkswaterstaat.nl/water' },
+  DE: { flag:'🇩🇪', name:'WSV / ELWIS', notices:'https://www.elwis.de/DE/dynamisch/gewaesserkunde/', home:'https://www.elwis.de/' },
+  BE: { flag:'🇧🇪', name:'De Vlaamse Waterweg / SPW', notices:'https://www.visuris.be/', home:'https://voies-hydrauliques.wallonie.be/' },
+  AT: { flag:'🇦🇹', name:'viadonau / DoRIS', notices:'https://www.doris.bmk.gv.at/', home:'https://www.viadonau.org/' },
+  CH: { flag:'🇨🇭', name:'Port of Switzerland', notices:'https://www.port-of-switzerland.ch/', home:'https://www.port-of-switzerland.ch/' },
+  LU: { flag:'🇱🇺', name:'WSV (Moselle, DE-administered)', notices:'https://www.elwis.de/', home:'https://www.elwis.de/' },
+  UK: { flag:'🇬🇧', name:'Canal & River Trust', notices:'https://canalrivertrust.org.uk/notices', home:'https://canalrivertrust.org.uk/' },
+  IE: { flag:'🇮🇪', name:'Waterways Ireland', notices:'https://www.waterwaysireland.org/marine-notices', home:'https://www.waterwaysireland.org/' },
+  IT: { flag:'🇮🇹', name:'AIPo', notices:'https://www.agenziapo.it/', home:'https://www.agenziapo.it/' },
+};
+
+function authorityLinksHTML(country) {
+  const a = AUTHORITIES[country];
+  if (!a) return '';
+  return `
+    <div class="vnf-section">
+      <h4>${a.flag} ${a.name}</h4>
+      <a class="vnf-btn" href="${a.notices}" target="_blank" rel="noopener">
+        ⚠️ Navigation notices &amp; conditions
+        <strong>Closures, water levels &amp; restrictions</strong>
+      </a>
+      <a class="vnf-btn" href="${a.home}" target="_blank" rel="noopener">
+        🏢 ${a.name} — official site
+        <strong>Contacts &amp; waterway information</strong>
+      </a>
+    </div>`;
+}
+
 function openSidebar(wid) {
   const w = WAYPOINTS.find(x => x.id === wid);
   if (!w) return;
@@ -3391,7 +3422,7 @@ function openSidebar(wid) {
       </div>` : ''}
     </div>
 
-    ${vnfLinksHTML(w.section, routeInfo ? routeInfo.from : '', routeInfo ? routeInfo.to : '')}
+    ${w.country && w.country !== 'FR' ? authorityLinksHTML(w.country) : vnfLinksHTML(w.section, routeInfo ? routeInfo.from : '', routeInfo ? routeInfo.to : '')}
 
     ${w.is_lock ? buildLockHoursHTML(w.route) : ''}
 
