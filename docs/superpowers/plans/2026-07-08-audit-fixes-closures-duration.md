@@ -247,7 +247,7 @@ In `fill_auto_routes.py`, add near the other helpers:
 def atomic_write_json(path, obj):
     """Write JSON to path via a .tmp sibling + os.replace (crash-safe)."""
     tmp = path + '.tmp'
-    with open(tmp, 'w') as f:
+    with open(tmp, 'w', encoding='utf-8') as f:
         json.dump(obj, f, indent=2, ensure_ascii=False)
     os.replace(tmp, path)
 ```

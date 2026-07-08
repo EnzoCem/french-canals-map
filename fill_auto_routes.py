@@ -29,7 +29,7 @@ AUTO_ROUTE_NUM_START = 200  # route numbers 1-199 reserved for curated
 def atomic_write_json(path, obj):
     """Write JSON to path via a .tmp sibling + os.replace (crash-safe)."""
     tmp = str(path) + '.tmp'
-    with open(tmp, 'w') as f:
+    with open(tmp, 'w', encoding='utf-8') as f:
         json.dump(obj, f, indent=2, ensure_ascii=False)
     os.replace(tmp, path)
 

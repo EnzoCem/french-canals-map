@@ -49,5 +49,5 @@ def test_atomic_write_json(tmp_path):
     target = tmp_path / 'out.json'
     atomic_write_json(str(target), {'a': [1, 2], 'name': 'Rhône'})
     import json
-    assert json.loads(target.read_text()) == {'a': [1, 2], 'name': 'Rhône'}
+    assert json.loads(target.read_text(encoding='utf-8')) == {'a': [1, 2], 'name': 'Rhône'}
     assert list(tmp_path.iterdir()) == [target]

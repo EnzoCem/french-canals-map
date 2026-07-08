@@ -18,6 +18,8 @@ __pycache__/
 # Intermediate fetch artifacts
 waterways_existing.geojson
 waterways_overpass.json
+# atomic-write temp siblings
+*.tmp
 
 # Claude Code session state
 .claude/
