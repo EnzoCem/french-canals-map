@@ -2740,7 +2740,9 @@ let locationOverrides = { waypoints: {}, moorings: {} };
 try { locationOverrides = JSON.parse(localStorage.getItem(OVERRIDES_KEY) || '{"waypoints":{},"moorings":{}}'); } catch(e){}
 
 const SAVED_ROUTES_KEY = 'french_canals_saved_routes_v1';
-let savedRoutes = JSON.parse(localStorage.getItem(SAVED_ROUTES_KEY) || '[]');
+let savedRoutes = [];
+try { savedRoutes = JSON.parse(localStorage.getItem(SAVED_ROUTES_KEY) || '[]') || []; } catch(e){}
+if (!Array.isArray(savedRoutes)) savedRoutes = [];
 let _loadedSavedRouteId = null; // ID of currently loaded saved route
 
 // ── Google Maps imported places ────────────────────────────────────────────
@@ -3639,8 +3641,9 @@ const _PROFILE_DEFAULTS = {
   air: null, draught: null, length: null, beam: null,
   cruiseSpeed: 7, hoursPerDay: 8
 };
-var _vesselProfile = Object.assign({}, _PROFILE_DEFAULTS,
-  JSON.parse(localStorage.getItem(VESSEL_KEY) || 'null') || {});
+var _storedProfile = {};
+try { _storedProfile = JSON.parse(localStorage.getItem(VESSEL_KEY) || 'null') || {}; } catch(e){}
+var _vesselProfile = Object.assign({}, _PROFILE_DEFAULTS, _storedProfile);
 
 function openProfileModal() {
   var p = _vesselProfile;
