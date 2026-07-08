@@ -5207,7 +5207,7 @@ function renderRouteResults(plan, fromWp, toWp) {
       <div class="rp-stat">
         <span class="val">${estDays}</span>
         <div class="lbl">Est. Days</div>
-        <div class="lbl" style="opacity:.7">${_est.speed} km/h · ${_est.hoursPerDay} h/day</div>
+        <div class="lbl" style="opacity:.7;text-transform:none;">${_est.speed} km/h · ${_est.hoursPerDay} h/day</div>
       </div>
       <div class="rp-stat">
         <span class="val">${segs.length}</span>
@@ -5263,7 +5263,7 @@ function renderRouteResults(plan, fromWp, toWp) {
   if (hasPartial) {
     html += `<div class="rp-note">* Distances are approximate. Multi-route journeys show full-route distances for connecting routes.</div>`;
   } else {
-    html += `<div class="rp-note">Estimated at ~35 km/day (7 km/h cruise, locks included). Actual times vary.</div>`;
+    html += `<div class="rp-note">Estimated at ${_est.speed} km/h, ${_est.hoursPerDay} h/day, 15 min per lock. Actual times vary.</div>`;
   }
 
   el.innerHTML = html;
@@ -5520,7 +5520,7 @@ function renderMultiStopResults(legs) {
     <div class="rp-stat-grid">
       <div class="rp-stat"><span class="val">~${totalDist}<small style="font-size:11px"> km</small></span><div class="lbl">Distance</div></div>
       <div class="rp-stat"><span class="val">${totalLocks}</span><div class="lbl">Locks</div></div>
-      <div class="rp-stat"><span class="val">${estDays}</span><div class="lbl">Est. Days</div><div class="lbl" style="opacity:.7">${_est.speed} km/h · ${_est.hoursPerDay} h/day</div></div>
+      <div class="rp-stat"><span class="val">${estDays}</span><div class="lbl">Est. Days</div><div class="lbl" style="opacity:.7;text-transform:none;">${_est.speed} km/h · ${_est.hoursPerDay} h/day</div></div>
       <div class="rp-stat"><span class="val">${legs.length}</span><div class="lbl">${legs.length === 1 ? 'Leg' : 'Legs'}</div></div>
     </div>
   </div>`;
@@ -5631,7 +5631,7 @@ function renderMultiStopResults(legs) {
   if (hasPartial) {
     html += `<div class="rp-note">* Distances are approximate for cross-route legs.</div>`;
   } else {
-    html += `<div class="rp-note">Estimated at ~35 km/day (7 km/h cruise, locks included).</div>`;
+    html += `<div class="rp-note">Estimated at ${_est.speed} km/h, ${_est.hoursPerDay} h/day, 15 min per lock. Actual times vary.</div>`;
   }
 
   // Feature 2: GPX Export + share link buttons
