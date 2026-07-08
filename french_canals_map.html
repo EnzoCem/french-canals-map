@@ -3730,6 +3730,17 @@ function resetProfile() {
 // Legacy: kept for any code that called toggleVesselPanel()
 function toggleVesselPanel() { openProfileModal(); }
 
+/* Trip duration from distance + lock count using the vessel profile.
+ * Rule of thumb: cruising time = km / cruiseSpeed, plus 15 min per lock.
+ * Returns { days, hours, speed, hoursPerDay }. */
+function _estimateTripDays(distKm, locks) {
+  var p = _vesselProfile || {};
+  var speed = (p.cruiseSpeed > 0) ? p.cruiseSpeed : 7;
+  var hpd   = (p.hoursPerDay > 0) ? p.hoursPerDay : 8;
+  var hours = distKm / speed + (locks || 0) * 0.25;
+  return { days: Math.max(1, Math.ceil(hours / hpd)), hours: hours, speed: speed, hoursPerDay: hpd };
+}
+
 function _vesselCheckSegment(seg) {
   var warns = [];
   if (!_vesselProfile || (!_vesselProfile.air && !_vesselProfile.draught)) return warns;
@@ -5161,8 +5172,8 @@ function renderRouteResults(plan, fromWp, toWp) {
   }
 
   const segs      = plan.segments;
-  const totalDist = segs.reduce((s, x) => s + x.dist_km, 0);
-  const totalLocks= segs.reduce((s, x) => s + x.locks,   0);
+  const totalDist = segs.reduce((s, x) => s + (x.dist_km || 0), 0);
+  const totalLocks= segs.reduce((s, x) => s + (x.locks || 0),   0);
   const hasPartial= segs.some(s => s.partial);
 
   // Vessel constraints – take the minimum across all segments
@@ -5175,9 +5186,9 @@ function renderRouteResults(plan, fromWp, toWp) {
   const bottleneckH = segs.find(s => s.max_height != null && s.max_height === minH);
   const bottleneckD = segs.find(s => s.max_draught != null && s.max_draught === minD);
 
-  // Estimated days at ~35 km/day average (accounting for lock time)
-  const estDays = Math.ceil(totalDist / 35);
-  const estHours = Math.round(totalDist / 7); // 7 km/h average progress
+  // Estimated days from the vessel profile (cruiseSpeed + hoursPerDay + lock time)
+  const _est = _estimateTripDays(totalDist, totalLocks);
+  const estDays = _est.days;
 
   let html = '';
 
@@ -5196,6 +5207,7 @@ function renderRouteResults(plan, fromWp, toWp) {
       <div class="rp-stat">
         <span class="val">${estDays}</span>
         <div class="lbl">Est. Days</div>
+        <div class="lbl" style="opacity:.7">${_est.speed} km/h · ${_est.hoursPerDay} h/day</div>
       </div>
       <div class="rp-stat">
         <span class="val">${segs.length}</span>
@@ -5480,10 +5492,11 @@ function renderMultiStopResults(legs) {
   }
 
   const allSegs    = legs.flatMap(l => l.plan.segments);
-  const totalDist  = allSegs.reduce((s, x) => s + x.dist_km, 0);
-  const totalLocks = allSegs.reduce((s, x) => s + x.locks,   0);
+  const totalDist  = allSegs.reduce((s, x) => s + (x.dist_km || 0), 0);
+  const totalLocks = allSegs.reduce((s, x) => s + (x.locks || 0),   0);
   const hasPartial = allSegs.some(s => s.partial);
-  const estDays    = Math.ceil(totalDist / 35);
+  const _est       = _estimateTripDays(totalDist, totalLocks);
+  const estDays    = _est.days;
 
   const heights  = allSegs.map(s => s.max_height).filter(h => h != null);
   const draughts = allSegs.map(s => s.max_draught).filter(d => d != null);
@@ -5507,7 +5520,7 @@ function renderMultiStopResults(legs) {
     <div class="rp-stat-grid">
       <div class="rp-stat"><span class="val">~${totalDist}<small style="font-size:11px"> km</small></span><div class="lbl">Distance</div></div>
       <div class="rp-stat"><span class="val">${totalLocks}</span><div class="lbl">Locks</div></div>
-      <div class="rp-stat"><span class="val">${estDays}</span><div class="lbl">Est. Days</div></div>
+      <div class="rp-stat"><span class="val">${estDays}</span><div class="lbl">Est. Days</div><div class="lbl" style="opacity:.7">${_est.speed} km/h · ${_est.hoursPerDay} h/day</div></div>
       <div class="rp-stat"><span class="val">${legs.length}</span><div class="lbl">${legs.length === 1 ? 'Leg' : 'Legs'}</div></div>
     </div>
   </div>`;
@@ -5571,8 +5584,8 @@ function renderMultiStopResults(legs) {
   // ── Legs ──
   legs.forEach((leg, li) => {
     const segs    = leg.plan.segments;
-    const legDist = segs.reduce((s, x) => s + x.dist_km, 0);
-    const legLocks= segs.reduce((s, x) => s + x.locks,   0);
+    const legDist = segs.reduce((s, x) => s + (x.dist_km || 0), 0);
+    const legLocks= segs.reduce((s, x) => s + (x.locks || 0),   0);
     const fromLbl = String.fromCharCode(65 + li);
     const toLbl   = String.fromCharCode(65 + li + 1);
 
@@ -5581,7 +5594,7 @@ function renderMultiStopResults(legs) {
       html += `<div class="rp-leg-subtotal">
         <span>📏 <strong>~${legDist} km</strong></span>
         <span>🔒 <strong>${legLocks}</strong> locks</span>
-        <span>⏱ ~${Math.ceil(legDist/35)} days</span>
+        <span>⏱ ~${_estimateTripDays(legDist, legLocks).days} days</span>
       </div>`;
     } else {
       html += `<div class="rp-segments-title">🗺 Route Segments</div>`;
