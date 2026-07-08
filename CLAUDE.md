@@ -23,7 +23,7 @@ French Canals/
 ├── fill_michelin.py                ← annual script to update MICHELIN_RESTAURANTS from ngshiheng/michelin-my-maps
 ├── patch_lyon_waterways.py         ← one-shot patch: fetched Miribel/Jonage/Rhône through Lyon
 ├── manifest.json                   ← PWA manifest (installable)
-├── sw.js                           ← Service worker: app shell precache + tile LRU cache (VERSION = fc-v6)
+├── sw.js                           ← Service worker: app shell precache + tile LRU cache (VERSION = fc-v11)
 ├── icon.svg                        ← PWA icon (vessel on canal)
 ├── extract_ienc.py                 ← GDAL-based extractor: VNF IENC S-57 zips → data/bridges.geojson
 ├── tests/test_extract_ienc.py      ← Pytest suite for extract_ienc (pure + one GDAL integration test)
@@ -179,7 +179,7 @@ map
 ├── portGroup        (L.layerGroup — port markers)
 ├── michelinGroup    (L.layerGroup — Michelin restaurant markers)
 ├── fuelGroup        (L.layerGroup — fuel/water stops)
-├── chomagesGroup    (L.layerGroup — VNF maintenance closures)
+├── closuresGroup    (L.layerGroup — multi-country navigation closures)
 ├── tunnelGroup      (L.layerGroup — canal tunnel markers with convoy schedules)
 ├── bridgesGroup     (L.markerClusterGroup — IENC bridges with air-clearance colouring)
 ├── channelAxisGroup (L.layerGroup — IENC wtwaxs dashed polylines, 2,508 features)
@@ -347,7 +347,7 @@ Route 51 "Garonne (tidal)" with waypoints w398–w402 (Bordeaux, Portets, Cadill
 
 ## Multi-country closures (Wave 4)
 
-Navigation closures live in `data/closures.json` as a single array, country-tagged. The Leaflet layer (`closuresGroup`, toggled via `🚧 Closures`) renders each entry as a coloured circle marker (red = active, orange = upcoming within 180 days).
+Navigation closures live in `data/closures.json` as a single array, country-tagged. The Leaflet layer (`closuresGroup`, toggled via `🚧 Closures`) renders each entry as a coloured circle marker (red = active, orange = upcoming within 180 days). Closures also surface as a 🚧 warning card in route-planner results via `_getClosureWarnings(segments)` / `_buildClosureCardHTML(list)` — the matching mirrors the tidal card, with a 90-day planner window.
 
 **Schema:**
 
@@ -488,7 +488,9 @@ Line numbers drift as code changes — use `grep -n "function <name>"` in `frenc
 | `openProfileModal()` | Opens vessel profile modal |
 | `saveProfile()` | Saves profile; also triggers `_refreshBridgesOnProfileChange()` |
 | `applyVesselFilter()` | Applies draft/air filter; also triggers bridge re-colouring |
-| `buildChomagesMarkers()` | Builds VNF maintenance closure markers |
+| `buildClosuresMarkers()` | Builds multi-country navigation closure markers |
+| `_estimateTripDays(distKm, locks)` | Trip duration estimate from vessel profile (`cruiseSpeed`, `hoursPerDay`, 15 min/lock) |
+| `_getClosureWarnings(segments)` | Walks route segments, returns matching closures for the 🚧 planner card |
 | `colorLookup(name)` | Returns per-waterway colour from `data/waterway_colors.json` (normalised match) |
 | `getWaterwayNavStatus(name)` | Returns colour for a waterway: per-palette (no profile) or navigability (with profile) |
 | `buildWaterwayOverlay()` | Builds/rebuilds the waterway GeoJSON layer |
