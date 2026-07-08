@@ -4491,6 +4491,65 @@ function _buildTidalCardHTML(tidalsList) {
   return html;
 }
 
+/* ── Closure warnings for the route planner ──────────────────────────
+ * _getClosureWarnings(segments) — walks route segments, returns closures
+ * (active, or upcoming within 90 days) whose waterway name matches a
+ * segment's routeName. Matching is normalised-substring in either
+ * direction so "Canal du Midi" matches "Canal du Midi (Toulouse–Sète)".
+ */
+function _normWaterwayName(s) {
+  return (s || '').toLowerCase()
+    .normalize('NFD').replace(/[̀-ͯ]/g, '')   // strip accents
+    .replace(/\(.*?\)/g, ' ')                           // drop parentheticals
+    .replace(/[^a-z0-9]+/g, ' ').trim();
+}
+
+function _getClosureWarnings(segments) {
+  if (!segments || !segments.length || !CLOSURES || !CLOSURES.length) return [];
+  var now = new Date();
+  var segNames = [];
+  var seen = {};
+  segments.forEach(function(seg) {
+    var n = _normWaterwayName(seg.routeName || seg.waterway || '');
+    if (n && !seen[n]) { seen[n] = true; segNames.push(n); }
+  });
+  var out = [];
+  CLOSURES.forEach(function(ch) {
+    var endDate = new Date(ch.end);
+    var startDate = new Date(ch.start);
+    if (endDate < now) return;                                   // expired
+    if ((startDate - now) / 86400000 > 90) return;               // too far out
+    var cw = _normWaterwayName(ch.waterway);
+    if (!cw) return;
+    var hit = segNames.some(function(sn) {
+      return sn.indexOf(cw) !== -1 || cw.indexOf(sn) !== -1;
+    });
+    if (hit) out.push(Object.assign({ _active: startDate <= now }, ch));
+  });
+  return out;
+}
+
+function _buildClosureCardHTML(closures) {
+  if (!closures || !closures.length) return '';
+  var FLAG = { FR:'🇫🇷', NL:'🇳🇱', DE:'🇩🇪', BE:'🇧🇪', AT:'🇦🇹' };
+  var rows = closures.map(function(ch) {
+    var flag = FLAG[ch.country] || '🏳';
+    var status = ch._active
+      ? '<strong style="color:#ffcdd2">ACTIVE now</strong>'
+      : 'upcoming ' + ch.start;
+    var link = ch.source_url
+      ? ' <a href="' + ch.source_url + '" target="_blank" style="color:#ffe082">verify →</a>'
+      : '';
+    return flag + ' <strong>' + ch.waterway + '</strong>' +
+      (ch.section ? ' (' + ch.section + ')' : '') +
+      ' — ' + status + ' · ' + ch.start + ' → ' + ch.end +
+      '<br><small>' + (ch.desc || '') + link + '</small>';
+  });
+  return '<div class="rp-nav-warning" style="background:#8d4a12">🚧 <strong>Closure' +
+    (closures.length > 1 ? 's' : '') + ' on this route:</strong><br>' +
+    rows.join('<br>') + '</div>';
+}
+
 function _buildTidalBadgeHTML(waterwayName) {
   var td = tidalDataFor(waterwayName);
   if (!td) return '';
@@ -5151,6 +5210,11 @@ function renderRouteResults(plan, fromWp, toWp) {
     html += `</div></div>`;
   }
 
+  // ── Closure warnings (Wave 4 data meets the route planner) ──
+  if (typeof _getClosureWarnings === 'function') {
+    html += _buildClosureCardHTML(_getClosureWarnings(segs));
+  }
+
   // ── Segments ───────────────────────────────────────────────────────────
   html += `<div class="rp-segments-title">🗺 Route Segments</div>`;
   segs.forEach((seg, i) => {
@@ -5493,6 +5557,11 @@ function renderMultiStopResults(legs) {
   // ── Tidal section warnings (Garonne, future: Seine Aval) ──
   if (typeof _getTidalWarnings === 'function') {
     html += _buildTidalCardHTML(_getTidalWarnings(allSegs));
+  }
+
+  // ── Closure warnings (Wave 4 data meets the route planner) ──
+  if (typeof _getClosureWarnings === 'function') {
+    html += _buildClosureCardHTML(_getClosureWarnings(allSegs));
   }
 
   // ── Legs ──
