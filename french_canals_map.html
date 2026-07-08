@@ -4785,7 +4785,7 @@ function init() {
     // 2. In parallel, send a HEAD request to check if the server has a newer ETag
     // 3. If ETag differs → silently re-fetch, update cache, rebuild overlay
     // localStorage key stores the last-seen ETag for comparison.
-    var WATERWAYS_CACHE_VER = 'french-canals-waterways-v10';
+    var WATERWAYS_CACHE_VER = 'french-canals-waterways-v11';
     var WATERWAYS_URL = './waterways.geojson';
     var WATERWAYS_ETAG_KEY = 'french_canals_waterways_etag_v1';
     (async function() {
@@ -4923,7 +4923,7 @@ function init() {
     MOORINGS = data;
     buildMooringMarkers();
   }, function() { showEditToast('⚠ Moorings failed to load'); });
-  _loadData('fc-routes-v2', './data/routes.json', function(data) {
+  _loadData('fc-routes-v3', './data/routes.json', function(data) {
     ROUTES = data.routes || [];
     ROUTE_CONNECTIONS = data.connections || [];
   }, function() { showEditToast('⚠ Routes failed to load'); });
