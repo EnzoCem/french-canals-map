@@ -3866,6 +3866,7 @@ function buildClosuresMarkers() {
   CLOSURES.forEach(function(ch) {
     var startDate = new Date(ch.start);
     var endDate   = new Date(ch.end);
+    endDate.setUTCHours(23, 59, 59, 999);         // end date is inclusive
     var daysUntilStart = (startDate - now) / (1000*60*60*24);
 
     // Skip past closures (already finished)
@@ -4516,11 +4517,14 @@ function _getClosureWarnings(segments) {
   var out = [];
   CLOSURES.forEach(function(ch) {
     var endDate = new Date(ch.end);
+    endDate.setUTCHours(23, 59, 59, 999);         // end date is inclusive
     var startDate = new Date(ch.start);
     if (endDate < now) return;                                   // expired
+    // planner window is 90 days (map layer shows 180 — nearer-term by design)
     if ((startDate - now) / 86400000 > 90) return;               // too far out
     var cw = _normWaterwayName(ch.waterway);
     if (!cw) return;
+    // permissive by design: over-warns on adjacent waterways (e.g. "Garonne" also flags "Canal de Garonne") — card links to the authority to verify
     var hit = segNames.some(function(sn) {
       return sn.indexOf(cw) !== -1 || cw.indexOf(sn) !== -1;
     });
