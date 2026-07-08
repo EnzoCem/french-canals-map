@@ -16,6 +16,11 @@ import requests
 from rdp import rdp as _rdp
 
 OVERPASS_URL = "https://overpass-api.de/api/interpreter"
+# The User-Agent header is required: Overpass returns HTTP 406 for the
+# default python-requests UA. Same string as fill_waterways.py.
+OVERPASS_HEADERS = {
+    'User-Agent': 'inland-europe-map/1.0 (https://github.com/EnzoCem/french-canals-map; contact: a.cem.ugur@gmail.com)',
+}
 RDP_EPSILON  = 0.0003  # ~33 m, same as fill_waterways.py
 
 # Waterways to fetch (app_name, osm_names, route_num)
@@ -33,7 +38,7 @@ LYON_BBOX = "(45.55,4.75,45.90,5.20)"  # south,west,north,east
 def _overpass_query(ql, retries=3):
     for attempt in range(retries):
         try:
-            resp = requests.post(OVERPASS_URL, data={'data': ql}, timeout=180)
+            resp = requests.post(OVERPASS_URL, data={'data': ql}, headers=OVERPASS_HEADERS, timeout=180)
             resp.raise_for_status()
             return resp.json()
         except Exception as exc:

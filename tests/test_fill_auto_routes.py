@@ -42,3 +42,12 @@ def test_count_locks_near_segments():
     ]
     n = count_locks_near_segments([line], waypoints, radius_m=200)
     assert n == 1, f'expected 1 lock within 200m, got {n}'
+
+
+def test_atomic_write_json(tmp_path):
+    from fill_auto_routes import atomic_write_json
+    target = tmp_path / 'out.json'
+    atomic_write_json(str(target), {'a': [1, 2], 'name': 'Rhône'})
+    import json
+    assert json.loads(target.read_text(encoding='utf-8')) == {'a': [1, 2], 'name': 'Rhône'}
+    assert list(tmp_path.iterdir()) == [target]

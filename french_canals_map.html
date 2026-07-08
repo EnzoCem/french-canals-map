@@ -2740,7 +2740,9 @@ let locationOverrides = { waypoints: {}, moorings: {} };
 try { locationOverrides = JSON.parse(localStorage.getItem(OVERRIDES_KEY) || '{"waypoints":{},"moorings":{}}'); } catch(e){}
 
 const SAVED_ROUTES_KEY = 'french_canals_saved_routes_v1';
-let savedRoutes = JSON.parse(localStorage.getItem(SAVED_ROUTES_KEY) || '[]');
+let savedRoutes = [];
+try { savedRoutes = JSON.parse(localStorage.getItem(SAVED_ROUTES_KEY) || '[]') || []; } catch(e){}
+if (!Array.isArray(savedRoutes)) savedRoutes = [];
 let _loadedSavedRouteId = null; // ID of currently loaded saved route
 
 // ── Google Maps imported places ────────────────────────────────────────────
@@ -3639,8 +3641,9 @@ const _PROFILE_DEFAULTS = {
   air: null, draught: null, length: null, beam: null,
   cruiseSpeed: 7, hoursPerDay: 8
 };
-var _vesselProfile = Object.assign({}, _PROFILE_DEFAULTS,
-  JSON.parse(localStorage.getItem(VESSEL_KEY) || 'null') || {});
+var _storedProfile = {};
+try { _storedProfile = JSON.parse(localStorage.getItem(VESSEL_KEY) || 'null') || {}; } catch(e){}
+var _vesselProfile = Object.assign({}, _PROFILE_DEFAULTS, _storedProfile);
 
 function openProfileModal() {
   var p = _vesselProfile;
@@ -3726,6 +3729,17 @@ function resetProfile() {
 
 // Legacy: kept for any code that called toggleVesselPanel()
 function toggleVesselPanel() { openProfileModal(); }
+
+/* Trip duration from distance + lock count using the vessel profile.
+ * Rule of thumb: cruising time = km / cruiseSpeed, plus 15 min per lock.
+ * Returns { days, hours, speed, hoursPerDay }. */
+function _estimateTripDays(distKm, locks) {
+  var p = _vesselProfile || {};
+  var speed = (p.cruiseSpeed > 0) ? p.cruiseSpeed : 7;
+  var hpd   = (p.hoursPerDay > 0) ? p.hoursPerDay : 8;
+  var hours = distKm / speed + (locks || 0) * 0.25;
+  return { days: Math.max(1, Math.ceil(hours / hpd)), hours: hours, speed: speed, hoursPerDay: hpd };
+}
 
 function _vesselCheckSegment(seg) {
   var warns = [];
@@ -3860,9 +3874,10 @@ function buildClosuresMarkers() {
   closuresGroup.clearLayers();
   var FLAG = { FR:'🇫🇷', NL:'🇳🇱', DE:'🇩🇪', BE:'🇧🇪', AT:'🇦🇹' };
   var now = new Date();
-  CHOMAGES_SEED.forEach(function(ch) {
+  CLOSURES.forEach(function(ch) {
     var startDate = new Date(ch.start);
     var endDate   = new Date(ch.end);
+    endDate.setUTCHours(23, 59, 59, 999);         // end date is inclusive
     var daysUntilStart = (startDate - now) / (1000*60*60*24);
 
     // Skip past closures (already finished)
@@ -4488,6 +4503,68 @@ function _buildTidalCardHTML(tidalsList) {
   return html;
 }
 
+/* ── Closure warnings for the route planner ──────────────────────────
+ * _getClosureWarnings(segments) — walks route segments, returns closures
+ * (active, or upcoming within 90 days) whose waterway name matches a
+ * segment's routeName. Matching is normalised-substring in either
+ * direction so "Canal du Midi" matches "Canal du Midi (Toulouse–Sète)".
+ */
+function _normWaterwayName(s) {
+  return (s || '').toLowerCase()
+    .normalize('NFD').replace(/[̀-ͯ]/g, '')   // strip accents
+    .replace(/\(.*?\)/g, ' ')                           // drop parentheticals
+    .replace(/[^a-z0-9]+/g, ' ').trim();
+}
+
+function _getClosureWarnings(segments) {
+  if (!segments || !segments.length || !CLOSURES || !CLOSURES.length) return [];
+  var now = new Date();
+  var segNames = [];
+  var seen = {};
+  segments.forEach(function(seg) {
+    var n = _normWaterwayName(seg.routeName || seg.waterway || '');
+    if (n && !seen[n]) { seen[n] = true; segNames.push(n); }
+  });
+  var out = [];
+  CLOSURES.forEach(function(ch) {
+    var endDate = new Date(ch.end);
+    endDate.setUTCHours(23, 59, 59, 999);         // end date is inclusive
+    var startDate = new Date(ch.start);
+    if (endDate < now) return;                                   // expired
+    // planner window is 90 days (map layer shows 180 — nearer-term by design)
+    if ((startDate - now) / 86400000 > 90) return;               // too far out
+    var cw = _normWaterwayName(ch.waterway);
+    if (!cw) return;
+    // permissive by design: over-warns on adjacent waterways (e.g. "Garonne" also flags "Canal de Garonne") — card links to the authority to verify
+    var hit = segNames.some(function(sn) {
+      return sn.indexOf(cw) !== -1 || cw.indexOf(sn) !== -1;
+    });
+    if (hit) out.push(Object.assign({ _active: startDate <= now }, ch));
+  });
+  return out;
+}
+
+function _buildClosureCardHTML(closures) {
+  if (!closures || !closures.length) return '';
+  var FLAG = { FR:'🇫🇷', NL:'🇳🇱', DE:'🇩🇪', BE:'🇧🇪', AT:'🇦🇹' };
+  var rows = closures.map(function(ch) {
+    var flag = FLAG[ch.country] || '🏳';
+    var status = ch._active
+      ? '<strong style="color:#ffcdd2">ACTIVE now</strong>'
+      : 'upcoming ' + ch.start;
+    var link = ch.source_url
+      ? ' <a href="' + ch.source_url + '" target="_blank" style="color:#ffe082">verify →</a>'
+      : '';
+    return flag + ' <strong>' + ch.waterway + '</strong>' +
+      (ch.section ? ' (' + ch.section + ')' : '') +
+      ' — ' + status + ' · ' + ch.start + ' → ' + ch.end +
+      '<br><small>' + (ch.desc || '') + link + '</small>';
+  });
+  return '<div class="rp-nav-warning" style="background:#8d4a12">🚧 <strong>Closure' +
+    (closures.length > 1 ? 's' : '') + ' on this route:</strong><br>' +
+    rows.join('<br>') + '</div>';
+}
+
 function _buildTidalBadgeHTML(waterwayName) {
   var td = tidalDataFor(waterwayName);
   if (!td) return '';
@@ -4866,7 +4943,7 @@ function init() {
     TUNNELS = data;
     if (typeof buildTunnelMarkers === 'function') buildTunnelMarkers();
   });
-  _loadData('fc-closures-v1', './data/closures.json', function(data) {
+  _loadData('fc-closures-v2', './data/closures.json', function(data) {
     CLOSURES = data;
     if (layerState.closures && typeof buildClosuresMarkers === 'function') {
       buildClosuresMarkers();
@@ -5095,8 +5172,8 @@ function renderRouteResults(plan, fromWp, toWp) {
   }
 
   const segs      = plan.segments;
-  const totalDist = segs.reduce((s, x) => s + x.dist_km, 0);
-  const totalLocks= segs.reduce((s, x) => s + x.locks,   0);
+  const totalDist = segs.reduce((s, x) => s + (x.dist_km || 0), 0);
+  const totalLocks= segs.reduce((s, x) => s + (x.locks || 0),   0);
   const hasPartial= segs.some(s => s.partial);
 
   // Vessel constraints – take the minimum across all segments
@@ -5109,9 +5186,9 @@ function renderRouteResults(plan, fromWp, toWp) {
   const bottleneckH = segs.find(s => s.max_height != null && s.max_height === minH);
   const bottleneckD = segs.find(s => s.max_draught != null && s.max_draught === minD);
 
-  // Estimated days at ~35 km/day average (accounting for lock time)
-  const estDays = Math.ceil(totalDist / 35);
-  const estHours = Math.round(totalDist / 7); // 7 km/h average progress
+  // Estimated days from the vessel profile (cruiseSpeed + hoursPerDay + lock time)
+  const _est = _estimateTripDays(totalDist, totalLocks);
+  const estDays = _est.days;
 
   let html = '';
 
@@ -5130,6 +5207,7 @@ function renderRouteResults(plan, fromWp, toWp) {
       <div class="rp-stat">
         <span class="val">${estDays}</span>
         <div class="lbl">Est. Days</div>
+        <div class="lbl" style="opacity:.7;text-transform:none;">${_est.speed} km/h · ${_est.hoursPerDay} h/day</div>
       </div>
       <div class="rp-stat">
         <span class="val">${segs.length}</span>
@@ -5146,6 +5224,11 @@ function renderRouteResults(plan, fromWp, toWp) {
     if (minH !== null) html += `<div>📏 Air draught: <strong>${minH.toFixed(1)} m</strong>${bottleneckH ? ` <small>(${bottleneckH.routeName.replace(/\(.*\)/,'').trim()})</small>` : ''}</div>`;
     if (minD !== null) html += `<div>⚓ Water draught: <strong>${minD.toFixed(1)} m</strong>${bottleneckD ? ` <small>(${bottleneckD.routeName.replace(/\(.*\)/,'').trim()})</small>` : ''}</div>`;
     html += `</div></div>`;
+  }
+
+  // ── Closure warnings (Wave 4 data meets the route planner) ──
+  if (typeof _getClosureWarnings === 'function') {
+    html += _buildClosureCardHTML(_getClosureWarnings(segs));
   }
 
   // ── Segments ───────────────────────────────────────────────────────────
@@ -5180,7 +5263,7 @@ function renderRouteResults(plan, fromWp, toWp) {
   if (hasPartial) {
     html += `<div class="rp-note">* Distances are approximate. Multi-route journeys show full-route distances for connecting routes.</div>`;
   } else {
-    html += `<div class="rp-note">Estimated at ~35 km/day (7 km/h cruise, locks included). Actual times vary.</div>`;
+    html += `<div class="rp-note">Estimated at ${_est.speed} km/h, ${_est.hoursPerDay} h/day, 15 min per lock. Actual times vary.</div>`;
   }
 
   el.innerHTML = html;
@@ -5409,10 +5492,11 @@ function renderMultiStopResults(legs) {
   }
 
   const allSegs    = legs.flatMap(l => l.plan.segments);
-  const totalDist  = allSegs.reduce((s, x) => s + x.dist_km, 0);
-  const totalLocks = allSegs.reduce((s, x) => s + x.locks,   0);
+  const totalDist  = allSegs.reduce((s, x) => s + (x.dist_km || 0), 0);
+  const totalLocks = allSegs.reduce((s, x) => s + (x.locks || 0),   0);
   const hasPartial = allSegs.some(s => s.partial);
-  const estDays    = Math.ceil(totalDist / 35);
+  const _est       = _estimateTripDays(totalDist, totalLocks);
+  const estDays    = _est.days;
 
   const heights  = allSegs.map(s => s.max_height).filter(h => h != null);
   const draughts = allSegs.map(s => s.max_draught).filter(d => d != null);
@@ -5436,7 +5520,7 @@ function renderMultiStopResults(legs) {
     <div class="rp-stat-grid">
       <div class="rp-stat"><span class="val">~${totalDist}<small style="font-size:11px"> km</small></span><div class="lbl">Distance</div></div>
       <div class="rp-stat"><span class="val">${totalLocks}</span><div class="lbl">Locks</div></div>
-      <div class="rp-stat"><span class="val">${estDays}</span><div class="lbl">Est. Days</div></div>
+      <div class="rp-stat"><span class="val">${estDays}</span><div class="lbl">Est. Days</div><div class="lbl" style="opacity:.7;text-transform:none;">${_est.speed} km/h · ${_est.hoursPerDay} h/day</div></div>
       <div class="rp-stat"><span class="val">${legs.length}</span><div class="lbl">${legs.length === 1 ? 'Leg' : 'Legs'}</div></div>
     </div>
   </div>`;
@@ -5492,11 +5576,16 @@ function renderMultiStopResults(legs) {
     html += _buildTidalCardHTML(_getTidalWarnings(allSegs));
   }
 
+  // ── Closure warnings (Wave 4 data meets the route planner) ──
+  if (typeof _getClosureWarnings === 'function') {
+    html += _buildClosureCardHTML(_getClosureWarnings(allSegs));
+  }
+
   // ── Legs ──
   legs.forEach((leg, li) => {
     const segs    = leg.plan.segments;
-    const legDist = segs.reduce((s, x) => s + x.dist_km, 0);
-    const legLocks= segs.reduce((s, x) => s + x.locks,   0);
+    const legDist = segs.reduce((s, x) => s + (x.dist_km || 0), 0);
+    const legLocks= segs.reduce((s, x) => s + (x.locks || 0),   0);
     const fromLbl = String.fromCharCode(65 + li);
     const toLbl   = String.fromCharCode(65 + li + 1);
 
@@ -5505,7 +5594,7 @@ function renderMultiStopResults(legs) {
       html += `<div class="rp-leg-subtotal">
         <span>📏 <strong>~${legDist} km</strong></span>
         <span>🔒 <strong>${legLocks}</strong> locks</span>
-        <span>⏱ ~${Math.ceil(legDist/35)} days</span>
+        <span>⏱ ~${_estimateTripDays(legDist, legLocks).days} days</span>
       </div>`;
     } else {
       html += `<div class="rp-segments-title">🗺 Route Segments</div>`;
@@ -5542,7 +5631,7 @@ function renderMultiStopResults(legs) {
   if (hasPartial) {
     html += `<div class="rp-note">* Distances are approximate for cross-route legs.</div>`;
   } else {
-    html += `<div class="rp-note">Estimated at ~35 km/day (7 km/h cruise, locks included).</div>`;
+    html += `<div class="rp-note">Estimated at ${_est.speed} km/h, ${_est.hoursPerDay} h/day, 15 min per lock. Actual times vary.</div>`;
   }
 
   // Feature 2: GPX Export + share link buttons
