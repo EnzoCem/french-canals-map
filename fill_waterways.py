@@ -602,5 +602,16 @@ if __name__ == '__main__':
         print(f'  Removed {n_variant} non-canonical capitalisation variants')
         print(f'  Total: {old_count} → {new_count} features')
     else:
+        # Any unrecognised flag (e.g. --help) must NOT fall through to the
+        # full Overpass sweep — that costs hours of API quota by accident.
+        unknown = [a for a in sys.argv[1:] if a not in ('--dry-run',)]
+        if unknown:
+            sys.exit(
+                f'Unknown argument(s): {" ".join(unknown)}\n'
+                'Usage: python3 fill_waterways.py [--dry-run | --clean-geojson]\n'
+                '  (no args)        run the full EU Overpass sweep and rewrite waterways.geojson\n'
+                '  --dry-run        list the waterways that would be fetched, no network calls\n'
+                '  --clean-geojson  remove non-navigable/variant features from waterways.geojson'
+            )
         dry_run = '--dry-run' in sys.argv
         main(dry_run=dry_run)
