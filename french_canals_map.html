@@ -3860,7 +3860,7 @@ function buildClosuresMarkers() {
   closuresGroup.clearLayers();
   var FLAG = { FR:'🇫🇷', NL:'🇳🇱', DE:'🇩🇪', BE:'🇧🇪', AT:'🇦🇹' };
   var now = new Date();
-  CHOMAGES_SEED.forEach(function(ch) {
+  CLOSURES.forEach(function(ch) {
     var startDate = new Date(ch.start);
     var endDate   = new Date(ch.end);
     var daysUntilStart = (startDate - now) / (1000*60*60*24);
