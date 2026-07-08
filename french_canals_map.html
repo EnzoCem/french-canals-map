@@ -5301,8 +5301,8 @@ function populateRoutePlannerDropdowns() {
   // Default endpoints: last-used (if still valid), else Le Havre → Lyon
   var _lastEp = {};
   try { _lastEp = JSON.parse(localStorage.getItem(LAST_ENDPOINTS_KEY) || '{}') || {}; } catch(e){}
-  var lastFromOk = _lastEp.from && WAYPOINTS.some(w => w.id === _lastEp.from);
-  var lastToOk   = _lastEp.to   && WAYPOINTS.some(w => w.id === _lastEp.to);
+  var lastFromOk = _lastEp.from && WAYPOINTS.some(w => w.id === _lastEp.from && !w.is_lock);
+  var lastToOk   = _lastEp.to   && WAYPOINTS.some(w => w.id === _lastEp.to   && !w.is_lock);
   if (lastFromOk) { document.getElementById('rp-from').value = _lastEp.from; setRouteEndpoint('from', _lastEp.from); }
   if (lastToOk)   { document.getElementById('rp-to').value   = _lastEp.to;   setRouteEndpoint('to',   _lastEp.to); }
   if (!lastFromOk || !lastToOk) {
