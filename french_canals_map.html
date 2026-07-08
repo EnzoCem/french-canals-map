@@ -2740,6 +2740,7 @@ let locationOverrides = { waypoints: {}, moorings: {} };
 try { locationOverrides = JSON.parse(localStorage.getItem(OVERRIDES_KEY) || '{"waypoints":{},"moorings":{}}'); } catch(e){}
 
 const SAVED_ROUTES_KEY = 'french_canals_saved_routes_v1';
+const LAST_ENDPOINTS_KEY = 'french_canals_last_endpoints_v1';
 let savedRoutes = [];
 try { savedRoutes = JSON.parse(localStorage.getItem(SAVED_ROUTES_KEY) || '[]') || []; } catch(e){}
 if (!Array.isArray(savedRoutes)) savedRoutes = [];
@@ -5297,24 +5298,37 @@ function populateRoutePlannerDropdowns() {
     });
   });
 
-  // Default: from Le Havre, to Lyon
-  const fromOpts = [...document.getElementById('rp-from').options];
-  const toOpts   = [...document.getElementById('rp-to').options];
-  const leHavreOpt = fromOpts.find(o => {
-    const wp = WAYPOINTS.find(w => w.id === o.value);
-    return wp && wp.name.includes('Le Havre');
-  });
-  const lyonOpt = toOpts.find(o => {
-    const wp = WAYPOINTS.find(w => w.id === o.value);
-    return wp && wp.name === 'Lyon';
-  });
-  if (leHavreOpt) {
-    document.getElementById('rp-from').value = leHavreOpt.value;
-    setRouteEndpoint('from', leHavreOpt.value);
-  }
-  if (lyonOpt) {
-    document.getElementById('rp-to').value = lyonOpt.value;
-    setRouteEndpoint('to', lyonOpt.value);
+  // Default endpoints: last-used (if still valid), else Le Havre → Lyon
+  var _lastEp = {};
+  try { _lastEp = JSON.parse(localStorage.getItem(LAST_ENDPOINTS_KEY) || '{}') || {}; } catch(e){}
+  var lastFromOk = _lastEp.from && WAYPOINTS.some(w => w.id === _lastEp.from);
+  var lastToOk   = _lastEp.to   && WAYPOINTS.some(w => w.id === _lastEp.to);
+  if (lastFromOk) { document.getElementById('rp-from').value = _lastEp.from; setRouteEndpoint('from', _lastEp.from); }
+  if (lastToOk)   { document.getElementById('rp-to').value   = _lastEp.to;   setRouteEndpoint('to',   _lastEp.to); }
+  if (!lastFromOk || !lastToOk) {
+    // First-run fallback: Le Havre → Lyon (only fill endpoints not restored)
+    const fromOpts = [...document.getElementById('rp-from').options];
+    const toOpts   = [...document.getElementById('rp-to').options];
+    if (!lastFromOk) {
+      const leHavreOpt = fromOpts.find(o => {
+        const wp = WAYPOINTS.find(w => w.id === o.value);
+        return wp && wp.name.includes('Le Havre');
+      });
+      if (leHavreOpt) {
+        document.getElementById('rp-from').value = leHavreOpt.value;
+        setRouteEndpoint('from', leHavreOpt.value);
+      }
+    }
+    if (!lastToOk) {
+      const lyonOpt = toOpts.find(o => {
+        const wp = WAYPOINTS.find(w => w.id === o.value);
+        return wp && wp.name === 'Lyon';
+      });
+      if (lyonOpt) {
+        document.getElementById('rp-to').value = lyonOpt.value;
+        setRouteEndpoint('to', lyonOpt.value);
+      }
+    }
   }
   _stopOptionsHTML = document.getElementById('rp-from').innerHTML;
   renderViaStops();
@@ -6805,6 +6819,13 @@ function setRouteEndpoint(type, waypointId) {
     }
   }
   syncDropdownToPin(type, waypointId);
+
+  // Remember last-used endpoints across sessions
+  try {
+    var _le = JSON.parse(localStorage.getItem(LAST_ENDPOINTS_KEY) || '{}') || {};
+    _le[type] = waypointId;
+    localStorage.setItem(LAST_ENDPOINTS_KEY, JSON.stringify(_le));
+  } catch(e){}
 }
 
 function syncDropdownToPin(type, waypointId) {
