@@ -22,6 +22,7 @@ After running, deploy with:
 
 import csv
 import io
+import os
 import re
 import sys
 import urllib.request
@@ -45,6 +46,13 @@ AWARD_MAP = {
 }
 
 # ── Helpers ────────────────────────────────────────────────────────────────────
+
+def atomic_write_text(path, text):
+    """Write text to path via a .tmp sibling + os.replace (crash-safe)."""
+    tmp = Path(str(path) + '.tmp')
+    tmp.write_text(text, encoding='utf-8')
+    os.replace(tmp, path)
+
 
 def parse_award(raw: str):
     """Return star count (0 = Bib Gourmand) or None to skip the row."""
@@ -206,7 +214,7 @@ def main():
     new_block = build_js_block(entries)
     new_html  = replace_block(html_text, new_block)
 
-    HTML_FILE.write_text(new_html, encoding='utf-8')
+    atomic_write_text(HTML_FILE, new_html)
 
     delta = len(entries) - existing
     sign  = '+' if delta >= 0 else ''
