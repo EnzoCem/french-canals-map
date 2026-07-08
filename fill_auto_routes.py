@@ -26,6 +26,14 @@ WAYPOINTS_PATH = os.path.join(PROJECT_ROOT, 'data', 'waypoints.json')
 AUTO_ROUTE_NUM_START = 200  # route numbers 1-199 reserved for curated
 
 
+def atomic_write_json(path, obj):
+    """Write JSON to path via a .tmp sibling + os.replace (crash-safe)."""
+    tmp = str(path) + '.tmp'
+    with open(tmp, 'w') as f:
+        json.dump(obj, f, indent=2, ensure_ascii=False)
+    os.replace(tmp, path)
+
+
 def haversine_km(lat1, lon1, lat2, lon2):
     """Great-circle distance in kilometres."""
     R = 6371.0
@@ -153,8 +161,7 @@ def main():
     rj['routes'] = [r for r in rj['routes'] if r.get('source') != 'osm']
     rj['routes'].extend(new_routes)
 
-    with open(ROUTES_PATH, 'w') as f:
-        json.dump(rj, f, indent=2, ensure_ascii=False)
+    atomic_write_json(ROUTES_PATH, rj)
     print(f'Wrote {ROUTES_PATH}: {len(rj["routes"])} total routes (curated + osm)')
 
 
