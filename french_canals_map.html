@@ -4869,7 +4869,7 @@ function init() {
     TUNNELS = data;
     if (typeof buildTunnelMarkers === 'function') buildTunnelMarkers();
   });
-  _loadData('fc-closures-v1', './data/closures.json', function(data) {
+  _loadData('fc-closures-v2', './data/closures.json', function(data) {
     CLOSURES = data;
     if (layerState.closures && typeof buildClosuresMarkers === 'function') {
       buildClosuresMarkers();
