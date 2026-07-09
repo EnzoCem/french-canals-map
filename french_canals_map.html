@@ -4960,7 +4960,7 @@ function init() {
     WAYPOINTS = data;
     buildMarkers();
   }, function() { showEditToast('⚠ Waypoints failed to load'); });
-  _loadData('fc-moorings-v2', './data/moorings.json', function(data) {
+  _loadData('fc-moorings-v3', './data/moorings.json', function(data) {
     MOORINGS = data;
     buildMooringMarkers();
   }, function() { showEditToast('⚠ Moorings failed to load'); });

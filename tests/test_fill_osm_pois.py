@@ -8,7 +8,8 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from fill_osm_pois import (
     norm_name, haversine_m, osm_tags_to_facilities, osm_tags_to_mooring_type,
-    is_duplicate_of_curated,
+    is_duplicate_of_curated, area_clause, moorings_ql, lock_gates_ql,
+    riverside_towns_ql, prune_stale_osm, ALL_COUNTRIES,
 )
 
 
@@ -110,3 +111,59 @@ def test_dedup_diacritic_insensitive():
 
 def test_dedup_empty_curated():
     assert is_duplicate_of_curated('Anything', 48.0, 2.0, []) is False
+
+
+# ── area_clause (country attribution via OSM admin areas, not bbox) ──────────
+
+def test_area_clause_uses_iso_code():
+    assert 'area["ISO3166-1"="BE"][admin_level=2]' in area_clause('BE')
+
+def test_area_clause_maps_uk_to_gb():
+    # The app uses 'UK' but OSM's ISO3166-1 tag for the United Kingdom is 'GB'
+    clause = area_clause('UK')
+    assert '"GB"' in clause
+    assert '"UK"' not in clause
+
+def test_area_clause_ends_with_named_area():
+    # Queries reference the area as (area.cc)
+    assert area_clause('NL').rstrip().endswith('->.cc;')
+
+
+# ── QL builders: every element selector must be country-area-scoped ──────────
+
+def _selectors(ql):
+    """Extract the node[...]/way[...] selector lines from a QL union block."""
+    return [l.strip() for l in ql.splitlines()
+            if l.strip().startswith(('node[', 'way['))]
+
+def test_all_ql_builders_scope_every_selector_to_country_area():
+    for cc in ALL_COUNTRIES:
+        for build in (moorings_ql, lock_gates_ql, riverside_towns_ql):
+            ql = build(cc)
+            assert 'area["ISO3166-1"' in ql, f'{build.__name__}({cc}) missing area filter'
+            sels = _selectors(ql)
+            assert sels, f'{build.__name__}({cc}) has no selectors'
+            for s in sels:
+                assert '(area.cc)' in s, f'{build.__name__}({cc}) selector not area-scoped: {s}'
+
+def test_ql_builders_keep_bbox_restriction():
+    # bbox must be retained: it is what limits IT to the northern Po/Veneto area
+    ql = moorings_ql('IT')
+    assert '(44.0,6.5,46.6,13.6)' in ql
+
+
+# ── prune_stale_osm ──────────────────────────────────────────────────────────
+
+def test_prune_removes_osm_entries_not_seen_in_sweep():
+    entries = [
+        {'id': 'w_001', 'name': 'Montereau'},                                # curated, no source
+        {'id': 'w_a60_gent', 'name': 'Gent', 'source': 'curated'},           # curated explicit
+        {'id': 'w_osm_1', 'name': 'Kallosluis', 'source': 'osm', 'osm_id': 1},
+        {'id': 'w_osm_2', 'name': 'French town, wrongly imported', 'source': 'osm', 'osm_id': 2},
+    ]
+    kept = prune_stale_osm(entries, seen_ids={'w_osm_1'})
+    assert [e['id'] for e in kept] == ['w_001', 'w_a60_gent', 'w_osm_1']
+
+def test_prune_keeps_everything_when_all_seen():
+    entries = [{'id': 'w_osm_1', 'source': 'osm', 'osm_id': 1}]
+    assert prune_stale_osm(entries, seen_ids={'w_osm_1'}) == entries

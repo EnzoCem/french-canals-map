@@ -33,7 +33,11 @@ OVERPASS_HEADERS = {
     'Accept': 'application/json',
 }
 
-# Per-country bbox (south, west, north, east). Used for Overpass queries.
+# Per-country bbox (south, west, north, east). Used ONLY to limit query extent
+# (e.g. restrict IT to the navigable north) — country attribution comes from
+# the OSM admin_level=2 area filter (see area_clause), never from the bbox.
+# Bboxes overlap heavily at borders; attributing by bbox mis-tagged e.g.
+# Kallosluis/Antwerp and Brussels as NL.
 COUNTRY_BBOX = {
     'BE': (49.5,  2.5, 51.6,  6.5),
     'NL': (50.7,  3.3, 53.7,  7.3),
@@ -47,6 +51,9 @@ COUNTRY_BBOX = {
 }
 
 ALL_COUNTRIES = list(COUNTRY_BBOX.keys())
+
+# App country code → OSM ISO3166-1 tag value, where they differ.
+_APP_CC_TO_ISO = {'UK': 'GB'}
 
 # Dedup proximity: if an OSM-sourced entry is within this many metres of an
 # existing curated entry AND name-normalised matches, skip it.
@@ -115,6 +122,63 @@ def osm_tags_to_mooring_type(tags):
     return 'halte'
 
 
+def area_clause(cc):
+    """Overpass QL statement binding the country's admin_level=2 area to .cc.
+
+    Selectors then use (area.cc) so hits are attributed to the country whose
+    borders actually contain them, regardless of bbox overlap."""
+    iso = _APP_CC_TO_ISO.get(cc, cc)
+    return f'area["ISO3166-1"="{iso}"][admin_level=2]->.cc;'
+
+
+def moorings_ql(cc):
+    """Overpass QL for marinas / public moorings / fuel docks in country cc."""
+    s, w, n, e = COUNTRY_BBOX[cc]
+    return f'''[out:json][timeout:180];
+{area_clause(cc)}
+(
+  node["leisure"="marina"](area.cc)({s},{w},{n},{e});
+  way["leisure"="marina"](area.cc)({s},{w},{n},{e});
+  node["mooring"~"^(yes|public|guest)$"](area.cc)({s},{w},{n},{e});
+  node["waterway"="fuel"](area.cc)({s},{w},{n},{e});
+);
+out center tags;'''
+
+
+def lock_gates_ql(cc):
+    """Overpass QL for waterway lock gates in country cc."""
+    s, w, n, e = COUNTRY_BBOX[cc]
+    return f'''[out:json][timeout:180];
+{area_clause(cc)}
+(
+  node["waterway"="lock_gate"](area.cc)({s},{w},{n},{e});
+  node["lock"="yes"](area.cc)({s},{w},{n},{e});
+);
+out;'''
+
+
+def riverside_towns_ql(cc):
+    """Overpass QL for named villages/towns/cities in country cc."""
+    s, w, n, e = COUNTRY_BBOX[cc]
+    return f'''[out:json][timeout:180];
+{area_clause(cc)}
+(
+  node["place"~"^(village|town|city)$"]["name"](area.cc)({s},{w},{n},{e});
+);
+out;'''
+
+
+def prune_stale_osm(entries, seen_ids):
+    """Drop OSM-sourced entries whose id was not returned by the sweep.
+
+    Under bbox attribution the sweep imported POIs that lie outside all nine
+    countries (e.g. French POIs inside the BE/NL bboxes); with area-scoped
+    queries those are never re-fetched, so they'd linger with a wrong country
+    tag. Curated entries are always kept."""
+    return [e for e in entries
+            if e.get('source') != 'osm' or e['id'] in seen_ids]
+
+
 def is_duplicate_of_curated(name, lat, lon, curated_list, radius_m=DEDUP_RADIUS_M):
     """Return True if an entry matching (name, lat, lon) is within radius_m of
     an entry in curated_list with a normalised-name match.
@@ -163,16 +227,7 @@ def fetch_moorings_for_country(cc):
         'lat': float, 'lon': float, 'waterway': str or '',
         'cost': 'unknown', 'facilities': str, 'max_vessel': None, 'contact': '',
         'country': cc, 'source': 'osm', 'osm_id': int }"""
-    s, w, n, e = COUNTRY_BBOX[cc]
-    ql = f'''[out:json][timeout:180];
-(
-  node["leisure"="marina"]({s},{w},{n},{e});
-  way["leisure"="marina"]({s},{w},{n},{e});
-  node["mooring"~"^(yes|public|guest)$"]({s},{w},{n},{e});
-  node["waterway"="fuel"]({s},{w},{n},{e});
-);
-out center tags;'''
-    data = _overpass_query(ql)
+    data = _overpass_query(moorings_ql(cc))
     out = []
     for el in data.get('elements', []):
         if el.get('type') == 'way':
@@ -210,14 +265,7 @@ def fetch_lock_gates_for_country(cc):
     """Fetch waterway lock gates (the user-visible "🔒 Lock" markers) for a country.
 
     Returns: list of waypoint-shaped dicts with is_lock=True."""
-    s, w, n, e = COUNTRY_BBOX[cc]
-    ql = f'''[out:json][timeout:180];
-(
-  node["waterway"="lock_gate"]({s},{w},{n},{e});
-  node["lock"="yes"]({s},{w},{n},{e});
-);
-out;'''
-    data = _overpass_query(ql)
+    data = _overpass_query(lock_gates_ql(cc))
     out = []
     for el in data.get('elements', []):
         if el.get('type') != 'node':
@@ -285,13 +333,7 @@ def fetch_riverside_towns_for_country(cc, waterway_pts):
     waterway_pts.
 
     waterway_pts: list of (lat, lon) tuples from _load_waterway_segments()."""
-    s, w, n, e = COUNTRY_BBOX[cc]
-    ql = f'''[out:json][timeout:180];
-(
-  node["place"~"^(village|town|city)$"]["name"]({s},{w},{n},{e});
-);
-out;'''
-    data = _overpass_query(ql)
+    data = _overpass_query(riverside_towns_ql(cc))
     out = []
     skipped_far = 0
     for el in data.get('elements', []):
@@ -333,6 +375,11 @@ def main():
                    help='Countries to fetch (default: all 9)')
     p.add_argument('--dry-run', action='store_true',
                    help='Print what would be fetched, no network or file writes')
+    p.add_argument('--prune-stale', action='store_true',
+                   help='After the sweep, remove OSM-sourced entries not returned '
+                        'by any country query (e.g. POIs actually in France that '
+                        'the old bbox attribution imported). Only applied when '
+                        'sweeping ALL countries with zero fetch failures.')
     args = p.parse_args()
 
     if args.dry_run:
@@ -367,6 +414,9 @@ def main():
     updated_wp_total = 0
     updated_mr_total = 0
     skipped_dup = 0
+    fetch_failures = 0
+    seen_wp_ids = set()   # every waypoint id returned this sweep (incl. dups)
+    seen_mr_ids = set()
 
     for cc in args.countries:
         print(f'\n=== Country {cc} ===', flush=True)
@@ -377,9 +427,11 @@ def main():
         except Exception as exc:
             print(f'  [{cc}] mooring fetch FAILED ({exc}) — skipping moorings', flush=True)
             moorings = []
+            fetch_failures += 1
         print(f'    [{cc}] {len(moorings)} raw mooring candidates', flush=True)
 
         for m in moorings:
+            seen_mr_ids.add(m['id'])
             if is_duplicate_of_curated(m['name'], m['lat'], m['lon'], curated_mr):
                 skipped_dup += 1
                 continue
@@ -399,9 +451,11 @@ def main():
         except Exception as exc:
             print(f'  [{cc}] lock fetch FAILED ({exc}) — skipping locks', flush=True)
             locks = []
+            fetch_failures += 1
         print(f'    [{cc}] {len(locks)} raw lock candidates', flush=True)
 
         for lk in locks:
+            seen_wp_ids.add(lk['id'])
             if is_duplicate_of_curated(lk['name'], lk['lat'], lk['lon'], curated_wp):
                 skipped_dup += 1
                 continue
@@ -421,8 +475,10 @@ def main():
         except Exception as exc:
             print(f'  [{cc}] town fetch FAILED ({exc}) — skipping towns', flush=True)
             towns = []
+            fetch_failures += 1
 
         for t in towns:
+            seen_wp_ids.add(t['id'])
             if is_duplicate_of_curated(t['name'], t['lat'], t['lon'], curated_wp):
                 skipped_dup += 1
                 continue
@@ -435,6 +491,20 @@ def main():
                 new_wp_total += 1
 
         time.sleep(2)
+
+    # ── Optional prune of stale OSM entries ───────────────────────────────────
+    pruned_wp = pruned_mr = 0
+    if args.prune_stale:
+        if set(args.countries) != set(ALL_COUNTRIES):
+            print('\n--prune-stale skipped: sweep did not cover all countries.', flush=True)
+        elif fetch_failures:
+            print(f'\n--prune-stale skipped: {fetch_failures} fetch(es) failed.', flush=True)
+        else:
+            before_wp, before_mr = len(existing_wp), len(existing_mr)
+            existing_wp = prune_stale_osm(existing_wp, seen_wp_ids)
+            existing_mr = prune_stale_osm(existing_mr, seen_mr_ids)
+            pruned_wp = before_wp - len(existing_wp)
+            pruned_mr = before_mr - len(existing_mr)
 
     # ── Atomic writes ─────────────────────────────────────────────────────────
     tmp_wp = WAYPOINTS_PATH + '.tmp'
@@ -450,6 +520,8 @@ def main():
     print(f'  Waypoints: +{new_wp_total} new, ~{updated_wp_total} updated, total now {len(existing_wp)}')
     print(f'  Moorings:  +{new_mr_total} new, ~{updated_mr_total} updated, total now {len(existing_mr)}')
     print(f'  Duplicates skipped: {skipped_dup}')
+    if pruned_wp or pruned_mr:
+        print(f'  Stale OSM entries pruned: {pruned_wp} waypoints, {pruned_mr} moorings')
 
 
 if __name__ == '__main__':
