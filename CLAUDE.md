@@ -23,7 +23,7 @@ French Canals/
 ├── fill_michelin.py                ← annual script to update MICHELIN_RESTAURANTS from ngshiheng/michelin-my-maps
 ├── patch_lyon_waterways.py         ← one-shot patch: fetched Miribel/Jonage/Rhône through Lyon
 ├── manifest.json                   ← PWA manifest (installable)
-├── sw.js                           ← Service worker: app shell precache + tile LRU cache (VERSION = fc-v11)
+├── sw.js                           ← Service worker: app shell precache + tile LRU cache (VERSION = fc-v13)
 ├── icon.svg                        ← PWA icon (vessel on canal)
 ├── extract_ienc.py                 ← GDAL-based extractor: VNF IENC S-57 zips → data/bridges.geojson
 ├── tests/test_extract_ienc.py      ← Pytest suite for extract_ienc (pure + one GDAL integration test)
@@ -118,6 +118,7 @@ All seven data files are listed in `SHELL_URLS` in `sw.js` and are precached at 
 | `french_canals_saved_routes_v1` | Saved route plans (array of route objects) |
 | `french_canals_vessel_v1` | Vessel profile (`{ vesselName, homePort, air, draught, length, beam, cruiseSpeed, hoursPerDay }`) |
 | `french_canals_google_places_v1` | Imported Google Maps saved places (array of `{ id, name, lat, lon, note, url, importedAt }`) |
+| `french_canals_last_endpoints_v1` | Last-used route planner endpoints (`{ from, to }` waypoint ids) |
 
 ---
 
@@ -495,6 +496,7 @@ Line numbers drift as code changes — use `grep -n "function <name>"` in `frenc
 | `getWaterwayNavStatus(name)` | Returns colour for a waterway: per-palette (no profile) or navigability (with profile) |
 | `buildWaterwayOverlay()` | Builds/rebuilds the waterway GeoJSON layer |
 | `openRoutePlanner()` | Opens the route planner sidebar |
+| `authorityLinksHTML(country)` | Sidebar authority-links section for non-FR waypoints (from `AUTHORITIES` map) |
 | `reverseRoute()` | Reverses all route stops |
 | `exportRouteAsGPX()` | Downloads planned route as .gpx file |
 | `renderDayByDay()` | Builds day-by-day itinerary + async per-day weather hydration |
@@ -589,6 +591,10 @@ An annual GitHub Action (`.github/workflows/update-osm-pois.yml`) runs the sweep
 
 `source: 'osm'` markers render at 50% opacity. Popups show a `🅾️ OSM` badge. Waypoint popups without a `desc` show "No curated description — based on OpenStreetMap". The sidebar of an OSM-source entry includes a "Suggest an edit on OSM" deep-link to `openstreetmap.org/edit?node=<osm_id>`. Curated French markers are untouched.
 
+### Per-country authority links (sidebar)
+
+Non-FR waypoints (any entry with a `country` field ≠ FR) get an authority-links section in the sidebar rendered by `authorityLinksHTML(country)` from the `AUTHORITIES` map: Rijkswaterstaat (NL), WSV/ELWIS (DE + LU Moselle), DVW/SPW (BE), viadonau/DoRIS (AT), Port of Switzerland (CH), Canal & River Trust (UK), Waterways Ireland (IE), AIPo (IT) — each with "Navigation notices" and "official site" links. French waypoints keep the richer `VNF_TERRITORIES` treatment (regional VNF pages via `vnfLinksHTML()`).
+
 ### Curation upgrade path
 
 If you've researched an OSM-imported town/mooring and want it to render at full opacity with a real description:
@@ -626,6 +632,8 @@ python3 fill_auto_routes.py              # write
 ```
 
 Idempotent — re-running replaces previous `source: 'osm'` entries; curated entries (`source: 'curated'`) are never touched. Curated routes are matched by `canal` name; if you curate a new route whose canonical name matches an OSM waterway, that waterway is automatically excluded from the auto-derived set on the next run.
+
+**Route-planner dropdowns:** the From/To selects list French waypoints by section first, then append one `<optgroup>` per country (labels from `COUNTRY_LABELS`, e.g. "🇳🇱 Netherlands") containing that country's waypoints sorted alphabetically.
 
 **Anchor waypoints (id prefix `w_a<route>_<city>`):** Each curated EU route has 1-3 hand-curated waypoints with the route's `num` set, so the BFS planner has source/destination candidates. OSM-imported EU waypoints keep `route: 0` to avoid accidentally anchoring routes they don't actually represent.
 
