@@ -15,8 +15,8 @@ An interactive web map for cruising the European inland waterways. Core waypoint
 
 ```
 French Canals/
-├── french_canals_map.html          ← entire app (HTML + CSS + JS) ~8,300 lines
-├── waterways.geojson               ← canal/river geometry fetched from OSM (EU-wide, regenerated Wave 1)
+├── french_canals_map.html          ← entire app (HTML + CSS + JS) ~8,500 lines
+├── waterways.geojson               ← canal/river geometry fetched from OSM (EU-wide, 3,790 features across 10 countries, regenerated 2026-07)
 ├── index.html                      ← GitHub Pages redirect to french_canals_map.html
 ├── Open Map.command                ← macOS launcher script (requires chmod +x once)
 ├── fill_waterways.py               ← multi-region EU Overpass sweep → waterways.geojson
@@ -28,18 +28,18 @@ French Canals/
 ├── extract_ienc.py                 ← GDAL-based extractor: VNF IENC S-57 zips → data/bridges.geojson
 ├── tests/test_extract_ienc.py      ← Pytest suite for extract_ienc (pure + one GDAL integration test)
 ├── data/
-│   ├── waypoints.json              ← 429 town/lock waypoints (extracted from HTML, Wave 1)
-│   ├── moorings.json               ← 114 haltes + ports with full metadata (extracted Wave 1)
-│   ├── routes.json                 ← { routes: [45 entries], connections: [60 entries] } (extracted Wave 1)
-│   ├── waterway_constraints.json   ← 56 VNF dimension limits keyed by OSM name (extracted Wave 1)
+│   ├── waypoints.json              ← 1,610 town/lock waypoints (429 curated FR + 1,142 OSM + 39 EU anchors)
+│   ├── moorings.json               ← 5,802 haltes + ports (114 curated + 5,688 OSM-imported)
+│   ├── routes.json                 ← { routes: [173 entries], connections: [75 entries] }
+│   ├── waterway_constraints.json   ← 101 dimension limits keyed by OSM name
 │   ├── waterway_colors.json        ← 85 per-waterway colours (58 FR + 27 EU, extracted Wave 1)
 │   ├── tunnels.json                ← 5 tunnel entries, each with kind:"tunnel" (extracted Wave 1)
 │   ├── tidal.json                  ← { Garonne: {…} } tidal propagation table (extracted Wave 1)
-│   ├── bridges.geojson             ← 990 bridge air-clearance points (VNF IENC, Licence Ouverte 2.0)
-│   ├── ienc_channel_axis.geojson   ← 2,508 dredged-channel centerline LineStrings (🧭 Channel layer)
-│   ├── ienc_obstructions.geojson   ← 157 navigation hazards (⚠ Hazards layer)
-│   ├── ienc_locks.geojson          ← 192 locks with dimensions (cherry-pick source, not rendered)
-│   └── ienc_moorings.geojson       ← 625 quays + pontoons (cherry-pick source, not rendered)
+│   ├── bridges.geojson             ← 2,485 bridge air-clearance points (FR VNF + NL Rijkswaterstaat + DE WSV)
+│   ├── ienc_channel_axis.geojson   ← 6,576 dredged-channel centerline LineStrings (🧭 Channel layer)
+│   ├── ienc_obstructions.geojson   ← 2,091 navigation hazards (⚠ Hazards layer)
+│   ├── ienc_locks.geojson          ← 644 locks with dimensions (cherry-pick source, not rendered)
+│   └── ienc_moorings.geojson       ← 3,344 quays + pontoons (cherry-pick source, not rendered)
 ├── .github/workflows/
 │   └── update-michelin.yml         ← GitHub Action: runs fill_michelin.py on Feb 15 each year
 └── CLAUDE.md / README.md / FEATURES.md
@@ -69,10 +69,10 @@ Seven large data blocks that previously lived as `const` declarations inside `fr
 
 | File | Contents | Count |
 |------|----------|-------|
-| `data/waypoints.json` | Town + lock waypoints (array) | 429 |
-| `data/moorings.json` | Haltes + ports de plaisance (array) | 114 |
-| `data/routes.json` | `{ routes: [...], connections: [...] }` | 45 routes, 60 connections |
-| `data/waterway_constraints.json` | VNF dimension limits keyed by OSM name (object) | 56 waterways |
+| `data/waypoints.json` | Town + lock waypoints (array) | 1,610 (635 towns + 975 locks; 429 curated FR + 1,142 OSM + 39 EU anchors) |
+| `data/moorings.json` | Haltes + ports de plaisance (array) | 5,802 (114 curated + 5,688 OSM-imported) |
+| `data/routes.json` | `{ routes: [...], connections: [...] }` | 173 routes (60 curated + 113 auto-derived), 75 connections |
+| `data/waterway_constraints.json` | Dimension limits keyed by OSM name (object) | 101 waterways |
 | `data/waterway_colors.json` | Per-waterway hex colours (object) | 85 entries (58 FR + 27 EU) |
 | `data/tunnels.json` | Tunnel entries — each has `kind: "tunnel"` (array) | 5 |
 | `data/tidal.json` | `{ Garonne: { stations, marnage_min_m, warnings } }` (object) | 1 waterway |
@@ -183,7 +183,7 @@ map
 ├── closuresGroup    (L.layerGroup — multi-country navigation closures)
 ├── tunnelGroup      (L.layerGroup — canal tunnel markers with convoy schedules)
 ├── bridgesGroup     (L.markerClusterGroup — IENC bridges with air-clearance colouring)
-├── channelAxisGroup (L.layerGroup — IENC wtwaxs dashed polylines, 2,508 features)
+├── channelAxisGroup (L.layerGroup — IENC wtwaxs dashed polylines, 6,576 features)
 ├── obstructionsGroup(L.markerClusterGroup — IENC OBSTRN navigation hazards)
 └── googlePlacesGroup (L.layerGroup — user's imported Google Maps saved places)
 ```
@@ -206,7 +206,8 @@ fetch('./waterways.geojson')  // → stored in Cache API → ETag checked in bac
 - Non-navigable segments filtered by `_NON_NAVIGABLE_RE` (FR/NL/DE/EN/IT terms: ancien, bras-mort, vieux/vieille, écluse, pont-canal, aqueduc, souterrain, oude, verlaten, alter, alte, disused, abandoned, abbandonato, etc.)
 - Normalised deduplication removes regional/spelling variants; canonical OSM name kept
 - RDP-simplified at 33m tolerance
-- Cache version: `french-canals-waterways-v7` — bump this constant (in `buildWaterwayOverlay()`) to force all browsers to re-fetch
+- Regenerated 2026-07 via optimized global-relation sweep — 3,790 features across 10 countries
+- Cache version: `french-canals-waterways-v11` — bump this constant (in `buildWaterwayOverlay()`) to force all browsers to re-fetch
 
 ### Vessel-profile waterway colouring
 
@@ -273,7 +274,7 @@ Each tunnel popup shows: length, tug requirement, northbound/southbound convoy t
 
 ## IENC Bridges layer (VNF air clearances)
 
-The 🌉 Bridges layer shows 990 bridge air-clearance points extracted from official VNF IENC (Inland ENC, S-57) cells.
+The 🌉 Bridges layer shows 2,485 bridge air-clearance points extracted from official IENC (Inland ENC, S-57) cells published by VNF (FR), Rijkswaterstaat (NL), and WSV (DE).
 
 **IENC country coverage as of Wave 3 (Jun 2026):**
 - 🇫🇷 France — full VNF coverage (Seine, Rhône, Saône, Garonne, Rhin, Oise, Marne, Moselle, Dunkerque–Escaut)
@@ -294,13 +295,13 @@ ienc/FR.zip  +  VNF Charts/*.zip  →  extract_ienc.py  →  data/bridges.geojso
 - Licence Ouverte 2.0 — attribution line in every popup
 
 ### Coverage
-Rhine 281 · Dunkerque–Escaut 185 · Seine 176 · Moselle 100 · Saône 115 · Seine Amont 38 · Oise 32 · Garonne tidal 23 · Canal du Rhône au Rhin 12 · Rhône 11 · Nieuwpoort–Dunkerque 10 · Leie 7. **Gap**: full Rhône Lyon→Med is not in the current bundles.
+2,485 bridges total. Largest groups: Rhine 571 · NL waterways 379 (+ Amsterdam-Rijnkanaal 76, Maas 74, IJssel 20, Hollands Diep 19, Lek 13) · Dunkerque–Escaut 185 · Seine 176 · Saar 152 · Main 151 · Main-Donau-Kanal 124 · Moselle 100 · Mosel 88 · Saône 73 · Donau 48 · Seine Amont 38 · Oise 32 · Garonne tidal 23.
 
 ### 🧭 Channel axis layer
 `data/ienc_channel_axis.geojson` — the official dredged navigation centerline (`wtwaxs` layer). On meandering rivers (Moselle hairpins, lower Seine, Bordeaux meander) this differs materially from the OSM river geometry.  Styled as a dashed polyline colour-coded per waterway. Fetched on first toggle (1.2 MB — NOT precached by the SW to keep first-install small; cached thereafter via stale-while-revalidate).
 
 ### ⚠ Hazards layer
-`data/ienc_obstructions.geojson` — 157 OBSTRN records (rocks, snags, foul areas, islets, submerged structures). Marker border + popup title colour signals severity:
+`data/ienc_obstructions.geojson` — 2,091 OBSTRN records (rocks, snags, foul areas, islets, submerged structures). Marker border + popup title colour signals severity:
 - 🔴 **submerged** (WATLEV 3 — always underwater, hidden hazard)
 - 🟡 **awash / partly submerged** (WATLEV 1, 4, 5, 6 — tide-dependent)
 - ⚪ **visible** (WATLEV 2, 7 — above water / floating)
@@ -623,7 +624,9 @@ If you've researched an OSM-imported town/mooring and want it to render at full 
 **Route numbering:**
 - `1-52` — curated French routes (existing, unchanged since Wave 1)
 - `60-74` — curated EU routes (Wave 5)
-- `200+` — auto-derived from `waterways.geojson` via `fill_auto_routes.py`
+- `200+` — auto-derived from `waterways.geojson` via `fill_auto_routes.py` (currently 200-312, 113 routes)
+
+Current totals: **173 routes** (60 curated + 113 auto-derived) and **75 connections**.
 
 **Auto-derive workflow:**
 ```bash
@@ -717,7 +720,7 @@ Search for `L.map(` in `french_canals_map.html` to find the map initialisation b
 Run `python3 -m http.server 8765` from the project folder, then open `http://localhost:8765/french_canals_map.html`. Or double-click `Open Map.command` (requires `chmod +x "Open Map.command"` once).
 
 ### Force browsers to re-fetch waterways.geojson
-Change `WATERWAYS_CACHE_VER` constant (currently `'french-canals-waterways-v7'`) to the next version.
+Change `WATERWAYS_CACHE_VER` constant (currently `'french-canals-waterways-v11'`) to the next version.
 
 ### Deploy
 ```bash

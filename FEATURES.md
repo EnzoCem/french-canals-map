@@ -1,7 +1,7 @@
 # Feature Backlog & To-Do
 
 Planned and proposed enhancements for the French Canals Interactive Map.
-*Last updated: 2026-04-23 (IENC: bridges, locks, moorings, channel axis, obstructions, Garonne tidal UI, attribution)*
+*Last updated: 2026-07-09 (counts refreshed after EU expansion — waves 1-5 + PRs #9-#11)*
 
 ---
 
@@ -13,15 +13,15 @@ Planned and proposed enhancements for the French Canals Interactive Map.
 | Interactive Leaflet map | Dark nautical theme, zoom/pan, mobile-friendly |
 | Base layer switcher | IGN France (default), OpenStreetMap, CartoDB Voyager, ESRI Satellite, OpenTopoMap |
 | OpenSeaMap overlay | Nautical marks as a toggleable overlay |
-| Waterway overlay | 3,474 OSM canal/river segments (deduped + non-navigable filtered, Swiss/Saône upstream trimmed) loaded from `waterways.geojson` |
+| Waterway overlay | 3,790 OSM canal/river segments across 10 countries (deduped + non-navigable filtered) loaded from `waterways.geojson` |
 | Waterway Cache API | Instant load on repeat visits; background ETag check for updates |
 | Per-waterway colour coding | Each waterway rendered in its own colour from `WATERWAY_COLORS` when no vessel profile is set |
-| Town markers | 120+ waypoints with detail sidebars |
+| Town markers | 1,610 waypoints (635 towns + 975 locks) with detail sidebars |
 | Lock markers | Curated lock positions + live Overpass locks at zoom ≥ 12 |
 | Haltes & Ports | VNF haltes and marinas as separate toggleable layers |
 | Michelin restaurants | 1,007 Michelin-awarded restaurants as a toggleable layer |
 | Fuel & water stops | Seed data + live Overpass query for marine fuel stations |
-| Chômages overlay | VNF maintenance closures (seed data, active + upcoming within 180 days) |
+| Closures overlay | Multi-country navigation closures — 21 curated entries across FR/NL/DE/BE/AT (active + upcoming within 180 days) |
 | Tunnel markers | 5 major tunnels (Riqueval, Mauvages, Foug, Pouilly, Saint-Albin) with convoy times + booking info |
 | My Notes | User pins with personal notes, persisted in localStorage |
 | Edit Locations mode | Click-to-place marker repositioning, saved to localStorage |
@@ -44,7 +44,7 @@ Planned and proposed enhancements for the French Canals Interactive Map.
 ### Route Planner
 | Feature | Description |
 |---------|-------------|
-| BFS pathfinding | Find route between any two towns across 44 connected waterways |
+| BFS pathfinding | Find route between any two towns across 173 connected waterway routes (60 curated + 113 auto-derived) |
 | Multi-stop planning | Add via stops (A → B → C → … → Z) |
 | Route highlight on map | Planned route in coral-red + white halo; non-route waterways fade |
 | Reverse route | Flip entire stop order with one click |
@@ -120,7 +120,7 @@ Planned and proposed enhancements for the French Canals Interactive Map.
 | Live VNF chômages | Low | Parse published JSON from data.gouv.fr or Overpass `hazard` tags |
 | ~~Share route via URL hash~~ | Done | `#r=fromId:toId` written on calculate; `_initFromHash()` restores on load; 🔗 Copy Link button in results |
 | Printable route card | Medium | `@media print` CSS showing segment table, locks, VNF links — for the helm |
-| ~~Bridge height markers~~ | Done | 🌉 Bridges layer renders 990 bridges across 13 waterways (Rhine, Moselle, Seine, Saône, Oise, Garonne tidal, Dunkerque-Escaut, etc.). Per-bridge air clearance from VNF IENC; vessel-profile-aware colouring (green/amber/red). Extraction pipeline: `extract_ienc.py` → `data/bridges.geojson` (226 KB). |
+| ~~Bridge height markers~~ | Done | 🌉 Bridges layer renders 2,485 bridges across FR/NL/DE waterways (Rhine, Moselle, Seine, Saône, Oise, Garonne tidal, Dunkerque-Escaut, Maas, Waal, Main, Main-Donau-Kanal, Donau, etc.). Per-bridge air clearance from official IENC cells (VNF, Rijkswaterstaat, WSV); vessel-profile-aware colouring (green/amber/red). Extraction pipeline: `extract_ienc.py` → `data/bridges.geojson`. |
 
 ---
 
@@ -136,11 +136,11 @@ Planned and proposed enhancements for the French Canals Interactive Map.
 | ~~Route-day weather~~ | Done | Open-Meteo per-stop ETA forecast rendered on each day row |
 | ~~VHF channel per lock~~ | Done | `_vhfChip()` renders on live + route-planner locks |
 | ~~Capitainerie tel: links~~ | Done | `_autoLinkPhones()` + `_telLink()` across mooring/lock/tunnel/POI popups |
-| ~~IENC bridge air clearances~~ | Done | 🌉 Bridges layer — see row above. 990 bridges with VERCLR; vessel-profile-aware colouring. |
-| ~~IENC locks reconciliation data~~ | Done | `data/ienc_locks.geojson` (192 locks with length/width/rise) + `bridges_locks_reconciliation.csv` for manual review. Source for cherry-picking lock waypoints missing from the app. |
-| ~~IENC moorings reconciliation data~~ | Done | `data/ienc_moorings.geojson` (625 quays + pontoons) + `bridges_moorings_reconciliation.csv`. Surfaces candidate matches (e.g. Chalon port position verified; Seurre, Toul positions worth reviewing). |
-| ~~IENC channel axis (🧭 Channel)~~ | Done | 2,508 dredged-channel centerline segments from `wtwaxs` layer. Toggleable polyline overlay (dashed, per-waterway colour) — shows the official navigation axis vs. OSM's river bank. Significant on meandering sections (Moselle, lower Seine). |
-| ~~IENC obstructions (⚠ Hazards)~~ | Done | 157 navigation hazards from `OBSTRN` — rocks, snags, foul areas, islets. Colour-coded markers by water-level category (submerged/awash/visible). Popup shows CATOBS type + WATLEV context + bilingual description. |
+| ~~IENC bridge air clearances~~ | Done | 🌉 Bridges layer — see row above. 2,485 bridges with VERCLR; vessel-profile-aware colouring. |
+| ~~IENC locks reconciliation data~~ | Done | `data/ienc_locks.geojson` (644 locks with length/width/rise) + `bridges_locks_reconciliation.csv` for manual review. Source for cherry-picking lock waypoints missing from the app. |
+| ~~IENC moorings reconciliation data~~ | Done | `data/ienc_moorings.geojson` (3,344 quays + pontoons) + `bridges_moorings_reconciliation.csv`. Surfaces candidate matches (e.g. Chalon port position verified; Seurre, Toul positions worth reviewing). |
+| ~~IENC channel axis (🧭 Channel)~~ | Done | 6,576 dredged-channel centerline segments from `wtwaxs` layer. Toggleable polyline overlay (dashed, per-waterway colour) — shows the official navigation axis vs. OSM's river bank. Significant on meandering sections (Moselle, lower Seine). |
+| ~~IENC obstructions (⚠ Hazards)~~ | Done | 2,091 navigation hazards from `OBSTRN` — rocks, snags, foul areas, islets. Colour-coded markers by water-level category (submerged/awash/visible). Popup shows CATOBS type + WATLEV context + bilingual description. |
 | ~~Garonne tidal data constant~~ | Done | `TIDAL_DATA` JS constant in `french_canals_map.html` (~line 4934): Bordeaux → Castets tidal propagation table per coefficient (45/70/100), marnage per sector, mascaret warning. Data half of Tidal-section-warnings (UI still pending). |
 | VNF / OSM / Michelin attribution | Done | Data Backup panel now carries a permanent attribution block (Licence Ouverte 2.0, ODbL, etc.). |
 | 📱 Complementary apps link-outs | Done | Data Backup panel lists four external tools that extend this map: C-MAP Embark (coastal charts), Navily (mooring reviews), VNF Itinéraires (official route calculator), Waterway Routes (PDF cruising guides). Outbound links only; no tracking, no embedding. |
@@ -150,7 +150,7 @@ Planned and proposed enhancements for the French Canals Interactive Map.
 | ~~Tidal-section warnings (UI)~~ | Done | 🌊 Tidal section card in route-planner results when a leg crosses the tidal Garonne. Mascaret warning + marnage-per-sector chips + collapsible propagation table (Bordeaux / Portets / Cadillac / Langon / Castets × coefficients 45/70/100). Compact sidebar badge when user taps any tidal-Garonne waypoint. New route 51 "Garonne (tidal)" with 5 waypoints (Bordeaux → Castets-en-Dorthe) makes the tidal leg planable end-to-end. Extensible to future tidal waterways via `TIDAL_DATA` key + matching route entry. |
 | ~~SHOM live-tide links~~ | Done | 📅 Live tide-prediction link-outs to `maree.shom.fr` for Le Verdon (entrance) / Pauillac (mid-estuary) / Bordeaux (reference) embedded in the tidal card. Sidebar badge also carries a single tap-through to Bordeaux. Official SHOM pages, always current, Licence Ouverte. User combines the live HW/LW from SHOM with the propagation table already in the card to derive station times. |
 | ~~Lock waypoints from IENC~~ | Done | 208 locks imported from `data/ienc_locks.geojson` into `WAYPOINTS` as `lk100..lk307` (2026-04-24, refreshed 2026-04-25). Each carries chamber length × width in the description so the vessel-profile filter can flag locks that won't fit. 2026-04-25 refresh fixed the Saar mislabel (previously mapped as "Saône upper") and added Rhône Lyon→Med locks via CNR cells. Coverage: Seine 41, Moselle 33, Dunkerque-Escaut 31, Seine-Amont 26, Saône 19, Rhine 18, Saar 16, Oise 13, Leie 7, Rhône (full) 5, Nieuwpoort-Dunkerque 6, Rhône-Rhin 2. |
-| ~~IENC bundle expansion (Tier 1)~~ | Done | 2026-04-25: ingested the user-supplied IENC France 2021 + Inland ENC Europe 05.2022 bundles. Net additions: full Rhône Lyon→Mediterranean (CNR cells `3T5RHO*`, 33 cells, ~88 new bridges + 4 locks), German Saar (10 cells, 16 locks), Belgium (8 zips, 380 bridges in Belgium-waterway category + 82 Albert Canal). Bridges geojson: 990 → 1,700. Locks: 192 → 325 in source data, 208 imported into WAYPOINTS. |
+| ~~IENC bundle expansion (Tier 1)~~ | Done (FR/NL/DE — BE/AT deferred) | 2026-04-25: ingested the user-supplied IENC France 2021 + Inland ENC Europe 05.2022 bundles. Net additions: full Rhône Lyon→Mediterranean (CNR cells `3T5RHO*`, 33 cells, ~88 new bridges + 4 locks), German Saar (10 cells, 16 locks), Belgium (8 zips, 380 bridges in Belgium-waterway category + 82 Albert Canal). Bridges geojson: 990 → 1,700 at the time. Locks: 192 → 325 in source data, 208 imported into WAYPOINTS. Current totals after the NL (Rijkswaterstaat) + DE (WSV) ingestion: 2,485 bridges, 644 locks. |
 | IENC notice marks + restricted areas | Medium | `notmrk` (speed limits, no-overtaking, no-anchoring signboards) + `RESARE` (regulated zones). High signal for on-board decision-making. ~1.5 h effort, extraction pattern already established. |
 | IENC depth areas (DEPARE) | Low | Real river-depth polygons. Mostly irrelevant on big rivers for pleasure craft <1.5 m draft, so low priority. |
 | IENC soundings (SOUNDG) | Low | Dense individual depth points. Noisy without expert interpretation. Skip unless someone specifically asks. |
@@ -168,7 +168,7 @@ Planned and proposed enhancements for the French Canals Interactive Map.
 
 | Item | Description |
 |------|-------------|
-| Single-file architecture | At ~8,200 lines the HTML is large; no immediate plans to split, but worth tracking |
+| Single-file architecture | At ~8,500 lines the HTML is large; no immediate plans to split, but worth tracking |
 | CLAUDE.md line numbers drift | Line numbers will drift as the file grows — use `grep -n "^function foo"` to find current positions |
 | Overpass error handling inconsistency | `_fetchPOIsNearby` has Try Again UX; `_fetchProvisionsNearby`, `fetchLocksInView`, chômages do not. Extract shared `_overpassFetch(ql, opts)` helper |
 | `_NON_NAVIGABLE_RE` over-matches | Anchors weakly on `écluse` — any waterway name containing that token is filtered. Revisit to anchor on primary descriptor only |
