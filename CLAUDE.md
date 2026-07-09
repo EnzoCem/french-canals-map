@@ -566,6 +566,8 @@ git push
 
 Non-French waypoints and moorings come from `fill_osm_pois.py`, which queries Overpass per-country, normalises the hits, deduplicates against the curated French data (200 m proximity + name match), and writes back to `data/waypoints.json` + `data/moorings.json`.
 
+Country attribution comes from the OSM `admin_level=2` area filter in each query (`area["ISO3166-1"="BE"]`, UK→GB), never from the bbox — the per-country bboxes overlap at borders and only limit query extent (e.g. restrict IT to the navigable north).
+
 ### Schema additions
 
 Every OSM-sourced entry has:
@@ -579,6 +581,9 @@ Every OSM-sourced entry has:
 python3 fill_osm_pois.py                   # all 9 countries
 python3 fill_osm_pois.py --countries NL DE # subset
 python3 fill_osm_pois.py --dry-run         # print plan, no network calls
+python3 fill_osm_pois.py --prune-stale     # also drop OSM entries no longer matched by any
+                                           # country (only on a full all-country sweep with
+                                           # zero fetch failures); curated entries untouched
 ```
 
 Idempotent — re-runs preserve user location overrides (keyed on the entry's `id`, which is stable across syncs because `osm_id` doesn't change).
