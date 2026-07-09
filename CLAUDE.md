@@ -23,13 +23,13 @@ French Canals/
 ├── fill_michelin.py                ← annual script to update MICHELIN_RESTAURANTS from ngshiheng/michelin-my-maps
 ├── patch_lyon_waterways.py         ← one-shot patch: fetched Miribel/Jonage/Rhône through Lyon
 ├── manifest.json                   ← PWA manifest (installable)
-├── sw.js                           ← Service worker: app shell precache + tile LRU cache (VERSION = fc-v13)
+├── sw.js                           ← Service worker: app shell precache + tile LRU cache (VERSION = fc-v14)
 ├── icon.svg                        ← PWA icon (vessel on canal)
 ├── extract_ienc.py                 ← GDAL-based extractor: VNF IENC S-57 zips → data/bridges.geojson
 ├── tests/test_extract_ienc.py      ← Pytest suite for extract_ienc (pure + one GDAL integration test)
 ├── data/
-│   ├── waypoints.json              ← 1,610 town/lock waypoints (429 curated FR + 1,142 OSM + 39 EU anchors)
-│   ├── moorings.json               ← 5,802 haltes + ports (114 curated + 5,688 OSM-imported)
+│   ├── waypoints.json              ← 1,991 town/lock waypoints (429 curated FR + 1,523 OSM + 39 EU anchors)
+│   ├── moorings.json               ← 5,416 haltes + ports (114 curated + 5,302 OSM-imported)
 │   ├── routes.json                 ← { routes: [173 entries], connections: [75 entries] }
 │   ├── waterway_constraints.json   ← 101 dimension limits keyed by OSM name
 │   ├── waterway_colors.json        ← 85 per-waterway colours (58 FR + 27 EU, extracted Wave 1)
@@ -69,8 +69,8 @@ Seven large data blocks that previously lived as `const` declarations inside `fr
 
 | File | Contents | Count |
 |------|----------|-------|
-| `data/waypoints.json` | Town + lock waypoints (array) | 1,610 (635 towns + 975 locks; 429 curated FR + 1,142 OSM + 39 EU anchors) |
-| `data/moorings.json` | Haltes + ports de plaisance (array) | 5,802 (114 curated + 5,688 OSM-imported) |
+| `data/waypoints.json` | Town + lock waypoints (array) | 1,991 (1,043 towns + 948 locks; 429 curated FR + 1,523 OSM + 39 EU anchors) |
+| `data/moorings.json` | Haltes + ports de plaisance (array) | 5,416 (114 curated + 5,302 OSM-imported) |
 | `data/routes.json` | `{ routes: [...], connections: [...] }` | 173 routes (60 curated + 113 auto-derived), 75 connections |
 | `data/waterway_constraints.json` | Dimension limits keyed by OSM name (object) | 101 waterways |
 | `data/waterway_colors.json` | Per-waterway hex colours (object) | 85 entries (58 FR + 27 EU) |
