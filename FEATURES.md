@@ -16,7 +16,7 @@ Planned and proposed enhancements for the French Canals Interactive Map.
 | Waterway overlay | 3,790 OSM canal/river segments across 10 countries (deduped + non-navigable filtered) loaded from `waterways.geojson` |
 | Waterway Cache API | Instant load on repeat visits; background ETag check for updates |
 | Per-waterway colour coding | Each waterway rendered in its own colour from `WATERWAY_COLORS` when no vessel profile is set |
-| Town markers | 1,610 waypoints (635 towns + 975 locks) with detail sidebars |
+| Town markers | 1,991 waypoints (1,043 towns + 948 locks) with detail sidebars |
 | Lock markers | Curated lock positions + live Overpass locks at zoom ≥ 12 |
 | Haltes & Ports | VNF haltes and marinas as separate toggleable layers |
 | Michelin restaurants | 1,007 Michelin-awarded restaurants as a toggleable layer |
