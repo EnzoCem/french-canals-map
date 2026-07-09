@@ -3311,6 +3311,14 @@ function vnfLinksHTML(section, fromName, toName) {
 /* National waterway authorities for non-FR countries. FR keeps the richer
  * VNF_TERRITORIES treatment. Domains match the data-sources panel deep-links;
  * URLs verified live 2026-07. */
+/* Country display names (search queries etc.) and route-planner optgroup
+ * labels. Keyed by the `country` field present on OSM-sourced and anchor
+ * waypoints; curated French waypoints have no country field (falsy → FR). */
+const COUNTRY_NAMES = { FR:'France', NL:'Netherlands', BE:'Belgium', DE:'Germany', CH:'Switzerland',
+  AT:'Austria', IT:'Italy', LU:'Luxembourg', UK:'UK', IE:'Ireland' };
+const COUNTRY_LABELS = { NL:'🇳🇱 Netherlands', BE:'🇧🇪 Belgium', DE:'🇩🇪 Germany', CH:'🇨🇭 Switzerland',
+  AT:'🇦🇹 Austria', IT:'🇮🇹 Italy', LU:'🇱🇺 Luxembourg', UK:'🇬🇧 United Kingdom', IE:'🇮🇪 Ireland' };
+
 const AUTHORITIES = {
   NL: { flag:'🇳🇱', name:'Rijkswaterstaat', notices:'https://www.vaarweginformatie.nl/', home:'https://www.rijkswaterstaat.nl/water' },
   DE: { flag:'🇩🇪', name:'WSV / ELWIS', notices:'https://www.elwis.de/DE/dynamisch/SNB/', home:'https://www.elwis.de/' },
@@ -5307,11 +5315,16 @@ function populateRoutePlannerDropdowns() {
   const towns = WAYPOINTS.filter(w => !w.is_lock);
   const sectionNames = {1:'Section 1 · Seine',2:'Section 2 · Bassin de la Seine',3:'Section 3 · Centre-Est',4:'Section 4 · Rhône–Saône',5:'Section 5 · Northern',6:'Section 6 · Nord-Est',7:'Section 7 · Rhine',8:'Section 8 · Brittany',9:'Section 9 · Entre Deux Mers'};
 
-  // Group by section
-  const bySec = {};
+  // Group: French waypoints by section, non-FR waypoints by country.
+  // (EU OSM waypoints have section 0; anchor waypoints have section 1 +
+  //  a country field — both belong under their country, not a FR section.)
+  const bySec = {}, byCountry = {};
   towns.forEach(w => {
-    if (!bySec[w.section]) bySec[w.section] = [];
-    bySec[w.section].push(w);
+    if (w.country && w.country !== 'FR') {
+      (byCountry[w.country] = byCountry[w.country] || []).push(w);
+    } else {
+      (bySec[w.section] = bySec[w.section] || []).push(w);
+    }
   });
 
   ['rp-from', 'rp-to'].forEach(id => {
@@ -5324,6 +5337,18 @@ function populateRoutePlannerDropdowns() {
         const opt = document.createElement('option');
         opt.value = w.id;
         opt.textContent = `${w.name}`;
+        grp.appendChild(opt);
+      });
+      sel.appendChild(grp);
+    });
+    Object.keys(COUNTRY_LABELS).forEach(cc => {
+      if (!byCountry[cc]) return;
+      const grp = document.createElement('optgroup');
+      grp.label = COUNTRY_LABELS[cc];
+      byCountry[cc].sort((a,b) => a.name.localeCompare(b.name)).forEach(w => {
+        const opt = document.createElement('option');
+        opt.value = w.id;
+        opt.textContent = w.name;
         grp.appendChild(opt);
       });
       sel.appendChild(grp);
