@@ -3419,7 +3419,7 @@ function openSidebar(wid) {
       <div class="info-desc">
         <a href="https://www.google.com/maps?q=${w.lat},${w.lon}" target="_blank" style="color:#5bc0de">📍 Google Maps</a><br>
         <a href="https://www.openstreetmap.org/?mlat=${w.lat}&mlon=${w.lon}&zoom=14" target="_blank" style="color:#5bc0de">🗺 OpenStreetMap</a><br>
-        <a href="https://www.google.com/search?q=${encodeURIComponent(w.name + ' France canal moorings')}" target="_blank" style="color:#5bc0de">🔍 Search for moorings</a>
+        <a href="https://www.google.com/search?q=${encodeURIComponent(w.name + ' ' + (COUNTRY_NAMES[w.country] || 'France') + ' canal moorings')}" target="_blank" style="color:#5bc0de">🔍 Search for moorings</a>
       </div>
       ${isOsmSource && w.osm_id ? `
       <div style="margin-top:12px;padding:8px;background:#1c1c2a;border-radius:4px;font-size:11px;color:#8ab4c2">
@@ -8462,7 +8462,7 @@ function clearGooglePlaces() {
         <div class="prof-row">
           <label>Length Overall (m)</label>
           <input id="prof-length" type="number" step="0.5" min="0" max="100" placeholder="12">
-          <span class="prof-hint">French canal locks max ~38.5 m</span>
+          <span class="prof-hint">Freycinet-gauge locks (FR) max ~38.5 m — larger on Rhine/Danube</span>
         </div>
         <div class="prof-row">
           <label>Beam (m)</label>
