@@ -4956,7 +4956,7 @@ function init() {
     }
   }
 
-  _loadData('fc-waypoints-v3', './data/waypoints.json', function(data) {
+  _loadData('fc-waypoints-v4', './data/waypoints.json', function(data) {
     WAYPOINTS = data;
     buildMarkers();
   }, function() { showEditToast('⚠ Waypoints failed to load'); });
