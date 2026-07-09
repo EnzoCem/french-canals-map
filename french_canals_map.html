@@ -3309,15 +3309,16 @@ function vnfLinksHTML(section, fromName, toName) {
 }
 
 /* National waterway authorities for non-FR countries. FR keeps the richer
- * VNF_TERRITORIES treatment. URLs mirror the data-sources panel deep-links. */
+ * VNF_TERRITORIES treatment. Domains match the data-sources panel deep-links;
+ * URLs verified live 2026-07. */
 const AUTHORITIES = {
   NL: { flag:'🇳🇱', name:'Rijkswaterstaat', notices:'https://www.vaarweginformatie.nl/', home:'https://www.rijkswaterstaat.nl/water' },
-  DE: { flag:'🇩🇪', name:'WSV / ELWIS', notices:'https://www.elwis.de/DE/dynamisch/gewaesserkunde/', home:'https://www.elwis.de/' },
-  BE: { flag:'🇧🇪', name:'De Vlaamse Waterweg / SPW', notices:'https://www.visuris.be/', home:'https://voies-hydrauliques.wallonie.be/' },
+  DE: { flag:'🇩🇪', name:'WSV / ELWIS', notices:'https://www.elwis.de/DE/dynamisch/SNB/', home:'https://www.elwis.de/' },
+  BE: { flag:'🇧🇪', name:'DVW / SPW', notices:'https://www.visuris.be/', home:'https://voies-hydrauliques.wallonie.be/' },
   AT: { flag:'🇦🇹', name:'viadonau / DoRIS', notices:'https://www.doris.bmk.gv.at/', home:'https://www.viadonau.org/' },
-  CH: { flag:'🇨🇭', name:'Port of Switzerland', notices:'https://www.port-of-switzerland.ch/', home:'https://www.port-of-switzerland.ch/' },
+  CH: { flag:'🇨🇭', name:'Port of Switzerland', notices:'https://port-of-switzerland.ch/news-schifffahrt-2/', home:'https://port-of-switzerland.ch/' },
   LU: { flag:'🇱🇺', name:'WSV (Moselle, DE-administered)', notices:'https://www.elwis.de/', home:'https://www.elwis.de/' },
-  UK: { flag:'🇬🇧', name:'Canal & River Trust', notices:'https://canalrivertrust.org.uk/notices', home:'https://canalrivertrust.org.uk/' },
+  UK: { flag:'🇬🇧', name:'Canal &amp; River Trust', notices:'https://canalrivertrust.org.uk/notices', home:'https://canalrivertrust.org.uk/' },
   IE: { flag:'🇮🇪', name:'Waterways Ireland', notices:'https://www.waterwaysireland.org/marine-notices', home:'https://www.waterwaysireland.org/' },
   IT: { flag:'🇮🇹', name:'AIPo', notices:'https://www.agenziapo.it/', home:'https://www.agenziapo.it/' },
 };
@@ -8363,8 +8364,8 @@ function clearGooglePlaces() {
     <ul>
       <li>🇬🇧 UK &mdash; <a href="https://canalrivertrust.org.uk/notices" target="_blank" rel="noopener">CRT navigation notices</a></li>
       <li>🇮🇪 IE &mdash; <a href="https://www.waterwaysireland.org/marine-notices" target="_blank" rel="noopener">Waterways Ireland marine notices</a></li>
-      <li>🇮🇹 IT &mdash; <a href="https://www.aipo.it/" target="_blank" rel="noopener">AIPo (Po river authority)</a></li>
-      <li>🇨🇭 CH &mdash; <a href="https://www.portofswitzerland.ch/en/news-and-publications/" target="_blank" rel="noopener">Port of Switzerland (Rhine)</a></li>
+      <li>🇮🇹 IT &mdash; <a href="https://www.agenziapo.it/" target="_blank" rel="noopener">AIPo (Po river authority)</a></li>
+      <li>🇨🇭 CH &mdash; <a href="https://port-of-switzerland.ch/news-schifffahrt-2/" target="_blank" rel="noopener">Port of Switzerland (Rhine)</a></li>
       <li>🇱🇺 LU &mdash; Moselle covered under <strong>🇩🇪 WSV / ELWIS</strong> above</li>
     </ul>
   </div>
