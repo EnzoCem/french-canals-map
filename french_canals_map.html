@@ -5037,7 +5037,7 @@ function init() {
     WATERWAY_CONSTRAINTS = data;
     if (typeof buildWaterwayOverlay === 'function' && typeof WATERWAY_GEOJSON !== 'undefined' && WATERWAY_GEOJSON) buildWaterwayOverlay();
   });
-  _loadData('fc-colors-v1', './data/waterway_colors.json', function(data) {
+  _loadData('fc-colors-v2', './data/waterway_colors.json', function(data) {
     WATERWAY_COLORS = data;
     if (typeof buildWaterwayOverlay === 'function' && typeof WATERWAY_GEOJSON !== 'undefined' && WATERWAY_GEOJSON) buildWaterwayOverlay();
   });
