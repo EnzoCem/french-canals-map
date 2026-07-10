@@ -101,6 +101,11 @@ OSM_NAME_MAP = {
     'Albert Canal':                  ['Albertkanaal', 'Albert Canal'],
     'Scheldt':                       ['Schelde', 'Escaut', 'Scheldt'],
     'Meuse (BE/NL)':                 ['Maas'],
+    'Waal':                          ['Waal'],
+    'Nederrijn':                     ['Nederrijn'],
+    'Lek':                           ['Lek'],
+    'Kanaal Gent-Terneuzen':         ['Kanaal Gent-Terneuzen'],
+    'Naviglio Grande':               ['Naviglio Grande'],
     'Po':                            ['Po'],
     'Thames':                        ['River Thames', 'Thames'],
     'Kennet and Avon Canal':         ['Kennet and Avon Canal'],
@@ -115,7 +120,6 @@ OSM_NAME_MAP = {
     'Elbe-Lübeck-Kanal':        ['Elbe-Lübeck-Kanal'],
     'Nord-Ostsee-Kanal':             ['Nord-Ostsee-Kanal', 'Kiel Canal'],
     'Dortmund-Ems-Kanal':            ['Dortmund-Ems-Kanal'],
-    'Hochrhein':                     ['Hochrhein'],
 }
 
 
@@ -179,6 +183,11 @@ WATERWAY_ROUTES = {
     'Albert Canal':                   0,
     'Scheldt':                        0,
     'Meuse (BE/NL)':                  0,
+    'Waal':                           0,
+    'Nederrijn':                      0,
+    'Lek':                            0,
+    'Kanaal Gent-Terneuzen':          0,
+    'Naviglio Grande':                0,
     'Po':                             0,
     'Thames':                         0,
     'Kennet and Avon Canal':          0,
@@ -193,7 +202,8 @@ WATERWAY_ROUTES = {
     'Elbe-Lübeck-Kanal':              0,
     'Nord-Ostsee-Kanal':              0,
     'Dortmund-Ems-Kanal':             0,
-    'Hochrhein':                      0,
+    # 'Hochrhein' removed 2026-07: the Basel–Konstanz stretch is already
+    # covered by the 'Rhein' waterway relation fetched under 'Rhine'.
 }
 
 NAVIGABLE_WATERWAYS = list(WATERWAY_ROUTES.keys())
@@ -495,6 +505,23 @@ out geom;'''
                 return ways
         except Exception as exc:
             print(f'  {app_name}: relation query failed ({exc})', flush=True)
+        time.sleep(1)
+
+        # ── 1b. Route-relation query (type=route + route=waterway) ────────
+        # Some named navigation routes (e.g. the Dutch Staande Mastroute)
+        # are mapped as route relations, not waterway relations.
+        ql_route = f'''[out:json][timeout:180];
+relation[type=route][route=waterway][name="{osm_name}"];
+way(r);
+out geom;'''
+        try:
+            data = _overpass_query(ql_route)
+            ways = _extract_ways(data.get('elements', []))
+            if ways:
+                print(f'  {app_name}: {len(ways)} ways via route-relation[name="{osm_name}"]', flush=True)
+                return ways
+        except Exception as exc:
+            print(f'  {app_name}: route-relation query failed ({exc})', flush=True)
         time.sleep(1)
 
         # ── 2. Way fallback (bbox-restricted) ─────────────────────────────

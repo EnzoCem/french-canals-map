@@ -26,7 +26,7 @@ Interactive map of European inland waterways covering 10 countries — France in
 - **IGN France** (default) — France's official 1:25,000 topo map showing towpaths, lock buildings, canal infrastructure
 - **OpenStreetMap, CartoDB Voyager, ESRI Satellite, OpenTopoMap** — switchable via layer control
 - **OpenSeaMap** — nautical marks overlay (lock symbols, buoys, hazards)
-- **Waterway overlay** — 3,790 canal and river segments from OpenStreetMap across 10 countries (deduplicated and non-navigable segments removed), color-coded by navigability when a vessel profile is set
+- **Waterway overlay** — 3,868 canal and river segments from OpenStreetMap across 10 countries (deduplicated and non-navigable segments removed), color-coded by navigability when a vessel profile is set
 
 ### 📍 Marker Layers (all independently toggleable)
 | Button | Layer | Description |
@@ -46,7 +46,7 @@ Interactive map of European inland waterways covering 10 countries — France in
 Open **📍 Plan Route** to access the route planner:
 
 - Select any two (or more) towns — full multi-stop planning (A → B → C → … → Z)
-- BFS pathfinding across 173 connected waterway routes (60 curated + 113 auto-derived from OSM)
+- BFS pathfinding across 178 connected waterway routes (60 curated + 118 auto-derived from OSM)
 - Results: total distance, lock count, estimated travel days, vessel constraint warnings
 - **Day-by-day itinerary** — split by your cruise speed and daily hours
 - **Lock count per day** — see where the lock-heavy days fall
@@ -97,7 +97,7 @@ Search bar finds towns, locks, haltes, and ports instantly.
 |------|--------|
 | Route information (distances, locks, vessel constraints) | *Through the French Canals*, David Jefferson, 14th ed. |
 | Waypoints (towns, locks, haltes, ports) | Manually compiled from the book |
-| Waterway geometry | OpenStreetMap via Overpass API (3,790 features across 10 countries after dedup + cleanup) |
+| Waterway geometry | OpenStreetMap via Overpass API (3,868 features across 10 countries after dedup + cleanup) |
 | VNF dimension limits | Voies Navigables de France official publications |
 | Base map (IGN) | [IGN Géoportail](https://data.geopf.fr) |
 | Nautical marks | [OpenSeaMap](https://www.openseamap.org) |
@@ -112,7 +112,7 @@ Two-file architecture: the app HTML + a separate GeoJSON for waterway geometry.
 
 ```
 french_canals_map.html   (~8,500 lines — HTML + CSS + JS)
-waterways.geojson        (3,790 OSM waterway features across 10 countries, deduplicated and cleaned)
+waterways.geojson        (3,868 OSM waterway features across 10 countries, deduplicated and cleaned)
 ```
 
 **No build tools, no npm.** Edit and refresh.
@@ -131,7 +131,7 @@ waterways.geojson        (3,790 OSM waterway features across 10 countries, dedup
 
 ## Route Coverage
 
-173 routes in total: 44 named French routes from Jefferson's book remain the curated core (numbers 1–52), joined by 15 curated EU routes (60–74) and 113 auto-derived routes (200+) extending coverage to 10 countries.
+178 routes in total: 44 named French routes from Jefferson's book remain the curated core (numbers 1–52), joined by 15 curated EU routes (60–74) and 118 auto-derived routes (200+) extending coverage to 10 countries.
 
 The French curated core spans 9 sections of Jefferson's book:
 
