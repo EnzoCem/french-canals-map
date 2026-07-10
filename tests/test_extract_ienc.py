@@ -43,6 +43,46 @@ def test_waterway_for_cell_other_waterways():
     assert ei._waterway_for_cell("7V7PLDU4") == "Canal Nieuwpoort–Dunkerque"
 
 
+def test_waterway_for_cell_austria_donau():
+    # viadonau IENC (Tier 2, Inland ENC Europe 05.2022 bundle):
+    # 2W7D#### route cells + 2WBD* berthing/harbour detail cells.
+    assert ei._waterway_for_cell("2W7D1870") == "Donau"
+    assert ei._waterway_for_cell("2W7D2200") == "Donau"
+    assert ei._waterway_for_cell("2WBD1905") == "Donau"
+    assert ei._waterway_for_cell("2WBDHALB") == "Donau"
+    assert ei._waterway_for_cell("2WBDK017") == "Donau"
+
+
+def test_waterway_for_cell_switzerland_hochrhein():
+    # Swiss ports authority Hochrhein cell (single-cell 2021 edition).
+    assert ei._waterway_for_cell("4C7RH149") == "Hochrhein"
+
+
+def test_waterway_for_cell_belgium_specific():
+    # Flemish DVW mappack prefixes (Tier 2). Names align with
+    # data/waterway_constraints.json keys where they exist.
+    assert ei._waterway_for_cell("7V7BZS03") == "Boven-Zeeschelde"
+    assert ei._waterway_for_cell("7V7BOSC2") == "Bovenschelde"
+    assert ei._waterway_for_cell("7V7DEND1") == "Dender"
+    assert ei._waterway_for_cell("7V7YZER4") == "IJzer"
+    assert ei._waterway_for_cell("7V7RUP02") == "Rupel"
+    assert ei._waterway_for_cell("7V7DURME") == "Durme"
+    assert ei._waterway_for_cell("7V7GENO5") == "Kanaal Gent-Oostende"
+    assert ei._waterway_for_cell("7V7ZEEK1") == "Zeekanaal Brussel-Schelde"
+    assert ei._waterway_for_cell("7V7ZWV01") == "Zuid-Willemsvaart"
+    assert ei._waterway_for_cell("7V7BOHE3") == "Kanaal Bocholt-Herentals"
+    assert ei._waterway_for_cell("7V7DTS04") == "Kanaal Dessel-Turnhout-Schoten"
+    assert ei._waterway_for_cell("7V7KBKO1") == "Kanaal Bossuit-Kortrijk"
+    assert ei._waterway_for_cell("7V7KLEDI") == "Kanaal Leuven-Dijle"
+    assert ei._waterway_for_cell("7V7KRLEI") == "Kanaal Roeselare-Leie"
+    assert ei._waterway_for_cell("7V7RGENT") == "Ringvaart om Gent"
+    assert ei._waterway_for_cell("7V7RGEN1") == "Ringvaart om Gent"
+    assert ei._waterway_for_cell("8V8POA01") == "Port of Antwerp"
+    # Small/ambiguous cells stay in the country catch-all:
+    assert ei._waterway_for_cell("7V7SPIKA") == "Belgium waterway"
+    assert ei._waterway_for_cell("7V7LOKAN") == "Belgium waterway"
+
+
 def test_waterway_for_cell_lowercase_accepted():
     # Just in case a zip has lowercase cell filenames.
     assert ei._waterway_for_cell("4v7sei10") == "Seine"
