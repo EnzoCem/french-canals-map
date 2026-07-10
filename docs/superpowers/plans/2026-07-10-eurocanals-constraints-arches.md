@@ -49,3 +49,18 @@ Add `arch` to: Canal du Midi (2.40), Canal du Nivernais (2.70), Canal de Bourgog
 ## Task E3: Verification + PR
 - pytest green; node --check; preview: set profile beam 5.0 + air 2.5, check Canal du Midi renders blocked with arch note in planner + waterway colouring; beam 3.0 → navigable.
 - Push, PR: "EuroCanals data: EU constraint tables + restrictive-arch clearance warnings".
+
+---
+
+## E1 outcome record (2026-07-10)
+
+**Added (5):** Kanaal Gent-Terneuzen, Bovenschelde / Escaut, Meuse (BE/NL), Zeekanaal Brussel-Schelde - Canal maritime de Bruxelles à l'Escaut, Nederrijn.
+
+**Transcribed but skipped — no waterways.geojson feature yet** (re-usable if geometry is ever added; values live in the guide tables, guide named per group):
+- Belgiumwwy8843: Dender, Moervaart, Kanaal Bossuit-Kortrijk, Netekanaal, Lokanaal, Canal Blaton-Ath, Sambre, Ringvaart om Gent, Haut Escaut (Wallonia section)
+- Netherlandwwys8359 / HeartofHolland2378: ~140 small NL rows (Vecht, Amstel, Oude Rijn, Friesland/Groningen network, Randmeren, Kanaal door Walcheren, Oosterschelde, Volkerak…)
+- Germanywwy9217 / NorthSea_Germany1598: Neckar, Lahn, Ruhr, Rhein-Herne, Wesel-Datteln, Weser, Elbe, Saale, Havel/Spree network, Kiel-area small canals
+
+**Skipped — already covered by authority-sourced keys (never overwrite):** Rhein/Rhine segments, Mosel, Main, MDK, Donau, Saar, Mittellandkanal, Dortmund-Ems, Elbe-Lübeck, Nord-Ostsee, Maas segments, Waal, Lek, IJssel, Amsterdam-Rijnkanaal, Zuid-Willemsvaart, Julianakanaal, Maas-Waalkanaal, Wilhelminakanaal, Twentekanalen, Noordzeekanaal, Hollands Diep, Dordtse Kil, Merwedes, Schelde-Rijnkanaal, Albertkanaal, Leie, Canal Charleroi-Bruxelles, Standing-Mast waterways.
+
+**Known cosmetic gap:** a beam 3–4.5 m vessel tight against the *centerline* limit gets the plain "(tight)" message without the arch note (centerline branch wins); severity/colour correct.
