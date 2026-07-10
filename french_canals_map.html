@@ -3749,6 +3749,8 @@ function saveProfile() {
   else _updateWaterwayNavLegend();
   // Rebuild bridge markers so the green/amber/red colouring updates
   if (typeof _refreshBridgesOnProfileChange === 'function') _refreshBridgesOnProfileChange();
+  // Keep the planner's cruise inputs in step with the profile
+  if (typeof _syncCruiseInputsFromProfile === 'function') _syncCruiseInputsFromProfile();
   var t = document.getElementById('prof-toast');
   if (t) {
     t.textContent = '✓ Profile saved!';
@@ -3771,15 +3773,19 @@ function resetProfile() {
 // Legacy: kept for any code that called toggleVesselPanel()
 function toggleVesselPanel() { openProfileModal(); }
 
-/* Trip duration from distance + lock count using the vessel profile.
- * Rule of thumb: cruising time = km / cruiseSpeed, plus 15 min per lock.
- * Returns { days, hours, speed, hoursPerDay }. */
+/* Trip duration from distance + lock count.
+ * Single source of truth: the planner's cruise inputs (which are seeded from
+ * the vessel profile via _syncCruiseInputsFromProfile), so the summary,
+ * footer note and day-by-day itinerary always agree.
+ * Returns { days, hours, speed, hoursPerDay, lockMin }. */
 function _estimateTripDays(distKm, locks) {
+  var s = (typeof _getCruiseSettings === 'function') ? _getCruiseSettings() : null;
   var p = _vesselProfile || {};
-  var speed = (p.cruiseSpeed > 0) ? p.cruiseSpeed : 7;
-  var hpd   = (p.hoursPerDay > 0) ? p.hoursPerDay : 8;
-  var hours = distKm / speed + (locks || 0) * 0.25;
-  return { days: Math.max(1, Math.ceil(hours / hpd)), hours: hours, speed: speed, hoursPerDay: hpd };
+  var speed = s ? s.speed   : ((p.cruiseSpeed > 0) ? p.cruiseSpeed : 7);
+  var hpd   = s ? s.hours   : ((p.hoursPerDay > 0) ? p.hoursPerDay : 8);
+  var lockM = s ? s.lockMin : 15;
+  var hours = distKm / speed + (locks || 0) * (lockM / 60);
+  return { days: Math.max(1, Math.ceil(hours / hpd)), hours: hours, speed: speed, hoursPerDay: hpd, lockMin: lockM };
 }
 
 function _vesselCheckSegment(seg) {
@@ -5304,7 +5310,7 @@ function renderRouteResults(plan, fromWp, toWp) {
   if (hasPartial) {
     html += `<div class="rp-note">* Distances are approximate. Multi-route journeys show full-route distances for connecting routes.</div>`;
   } else {
-    html += `<div class="rp-note">Estimated at ${_est.speed} km/h, ${_est.hoursPerDay} h/day, 15 min per lock. Actual times vary.</div>`;
+    html += `<div class="rp-note">Estimated at ${_est.speed} km/h, ${_est.hoursPerDay} h/day, ${_est.lockMin} min per lock. Actual times vary.</div>`;
   }
 
   el.innerHTML = html;
@@ -5702,7 +5708,7 @@ function renderMultiStopResults(legs) {
   if (hasPartial) {
     html += `<div class="rp-note">* Distances are approximate for cross-route legs.</div>`;
   } else {
-    html += `<div class="rp-note">Estimated at ${_est.speed} km/h, ${_est.hoursPerDay} h/day, 15 min per lock. Actual times vary.</div>`;
+    html += `<div class="rp-note">Estimated at ${_est.speed} km/h, ${_est.hoursPerDay} h/day, ${_est.lockMin} min per lock. Actual times vary.</div>`;
   }
 
   // Feature 2: GPX Export + share link buttons
@@ -5808,6 +5814,7 @@ function openRoutePlanner() {
     }
   } else {
     panel.style.display = 'block';
+    if (typeof _syncCruiseInputsFromProfile === 'function') _syncCruiseInputsFromProfile();
     expandRoutePlanner();
     if (!document.getElementById('rp-from').options.length) {
       populateRoutePlannerDropdowns();
@@ -5909,10 +5916,23 @@ function exportRouteAsGPX() {
 //  FEATURE 3: Cruise Speed Calculator — day-by-day itinerary
 // ============================================================
 function _getCruiseSettings() {
-  var speed   = parseFloat((document.getElementById('rp-speed-val')   || {}).value) || 8;
-  var hours   = parseFloat((document.getElementById('rp-hours-val')   || {}).value) || 8;
-  var lockMin = parseFloat((document.getElementById('rp-lock-val')    || {}).value) || 30;
+  var p = _vesselProfile || {};
+  var speed   = parseFloat((document.getElementById('rp-speed-val')   || {}).value) || ((p.cruiseSpeed > 0) ? p.cruiseSpeed : 7);
+  var hours   = parseFloat((document.getElementById('rp-hours-val')   || {}).value) || ((p.hoursPerDay > 0) ? p.hoursPerDay : 8);
+  var lockMin = parseFloat((document.getElementById('rp-lock-val')    || {}).value) || 15;
   return { speed: speed, hours: hours, lockMin: lockMin };
+}
+
+/* Seed the planner's cruise inputs from the vessel profile. Inputs the user
+ * has edited this session (dataset.userSet) are left alone. */
+function _syncCruiseInputsFromProfile() {
+  var p = _vesselProfile || {};
+  var set = function(id, val) {
+    var el = document.getElementById(id);
+    if (el && !el.dataset.userSet) el.value = val;
+  };
+  set('rp-speed-val', (p.cruiseSpeed > 0) ? p.cruiseSpeed : 7);
+  set('rp-hours-val', (p.hoursPerDay > 0) ? p.hoursPerDay : 8);
 }
 
 function renderDayByDay(legs, speedKmh, hoursPerDay, lockMinutes) {
@@ -5926,11 +5946,14 @@ function renderDayByDay(legs, speedKmh, hoursPerDay, lockMinutes) {
     leg.plan.segments.forEach(function(seg) {
       var fromWp = WAYPOINTS.find(function(w) { return w.name === seg.from; });
       var toWp   = WAYPOINTS.find(function(w) { return w.name === seg.to;   });
-      if (!fromWp || !toWp) return;
+      // Time is accounted for EVERY segment — even when the endpoints don't
+      // resolve to named waypoints (common on EU/auto-derived routes), so the
+      // day count stays in step with the Est. Days summary. Unresolved
+      // endpoints only mean the stop isn't listed by name.
 
-      var segHours = (seg.dist_km / speedKmh) + (seg.locks * lockMinutes / 60);
+      var segHours = ((seg.dist_km || 0) / speedKmh) + ((seg.locks || 0) * lockMinutes / 60);
 
-      if (!plan.length) {
+      if (!plan.length && fromWp) {
         plan.push({ wp: fromWp, day: curDay, overnight: false, hrs: 0 });
       }
 
@@ -5952,8 +5975,10 @@ function renderDayByDay(legs, speedKmh, hoursPerDay, lockMinutes) {
       }
 
       // Mark last stop of each day as overnight
-      if (plan.length > 0) plan[plan.length - 1].overnight = (curHrs >= hoursPerDay * 0.9);
-      plan.push({ wp: toWp, day: curDay, overnight: false, hrs: curHrs });
+      if (toWp) {
+        if (plan.length > 0) plan[plan.length - 1].overnight = (curHrs >= hoursPerDay * 0.9);
+        plan.push({ wp: toWp, day: curDay, overnight: false, hrs: curHrs });
+      }
       if (curHrs >= hoursPerDay) { curHrs = 0; curDay++; }
     });
   });
@@ -8277,12 +8302,12 @@ function clearGooglePlaces() {
   <!-- Feature 3: Cruise Speed Calculator inputs -->
   <div class="rp-speed-row">
     <label>Speed:</label>
-    <input class="rp-speed-input" id="rp-speed-val" type="number" value="8" min="1" max="30" step="0.5">
+    <input class="rp-speed-input" id="rp-speed-val" type="number" value="7" min="1" max="30" step="0.5" oninput="this.dataset.userSet=1">
     <span class="rp-speed-unit">km/h</span>
     <label style="margin-left:8px">Hours/day:</label>
-    <input class="rp-speed-input" id="rp-hours-val" type="number" value="8" min="1" max="16" step="0.5">
+    <input class="rp-speed-input" id="rp-hours-val" type="number" value="8" min="1" max="16" step="0.5" oninput="this.dataset.userSet=1">
     <label style="margin-left:8px">Lock time:</label>
-    <input class="rp-speed-input" id="rp-lock-val" type="number" value="30" min="5" max="90" step="5">
+    <input class="rp-speed-input" id="rp-lock-val" type="number" value="15" min="5" max="90" step="5" oninput="this.dataset.userSet=1">
     <span class="rp-speed-unit">min</span>
   </div>
   <!-- Feature 1: Reverse button added to the swap/add row -->
