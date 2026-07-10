@@ -23,7 +23,7 @@ French Canals/
 ├── fill_michelin.py                ← annual script to update MICHELIN_RESTAURANTS from ngshiheng/michelin-my-maps
 ├── patch_lyon_waterways.py         ← one-shot patch: fetched Miribel/Jonage/Rhône through Lyon
 ├── manifest.json                   ← PWA manifest (installable)
-├── sw.js                           ← Service worker: app shell precache + tile LRU cache (VERSION = fc-v15)
+├── sw.js                           ← Service worker: app shell precache + tile LRU cache (VERSION = fc-v16)
 ├── icon.svg                        ← PWA icon (vessel on canal)
 ├── extract_ienc.py                 ← GDAL-based extractor: VNF IENC S-57 zips → data/bridges.geojson
 ├── tests/test_extract_ienc.py      ← Pytest suite for extract_ienc (pure + one GDAL integration test)
@@ -491,7 +491,7 @@ Line numbers drift as code changes — use `grep -n "function <name>"` in `frenc
 | `saveProfile()` | Saves profile; also triggers `_refreshBridgesOnProfileChange()` |
 | `applyVesselFilter()` | Applies draft/air filter; also triggers bridge re-colouring |
 | `buildClosuresMarkers()` | Builds multi-country navigation closure markers |
-| `_estimateTripDays(distKm, locks)` | Trip duration estimate from vessel profile (`cruiseSpeed`, `hoursPerDay`, 15 min/lock) |
+| `_estimateTripDays(distKm, locks)` | Trip duration estimate — single source of truth is the planner cruise inputs (seeded from the vessel profile via `_syncCruiseInputsFromProfile()`), so summary, footer note and day-by-day itinerary always agree |
 | `_getClosureWarnings(segments)` | Walks route segments, returns matching closures for the 🚧 planner card |
 | `colorLookup(name)` | Returns per-waterway colour from `data/waterway_colors.json` (normalised match) |
 | `getWaterwayNavStatus(name)` | Returns colour for a waterway: per-palette (no profile) or navigability (with profile) |
