@@ -4676,9 +4676,25 @@ function _vhfChip(tags) {
   return '<span class="vhf-chip">📻 ' + label + '</span>';
 }
 
+// Some waterways.geojson feature names use a different language/spelling than
+// their WATERWAY_CONSTRAINTS key (OSM "Rhein" vs constraints "Rhine", etc.).
+// Maps _normName'd geojson spelling → _normName'd constraint-key spelling.
+// Applied ONLY to constraint lookups: WATERWAY_COLORS keeps separate palette
+// entries for several of these spellings, so colorLookup must stay un-aliased.
+const _CONSTRAINT_ALIASES = {
+  'rhein': 'rhine',
+  'rhin / rhein': 'rhine',          // 'Le Rhin / Rhein' after prefix strip
+  'danube': 'donau',
+  'albert canal': 'albertkanaal',
+  'moselle (de/lu)': 'mosel',
+  'leie - la lys': 'leie',
+  'sarre / saar': 'saar',           // 'La Sarre / Saar' after prefix strip
+};
+
 function constraintLookup(name) {
   if (!name) return null;
-  const key = _normName(name);
+  let key = _normName(name);
+  key = _CONSTRAINT_ALIASES[key] || key;
   for (const [k, v] of Object.entries(WATERWAY_CONSTRAINTS)) {
     if (_normName(k) === key) return v;
   }
