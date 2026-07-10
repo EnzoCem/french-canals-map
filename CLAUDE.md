@@ -23,7 +23,7 @@ French Canals/
 ├── fill_michelin.py                ← annual script to update MICHELIN_RESTAURANTS from ngshiheng/michelin-my-maps
 ├── patch_lyon_waterways.py         ← one-shot patch: fetched Miribel/Jonage/Rhône through Lyon
 ├── manifest.json                   ← PWA manifest (installable)
-├── sw.js                           ← Service worker: app shell precache + tile LRU cache (VERSION = fc-v17)
+├── sw.js                           ← Service worker: app shell precache + tile LRU cache (VERSION = fc-v18)
 ├── icon.svg                        ← PWA icon (vessel on canal)
 ├── extract_ienc.py                 ← GDAL-based extractor: VNF IENC S-57 zips → data/bridges.geojson
 ├── tests/test_extract_ienc.py      ← Pytest suite for extract_ienc (pure + one GDAL integration test)
@@ -147,7 +147,14 @@ All seven data files are listed in `SHELL_URLS` in `sw.js` and are precached at 
 
 ### WATERWAY_CONSTRAINTS entry
 ```js
-'Canal du Midi': { air: 3.50, draft: 1.60, beam: 5.45, length: 30 }
+'Canal du Midi': { air: 3.50, draft: 1.60, beam: 5.45, length: 30,
+  // Optional: restrictive-arch pinch point (width-dependent clearance).
+  // At beam >= 4.5 m the effective air limit becomes arch.air_at_5m;
+  // beams 3-4.5 m that clear the centerline but not the 5 m profile are marked marginal
+  // (clearance holds to ~3 m width, so beams <= 3 m are unaffected).
+  arch: { air_at_5m: 2.40,
+          note: 'Capestang & Colombiers arched bridges (Pk 188-201): 3.30 m at centerline but 2.40 m at 5 m width',
+          source: 'EuroCanals Vessel Dimensions (2011)' } }
 ```
 
 ### TUNNELS entry
@@ -218,6 +225,8 @@ When `_vesselProfile` has dimensions set, `buildWaterwayOverlay()` colours each 
 - ⬜ `#90a4ae` — no VNF data for this waterway
 
 Without a profile, each waterway renders in its per-waterway colour from `data/waterway_colors.json` (via `colorLookup()`), falling back to uniform blue if not found.
+
+Constraint entries with an `arch` object (Canal du Midi, Canal du Nivernais, Canal de Bourgogne) apply width-dependent air clearance: vessels with beam ≥ 4.5 m are judged against `arch.air_at_5m` instead of the centerline `air`, and beams 3–4.5 m that only clear the centerline are coloured marginal — the arch note flows into the nav-status reason and route-planner warnings (`getWaterwayNavStatus` + `_vesselCheckSegment`).
 
 ---
 
