@@ -4,7 +4,12 @@
     "draft": 1.6,
     "beam": 5.45,
     "length": 30,
-    "source": "VNF"
+    "source": "VNF",
+    "arch": {
+      "air_at_5m": 2.4,
+      "note": "Capestang & Colombiers arched bridges (Pk 188-201): 3.30 m at centerline but 2.40 m at 5 m width",
+      "source": "EuroCanals Vessel Dimensions (2011)"
+    }
   },
   "Canal de la Robine": {
     "air": 3.5,
@@ -46,14 +51,24 @@
     "draft": 1.8,
     "beam": 5.2,
     "length": 38.5,
-    "source": "VNF"
+    "source": "VNF",
+    "arch": {
+      "air_at_5m": 2.2,
+      "note": "Arched bridges 3.40 m at centerline; Pouilly tunnel 3.10 m at centerline (3.10 m at 3 m width) but 2.20 m at 5 m width",
+      "source": "EuroCanals Vessel Dimensions (2011)"
+    }
   },
   "Canal du Nivernais": {
     "air": 3.1,
     "draft": 1.2,
     "beam": 3.1,
     "length": 27,
-    "source": "VNF"
+    "source": "VNF",
+    "arch": {
+      "air_at_5m": 2.7,
+      "note": "Arched bridges (Seine side Pk 141-145, Loire side Pk 62): 3.00 m at centerline but 2.70 m at 5 m width",
+      "source": "EuroCanals Vessel Dimensions (2011)"
+    }
   },
   "Canal du Centre": {
     "air": 3.5,
@@ -705,5 +720,40 @@
     "beam": 11.45,
     "length": 110,
     "source": "WSV Wasserstraßensteckbrief DEK"
+  },
+  "Kanaal Gent-Terneuzen": {
+    "air": 5.02,
+    "draft": 5.5,
+    "beam": 9.5,
+    "length": 80,
+    "source": "EuroCanals Belgiumwwy8843 (2020)"
+  },
+  "Bovenschelde / Escaut": {
+    "air": 4.13,
+    "draft": 2.6,
+    "beam": 6.5,
+    "length": 41.5,
+    "source": "EuroCanals Belgiumwwy8843 (2020)"
+  },
+  "Meuse (BE/NL)": {
+    "air": 5.33,
+    "draft": 2.2,
+    "beam": 12,
+    "length": 100,
+    "source": "EuroCanals Belgiumwwy8843 (2020)"
+  },
+  "Zeekanaal Brussel-Schelde - Canal maritime de Bruxelles à l'Escaut": {
+    "air": 30.0,
+    "draft": 5.3,
+    "beam": 14.75,
+    "length": 106,
+    "source": "EuroCanals Belgiumwwy8843 (2020)"
+  },
+  "Nederrijn": {
+    "air": 12.5,
+    "draft": 3.0,
+    "beam": 18,
+    "length": 260,
+    "source": "EuroCanals Netherlandwwys8359 (2020)"
   }
 }

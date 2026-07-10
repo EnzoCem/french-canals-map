@@ -3788,11 +3788,44 @@ function _estimateTripDays(distKm, locks) {
   return { days: Math.max(1, Math.ceil(hours / hpd)), hours: hours, speed: speed, hoursPerDay: hpd, lockMin: lockM };
 }
 
+// Curated composite routes span several constraint-table waterways — map
+// their (normalised) name to the component waterways so restrictive-arch
+// pinch points are still picked up by the route planner.
+var _SEGMENT_WATERWAY_ALIASES = {
+  'canal des deux mers': ['Canal du Midi', 'Canal de Garonne']
+};
+
 function _vesselCheckSegment(seg) {
   var warns = [];
   if (!_vesselProfile || (!_vesselProfile.air && !_vesselProfile.draught)) return warns;
-  if (_vesselProfile.air && seg.max_height && _vesselProfile.air > seg.max_height) {
-    warns.push('Air draught ' + _vesselProfile.air + 'm exceeds max height ' + seg.max_height + 'm');
+  var p = _vesselProfile;
+  var segName = seg.routeName || seg.canal || '';
+  var names = _SEGMENT_WATERWAY_ALIASES[_normName(segName)] || [segName];
+  // Restrictive-arch check (width-dependent clearance) across the segment's waterways
+  var archWarn = null, archMarginal = null;
+  if (p.air && p.beam > 0 && typeof constraintLookup === 'function') {
+    names.forEach(function(n) {
+      var c = constraintLookup(n);
+      var arch = (c && c.arch && c.arch.air_at_5m > 0) ? c.arch : null;
+      if (!arch || p.air <= arch.air_at_5m) return;
+      if (p.beam >= 4.5) {
+        // Wide beam: the reduced clearance at the arch shoulder is the effective limit
+        if (!archWarn) archWarn = 'Air draught ' + p.air + 'm exceeds ' + arch.air_at_5m + 'm arch clearance at 5 m width — ' + arch.note;
+      } else if (p.beam > 3) {
+        // Beams up to ~3 m fit inside the full-height centerline profile
+        // (EuroCanals: clearance holds to 3 m width); wider ones may not.
+        if (!archMarginal) archMarginal = 'Air draught ' + p.air + 'm clears the centerline but not the ' + arch.air_at_5m + 'm arch profile at 5 m width — keep to the middle. ' + arch.note;
+      }
+    });
+  }
+  if (p.air) {
+    if (archWarn) {
+      warns.push(archWarn);
+    } else if (seg.max_height && p.air > seg.max_height) {
+      warns.push('Air draught ' + p.air + 'm exceeds max height ' + seg.max_height + 'm');
+    } else if (archMarginal) {
+      warns.push(archMarginal);
+    }
   }
   if (_vesselProfile.draught && seg.max_draught && _vesselProfile.draught > seg.max_draught) {
     warns.push('Water draught ' + _vesselProfile.draught + 'm exceeds max draught ' + seg.max_draught + 'm');
@@ -4733,8 +4766,18 @@ function getWaterwayNavStatus(name) {
   const marginal = [];
 
   if (p.air    > 0 && c.air    > 0) {
-    if (p.air    > c.air)                          blocked.push('Air draught limit ' + c.air + 'm — vessel is ' + p.air + 'm');
-    else if (p.air    > c.air    * (1 - MARGIN))  marginal.push('Air draught limit ' + c.air + 'm — vessel is ' + p.air + 'm (tight)');
+    // Restrictive-arch pinch points: at >= 4.5 m beam the reduced clearance at
+    // 5 m width is the effective air limit; narrower beams that clear the
+    // centerline but not the 5 m arch profile are flagged as marginal.
+    const arch    = (c.arch && c.arch.air_at_5m > 0 && p.beam > 0) ? c.arch : null;
+    const wide    = arch && p.beam >= 4.5;
+    const airLim  = wide ? arch.air_at_5m : c.air;
+    if      (p.air > airLim)                blocked.push('Air draught limit ' + airLim + 'm — vessel is ' + p.air + 'm' + (wide ? ' · ' + arch.note : ''));
+    else if (p.air > airLim * (1 - MARGIN)) marginal.push('Air draught limit ' + airLim + 'm — vessel is ' + p.air + 'm (tight)' + (wide ? ' · ' + arch.note : ''));
+    else if (arch && !wide && p.beam > 3 && p.air > arch.air_at_5m)
+      // Beams up to ~3 m fit inside the full-height centerline profile
+      // (EuroCanals: clearance holds to 3 m width); wider ones may not.
+      marginal.push('Air draught ' + p.air + 'm clears the ' + c.air + 'm centerline but not the ' + arch.air_at_5m + 'm arch profile at 5 m width · ' + arch.note);
   }
   if (p.draught > 0 && c.draft  > 0) {
     if (p.draught > c.draft)                       blocked.push('Draft limit ' + c.draft + 'm — vessel is ' + p.draught + 'm');
@@ -4990,7 +5033,7 @@ function init() {
     ROUTES = data.routes || [];
     ROUTE_CONNECTIONS = data.connections || [];
   }, function() { showEditToast('⚠ Routes failed to load'); });
-  _loadData('fc-constraints-v2', './data/waterway_constraints.json', function(data) {
+  _loadData('fc-constraints-v3', './data/waterway_constraints.json', function(data) {
     WATERWAY_CONSTRAINTS = data;
     if (typeof buildWaterwayOverlay === 'function' && typeof WATERWAY_GEOJSON !== 'undefined' && WATERWAY_GEOJSON) buildWaterwayOverlay();
   });
