@@ -705,5 +705,40 @@
     "beam": 11.45,
     "length": 110,
     "source": "WSV Wasserstraßensteckbrief DEK"
+  },
+  "Kanaal Gent-Terneuzen": {
+    "air": 5.02,
+    "draft": 5.5,
+    "beam": 9.5,
+    "length": 80,
+    "source": "EuroCanals Belgiumwwy8843 (2020)"
+  },
+  "Bovenschelde / Escaut": {
+    "air": 4.13,
+    "draft": 2.6,
+    "beam": 6.5,
+    "length": 41.5,
+    "source": "EuroCanals Belgiumwwy8843 (2020)"
+  },
+  "Meuse (BE/NL)": {
+    "air": 5.33,
+    "draft": 2.2,
+    "beam": 12,
+    "length": 100,
+    "source": "EuroCanals Belgiumwwy8843 (2020)"
+  },
+  "Zeekanaal Brussel-Schelde - Canal maritime de Bruxelles à l'Escaut": {
+    "air": 30.0,
+    "draft": 5.3,
+    "beam": 14.75,
+    "length": 106,
+    "source": "EuroCanals Belgiumwwy8843 (2020)"
+  },
+  "Nederrijn": {
+    "air": 12.5,
+    "draft": 3.0,
+    "beam": 18,
+    "length": 260,
+    "source": "EuroCanals Netherlandwwys8359 (2020)"
   }
 }

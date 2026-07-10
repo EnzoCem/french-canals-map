@@ -4974,7 +4974,7 @@ function init() {
     ROUTES = data.routes || [];
     ROUTE_CONNECTIONS = data.connections || [];
   }, function() { showEditToast('⚠ Routes failed to load'); });
-  _loadData('fc-constraints-v2', './data/waterway_constraints.json', function(data) {
+  _loadData('fc-constraints-v3', './data/waterway_constraints.json', function(data) {
     WATERWAY_CONSTRAINTS = data;
     if (typeof buildWaterwayOverlay === 'function' && typeof WATERWAY_GEOJSON !== 'undefined' && WATERWAY_GEOJSON) buildWaterwayOverlay();
   });
