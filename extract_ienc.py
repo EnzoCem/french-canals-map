@@ -145,6 +145,16 @@ def _waterway_for_cell(cell_name: str) -> str:
         return "Main-Donau-Kanal"
     if re.match(r"^1W7D\d{4}$", name):
         return "Donau"
+    # ── Austrian Donau added Tier 2 (Jul 2026) — viadonau IENC from the
+    # local "Inland ENC Europe 05.2022" bundle (base edition 2W_Edition.zip;
+    # incremental 2W_Update_*.zip ER patches are NOT applied).
+    # 2W7D#### = route cells (km-numbered), 2WBD* = berthing/harbour
+    # detail cells (numeric, H<port> like 2WBDHALB, or K017).
+    if re.match(r"^2W7D\d{4}$", name) or name.startswith("2WBD"):
+        return "Donau"
+    # ── Swiss Hochrhein added Tier 2 — single cell 4C7RH149 (2021 ed.) ──
+    if re.match(r"^4C7RH\d{3}$", name):
+        return "Hochrhein"
     # ── Dutch waterways added Wave 3 — Rijkswaterstaat IENC ────────────
     # Cells follow `1R7<TWO_LETTER_CODE><NUMBER>` per RWS IENC naming.
     # We map the major navigation arteries; everything else falls
@@ -183,6 +193,43 @@ def _waterway_for_cell(cell_name: str) -> str:
         return "Canal Nieuwpoort–Dunkerque"
     if name.startswith("7V7ALB"):
         return "Albertkanaal"   # Albert Canal (Liège → Antwerp)
+    # ── Belgian (Flemish DVW) waterways added Tier 2 (Jul 2026) — from
+    # the local "Inland ENC Europe 05.2022" IENCMappack_*.zip bundles.
+    # Major arteries mapped by prefix; small/ambiguous cells (SPIKA,
+    # LOKAN, MOER*, BEDIJ, BEVE*, IEPER, KGETE, ALEI*, DEKW*, SRIJN…)
+    # fall through to the country catch-all below.
+    if name.startswith("7V7BZS"):
+        return "Boven-Zeeschelde"          # tidal Scheldt, Gent → Antwerp
+    if name.startswith("7V7BOSC"):
+        return "Bovenschelde"              # Upper Scheldt, FR border → Gent
+    if name.startswith("7V7DEND"):
+        return "Dender"
+    if name.startswith("7V7YZER"):
+        return "IJzer"
+    if name.startswith("7V7RUP"):
+        return "Rupel"
+    if name.startswith("7V7DURME"):
+        return "Durme"
+    if name.startswith("7V7GENO"):
+        return "Kanaal Gent-Oostende"
+    if name.startswith("7V7ZEEK"):
+        return "Zeekanaal Brussel-Schelde"
+    if name.startswith("7V7ZWV"):
+        return "Zuid-Willemsvaart"
+    if name.startswith("7V7BOHE"):
+        return "Kanaal Bocholt-Herentals"
+    if name.startswith("7V7DTS"):
+        return "Kanaal Dessel-Turnhout-Schoten"
+    if name.startswith("7V7KBKO"):
+        return "Kanaal Bossuit-Kortrijk"
+    if name.startswith("7V7KLEDI"):
+        return "Kanaal Leuven-Dijle"
+    if name.startswith("7V7KRLEI"):
+        return "Kanaal Roeselare-Leie"
+    if name.startswith("7V7RGEN"):
+        return "Ringvaart om Gent"
+    if name.startswith("8V8POA"):
+        return "Port of Antwerp"
     # Generic catch-all for other Belgian cells (BE flemish-region 7V7
     # prefixes + the BE-prefix 06.2022 patch format like BE7GT017).
     if name.startswith("7V7") or re.match(r"^BE[A-Z0-9]+$", name):
