@@ -16,21 +16,21 @@ An interactive web map for cruising the European inland waterways. Core waypoint
 ```
 French Canals/
 ├── french_canals_map.html          ← entire app (HTML + CSS + JS) ~8,500 lines
-├── waterways.geojson               ← canal/river geometry fetched from OSM (EU-wide, 3,790 features across 10 countries, regenerated 2026-07)
+├── waterways.geojson               ← canal/river geometry fetched from OSM (EU-wide, 3,868 features across 10 countries, regenerated 2026-07)
 ├── index.html                      ← GitHub Pages redirect to french_canals_map.html
 ├── Open Map.command                ← macOS launcher script (requires chmod +x once)
 ├── fill_waterways.py               ← multi-region EU Overpass sweep → waterways.geojson
 ├── fill_michelin.py                ← annual script to update MICHELIN_RESTAURANTS from ngshiheng/michelin-my-maps
 ├── patch_lyon_waterways.py         ← one-shot patch: fetched Miribel/Jonage/Rhône through Lyon
 ├── manifest.json                   ← PWA manifest (installable)
-├── sw.js                           ← Service worker: app shell precache + tile LRU cache (VERSION = fc-v14)
+├── sw.js                           ← Service worker: app shell precache + tile LRU cache (VERSION = fc-v15)
 ├── icon.svg                        ← PWA icon (vessel on canal)
 ├── extract_ienc.py                 ← GDAL-based extractor: VNF IENC S-57 zips → data/bridges.geojson
 ├── tests/test_extract_ienc.py      ← Pytest suite for extract_ienc (pure + one GDAL integration test)
 ├── data/
 │   ├── waypoints.json              ← 1,991 town/lock waypoints (429 curated FR + 1,523 OSM + 39 EU anchors)
 │   ├── moorings.json               ← 5,416 haltes + ports (114 curated + 5,302 OSM-imported)
-│   ├── routes.json                 ← { routes: [173 entries], connections: [75 entries] }
+│   ├── routes.json                 ← { routes: [178 entries], connections: [75 entries] }
 │   ├── waterway_constraints.json   ← 101 dimension limits keyed by OSM name
 │   ├── waterway_colors.json        ← 85 per-waterway colours (58 FR + 27 EU, extracted Wave 1)
 │   ├── tunnels.json                ← 5 tunnel entries, each with kind:"tunnel" (extracted Wave 1)
@@ -71,7 +71,7 @@ Seven large data blocks that previously lived as `const` declarations inside `fr
 |------|----------|-------|
 | `data/waypoints.json` | Town + lock waypoints (array) | 1,991 (1,043 towns + 948 locks; 429 curated FR + 1,523 OSM + 39 EU anchors) |
 | `data/moorings.json` | Haltes + ports de plaisance (array) | 5,416 (114 curated + 5,302 OSM-imported) |
-| `data/routes.json` | `{ routes: [...], connections: [...] }` | 173 routes (60 curated + 113 auto-derived), 75 connections |
+| `data/routes.json` | `{ routes: [...], connections: [...] }` | 178 routes (60 curated + 118 auto-derived), 75 connections |
 | `data/waterway_constraints.json` | Dimension limits keyed by OSM name (object) | 101 waterways |
 | `data/waterway_colors.json` | Per-waterway hex colours (object) | 85 entries (58 FR + 27 EU) |
 | `data/tunnels.json` | Tunnel entries — each has `kind: "tunnel"` (array) | 5 |
@@ -206,8 +206,8 @@ fetch('./waterways.geojson')  // → stored in Cache API → ETag checked in bac
 - Non-navigable segments filtered by `_NON_NAVIGABLE_RE` (FR/NL/DE/EN/IT terms: ancien, bras-mort, vieux/vieille, écluse, pont-canal, aqueduc, souterrain, oude, verlaten, alter, alte, disused, abandoned, abbandonato, etc.)
 - Normalised deduplication removes regional/spelling variants; canonical OSM name kept
 - RDP-simplified at 33m tolerance
-- Regenerated 2026-07 via optimized global-relation sweep — 3,790 features across 10 countries
-- Cache version: `french-canals-waterways-v11` — bump this constant (in `buildWaterwayOverlay()`) to force all browsers to re-fetch
+- Regenerated 2026-07 via optimized global-relation sweep — 3,868 features across 10 countries
+- Cache version: `french-canals-waterways-v12` — bump this constant (in `buildWaterwayOverlay()`) to force all browsers to re-fetch
 
 ### Vessel-profile waterway colouring
 
@@ -629,9 +629,9 @@ If you've researched an OSM-imported town/mooring and want it to render at full 
 **Route numbering:**
 - `1-52` — curated French routes (existing, unchanged since Wave 1)
 - `60-74` — curated EU routes (Wave 5)
-- `200+` — auto-derived from `waterways.geojson` via `fill_auto_routes.py` (currently 200-312, 113 routes)
+- `200+` — auto-derived from `waterways.geojson` via `fill_auto_routes.py` (currently 200-317, 118 routes)
 
-Current totals: **173 routes** (60 curated + 113 auto-derived) and **75 connections**.
+Current totals: **178 routes** (60 curated + 118 auto-derived) and **75 connections**.
 
 **Auto-derive workflow:**
 ```bash
@@ -725,7 +725,7 @@ Search for `L.map(` in `french_canals_map.html` to find the map initialisation b
 Run `python3 -m http.server 8765` from the project folder, then open `http://localhost:8765/french_canals_map.html`. Or double-click `Open Map.command` (requires `chmod +x "Open Map.command"` once).
 
 ### Force browsers to re-fetch waterways.geojson
-Change `WATERWAYS_CACHE_VER` constant (currently `'french-canals-waterways-v11'`) to the next version.
+Change `WATERWAYS_CACHE_VER` constant (currently `'french-canals-waterways-v12'`) to the next version.
 
 ### Deploy
 ```bash

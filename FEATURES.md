@@ -13,7 +13,7 @@ Planned and proposed enhancements for the French Canals Interactive Map.
 | Interactive Leaflet map | Dark nautical theme, zoom/pan, mobile-friendly |
 | Base layer switcher | IGN France (default), OpenStreetMap, CartoDB Voyager, ESRI Satellite, OpenTopoMap |
 | OpenSeaMap overlay | Nautical marks as a toggleable overlay |
-| Waterway overlay | 3,790 OSM canal/river segments across 10 countries (deduped + non-navigable filtered) loaded from `waterways.geojson` |
+| Waterway overlay | 3,868 OSM canal/river segments across 10 countries (deduped + non-navigable filtered) loaded from `waterways.geojson` |
 | Waterway Cache API | Instant load on repeat visits; background ETag check for updates |
 | Per-waterway colour coding | Each waterway rendered in its own colour from `WATERWAY_COLORS` when no vessel profile is set |
 | Town markers | 1,991 waypoints (1,043 towns + 948 locks) with detail sidebars |
@@ -44,7 +44,7 @@ Planned and proposed enhancements for the French Canals Interactive Map.
 ### Route Planner
 | Feature | Description |
 |---------|-------------|
-| BFS pathfinding | Find route between any two towns across 173 connected waterway routes (60 curated + 113 auto-derived) |
+| BFS pathfinding | Find route between any two towns across 178 connected waterway routes (60 curated + 118 auto-derived) |
 | Multi-stop planning | Add via stops (A → B → C → … → Z) |
 | Route highlight on map | Planned route in coral-red + white halo; non-route waterways fade |
 | Reverse route | Flip entire stop order with one click |
