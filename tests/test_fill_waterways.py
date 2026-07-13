@@ -113,3 +113,46 @@ def test_merge_preserves_structure():
     result = merge_geojson(old, [], {'Canal du Midi'})
     assert result['type'] == 'FeatureCollection'
     assert result['features'] == []
+
+
+# ── bridge_chain_gaps (gap-fix wave, 2026-07) ────────────────────────────────
+
+from fill_waterways import bridge_chain_gaps
+
+
+def test_bridge_small_mutual_gap():
+    a = [[7.70, 48.45], [7.701, 48.451]]
+    b = [[7.701, 48.4515], [7.702, 48.4525]]
+    out = bridge_chain_gaps([a, b], max_gap_m=150)
+    assert len(out) == 1
+    assert out[0][0] == a[0] and out[0][-1] == b[-1]
+
+
+def test_bridge_ignores_large_gap():
+    a = [[7.70, 48.45], [7.701, 48.451]]
+    b = [[7.701, 48.46], [7.702, 48.47]]  # ~1 km away
+    out = bridge_chain_gaps([a, b], max_gap_m=150)
+    assert len(out) == 2
+
+
+def test_bridge_preserves_points_at_junctions():
+    m = [[7.70, 48.45], [7.71, 48.46]]
+    s1 = [[7.7101, 48.4601], [7.72, 48.47]]
+    s2 = [[7.7102, 48.4601], [7.73, 48.48]]
+    out = bridge_chain_gaps([m, s1, s2], max_gap_m=150)
+    assert sum(len(c) for c in out) == 6
+    assert 1 <= len(out) <= 2
+
+
+def test_bridge_orientation_head_head():
+    a = [[7.701, 48.451], [7.70, 48.45]]
+    b = [[7.7011, 48.4511], [7.702, 48.4525]]
+    out = bridge_chain_gaps([a, b], max_gap_m=150)
+    assert len(out) == 1
+    assert sum(len(c) for c in out) == 4
+
+
+def test_bridge_empty_and_single():
+    assert bridge_chain_gaps([]) == []
+    one = [[[7.7, 48.4], [7.8, 48.5]]]
+    assert bridge_chain_gaps(one) == one

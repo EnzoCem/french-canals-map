@@ -310,6 +310,76 @@ def stitch_ways(ways, tol=5):
     return chains
 
 
+def bridge_chain_gaps(chains, max_gap_m=150.0):
+    """
+    Join chains of the SAME waterway whose ends are mutually nearest and
+    within max_gap_m of each other.
+
+    Relation membership and name-matching still leave small physical holes
+    in the fetched geometry — lock chambers named "Écluse de …", unnamed
+    connector ways under bridges — which render as visible line breaks.
+    Rather than chase every naming variant, close any end-to-end gap at
+    lock-cut scale (default 150 m) with a straight connector. The
+    mutual-nearest requirement stops parallel branches from being welded
+    together: their ends either coincide exactly at junction nodes (joined
+    by stitch_ways already) or point away from each other.
+
+    chains: list of LineStrings (each a list of [lon, lat] pairs)
+    Returns a new list of chains (input not mutated).
+    """
+    import math
+
+    def d_m(a, b):
+        return math.hypot(
+            (a[1] - b[1]) * 111000.0,
+            (a[0] - b[0]) * 111000.0 * math.cos(math.radians(a[1])),
+        )
+
+    chains = [list(c) for c in chains]
+    merged = True
+    while merged and len(chains) > 1:
+        merged = False
+        # ends[k] = (chain_idx, is_tail, coord)
+        ends = []
+        for i, c in enumerate(chains):
+            ends.append((i, False, c[0]))
+            ends.append((i, True, c[-1]))
+
+        # nearest foreign end for every end
+        nearest = {}
+        for k, (i, _, a) in enumerate(ends):
+            best_k, best_d = None, None
+            for k2, (j, _, b) in enumerate(ends):
+                if i == j:
+                    continue
+                d = d_m(a, b)
+                if best_d is None or d < best_d:
+                    best_k, best_d = k2, d
+            nearest[k] = (best_k, best_d)
+
+        for k, (k2, d) in sorted(nearest.items(), key=lambda kv: kv[1][1]):
+            if d is None or d > max_gap_m:
+                break
+            if nearest.get(k2, (None, None))[0] != k:
+                continue  # not mutual
+            i, i_tail, _ = ends[k]
+            j, j_tail, _ = ends[k2]
+            if i == j:
+                continue
+            a, b = chains[i], chains[j]
+            # orient so we join a's tail to b's head
+            if not i_tail:
+                a = a[::-1]
+            if j_tail:
+                b = b[::-1]
+            chains[i] = a + b
+            del chains[j]
+            merged = True
+            break  # indices are stale — rebuild and continue
+
+    return chains
+
+
 def rdp_simplify(coords, epsilon=RDP_EPSILON):
     """Apply RDP simplification to a list of [lon, lat] coordinate pairs."""
     if len(coords) < 3:
@@ -453,13 +523,22 @@ def _extract_ways(elements):
     """
     Extract [lon, lat] way coordinate lists from Overpass elements.
     Overpass `out geom` embeds geometry directly in each way element.
+
+    Ways starting outside EU_BBOX are dropped: global relation queries can
+    return same-named or member ways far outside app scope (the full Danube
+    to the Black Sea, an Arizona 'Grand Canal') which previously had to be
+    clipped by hand after the sweep.
     """
+    s, w, n, e = EU_BBOX
     ways = []
     for el in elements:
         if el.get('type') != 'way':
             continue
         geom = el.get('geometry', [])
         if len(geom) < 2:
+            continue
+        lon0, lat0 = geom[0]['lon'], geom[0]['lat']
+        if not (s <= lat0 <= n and w <= lon0 <= e):
             continue
         ways.append([[pt['lon'], pt['lat']] for pt in geom])
     return ways
@@ -492,10 +571,20 @@ def fetch_waterway(app_name, osm_names, bbox=EU_BBOX):
     bbox_str = f'({s},{w},{n},{e})'
 
     for osm_name in osm_names:
-        # ── 1. Relation query (no bbox — relations are name-keyed globally) ──
+        # ── 1. Relation members ∪ same-named ways ────────────────────────
+        # Relation membership alone leaves gaps: lock chambers and short
+        # branch segments often sit only in sub-relations (e.g. the Écluse
+        # de Plobsheim chamber belongs to "… - Branche Nord", not the main
+        # "Canal du Rhône au Rhin" relation), producing 40-500 m holes in
+        # the rendered line. Unioning way[name=…] within EU_BBOX captures
+        # every segment that carries the waterway's name regardless of
+        # relation membership. Overpass dedupes the union by element id.
         ql_relation = f'''[out:json][timeout:180];
-relation[type=waterway][name="{osm_name}"];
-way(r);
+(
+  relation[type=waterway][name="{osm_name}"];
+  way(r);
+  way[waterway][name="{osm_name}"]{bbox_str};
+);
 out geom;'''
         try:
             data = _overpass_query(ql_relation)
@@ -588,6 +677,7 @@ def main(dry_run=False):
             continue
 
         chains = stitch_ways(ways)
+        chains = bridge_chain_gaps(chains)
         features = build_features(app_name, chains, route_num)
         all_new_features.extend(features)
         print(f'  {app_name}: {len(ways)} ways → {len(chains)} chains, {len(features)} features', flush=True)
@@ -628,14 +718,52 @@ if __name__ == '__main__':
         print(f'  Removed {n_non_nav} non-navigable features (abandoned, dead arms, structures)')
         print(f'  Removed {n_variant} non-canonical capitalisation variants')
         print(f'  Total: {old_count} → {new_count} features')
+    elif '--bridge-geojson' in sys.argv:
+        # Post-hoc gap bridging on an existing waterways.geojson: group
+        # features by name, run bridge_chain_gaps per waterway, rewrite.
+        geojson_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'waterways.geojson')
+        with open(geojson_path) as f:
+            g = json.load(f)
+        by_name = defaultdict(list)
+        passthrough = []
+        for feat in g['features']:
+            name = (feat.get('properties') or {}).get('name')
+            if not name:
+                passthrough.append(feat)
+                continue
+            geom = feat['geometry']
+            segs = [geom['coordinates']] if geom['type'] == 'LineString' else geom['coordinates']
+            by_name[name].append((feat['properties'], segs))
+        new_feats = []
+        n_before = n_after = 0
+        for name, entries in by_name.items():
+            props = entries[0][0]
+            chains = [seg for _, segs in entries for seg in segs]
+            n_before += len(chains)
+            bridged = bridge_chain_gaps(chains)
+            n_after += len(bridged)
+            for chain in bridged:
+                new_feats.append({
+                    'type': 'Feature',
+                    'geometry': {'type': 'LineString', 'coordinates': chain},
+                    'properties': dict(props),
+                })
+        out = {'type': 'FeatureCollection', 'features': passthrough + new_feats}
+        tmp = geojson_path + '.tmp'
+        with open(tmp, 'w') as f:
+            json.dump(out, f, separators=(',', ':'))
+        os.replace(tmp, geojson_path)
+        print(f'Bridged waterway gaps: {n_before} chains -> {n_after} '
+              f'({len(passthrough)} unnamed features untouched)')
     else:
         # Any unrecognised flag (e.g. --help) must NOT fall through to the
         # full Overpass sweep — that costs hours of API quota by accident.
+        # (--clean-geojson / --bridge-geojson are handled in branches above)
         unknown = [a for a in sys.argv[1:] if a not in ('--dry-run',)]
         if unknown:
             sys.exit(
                 f'Unknown argument(s): {" ".join(unknown)}\n'
-                'Usage: python3 fill_waterways.py [--dry-run | --clean-geojson]\n'
+                'Usage: python3 fill_waterways.py [--dry-run | --clean-geojson | --bridge-geojson]\n'
                 '  (no args)        run the full EU Overpass sweep and rewrite waterways.geojson\n'
                 '  --dry-run        list the waterways that would be fetched, no network calls\n'
                 '  --clean-geojson  remove non-navigable/variant features from waterways.geojson'

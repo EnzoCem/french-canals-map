@@ -16,7 +16,7 @@ An interactive web map for cruising the European inland waterways. Core waypoint
 ```
 French Canals/
 ├── french_canals_map.html          ← entire app (HTML + CSS + JS) ~8,500 lines
-├── waterways.geojson               ← canal/river geometry fetched from OSM (EU-wide, 3,868 features across 10 countries, regenerated 2026-07)
+├── waterways.geojson               ← canal/river geometry fetched from OSM (EU-wide, 1,605 continuous features across 10 countries (gap-bridged 2026-07), regenerated 2026-07)
 ├── index.html                      ← GitHub Pages redirect to french_canals_map.html
 ├── Open Map.command                ← macOS launcher script (requires chmod +x once)
 ├── fill_waterways.py               ← multi-region EU Overpass sweep → waterways.geojson
@@ -213,7 +213,7 @@ fetch('./waterways.geojson')  // → stored in Cache API → ETag checked in bac
 - Non-navigable segments filtered by `_NON_NAVIGABLE_RE` (FR/NL/DE/EN/IT terms: ancien, bras-mort, vieux/vieille, écluse, pont-canal, aqueduc, souterrain, oude, verlaten, alter, alte, disused, abandoned, abbandonato, etc.)
 - Normalised deduplication removes regional/spelling variants; canonical OSM name kept
 - RDP-simplified at 33m tolerance
-- Regenerated 2026-07 via optimized global-relation sweep — 3,868 features across 10 countries
+- Regenerated 2026-07 via optimized global-relation sweep — 1,605 continuous features across 10 countries (gap-bridged 2026-07)
 - Cache version: `french-canals-waterways-v12` — bump this constant (in `buildWaterwayOverlay()`) to force all browsers to re-fetch
 
 ### Vessel-profile waterway colouring
@@ -550,6 +550,7 @@ Line numbers drift as code changes — use `grep -n "function <name>"` in `frenc
 | `clean_geojson(geojson)` | Removes non-navigable features + non-canonical variants from existing GeoJSON |
 | `merge_geojson()` | Merges Overpass fetch with existing file using normalised dedup |
 | `--clean-geojson` | CLI mode: run cleanup pass on `waterways.geojson` without re-fetching |
+| `bridge_chain_gaps(chains, max_gap_m=150)` | Joins same-waterway chains whose ends are mutually nearest within 150 m — closes lock-chamber/unnamed-way render gaps; also available as `--bridge-geojson` CLI mode |
 
 ---
 
