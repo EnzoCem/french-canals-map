@@ -1034,13 +1034,13 @@
       "from": "",
       "to": "",
       "locks": 0,
-      "dist_km": 137.1,
+      "dist_km": 139.4,
       "max_height": null,
       "max_draught": null,
       "color": "#90a4ae",
       "country": [],
       "source": "osm",
-      "description": "Auto-derived from OSM. Albert Canal — 137 km, 0 locks counted within 200 m."
+      "description": "Auto-derived from OSM. Albert Canal — 139 km, 0 locks counted within 200 m."
     },
     {
       "num": 201,
@@ -1094,7 +1094,7 @@
       "from": "",
       "to": "",
       "locks": 0,
-      "dist_km": 24.9,
+      "dist_km": 25.0,
       "max_height": null,
       "max_draught": null,
       "color": "#90a4ae",
@@ -1139,13 +1139,13 @@
       "from": "",
       "to": "",
       "locks": 0,
-      "dist_km": 41.2,
+      "dist_km": 41.6,
       "max_height": null,
       "max_draught": null,
       "color": "#90a4ae",
       "country": [],
       "source": "osm",
-      "description": "Auto-derived from OSM. Canal Latéral à la Garonne — 41 km, 0 locks counted within 200 m."
+      "description": "Auto-derived from OSM. Canal Latéral à la Garonne — 42 km, 0 locks counted within 200 m."
     },
     {
       "num": 208,
@@ -1154,13 +1154,13 @@
       "from": "",
       "to": "",
       "locks": 0,
-      "dist_km": 7.0,
+      "dist_km": 7.9,
       "max_height": null,
       "max_draught": null,
       "color": "#90a4ae",
       "country": [],
       "source": "osm",
-      "description": "Auto-derived from OSM. Canal Saint-Denis — 7 km, 0 locks counted within 200 m."
+      "description": "Auto-derived from OSM. Canal Saint-Denis — 8 km, 0 locks counted within 200 m."
     },
     {
       "num": 209,
@@ -1199,7 +1199,7 @@
       "from": "",
       "to": "",
       "locks": 1,
-      "dist_km": 9.3,
+      "dist_km": 9.5,
       "max_height": null,
       "max_draught": null,
       "color": "#90a4ae",
@@ -1274,13 +1274,13 @@
       "from": "",
       "to": "",
       "locks": 0,
-      "dist_km": 196.3,
+      "dist_km": 176.1,
       "max_height": null,
       "max_draught": null,
       "color": "#90a4ae",
       "country": [],
       "source": "osm",
-      "description": "Auto-derived from OSM. Canal de Garonne — 196 km, 0 locks counted within 200 m."
+      "description": "Auto-derived from OSM. Canal de Garonne — 176 km, 0 locks counted within 200 m."
     },
     {
       "num": 217,
@@ -1334,7 +1334,7 @@
       "from": "",
       "to": "",
       "locks": 0,
-      "dist_km": 25.9,
+      "dist_km": 26.1,
       "max_height": null,
       "max_draught": null,
       "color": "#90a4ae",
@@ -1349,13 +1349,13 @@
       "from": "",
       "to": "",
       "locks": 0,
-      "dist_km": 391.4,
+      "dist_km": 391.8,
       "max_height": null,
       "max_draught": null,
       "color": "#90a4ae",
       "country": [],
       "source": "osm",
-      "description": "Auto-derived from OSM. Canal de Nantes à Brest — 391 km, 0 locks counted within 200 m."
+      "description": "Auto-derived from OSM. Canal de Nantes à Brest — 392 km, 0 locks counted within 200 m."
     },
     {
       "num": 222,
@@ -1379,7 +1379,7 @@
       "from": "",
       "to": "",
       "locks": 0,
-      "dist_km": 93.7,
+      "dist_km": 93.8,
       "max_height": null,
       "max_draught": null,
       "color": "#90a4ae",
@@ -1409,7 +1409,7 @@
       "from": "",
       "to": "",
       "locks": 0,
-      "dist_km": 94.5,
+      "dist_km": 94.7,
       "max_height": null,
       "max_draught": null,
       "color": "#90a4ae",
@@ -1424,7 +1424,7 @@
       "from": "",
       "to": "",
       "locks": 3,
-      "dist_km": 47.1,
+      "dist_km": 47.3,
       "max_height": null,
       "max_draught": null,
       "color": "#90a4ae",
@@ -1469,7 +1469,7 @@
       "from": "",
       "to": "",
       "locks": 4,
-      "dist_km": 11.9,
+      "dist_km": 12.0,
       "max_height": null,
       "max_draught": null,
       "color": "#90a4ae",
@@ -1484,7 +1484,7 @@
       "from": "",
       "to": "",
       "locks": 0,
-      "dist_km": 68.1,
+      "dist_km": 68.3,
       "max_height": null,
       "max_draught": null,
       "color": "#90a4ae",
@@ -1499,7 +1499,7 @@
       "from": "",
       "to": "",
       "locks": 0,
-      "dist_km": 35.1,
+      "dist_km": 35.5,
       "max_height": null,
       "max_draught": null,
       "color": "#90a4ae",
@@ -1514,7 +1514,7 @@
       "from": "",
       "to": "",
       "locks": 3,
-      "dist_km": 66.2,
+      "dist_km": 66.3,
       "max_height": null,
       "max_draught": null,
       "color": "#90a4ae",
@@ -1529,13 +1529,13 @@
       "from": "",
       "to": "",
       "locks": 0,
-      "dist_km": 139.5,
+      "dist_km": 141.1,
       "max_height": null,
       "max_draught": null,
       "color": "#90a4ae",
       "country": [],
       "source": "osm",
-      "description": "Auto-derived from OSM. Canal du Centre — 139 km, 0 locks counted within 200 m."
+      "description": "Auto-derived from OSM. Canal du Centre — 141 km, 0 locks counted within 200 m."
     },
     {
       "num": 234,
@@ -1544,7 +1544,7 @@
       "from": "",
       "to": "",
       "locks": 0,
-      "dist_km": 10.0,
+      "dist_km": 10.1,
       "max_height": null,
       "max_draught": null,
       "color": "#90a4ae",
@@ -1574,13 +1574,13 @@
       "from": "",
       "to": "",
       "locks": 0,
-      "dist_km": 238.4,
+      "dist_km": 238.8,
       "max_height": null,
       "max_draught": null,
       "color": "#90a4ae",
       "country": [],
       "source": "osm",
-      "description": "Auto-derived from OSM. Canal du Midi — 238 km, 0 locks counted within 200 m."
+      "description": "Auto-derived from OSM. Canal du Midi — 239 km, 0 locks counted within 200 m."
     },
     {
       "num": 237,
@@ -1589,13 +1589,13 @@
       "from": "",
       "to": "",
       "locks": 0,
-      "dist_km": 173.5,
+      "dist_km": 173.8,
       "max_height": null,
       "max_draught": null,
       "color": "#90a4ae",
       "country": [],
       "source": "osm",
-      "description": "Auto-derived from OSM. Canal du Nivernais — 173 km, 0 locks counted within 200 m."
+      "description": "Auto-derived from OSM. Canal du Nivernais — 174 km, 0 locks counted within 200 m."
     },
     {
       "num": 238,
@@ -1604,7 +1604,7 @@
       "from": "",
       "to": "",
       "locks": 5,
-      "dist_km": 90.3,
+      "dist_km": 90.5,
       "max_height": null,
       "max_draught": null,
       "color": "#90a4ae",
@@ -1615,65 +1615,35 @@
     {
       "num": 239,
       "section": 1,
-      "canal": "Canal latéral à la Loire",
-      "from": "",
-      "to": "",
-      "locks": 0,
-      "dist_km": 212.2,
-      "max_height": null,
-      "max_draught": null,
-      "color": "#90a4ae",
-      "country": [],
-      "source": "osm",
-      "description": "Auto-derived from OSM. Canal latéral à la Loire — 212 km, 0 locks counted within 200 m."
-    },
-    {
-      "num": 240,
-      "section": 1,
-      "canal": "Canal latéral à la Marne",
-      "from": "",
-      "to": "",
-      "locks": 0,
-      "dist_km": 66.7,
-      "max_height": null,
-      "max_draught": null,
-      "color": "#90a4ae",
-      "country": [],
-      "source": "osm",
-      "description": "Auto-derived from OSM. Canal latéral à la Marne — 67 km, 0 locks counted within 200 m."
-    },
-    {
-      "num": 241,
-      "section": 1,
       "canal": "Danube",
       "from": "",
       "to": "",
       "locks": 0,
-      "dist_km": 1880.5,
+      "dist_km": 1698.6,
       "max_height": null,
       "max_draught": null,
       "color": "#90a4ae",
       "country": [],
       "source": "osm",
-      "description": "Auto-derived from OSM. Danube — 1880 km, 0 locks counted within 200 m."
+      "description": "Auto-derived from OSM. Danube — 1699 km, 0 locks counted within 200 m."
     },
     {
-      "num": 242,
+      "num": 240,
       "section": 1,
       "canal": "Dortmund-Ems-Kanal",
       "from": "",
       "to": "",
-      "locks": 0,
-      "dist_km": 172.4,
+      "locks": 3,
+      "dist_km": 190.1,
       "max_height": null,
       "max_draught": null,
       "color": "#90a4ae",
       "country": [],
       "source": "osm",
-      "description": "Auto-derived from OSM. Dortmund-Ems-Kanal — 172 km, 0 locks counted within 200 m."
+      "description": "Auto-derived from OSM. Dortmund-Ems-Kanal — 190 km, 3 locks counted within 200 m."
     },
     {
-      "num": 243,
+      "num": 241,
       "section": 1,
       "canal": "Dérivations de Pagny-sur-Moselle",
       "from": "",
@@ -1688,7 +1658,7 @@
       "description": "Auto-derived from OSM. Dérivations de Pagny-sur-Moselle — 9 km, 1 locks counted within 200 m."
     },
     {
-      "num": 244,
+      "num": 242,
       "section": 1,
       "canal": "Elbe-Lübeck-Kanal",
       "from": "",
@@ -1703,13 +1673,13 @@
       "description": "Auto-derived from OSM. Elbe-Lübeck-Kanal — 62 km, 0 locks counted within 200 m."
     },
     {
-      "num": 245,
+      "num": 243,
       "section": 1,
       "canal": "Erne",
       "from": "",
       "to": "",
       "locks": 0,
-      "dist_km": 171.8,
+      "dist_km": 172.4,
       "max_height": null,
       "max_draught": null,
       "color": "#90a4ae",
@@ -1718,13 +1688,13 @@
       "description": "Auto-derived from OSM. Erne — 172 km, 0 locks counted within 200 m."
     },
     {
-      "num": 246,
+      "num": 244,
       "section": 1,
       "canal": "Escaut",
       "from": "",
       "to": "",
       "locks": 0,
-      "dist_km": 65.0,
+      "dist_km": 65.2,
       "max_height": null,
       "max_draught": null,
       "color": "#90a4ae",
@@ -1733,13 +1703,28 @@
       "description": "Auto-derived from OSM. Escaut — 65 km, 0 locks counted within 200 m."
     },
     {
-      "num": 247,
+      "num": 245,
+      "section": 1,
+      "canal": "Grand Canal (IE)",
+      "from": "",
+      "to": "",
+      "locks": 0,
+      "dist_km": 148.3,
+      "max_height": null,
+      "max_draught": null,
+      "color": "#90a4ae",
+      "country": [],
+      "source": "osm",
+      "description": "Auto-derived from OSM. Grand Canal (IE) — 148 km, 0 locks counted within 200 m."
+    },
+    {
+      "num": 246,
       "section": 1,
       "canal": "Grand Canal d'Alsace",
       "from": "",
       "to": "",
       "locks": 11,
-      "dist_km": 101.1,
+      "dist_km": 101.3,
       "max_height": null,
       "max_draught": null,
       "color": "#90a4ae",
@@ -1748,13 +1733,13 @@
       "description": "Auto-derived from OSM. Grand Canal d'Alsace — 101 km, 11 locks counted within 200 m."
     },
     {
-      "num": 248,
+      "num": 247,
       "section": 1,
       "canal": "Grand Union Canal",
       "from": "",
       "to": "",
       "locks": 17,
-      "dist_km": 220.8,
+      "dist_km": 221.4,
       "max_height": null,
       "max_draught": null,
       "color": "#90a4ae",
@@ -1763,7 +1748,7 @@
       "description": "Auto-derived from OSM. Grand Union Canal — 221 km, 17 locks counted within 200 m."
     },
     {
-      "num": 249,
+      "num": 248,
       "section": 1,
       "canal": "IJsselmeer",
       "from": "",
@@ -1778,28 +1763,28 @@
       "description": "Auto-derived from OSM. IJsselmeer — 24 km, 0 locks counted within 200 m."
     },
     {
-      "num": 250,
+      "num": 249,
       "section": 1,
       "canal": "Kanaal Gent-Terneuzen",
       "from": "",
       "to": "",
       "locks": 0,
-      "dist_km": 38.8,
+      "dist_km": 37.9,
       "max_height": null,
       "max_draught": null,
       "color": "#90a4ae",
       "country": [],
       "source": "osm",
-      "description": "Auto-derived from OSM. Kanaal Gent-Terneuzen — 39 km, 0 locks counted within 200 m."
+      "description": "Auto-derived from OSM. Kanaal Gent-Terneuzen — 38 km, 0 locks counted within 200 m."
     },
     {
-      "num": 251,
+      "num": 250,
       "section": 1,
       "canal": "Kennet and Avon Canal",
       "from": "",
       "to": "",
       "locks": 2,
-      "dist_km": 109.7,
+      "dist_km": 109.9,
       "max_height": null,
       "max_draught": null,
       "color": "#90a4ae",
@@ -1808,13 +1793,13 @@
       "description": "Auto-derived from OSM. Kennet and Avon Canal — 110 km, 2 locks counted within 200 m."
     },
     {
-      "num": 252,
+      "num": 251,
       "section": 1,
       "canal": "L'Aisne",
       "from": "",
       "to": "",
       "locks": 0,
-      "dist_km": 342.1,
+      "dist_km": 342.2,
       "max_height": null,
       "max_draught": null,
       "color": "#90a4ae",
@@ -1823,13 +1808,13 @@
       "description": "Auto-derived from OSM. L'Aisne — 342 km, 0 locks counted within 200 m."
     },
     {
-      "num": 253,
+      "num": 252,
       "section": 1,
       "canal": "L'Erdre",
       "from": "",
       "to": "",
       "locks": 0,
-      "dist_km": 89.3,
+      "dist_km": 89.4,
       "max_height": null,
       "max_draught": null,
       "color": "#90a4ae",
@@ -1838,7 +1823,7 @@
       "description": "Auto-derived from OSM. L'Erdre — 89 km, 0 locks counted within 200 m."
     },
     {
-      "num": 254,
+      "num": 253,
       "section": 1,
       "canal": "L'Escaut Canalisé",
       "from": "",
@@ -1850,16 +1835,16 @@
       "color": "#90a4ae",
       "country": [],
       "source": "osm",
-      "description": "Auto-derived from OSM. L'Escaut Canalisé — 31 km, 3 locks counted within 200 m."
+      "description": "Auto-derived from OSM. L'Escaut Canalisé — 32 km, 3 locks counted within 200 m."
     },
     {
-      "num": 255,
+      "num": 254,
       "section": 1,
       "canal": "L'Escaut Canalisée",
       "from": "",
       "to": "",
       "locks": 2,
-      "dist_km": 9.7,
+      "dist_km": 9.9,
       "max_height": null,
       "max_draught": null,
       "color": "#90a4ae",
@@ -1868,28 +1853,28 @@
       "description": "Auto-derived from OSM. L'Escaut Canalisée — 10 km, 2 locks counted within 200 m."
     },
     {
-      "num": 256,
+      "num": 255,
       "section": 1,
       "canal": "L'Ourcq",
       "from": "",
       "to": "",
       "locks": 0,
-      "dist_km": 58.4,
+      "dist_km": 58.6,
       "max_height": null,
       "max_draught": null,
       "color": "#90a4ae",
       "country": [],
       "source": "osm",
-      "description": "Auto-derived from OSM. L'Ourcq — 58 km, 0 locks counted within 200 m."
+      "description": "Auto-derived from OSM. L'Ourcq — 59 km, 0 locks counted within 200 m."
     },
     {
-      "num": 257,
+      "num": 256,
       "section": 1,
       "canal": "L'Ourcq Canalisée",
       "from": "",
       "to": "",
       "locks": 0,
-      "dist_km": 10.8,
+      "dist_km": 11.0,
       "max_height": null,
       "max_draught": null,
       "color": "#90a4ae",
@@ -1898,7 +1883,7 @@
       "description": "Auto-derived from OSM. L'Ourcq Canalisée — 11 km, 0 locks counted within 200 m."
     },
     {
-      "num": 258,
+      "num": 257,
       "section": 1,
       "canal": "L'Yonne - Canal du Nivernais",
       "from": "",
@@ -1913,13 +1898,13 @@
       "description": "Auto-derived from OSM. L'Yonne - Canal du Nivernais — 7 km, 0 locks counted within 200 m."
     },
     {
-      "num": 259,
+      "num": 258,
       "section": 1,
       "canal": "La Garonne",
       "from": "",
       "to": "",
       "locks": 0,
-      "dist_km": 246.6,
+      "dist_km": 246.8,
       "max_height": null,
       "max_draught": null,
       "color": "#90a4ae",
@@ -1928,7 +1913,7 @@
       "description": "Auto-derived from OSM. La Garonne — 247 km, 0 locks counted within 200 m."
     },
     {
-      "num": 260,
+      "num": 259,
       "section": 1,
       "canal": "La Grande Maine",
       "from": "",
@@ -1943,7 +1928,7 @@
       "description": "Auto-derived from OSM. La Grande Maine — 30 km, 0 locks counted within 200 m."
     },
     {
-      "num": 261,
+      "num": 260,
       "section": 1,
       "canal": "La Maine",
       "from": "",
@@ -1958,13 +1943,13 @@
       "description": "Auto-derived from OSM. La Maine — 52 km, 0 locks counted within 200 m."
     },
     {
-      "num": 262,
+      "num": 261,
       "section": 1,
       "canal": "La Meuse",
       "from": "",
       "to": "",
       "locks": 0,
-      "dist_km": 442.0,
+      "dist_km": 442.2,
       "max_height": null,
       "max_draught": null,
       "color": "#90a4ae",
@@ -1973,13 +1958,13 @@
       "description": "Auto-derived from OSM. La Meuse — 442 km, 0 locks counted within 200 m."
     },
     {
-      "num": 263,
+      "num": 262,
       "section": 1,
       "canal": "La Moselle Canalisée",
       "from": "",
       "to": "",
       "locks": 17,
-      "dist_km": 36.2,
+      "dist_km": 36.3,
       "max_height": null,
       "max_draught": null,
       "color": "#90a4ae",
@@ -1988,13 +1973,13 @@
       "description": "Auto-derived from OSM. La Moselle Canalisée — 36 km, 17 locks counted within 200 m."
     },
     {
-      "num": 264,
+      "num": 263,
       "section": 1,
       "canal": "La Petite Maine",
       "from": "",
       "to": "",
       "locks": 0,
-      "dist_km": 28.1,
+      "dist_km": 28.3,
       "max_height": null,
       "max_draught": null,
       "color": "#90a4ae",
@@ -2003,7 +1988,7 @@
       "description": "Auto-derived from OSM. La Petite Maine — 28 km, 0 locks counted within 200 m."
     },
     {
-      "num": 265,
+      "num": 264,
       "section": 1,
       "canal": "La Rance",
       "from": "",
@@ -2018,13 +2003,13 @@
       "description": "Auto-derived from OSM. La Rance — 76 km, 1 locks counted within 200 m."
     },
     {
-      "num": 266,
+      "num": 265,
       "section": 1,
       "canal": "La Sarre",
       "from": "",
       "to": "",
       "locks": 1,
-      "dist_km": 106.2,
+      "dist_km": 106.3,
       "max_height": null,
       "max_draught": null,
       "color": "#90a4ae",
@@ -2033,7 +2018,7 @@
       "description": "Auto-derived from OSM. La Sarre — 106 km, 1 locks counted within 200 m."
     },
     {
-      "num": 267,
+      "num": 266,
       "section": 1,
       "canal": "La Sarre / Saar",
       "from": "",
@@ -2048,13 +2033,13 @@
       "description": "Auto-derived from OSM. La Sarre / Saar — 7 km, 2 locks counted within 200 m."
     },
     {
-      "num": 268,
+      "num": 267,
       "section": 1,
       "canal": "La Sarre Blanche",
       "from": "",
       "to": "",
       "locks": 0,
-      "dist_km": 6.9,
+      "dist_km": 7.0,
       "max_height": null,
       "max_draught": null,
       "color": "#90a4ae",
@@ -2063,22 +2048,22 @@
       "description": "Auto-derived from OSM. La Sarre Blanche — 7 km, 0 locks counted within 200 m."
     },
     {
-      "num": 269,
+      "num": 268,
       "section": 1,
       "canal": "La Sarre Rouge",
       "from": "",
       "to": "",
       "locks": 0,
-      "dist_km": 23.4,
+      "dist_km": 23.5,
       "max_height": null,
       "max_draught": null,
       "color": "#90a4ae",
       "country": [],
       "source": "osm",
-      "description": "Auto-derived from OSM. La Sarre Rouge — 23 km, 0 locks counted within 200 m."
+      "description": "Auto-derived from OSM. La Sarre Rouge — 24 km, 0 locks counted within 200 m."
     },
     {
-      "num": 270,
+      "num": 269,
       "section": 1,
       "canal": "La Scarpe",
       "from": "",
@@ -2093,13 +2078,13 @@
       "description": "Auto-derived from OSM. La Scarpe — 8 km, 1 locks counted within 200 m."
     },
     {
-      "num": 271,
+      "num": 270,
       "section": 1,
       "canal": "La Scarpe Canalisée",
       "from": "",
       "to": "",
       "locks": 4,
-      "dist_km": 63.7,
+      "dist_km": 64.2,
       "max_height": null,
       "max_draught": null,
       "color": "#90a4ae",
@@ -2108,7 +2093,7 @@
       "description": "Auto-derived from OSM. La Scarpe Canalisée — 64 km, 4 locks counted within 200 m."
     },
     {
-      "num": 272,
+      "num": 271,
       "section": 1,
       "canal": "La Seine - Bras de Marly",
       "from": "",
@@ -2123,13 +2108,13 @@
       "description": "Auto-derived from OSM. La Seine - Bras de Marly — 7 km, 1 locks counted within 200 m."
     },
     {
-      "num": 273,
+      "num": 272,
       "section": 1,
       "canal": "La Somme",
       "from": "",
       "to": "",
       "locks": 0,
-      "dist_km": 84.1,
+      "dist_km": 84.2,
       "max_height": null,
       "max_draught": null,
       "color": "#90a4ae",
@@ -2138,13 +2123,13 @@
       "description": "Auto-derived from OSM. La Somme — 84 km, 0 locks counted within 200 m."
     },
     {
-      "num": 274,
+      "num": 273,
       "section": 1,
       "canal": "La Somme Canalisée",
       "from": "",
       "to": "",
       "locks": 0,
-      "dist_km": 132.4,
+      "dist_km": 132.5,
       "max_height": null,
       "max_draught": null,
       "color": "#90a4ae",
@@ -2153,13 +2138,13 @@
       "description": "Auto-derived from OSM. La Somme Canalisée — 132 km, 0 locks counted within 200 m."
     },
     {
-      "num": 275,
+      "num": 274,
       "section": 1,
       "canal": "La Somme Rivière",
       "from": "",
       "to": "",
       "locks": 0,
-      "dist_km": 54.8,
+      "dist_km": 55.0,
       "max_height": null,
       "max_draught": null,
       "color": "#90a4ae",
@@ -2168,7 +2153,7 @@
       "description": "Auto-derived from OSM. La Somme Rivière — 55 km, 0 locks counted within 200 m."
     },
     {
-      "num": 276,
+      "num": 275,
       "section": 1,
       "canal": "La Somme-Soude",
       "from": "",
@@ -2183,13 +2168,13 @@
       "description": "Auto-derived from OSM. La Somme-Soude — 7 km, 0 locks counted within 200 m."
     },
     {
-      "num": 277,
+      "num": 276,
       "section": 1,
       "canal": "La Vilaine",
       "from": "",
       "to": "",
       "locks": 0,
-      "dist_km": 196.9,
+      "dist_km": 197.3,
       "max_height": null,
       "max_draught": null,
       "color": "#90a4ae",
@@ -2198,13 +2183,13 @@
       "description": "Auto-derived from OSM. La Vilaine — 197 km, 0 locks counted within 200 m."
     },
     {
-      "num": 278,
+      "num": 277,
       "section": 1,
       "canal": "Le Blavet",
       "from": "",
       "to": "",
       "locks": 0,
-      "dist_km": 123.8,
+      "dist_km": 124.2,
       "max_height": null,
       "max_draught": null,
       "color": "#90a4ae",
@@ -2213,13 +2198,13 @@
       "description": "Auto-derived from OSM. Le Blavet — 124 km, 0 locks counted within 200 m."
     },
     {
-      "num": 279,
+      "num": 278,
       "section": 1,
       "canal": "Le Doubs",
       "from": "",
       "to": "",
       "locks": 0,
-      "dist_km": 280.8,
+      "dist_km": 280.9,
       "max_height": null,
       "max_draught": null,
       "color": "#90a4ae",
@@ -2228,7 +2213,7 @@
       "description": "Auto-derived from OSM. Le Doubs — 281 km, 0 locks counted within 200 m."
     },
     {
-      "num": 280,
+      "num": 279,
       "section": 1,
       "canal": "Le Loing",
       "from": "",
@@ -2243,7 +2228,7 @@
       "description": "Auto-derived from OSM. Le Loing — 24 km, 0 locks counted within 200 m."
     },
     {
-      "num": 281,
+      "num": 280,
       "section": 1,
       "canal": "Le Maine",
       "from": "",
@@ -2258,7 +2243,7 @@
       "description": "Auto-derived from OSM. Le Maine — 7 km, 0 locks counted within 200 m."
     },
     {
-      "num": 282,
+      "num": 281,
       "section": 1,
       "canal": "Le Petit Rhône",
       "from": "",
@@ -2273,7 +2258,7 @@
       "description": "Auto-derived from OSM. Le Petit Rhône — 63 km, 0 locks counted within 200 m."
     },
     {
-      "num": 283,
+      "num": 282,
       "section": 1,
       "canal": "Le Rhin",
       "from": "",
@@ -2288,7 +2273,7 @@
       "description": "Auto-derived from OSM. Le Rhin — 6 km, 0 locks counted within 200 m."
     },
     {
-      "num": 284,
+      "num": 283,
       "section": 1,
       "canal": "Le Rhin / Rhein",
       "from": "",
@@ -2303,7 +2288,7 @@
       "description": "Auto-derived from OSM. Le Rhin / Rhein — 118 km, 0 locks counted within 200 m."
     },
     {
-      "num": 285,
+      "num": 284,
       "section": 1,
       "canal": "Le Rhône - Bras de la Piboulette",
       "from": "",
@@ -2318,7 +2303,7 @@
       "description": "Auto-derived from OSM. Le Rhône - Bras de la Piboulette — 5 km, 0 locks counted within 200 m."
     },
     {
-      "num": 286,
+      "num": 285,
       "section": 1,
       "canal": "Le Rhône - Canal de Beaucaire",
       "from": "",
@@ -2333,7 +2318,7 @@
       "description": "Auto-derived from OSM. Le Rhône - Canal de Beaucaire — 7 km, 1 locks counted within 200 m."
     },
     {
-      "num": 287,
+      "num": 286,
       "section": 1,
       "canal": "Le Rhône - Canal de Châteauneuf-du-Rhône",
       "from": "",
@@ -2348,7 +2333,7 @@
       "description": "Auto-derived from OSM. Le Rhône - Canal de Châteauneuf-du-Rhône — 14 km, 0 locks counted within 200 m."
     },
     {
-      "num": 288,
+      "num": 287,
       "section": 1,
       "canal": "Leie - La Lys",
       "from": "",
@@ -2363,22 +2348,22 @@
       "description": "Auto-derived from OSM. Leie - La Lys — 6 km, 0 locks counted within 200 m."
     },
     {
-      "num": 289,
+      "num": 288,
       "section": 1,
       "canal": "Lek",
       "from": "",
       "to": "",
       "locks": 0,
-      "dist_km": 64.7,
+      "dist_km": 62.1,
       "max_height": null,
       "max_draught": null,
       "color": "#90a4ae",
       "country": [],
       "source": "osm",
-      "description": "Auto-derived from OSM. Lek — 65 km, 0 locks counted within 200 m."
+      "description": "Auto-derived from OSM. Lek — 62 km, 0 locks counted within 200 m."
     },
     {
-      "num": 290,
+      "num": 289,
       "section": 1,
       "canal": "Markermeer",
       "from": "",
@@ -2393,7 +2378,7 @@
       "description": "Auto-derived from OSM. Markermeer — 23 km, 0 locks counted within 200 m."
     },
     {
-      "num": 291,
+      "num": 290,
       "section": 1,
       "canal": "Meuse (BE/NL)",
       "from": "",
@@ -2408,28 +2393,28 @@
       "description": "Auto-derived from OSM. Meuse (BE/NL) — 241 km, 0 locks counted within 200 m."
     },
     {
-      "num": 292,
+      "num": 291,
       "section": 1,
       "canal": "Mittellandkanal",
       "from": "",
       "to": "",
       "locks": 0,
-      "dist_km": 330.0,
+      "dist_km": 331.2,
       "max_height": null,
       "max_draught": null,
       "color": "#90a4ae",
       "country": [],
       "source": "osm",
-      "description": "Auto-derived from OSM. Mittellandkanal — 330 km, 0 locks counted within 200 m."
+      "description": "Auto-derived from OSM. Mittellandkanal — 331 km, 0 locks counted within 200 m."
     },
     {
-      "num": 293,
+      "num": 292,
       "section": 1,
       "canal": "Moselle (DE/LU)",
       "from": "",
       "to": "",
       "locks": 0,
-      "dist_km": 260.2,
+      "dist_km": 260.5,
       "max_height": null,
       "max_draught": null,
       "color": "#90a4ae",
@@ -2438,13 +2423,13 @@
       "description": "Auto-derived from OSM. Moselle (DE/LU) — 260 km, 0 locks counted within 200 m."
     },
     {
-      "num": 294,
+      "num": 293,
       "section": 1,
       "canal": "Naviglio Grande",
       "from": "",
       "to": "",
       "locks": 0,
-      "dist_km": 50.3,
+      "dist_km": 50.5,
       "max_height": null,
       "max_draught": null,
       "color": "#90a4ae",
@@ -2453,13 +2438,13 @@
       "description": "Auto-derived from OSM. Naviglio Grande — 50 km, 0 locks counted within 200 m."
     },
     {
-      "num": 295,
+      "num": 294,
       "section": 1,
       "canal": "Nederrijn",
       "from": "",
       "to": "",
       "locks": 0,
-      "dist_km": 60.7,
+      "dist_km": 60.9,
       "max_height": null,
       "max_draught": null,
       "color": "#90a4ae",
@@ -2468,7 +2453,7 @@
       "description": "Auto-derived from OSM. Nederrijn — 61 km, 0 locks counted within 200 m."
     },
     {
-      "num": 296,
+      "num": 295,
       "section": 1,
       "canal": "Nord-Ostsee-Kanal",
       "from": "",
@@ -2483,7 +2468,7 @@
       "description": "Auto-derived from OSM. Nord-Ostsee-Kanal — 107 km, 0 locks counted within 200 m."
     },
     {
-      "num": 297,
+      "num": 296,
       "section": 1,
       "canal": "Petit Rhin",
       "from": "",
@@ -2498,7 +2483,7 @@
       "description": "Auto-derived from OSM. Petit Rhin — 6 km, 2 locks counted within 200 m."
     },
     {
-      "num": 298,
+      "num": 297,
       "section": 1,
       "canal": "Petit bras de la Seine",
       "from": "",
@@ -2513,13 +2498,13 @@
       "description": "Auto-derived from OSM. Petit bras de la Seine — 7 km, 0 locks counted within 200 m."
     },
     {
-      "num": 299,
+      "num": 298,
       "section": 1,
       "canal": "Rhein",
       "from": "",
       "to": "",
       "locks": 0,
-      "dist_km": 56.0,
+      "dist_km": 56.1,
       "max_height": null,
       "max_draught": null,
       "color": "#90a4ae",
@@ -2528,13 +2513,13 @@
       "description": "Auto-derived from OSM. Rhein — 56 km, 0 locks counted within 200 m."
     },
     {
-      "num": 300,
+      "num": 299,
       "section": 1,
       "canal": "Rheinniederungskanal",
       "from": "",
       "to": "",
       "locks": 0,
-      "dist_km": 17.7,
+      "dist_km": 17.8,
       "max_height": null,
       "max_draught": null,
       "color": "#90a4ae",
@@ -2543,7 +2528,7 @@
       "description": "Auto-derived from OSM. Rheinniederungskanal — 18 km, 0 locks counted within 200 m."
     },
     {
-      "num": 301,
+      "num": 300,
       "section": 1,
       "canal": "Rheinseitenkanal",
       "from": "",
@@ -2558,7 +2543,7 @@
       "description": "Auto-derived from OSM. Rheinseitenkanal — 16 km, 0 locks counted within 200 m."
     },
     {
-      "num": 302,
+      "num": 301,
       "section": 1,
       "canal": "Rhin Tortu",
       "from": "",
@@ -2573,7 +2558,7 @@
       "description": "Auto-derived from OSM. Rhin Tortu — 19 km, 0 locks counted within 200 m."
     },
     {
-      "num": 303,
+      "num": 302,
       "section": 1,
       "canal": "Rhône canalisé",
       "from": "",
@@ -2588,82 +2573,82 @@
       "description": "Auto-derived from OSM. Rhône canalisé — 11 km, 0 locks counted within 200 m."
     },
     {
-      "num": 304,
+      "num": 303,
       "section": 1,
       "canal": "River Loire",
       "from": "",
       "to": "",
       "locks": 0,
-      "dist_km": 1280.7,
+      "dist_km": 1291.7,
       "max_height": null,
       "max_draught": null,
       "color": "#90a4ae",
       "country": [],
       "source": "osm",
-      "description": "Auto-derived from OSM. River Loire — 1281 km, 0 locks counted within 200 m."
+      "description": "Auto-derived from OSM. River Loire — 1292 km, 0 locks counted within 200 m."
     },
     {
-      "num": 305,
+      "num": 304,
       "section": 1,
       "canal": "River Marne",
       "from": "",
       "to": "",
-      "locks": 3,
-      "dist_km": 528.3,
+      "locks": 4,
+      "dist_km": 538.2,
       "max_height": null,
       "max_draught": null,
       "color": "#90a4ae",
       "country": [],
       "source": "osm",
-      "description": "Auto-derived from OSM. River Marne — 528 km, 3 locks counted within 200 m."
+      "description": "Auto-derived from OSM. River Marne — 538 km, 4 locks counted within 200 m."
     },
     {
-      "num": 306,
+      "num": 305,
       "section": 1,
       "canal": "River Oise",
       "from": "",
       "to": "",
       "locks": 11,
-      "dist_km": 370.7,
+      "dist_km": 374.8,
       "max_height": null,
       "max_draught": null,
       "color": "#90a4ae",
       "country": [],
       "source": "osm",
-      "description": "Auto-derived from OSM. River Oise — 371 km, 11 locks counted within 200 m."
+      "description": "Auto-derived from OSM. River Oise — 375 km, 11 locks counted within 200 m."
     },
     {
-      "num": 307,
+      "num": 306,
       "section": 1,
       "canal": "River Rhône",
       "from": "",
       "to": "",
-      "locks": 1,
-      "dist_km": 912.0,
+      "locks": 3,
+      "dist_km": 929.3,
       "max_height": null,
       "max_draught": null,
       "color": "#90a4ae",
       "country": [],
       "source": "osm",
-      "description": "Auto-derived from OSM. River Rhône — 912 km, 1 locks counted within 200 m."
+      "description": "Auto-derived from OSM. River Rhône — 929 km, 3 locks counted within 200 m."
     },
     {
-      "num": 308,
+      "num": 307,
       "section": 1,
       "canal": "River Saône",
       "from": "",
       "to": "",
       "locks": 11,
-      "dist_km": 518.8,
+      "dist_km": 520.1,
       "max_height": null,
       "max_draught": null,
       "color": "#90a4ae",
       "country": [],
       "source": "osm",
-      "description": "Auto-derived from OSM. River Saône — 519 km, 11 locks counted within 200 m."
+      "description": "Auto-derived from OSM. River Saône — 520 km, 11 locks counted within 200 m."
     },
     {
-      "num": 309,
+      "num": 308,
       "section": 1,
       "canal": "Royal Canal",
       "from": "",
@@ -2678,13 +2663,13 @@
       "description": "Auto-derived from OSM. Royal Canal — 158 km, 35 locks counted within 200 m."
     },
     {
-      "num": 310,
+      "num": 309,
       "section": 1,
       "canal": "Saar",
       "from": "",
       "to": "",
       "locks": 11,
-      "dist_km": 74.7,
+      "dist_km": 74.8,
       "max_height": null,
       "max_draught": null,
       "color": "#90a4ae",
@@ -2693,7 +2678,7 @@
       "description": "Auto-derived from OSM. Saar — 75 km, 11 locks counted within 200 m."
     },
     {
-      "num": 311,
+      "num": 310,
       "section": 1,
       "canal": "Sarre",
       "from": "",
@@ -2708,52 +2693,52 @@
       "description": "Auto-derived from OSM. Sarre — 6 km, 0 locks counted within 200 m."
     },
     {
-      "num": 312,
+      "num": 311,
       "section": 1,
       "canal": "Scheldt",
       "from": "",
       "to": "",
       "locks": 0,
-      "dist_km": 11.8,
+      "dist_km": 125.1,
       "max_height": null,
       "max_draught": null,
       "color": "#90a4ae",
       "country": [],
       "source": "osm",
-      "description": "Auto-derived from OSM. Scheldt — 12 km, 0 locks counted within 200 m."
+      "description": "Auto-derived from OSM. Scheldt — 125 km, 0 locks counted within 200 m."
     },
     {
-      "num": 313,
+      "num": 312,
       "section": 1,
       "canal": "Shannon",
       "from": "",
       "to": "",
       "locks": 2,
-      "dist_km": 328.9,
+      "dist_km": 331.1,
       "max_height": null,
       "max_draught": null,
       "color": "#90a4ae",
       "country": [],
       "source": "osm",
-      "description": "Auto-derived from OSM. Shannon — 329 km, 2 locks counted within 200 m."
+      "description": "Auto-derived from OSM. Shannon — 331 km, 2 locks counted within 200 m."
     },
     {
-      "num": 314,
+      "num": 313,
       "section": 1,
       "canal": "Thames",
       "from": "",
       "to": "",
       "locks": 4,
-      "dist_km": 393.9,
+      "dist_km": 397.0,
       "max_height": null,
       "max_draught": null,
       "color": "#90a4ae",
       "country": [],
       "source": "osm",
-      "description": "Auto-derived from OSM. Thames — 394 km, 4 locks counted within 200 m."
+      "description": "Auto-derived from OSM. Thames — 397 km, 4 locks counted within 200 m."
     },
     {
-      "num": 315,
+      "num": 314,
       "section": 1,
       "canal": "Vieil Escaut de Valenciennes",
       "from": "",
@@ -2768,22 +2753,22 @@
       "description": "Auto-derived from OSM. Vieil Escaut de Valenciennes — 6 km, 0 locks counted within 200 m."
     },
     {
-      "num": 316,
+      "num": 315,
       "section": 1,
       "canal": "Waal",
       "from": "",
       "to": "",
       "locks": 0,
-      "dist_km": 85.4,
+      "dist_km": 96.4,
       "max_height": null,
       "max_draught": null,
       "color": "#90a4ae",
       "country": [],
       "source": "osm",
-      "description": "Auto-derived from OSM. Waal — 85 km, 0 locks counted within 200 m."
+      "description": "Auto-derived from OSM. Waal — 96 km, 0 locks counted within 200 m."
     },
     {
-      "num": 317,
+      "num": 316,
       "section": 1,
       "canal": "Zeekanaal Brussel-Schelde - Canal maritime de Bruxelles à l'Escaut",
       "from": "",
