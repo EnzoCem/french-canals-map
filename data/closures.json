@@ -271,5 +271,31 @@
     "type": "travaux",
     "desc": "Lock-gate maintenance — last Danube lock before Vienna.",
     "source_url": "https://www.doris.bmk.gv.at/"
+  },
+  {
+    "id": "cl_sk_001",
+    "country": "SK",
+    "waterway": "Donau",
+    "section": "Bratislava — Podunajské Biskupice (r.km 1863.3–1864.45)",
+    "lat": 48.105,
+    "lon": 17.19,
+    "start": "2026-07-13",
+    "end": "2026-12-31",
+    "type": "travaux",
+    "desc": "Bank revetment dismantling works, right side outside the fairway, daily 06:00–18:00 — reduce speed, no dangerous wash (valid until revoked; end date shown is a placeholder).",
+    "source_url": "https://plavba.nsat.sk/2026/07/09/plavebne-opatrenie-c-76-2026-o-pracach-na-vodnej-ceste-dunaj-r-km-1863300-1864450/"
+  },
+  {
+    "id": "cl_sk_002",
+    "country": "SK",
+    "waterway": "Donau",
+    "section": "Zdrž Hrušov km 31.0–36.4 (Šamorín/Čilistov)",
+    "lat": 48.03,
+    "lon": 17.42,
+    "start": "2026-07-24",
+    "end": "2026-07-26",
+    "type": "event",
+    "desc": "Yachting regatta 'Memoriál V. Porubského' at the left bank outside the fairway — reduce speed, no dangerous wash, keep clear of the race area (VHF 22).",
+    "source_url": "https://plavba.nsat.sk/2026/07/14/plavebne-opatrenie-c-81-2026-o-verejnom-podujati-na-vodnej-ceste-dunaj-zdrz-hrusov-km-31000-36400/"
   }
 ]
