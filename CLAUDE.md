@@ -23,7 +23,7 @@ French Canals/
 ├── fill_michelin.py                ← annual script to update MICHELIN_RESTAURANTS from ngshiheng/michelin-my-maps
 ├── patch_lyon_waterways.py         ← one-shot patch: fetched Miribel/Jonage/Rhône through Lyon
 ├── manifest.json                   ← PWA manifest (installable)
-├── sw.js                           ← Service worker: app shell precache + tile LRU cache (VERSION = fc-v22)
+├── sw.js                           ← Service worker: app shell precache + tile LRU cache (VERSION = fc-v23)
 ├── icon.svg                        ← PWA icon (vessel on canal)
 ├── extract_ienc.py                 ← GDAL-based extractor: VNF IENC S-57 zips → data/bridges.geojson
 ├── tests/test_extract_ienc.py      ← Pytest suite for extract_ienc (pure + one GDAL integration test)
@@ -371,7 +371,7 @@ Navigation closures live in `data/closures.json` as a single array, country-tagg
 ```jsonc
 {
   "id":          "cl_fr_001",    // 'cl_<cc>_<NNN>' (or legacy 'ch_NNN' for pre-Wave-4 FR entries)
-  "country":     "FR | NL | DE | BE | AT",
+  "country":     "FR | NL | DE | BE | AT | SK | HU",
   "waterway":    "Canal du Midi",
   "section":     "Béziers — Agde",
   "lat":         43.344, "lon": 3.218,
@@ -397,6 +397,8 @@ Navigation closures live in `data/closures.json` as a single array, country-tagg
 - 🇩🇪 DE — ELWIS Schifffahrtspolizeiliche Bekanntmachungen
 - 🇧🇪 BE — DVW (Visuris.be for Flanders) + SPW (voies-hydrauliques.wallonie.be for Wallonia)
 - 🇦🇹 AT — viadonau DoRIS
+- 🇸🇰 SK — Dopravný úrad plavebné opatrenia (`https://plavba.nsat.sk/category/plavebne-opatrenia/`; details in per-notice PDFs)
+- 🇭🇺 HU — PannonRIS HSZH (`https://pannonris.hu/hszh`; currently deep-link only — in-scope notices are standing traffic regs, not closures)
 
 **Out-of-scope countries** (no curated closures, deep-link only via the data-sources panel "Closures (not curated)" section): 🇬🇧 UK (CRT), 🇮🇪 IE (Waterways Ireland), 🇮🇹 IT (AIPo), 🇨🇭 CH (Port of Switzerland), 🇱🇺 LU (covered by 🇩🇪 DE WSV on the Moselle).
 
