@@ -548,7 +548,11 @@ def _extract_ways(elements):
 # Sicily to Scandinavia. Only used when a waterway has no OSM relation,
 # which is rare for major waterways. The OSM dataset is well-indexed by
 # name+geometry so this is fast in practice.
-EU_BBOX = (35.0, -11.0, 60.0, 19.0)
+# East edge 19.3 (was 19.0): scope extended to the Danube down to Budapest —
+# covers Bratislava (17.1), Komárno (18.1), Esztergom (18.7), the Danube Bend
+# at Vác (19.13) and Budapest (19.05) while still excluding the Serbian reach
+# (Novi Sad 19.85), which is deliberately out of scope.
+EU_BBOX = (35.0, -11.0, 60.0, 19.3)
 
 
 def fetch_waterway(app_name, osm_names, bbox=EU_BBOX):

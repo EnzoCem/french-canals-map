@@ -1028,6 +1028,24 @@
       "description": "The Po from Cremona to the Adriatic delta. Connects to the Venetian lagoon via the Idrovia Ferrarese."
     },
     {
+      "num": 75,
+      "section": 1,
+      "canal": "Donau (Vienna–Budapest)",
+      "from": "Vienna",
+      "to": "Budapest",
+      "locks": 2,
+      "dist_km": 280,
+      "max_height": 9.1,
+      "max_draught": 1.7,
+      "color": "#7e57c2",
+      "country": [
+        "SK",
+        "HU"
+      ],
+      "source": "curated",
+      "description": "Slovak and Hungarian Danube: Vienna past Bratislava, the Gabčíkovo lock and the Danube Bend at Visegrád to Budapest. Two locks (Freudenau, Gabčíkovo); lowest fixed bridge 9.1 m and 1.7 m guide draft at low water."
+    },
+    {
       "num": 200,
       "section": 1,
       "canal": "Albert Canal",
@@ -3128,6 +3146,11 @@
       65,
       66,
       "Kelheim"
+    ],
+    [
+      66,
+      75,
+      "Vienna"
     ],
     [
       62,
