@@ -16,7 +16,7 @@ An interactive web map for cruising the European inland waterways. Core waypoint
 ```
 French Canals/
 ├── french_canals_map.html          ← entire app (HTML + CSS + JS) ~8,500 lines
-├── waterways.geojson               ← canal/river geometry fetched from OSM (EU-wide, 1,605 continuous features across 10 countries (gap-bridged 2026-07), regenerated 2026-07)
+├── waterways.geojson               ← canal/river geometry fetched from OSM (EU-wide, 1,607 continuous features across 12 countries (incl. SK/HU Danube) (gap-bridged 2026-07), regenerated 2026-07)
 ├── index.html                      ← GitHub Pages redirect to french_canals_map.html
 ├── Open Map.command                ← macOS launcher script (requires chmod +x once)
 ├── fill_waterways.py               ← multi-region EU Overpass sweep → waterways.geojson
@@ -28,9 +28,9 @@ French Canals/
 ├── extract_ienc.py                 ← GDAL-based extractor: VNF IENC S-57 zips → data/bridges.geojson
 ├── tests/test_extract_ienc.py      ← Pytest suite for extract_ienc (pure + one GDAL integration test)
 ├── data/
-│   ├── waypoints.json              ← 1,991 town/lock waypoints (429 curated FR + 1,523 OSM + 39 EU anchors)
+│   ├── waypoints.json              ← 1,995 town/lock waypoints (429 curated FR + 1,523 OSM + 43 EU anchors)
 │   ├── moorings.json               ← 5,416 haltes + ports (114 curated + 5,302 OSM-imported)
-│   ├── routes.json                 ← { routes: [178 entries], connections: [75 entries] }
+│   ├── routes.json                 ← { routes: [178 entries], connections: [76 entries] }
 │   ├── waterway_constraints.json   ← 101 dimension limits keyed by OSM name
 │   ├── waterway_colors.json        ← 87 per-waterway colours (58 FR + 29 EU, extracted Wave 1)
 │   ├── tunnels.json                ← 5 tunnel entries, each with kind:"tunnel" (extracted Wave 1)
@@ -69,9 +69,9 @@ Seven large data blocks that previously lived as `const` declarations inside `fr
 
 | File | Contents | Count |
 |------|----------|-------|
-| `data/waypoints.json` | Town + lock waypoints (array) | 1,991 (1,043 towns + 948 locks; 429 curated FR + 1,523 OSM + 39 EU anchors) |
+| `data/waypoints.json` | Town + lock waypoints (array) | 1,995 (1,047 towns + 948 locks; 429 curated FR + 1,523 OSM + 43 EU anchors) |
 | `data/moorings.json` | Haltes + ports de plaisance (array) | 5,416 (114 curated + 5,302 OSM-imported) |
-| `data/routes.json` | `{ routes: [...], connections: [...] }` | 178 routes (60 curated + 118 auto-derived), 75 connections |
+| `data/routes.json` | `{ routes: [...], connections: [...] }` | 178 routes (61 curated + 117 auto-derived), 76 connections |
 | `data/waterway_constraints.json` | Dimension limits keyed by OSM name (object) | 101 waterways |
 | `data/waterway_colors.json` | Per-waterway hex colours (object) | 87 entries (58 FR + 29 EU) |
 | `data/tunnels.json` | Tunnel entries — each has `kind: "tunnel"` (array) | 5 |
@@ -213,7 +213,7 @@ fetch('./waterways.geojson')  // → stored in Cache API → ETag checked in bac
 - Non-navigable segments filtered by `_NON_NAVIGABLE_RE` (FR/NL/DE/EN/IT terms: ancien, bras-mort, vieux/vieille, écluse, pont-canal, aqueduc, souterrain, oude, verlaten, alter, alte, disused, abandoned, abbandonato, etc.)
 - Normalised deduplication removes regional/spelling variants; canonical OSM name kept
 - RDP-simplified at 33m tolerance
-- Regenerated 2026-07 via optimized global-relation sweep — 1,605 continuous features across 10 countries (gap-bridged 2026-07)
+- Regenerated 2026-07 via optimized global-relation sweep — 1,607 continuous features across 12 countries (incl. SK/HU Danube) (gap-bridged 2026-07)
 - Cache version: `french-canals-waterways-v12` — bump this constant (in `buildWaterwayOverlay()`) to force all browsers to re-fetch
 
 ### Vessel-profile waterway colouring
@@ -647,7 +647,7 @@ If you've researched an OSM-imported town/mooring and want it to render at full 
 - `60-74` — curated EU routes (Wave 5)
 - `200+` — auto-derived from `waterways.geojson` via `fill_auto_routes.py` (currently 200-317, 118 routes)
 
-Current totals: **178 routes** (60 curated + 118 auto-derived) and **75 connections**.
+Current totals: **178 routes** (61 curated + 117 auto-derived) and **76 connections**.
 
 **Auto-derive workflow:**
 ```bash
