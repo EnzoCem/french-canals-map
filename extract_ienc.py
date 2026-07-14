@@ -73,6 +73,12 @@ def _safe_str(s):
     # and reject any pass that introduces control characters.
     if s is None or not isinstance(s, str) or not s:
         return s
+    # Some SK/HU cells carry raw binary junk in text attributes; GDAL
+    # surfaces it with surrogateescape codepoints (U+D800–DFFF). Such a
+    # string is not text at all — it cannot be UTF-8-encoded (json/csv
+    # writers crash) and would render as mojibake garbage. Drop it.
+    if any(0xD800 <= ord(c) <= 0xDFFF for c in s):
+        return None
     MAX_ROUNDS = 3
     for _ in range(MAX_ROUNDS):
         # Cheap early-out for pure ASCII
@@ -151,6 +157,24 @@ def _waterway_for_cell(cell_name: str) -> str:
     # 2W7D#### = route cells (km-numbered), 2WBD* = berthing/harbour
     # detail cells (numeric, H<port> like 2WBDHALB, or K017).
     if re.match(r"^2W7D\d{4}$", name) or name.startswith("2WBD"):
+        return "Donau"
+    # ── Slovak Danube added Danube Wave 1 (Jul 2026) — Dopravný úrad
+    # IENC from the local "Inland ENC Europe 05.2022" bundle.
+    # 2D7DK### = Gabčíkovo bypass canal cells (Dunajský Kanál, the actual
+    # navigation channel km ~1811–1851) — checked BEFORE the km-numbered
+    # 2D7D#### main-river route cells (1709–1872).
+    if re.match(r"^2D7DK\d{3}$", name):
+        return "Dunajský Kanál"
+    if re.match(r"^2D7D\d{4}$", name):
+        return "Donau"
+    # ── Hungarian Danube added Danube Wave 1 (Jul 2026) — OVF/RSOE IENC
+    # from the same bundle. 1H7SZD## = Szentendrei-Duna side arm;
+    # 1H7D#### = km-numbered Danube route cells (1430–1810).
+    # 1H7TI* (Tisza) is deliberately NOT mapped — its zip is not fed in
+    # (no Tisza map geometry in scope).
+    if name.startswith("1H7SZD"):
+        return "Szentendrei-Duna"
+    if re.match(r"^1H7D\d{4}$", name):
         return "Donau"
     # ── Swiss Hochrhein added Tier 2 — single cell 4C7RH149 (2021 ed.) ──
     if re.match(r"^4C7RH\d{3}$", name):
@@ -250,6 +274,11 @@ def unpack_zip(zip_path: str, dest_dir: str) -> list[tuple[str, str]]:
     cells: list[tuple[str, str]] = []
     for root, _, files in os.walk(dest_dir):
         for f in files:
+            # Skip macOS AppleDouble resource forks (`__MACOSX/._CELL.000`)
+            # — they end in .000 but are not S-57 cells (seen in the
+            # Slovakia ENC-SK.zip aggregate bundle).
+            if f.startswith("._"):
+                continue
             if f.lower().endswith(".000"):
                 cells.append((os.path.splitext(f)[0], os.path.join(root, f)))
     return cells
