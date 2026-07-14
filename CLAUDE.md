@@ -23,7 +23,7 @@ French Canals/
 ├── fill_michelin.py                ← annual script to update MICHELIN_RESTAURANTS from ngshiheng/michelin-my-maps
 ├── patch_lyon_waterways.py         ← one-shot patch: fetched Miribel/Jonage/Rhône through Lyon
 ├── manifest.json                   ← PWA manifest (installable)
-├── sw.js                           ← Service worker: app shell precache + tile LRU cache (VERSION = fc-v18)
+├── sw.js                           ← Service worker: app shell precache + tile LRU cache (VERSION = fc-v21)
 ├── icon.svg                        ← PWA icon (vessel on canal)
 ├── extract_ienc.py                 ← GDAL-based extractor: VNF IENC S-57 zips → data/bridges.geojson
 ├── tests/test_extract_ienc.py      ← Pytest suite for extract_ienc (pure + one GDAL integration test)
@@ -32,14 +32,14 @@ French Canals/
 │   ├── moorings.json               ← 5,416 haltes + ports (114 curated + 5,302 OSM-imported)
 │   ├── routes.json                 ← { routes: [178 entries], connections: [75 entries] }
 │   ├── waterway_constraints.json   ← 101 dimension limits keyed by OSM name
-│   ├── waterway_colors.json        ← 85 per-waterway colours (58 FR + 27 EU, extracted Wave 1)
+│   ├── waterway_colors.json        ← 87 per-waterway colours (58 FR + 29 EU, extracted Wave 1)
 │   ├── tunnels.json                ← 5 tunnel entries, each with kind:"tunnel" (extracted Wave 1)
 │   ├── tidal.json                  ← { Garonne: {…} } tidal propagation table (extracted Wave 1)
-│   ├── bridges.geojson             ← 3,198 bridge air-clearance points (FR VNF + NL Rijkswaterstaat + DE WSV + BE/AT/CH from Inland ENC Europe 05.2022)
-│   ├── ienc_channel_axis.geojson   ← 7,242 dredged-channel centerline LineStrings (🧭 Channel layer)
+│   ├── bridges.geojson             ← 3,276 bridge air-clearance points (FR VNF + NL Rijkswaterstaat + DE WSV + BE/AT/CH/SK/HU from Inland ENC Europe 05.2022)
+│   ├── ienc_channel_axis.geojson   ← 9,385 dredged-channel centerline LineStrings (🧭 Channel layer)
 │   ├── ienc_obstructions.geojson   ← 2,112 navigation hazards (⚠ Hazards layer)
-│   ├── ienc_locks.geojson          ← 792 locks with dimensions (cherry-pick source, not rendered)
-│   └── ienc_moorings.geojson       ← 6,592 quays + pontoons (cherry-pick source, not rendered)
+│   ├── ienc_locks.geojson          ← 798 locks with dimensions (cherry-pick source, not rendered)
+│   └── ienc_moorings.geojson       ← 7,083 quays + pontoons (cherry-pick source, not rendered)
 ├── .github/workflows/
 │   └── update-michelin.yml         ← GitHub Action: runs fill_michelin.py on Feb 15 each year
 └── CLAUDE.md / README.md / FEATURES.md
@@ -73,7 +73,7 @@ Seven large data blocks that previously lived as `const` declarations inside `fr
 | `data/moorings.json` | Haltes + ports de plaisance (array) | 5,416 (114 curated + 5,302 OSM-imported) |
 | `data/routes.json` | `{ routes: [...], connections: [...] }` | 178 routes (60 curated + 118 auto-derived), 75 connections |
 | `data/waterway_constraints.json` | Dimension limits keyed by OSM name (object) | 101 waterways |
-| `data/waterway_colors.json` | Per-waterway hex colours (object) | 85 entries (58 FR + 27 EU) |
+| `data/waterway_colors.json` | Per-waterway hex colours (object) | 87 entries (58 FR + 29 EU) |
 | `data/tunnels.json` | Tunnel entries — each has `kind: "tunnel"` (array) | 5 |
 | `data/tidal.json` | `{ Garonne: { stations, marnage_min_m, warnings } }` (object) | 1 waterway |
 
@@ -94,7 +94,7 @@ _loadData('fc-waypoints-v1',     './data/waypoints.json',             function(d
 _loadData('fc-moorings-v1',      './data/moorings.json',              function(data) { … });
 _loadData('fc-routes-v1',        './data/routes.json',                function(data) { … });
 _loadData('fc-constraints-v1',   './data/waterway_constraints.json',  function(data) { … });
-_loadData('fc-colors-v1',        './data/waterway_colors.json',       function(data) { … });
+_loadData('fc-colors-v3',        './data/waterway_colors.json',       function(data) { … });
 _loadData('fc-tidal-v1',         './data/tidal.json',                 function(data) { … });
 _loadData('fc-tunnels-v1',       './data/tunnels.json',               function(data) { … });
 ```
@@ -190,7 +190,7 @@ map
 ├── closuresGroup    (L.layerGroup — multi-country navigation closures)
 ├── tunnelGroup      (L.layerGroup — canal tunnel markers with convoy schedules)
 ├── bridgesGroup     (L.markerClusterGroup — IENC bridges with air-clearance colouring)
-├── channelAxisGroup (L.layerGroup — IENC wtwaxs dashed polylines, 7,242 features)
+├── channelAxisGroup (L.layerGroup — IENC wtwaxs dashed polylines, 9,385 features)
 ├── obstructionsGroup(L.markerClusterGroup — IENC OBSTRN navigation hazards)
 └── googlePlacesGroup (L.layerGroup — user's imported Google Maps saved places)
 ```
@@ -283,7 +283,7 @@ Each tunnel popup shows: length, tug requirement, northbound/southbound convoy t
 
 ## IENC Bridges layer (VNF air clearances)
 
-The 🌉 Bridges layer shows 3,198 bridge air-clearance points extracted from official IENC (Inland ENC, S-57) cells published by VNF (FR), Rijkswaterstaat (NL), WSV (DE), and — via the local *Inland ENC Europe 05.2022* bundles — the BE/AT/CH authorities.
+The 🌉 Bridges layer shows 3,276 bridge air-clearance points extracted from official IENC (Inland ENC, S-57) cells published by VNF (FR), Rijkswaterstaat (NL), WSV (DE), and — via the local *Inland ENC Europe 05.2022* bundles — the BE/AT/CH/SK/HU authorities.
 
 **IENC country coverage as of Tier 2 (Jul 2026):**
 - 🇫🇷 France — full VNF coverage (Seine, Rhône incl. Lyon→Med CNR cells, Saône, Garonne, Rhin, Oise, Marne, Moselle, Dunkerque–Escaut)
@@ -292,9 +292,11 @@ The 🌉 Bridges layer shows 3,198 bridge air-clearance points extracted from of
 - 🇧🇪 Belgium — Tier 2 (Jul 2026): Albertkanaal + 15 Flemish waterways from the local *Inland ENC Europe 05.2022* mappacks (`7V7*` cells)
 - 🇦🇹 Austria — Tier 2 (Jul 2026): Donau from the local *Inland ENC Europe 05.2022* base edition (`2W7D*` cells). The bundle's 8 incremental update zips are intentionally NOT applied (ER updates on top of the base edition); fresher data available from viadonau/DoRIS if ever needed
 - 🇨🇭 Switzerland — Tier 2 (Jul 2026): Hochrhein from the local *Inland ENC Europe 05.2022* bundle (`4C7RH*` cell)
+- 🇸🇰 Slovakia — Danube Wave 1 (Jul 2026): Donau km 1709–1872 (Štúrovo → Bratislava, `2D7D####` cells) + the Gabčíkovo bypass canal (`2D7DK###` cells → waterway "Dunajský Kanál") from the local *Inland ENC Europe 05.2022* bundle. The bundle's `ENC-SK.zip` aggregate is skipped (duplicate of the 14 individual cell zips; contains `__MACOSX` junk)
+- 🇭🇺 Hungary — Danube Wave 1 (Jul 2026): Donau km 1430–1810 (`1H7D####` cells) + the Szentendrei-Duna side arm (`1H7SZD*`) from the local *Inland ENC Europe 05.2022* bundle. The Tisza bundle (`HU_TI_*`, `1H7TI*` cells) is deliberately NOT fed in — no Tisza map geometry in scope, its bridges would float on an empty map
 - 🇬🇧 UK, 🇮🇪 Ireland, 🇮🇹 Italy, 🇱🇺 Luxembourg — no IENC published by their authorities; OSM bridge tags only (Wave 2)
 
-Note: the BE/AT/CH data is a snapshot dated 05.2022 (local bundles, not a live authority feed).
+Note: the BE/AT/CH/SK/HU data is a snapshot dated 05.2022 (local bundles, not a live authority feed).
 
 ### Pipeline
 ```
@@ -308,10 +310,10 @@ ienc/FR.zip  +  VNF Charts/*.zip  →  extract_ienc.py  →  data/bridges.geojso
 - Licence Ouverte 2.0 — attribution line in every popup
 
 ### Coverage
-3,198 bridges total. Largest groups: Rhine 571 · NL waterways 379 (+ Amsterdam-Rijnkanaal 76, Maas 74, IJssel 20, Hollands Diep 19, Lek 13) · Dunkerque–Escaut 185 · Seine 176 · Donau 154 (incl. AT) · Saar 152 · Main 151 · Main-Donau-Kanal 124 · BE waterways 120 (+ Albertkanaal 82, Kanaal Bocholt-Herentals 39, Zuid-Willemsvaart 33, Leie 30, …) · Moselle 100 · Rhône 99 · Mosel 88 · Saône 73 · Seine Amont 38 · Oise 32 · Garonne tidal 23 · Hochrhein 19.
+3,276 bridges total. Largest groups: Rhine 571 · NL waterways 379 (+ Amsterdam-Rijnkanaal 76, Maas 74, IJssel 20, Hollands Diep 19, Lek 13) · Donau 229 (incl. AT + SK + HU; plus Dunajský Kanál 2, Szentendrei-Duna 1) · Dunkerque–Escaut 185 · Seine 176 · Saar 152 · Main 151 · Main-Donau-Kanal 124 · BE waterways 120 (+ Albertkanaal 82, Kanaal Bocholt-Herentals 39, Zuid-Willemsvaart 33, Leie 30, …) · Moselle 100 · Rhône 99 · Mosel 88 · Saône 73 · Seine Amont 38 · Oise 32 · Garonne tidal 23 · Hochrhein 19.
 
 ### 🧭 Channel axis layer
-`data/ienc_channel_axis.geojson` — the official dredged navigation centerline (`wtwaxs` layer). On meandering rivers (Moselle hairpins, lower Seine, Bordeaux meander) this differs materially from the OSM river geometry.  Styled as a dashed polyline colour-coded per waterway. Fetched on first toggle (1.2 MB — NOT precached by the SW to keep first-install small; cached thereafter via stale-while-revalidate).
+`data/ienc_channel_axis.geojson` — the official dredged navigation centerline (`wtwaxs` layer). On meandering rivers (Moselle hairpins, lower Seine, Bordeaux meander) this differs materially from the OSM river geometry.  Styled as a dashed polyline colour-coded per waterway. Fetched on first toggle (5.9 MB — the HU Danube cells chop the axis into many short segments — NOT precached by the SW to keep first-install small; cached thereafter via stale-while-revalidate).
 
 ### ⚠ Hazards layer
 `data/ienc_obstructions.geojson` — 2,112 OBSTRN records (rocks, snags, foul areas, islets, submerged structures). Marker border + popup title colour signals severity:
@@ -698,14 +700,15 @@ Edit `docs/IENC-SOURCES.md` first if any download URLs have changed. Then drop n
 - France:  `ienc/` or `VNF Charts/` (existing)
 - NL: `ienc/nl/`
 - DE: `ienc/de/`
-- BE/AT/CH: `Inland ENC Europe 05.2022/` (local snapshot bundles — AT incremental `2W_Update_*.zip` are intentionally NOT applied; base edition only)
+- BE/AT/CH/SK/HU: `Inland ENC Europe 05.2022/` (local snapshot bundles — AT incremental `2W_Update_*.zip` are intentionally NOT applied; base edition only. SK: 14 individual cell zips, NOT `ENC-SK.zip`. HU: Danube + Szentendrei-Duna only, NOT the `HU_TI_*` Tisza zip)
 
 Run the full extraction:
 
 ```bash
 source venv/bin/activate
 ZIPS=(ienc/FR.zip ienc/Rhone_Lyon_Med.zip "VNF Charts/ENC_ROOT_SEINE_AVAL_ED2.zip" "VNF Charts/ENC_ROOT_SEINE_AMONT_ED1.zip" "VNF Charts/ENC_ROOT_SAONE_ED_2.zip" "VNF Charts/Garonne_edition3.zip" "VNF Charts/ENC_ROOT_GARONNE_MAJ1.zip" "VNF Charts/ENC_ROOT_OISE.zip" "VNF Charts/ENC_ROOT_OISE_MAJ1.zip" "VNF Charts/ENC_ROOT_MOSELLE_ED2_24.zip" "VNF Charts/ENC_ROOT_Rhin_Ed3.zip" "VNF Charts/ENC_ROOT_RHONE_LYON_EDITION_1.zip" "VNF Charts/ENC_ROOT_DK_ESCAUT_Edtion2.zip" "VNF Charts/ENC_ROOT_Niffer_Mulhouse_Ed2.zip" "Inland ENC Europe 05.2022/Austria/2W_Edition.zip" "Inland ENC Europe 05.2022/Switzerland/ENC_Hochrhein_Update_2021.zip")
-for z in ienc/nl/*.zip ienc/de/*.zip "Inland ENC Europe 05.2022/Belgium/IENCMappack_"*.zip; do [ -f "$z" ] && ZIPS+=("$z"); done
+for z in ienc/nl/*.zip ienc/de/*.zip "Inland ENC Europe 05.2022/Belgium/IENCMappack_"*.zip "Inland ENC Europe 05.2022/Slovakia/2D7D1"*.zip "Inland ENC Europe 05.2022/Slovakia/2D7DK"*.zip; do [ -f "$z" ] && ZIPS+=("$z"); done
+ZIPS+=("Inland ENC Europe 05.2022/Hungary/HU_D_IENC_2_3_ED7_20211215.zip" "Inland ENC Europe 05.2022/Hungary/HU_SZD_IENC_2_3_ED7_20211210.zip")
 ZIP_ARGS=()
 for z in "${ZIPS[@]}"; do ZIP_ARGS+=(--zip "$z"); done
 python3 extract_ienc.py "${ZIP_ARGS[@]}" \

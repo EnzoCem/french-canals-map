@@ -93,6 +93,13 @@ OSM_NAME_MAP = {
     'Moselle (DE/LU)':               ['Mosel', 'Musel'],
     'Main':                          ['Main'],
     'Main-Donau-Kanal':              ['Main-Donau-Kanal', 'Rhein-Main-Donau-Kanal'],
+    # NOTE (2026-07): the Gabčíkovo bypass canal (SK, km ~1811–1851 — the
+    # actual navigation channel past the old riverbed) needs NO entry of
+    # its own: its OSM ways ('Dunaj' canal, 'Prívodný/Odpadový kanál
+    # Gabčíkovo') are members of the Danube relation, so the 'Danube'
+    # fetch below already traces it continuously. The only OSM object
+    # actually named 'Dunajský kanál' is a ~100 m stub at the lock —
+    # do not add a name-based entry for it.
     'Danube':                        ['Danube', 'Donau'],
     'Standing Mast Route':           ['Staande Mastroute'],
     'IJsselmeer':                    ['IJsselmeer'],
@@ -175,7 +182,7 @@ WATERWAY_ROUTES = {
     'Moselle (DE/LU)':                0,
     'Main':                           0,
     'Main-Donau-Kanal':               0,
-    'Danube':                         0,
+    'Danube':                         0,  # incl. Gabčíkovo bypass (relation member ways)
     'Standing Mast Route':            0,
     'IJsselmeer':                     0,
     'Markermeer':                     0,
