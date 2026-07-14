@@ -3315,9 +3315,10 @@ function vnfLinksHTML(section, fromName, toName) {
  * labels. Keyed by the `country` field present on OSM-sourced and anchor
  * waypoints; curated French waypoints have no country field (falsy → FR). */
 const COUNTRY_NAMES = { FR:'France', NL:'Netherlands', BE:'Belgium', DE:'Germany', CH:'Switzerland',
-  AT:'Austria', IT:'Italy', LU:'Luxembourg', UK:'UK', IE:'Ireland' };
+  AT:'Austria', IT:'Italy', LU:'Luxembourg', UK:'UK', IE:'Ireland', SK:'Slovakia', HU:'Hungary' };
 const COUNTRY_LABELS = { NL:'🇳🇱 Netherlands', BE:'🇧🇪 Belgium', DE:'🇩🇪 Germany', CH:'🇨🇭 Switzerland',
-  AT:'🇦🇹 Austria', IT:'🇮🇹 Italy', LU:'🇱🇺 Luxembourg', UK:'🇬🇧 United Kingdom', IE:'🇮🇪 Ireland' };
+  AT:'🇦🇹 Austria', IT:'🇮🇹 Italy', LU:'🇱🇺 Luxembourg', UK:'🇬🇧 United Kingdom', IE:'🇮🇪 Ireland',
+  SK:'🇸🇰 Slovakia', HU:'🇭🇺 Hungary' };
 
 const AUTHORITIES = {
   NL: { flag:'🇳🇱', name:'Rijkswaterstaat', notices:'https://www.vaarweginformatie.nl/', home:'https://www.rijkswaterstaat.nl/water' },
@@ -3329,6 +3330,8 @@ const AUTHORITIES = {
   UK: { flag:'🇬🇧', name:'Canal &amp; River Trust', notices:'https://canalrivertrust.org.uk/notices', home:'https://canalrivertrust.org.uk/' },
   IE: { flag:'🇮🇪', name:'Waterways Ireland', notices:'https://www.waterwaysireland.org/marine-notices', home:'https://www.waterwaysireland.org/' },
   IT: { flag:'🇮🇹', name:'AIPo', notices:'https://www.agenziapo.it/', home:'https://www.agenziapo.it/' },
+  SK: { flag:'🇸🇰', name:'Dopravný úrad (plavba)', notices:'https://plavba.nsat.sk/category/plavebne-opatrenia/', home:'https://nsat.sk/' },
+  HU: { flag:'🇭🇺', name:'RSOE PannonRIS', notices:'https://pannonris.hu/nts', home:'https://pannonris.hu/' },
 };
 
 function authorityLinksHTML(country) {
@@ -4891,7 +4894,7 @@ function init() {
     // 2. In parallel, send a HEAD request to check if the server has a newer ETag
     // 3. If ETag differs → silently re-fetch, update cache, rebuild overlay
     // localStorage key stores the last-seen ETag for comparison.
-    var WATERWAYS_CACHE_VER = 'french-canals-waterways-v13';
+    var WATERWAYS_CACHE_VER = 'french-canals-waterways-v14';
     var WATERWAYS_URL = './waterways.geojson';
     var WATERWAYS_ETAG_KEY = 'french_canals_waterways_etag_v1';
     (async function() {
@@ -5021,7 +5024,7 @@ function init() {
     }
   }
 
-  _loadData('fc-waypoints-v5', './data/waypoints.json', function(data) {
+  _loadData('fc-waypoints-v6', './data/waypoints.json', function(data) {
     WAYPOINTS = data;
     buildMarkers();
   }, function() { showEditToast('⚠ Waypoints failed to load'); });
@@ -5029,7 +5032,7 @@ function init() {
     MOORINGS = data;
     buildMooringMarkers();
   }, function() { showEditToast('⚠ Moorings failed to load'); });
-  _loadData('fc-routes-v5', './data/routes.json', function(data) {
+  _loadData('fc-routes-v6', './data/routes.json', function(data) {
     ROUTES = data.routes || [];
     ROUTE_CONNECTIONS = data.connections || [];
   }, function() { showEditToast('⚠ Routes failed to load'); });
@@ -5037,7 +5040,7 @@ function init() {
     WATERWAY_CONSTRAINTS = data;
     if (typeof buildWaterwayOverlay === 'function' && typeof WATERWAY_GEOJSON !== 'undefined' && WATERWAY_GEOJSON) buildWaterwayOverlay();
   });
-  _loadData('fc-colors-v2', './data/waterway_colors.json', function(data) {
+  _loadData('fc-colors-v3', './data/waterway_colors.json', function(data) {
     WATERWAY_COLORS = data;
     if (typeof buildWaterwayOverlay === 'function' && typeof WATERWAY_GEOJSON !== 'undefined' && WATERWAY_GEOJSON) buildWaterwayOverlay();
   });

@@ -53,6 +53,55 @@ def test_waterway_for_cell_austria_donau():
     assert ei._waterway_for_cell("2WBDK017") == "Donau"
 
 
+def test_waterway_for_cell_slovakia_danube():
+    # Dopravný úrad IENC (Danube Wave 1, Inland ENC Europe 05.2022 bundle):
+    # 2D7D#### km-numbered route cells + 2D7DK### Gabčíkovo bypass cells.
+    assert ei._waterway_for_cell("2D7D1709") == "Donau"
+    assert ei._waterway_for_cell("2D7D1752") == "Donau"
+    assert ei._waterway_for_cell("2D7D1872") == "Donau"
+    assert ei._waterway_for_cell("2D7DK000") == "Dunajský Kanál"
+    assert ei._waterway_for_cell("2D7DK012") == "Dunajský Kanál"
+    assert ei._waterway_for_cell("2D7DK027") == "Dunajský Kanál"
+
+
+def test_waterway_for_cell_hungary_danube():
+    # OVF/RSOE IENC (Danube Wave 1, Inland ENC Europe 05.2022 bundle):
+    # 1H7D#### km-numbered Danube cells + 1H7SZD Szentendrei-Duna side arm.
+    assert ei._waterway_for_cell("1H7D1430") == "Donau"
+    assert ei._waterway_for_cell("1H7D1650") == "Donau"
+    assert ei._waterway_for_cell("1H7D1810") == "Donau"
+    assert ei._waterway_for_cell("1H7SZD00") == "Szentendrei-Duna"
+    # Tisza cells are deliberately unmapped (zip not fed in — no map geometry)
+    assert ei._waterway_for_cell("1H7TI200") == "Unknown waterway"
+
+
+def test_safe_str_drops_surrogate_garbage():
+    """SK/HU cells carry raw binary junk in some text attributes; GDAL
+    surfaces it with surrogateescape codepoints. Not text — must become
+    None rather than crash json/csv writers or render as mojibake."""
+    garbage = "T\udcc4nitou" + "\udc80\udcff"
+    assert ei._safe_str(garbage) is None
+    # Normal strings (ASCII, mojibake-repairable, real Unicode) unaffected:
+    assert ei._safe_str("Pont de Pierre") == "Pont de Pierre"
+    assert ei._safe_str("Gabčíkovo") == "Gabčíkovo"
+
+
+def test_unpack_zip_bare_cell_and_appledouble(tmp_path):
+    """The Slovakia bundles ship bare `.000` cells at the zip root (no
+    ENC_ROOT folder), and the ENC-SK.zip aggregate adds `__MACOSX/._*.000`
+    AppleDouble junk. unpack_zip must find the former and skip the latter."""
+    import zipfile
+    zp = tmp_path / "2D7D1709.zip"
+    with zipfile.ZipFile(zp, "w") as z:
+        z.writestr("2D7D1709.000", b"not-a-real-cell")
+        z.writestr("__MACOSX/._2D7D1709.000", b"appledouble-junk")
+        z.writestr("ENC-SK/2D7D1723.000", b"also-not-real")
+    dest = tmp_path / "out"
+    cells = ei.unpack_zip(str(zp), str(dest))
+    names = sorted(n for n, _ in cells)
+    assert names == ["2D7D1709", "2D7D1723"]
+
+
 def test_waterway_for_cell_switzerland_hochrhein():
     # Swiss ports authority Hochrhein cell (single-cell 2021 edition).
     assert ei._waterway_for_cell("4C7RH149") == "Hochrhein"

@@ -93,6 +93,13 @@ OSM_NAME_MAP = {
     'Moselle (DE/LU)':               ['Mosel', 'Musel'],
     'Main':                          ['Main'],
     'Main-Donau-Kanal':              ['Main-Donau-Kanal', 'Rhein-Main-Donau-Kanal'],
+    # NOTE (2026-07): the Gabčíkovo bypass canal (SK, km ~1811–1851 — the
+    # actual navigation channel past the old riverbed) needs NO entry of
+    # its own: its OSM ways ('Dunaj' canal, 'Prívodný/Odpadový kanál
+    # Gabčíkovo') are members of the Danube relation, so the 'Danube'
+    # fetch below already traces it continuously. The only OSM object
+    # actually named 'Dunajský kanál' is a ~100 m stub at the lock —
+    # do not add a name-based entry for it.
     'Danube':                        ['Danube', 'Donau'],
     'Standing Mast Route':           ['Staande Mastroute'],
     'IJsselmeer':                    ['IJsselmeer'],
@@ -175,7 +182,7 @@ WATERWAY_ROUTES = {
     'Moselle (DE/LU)':                0,
     'Main':                           0,
     'Main-Donau-Kanal':               0,
-    'Danube':                         0,
+    'Danube':                         0,  # incl. Gabčíkovo bypass (relation member ways)
     'Standing Mast Route':            0,
     'IJsselmeer':                     0,
     'Markermeer':                     0,
@@ -548,7 +555,11 @@ def _extract_ways(elements):
 # Sicily to Scandinavia. Only used when a waterway has no OSM relation,
 # which is rare for major waterways. The OSM dataset is well-indexed by
 # name+geometry so this is fast in practice.
-EU_BBOX = (35.0, -11.0, 60.0, 19.0)
+# East edge 19.3 (was 19.0): scope extended to the Danube down to Budapest —
+# covers Bratislava (17.1), Komárno (18.1), Esztergom (18.7), the Danube Bend
+# at Vác (19.13) and Budapest (19.05) while still excluding the Serbian reach
+# (Novi Sad 19.85), which is deliberately out of scope.
+EU_BBOX = (35.0, -11.0, 60.0, 19.3)
 
 
 def fetch_waterway(app_name, osm_names, bbox=EU_BBOX):

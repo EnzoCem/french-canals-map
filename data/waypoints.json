@@ -16553,6 +16553,58 @@
     "source": "curated"
   },
   {
+    "id": "w_a75_bratislava",
+    "name": "Bratislava",
+    "route": 75,
+    "section": 1,
+    "lat": 48.14,
+    "lon": 17.11,
+    "is_lock": false,
+    "pk": "",
+    "desc": "Slovak capital on the Danube; Danube km 1869.",
+    "country": "SK",
+    "source": "curated"
+  },
+  {
+    "id": "w_a75_komarno",
+    "name": "Komárno",
+    "route": 75,
+    "section": 1,
+    "lat": 47.757,
+    "lon": 18.13,
+    "is_lock": false,
+    "pk": "",
+    "desc": "SK–HU border town at the Váh confluence; Danube km 1767.",
+    "country": "SK",
+    "source": "curated"
+  },
+  {
+    "id": "w_a75_esztergom",
+    "name": "Esztergom",
+    "route": 75,
+    "section": 1,
+    "lat": 47.79,
+    "lon": 18.74,
+    "is_lock": false,
+    "pk": "",
+    "desc": "Basilica town at the top of the Danube Bend; Danube km 1718.",
+    "country": "HU",
+    "source": "curated"
+  },
+  {
+    "id": "w_a75_budapest",
+    "name": "Budapest",
+    "route": 75,
+    "section": 1,
+    "lat": 47.498,
+    "lon": 19.04,
+    "is_lock": false,
+    "pk": "",
+    "desc": "Hungarian Danube endpoint for this map; Danube km 1647.",
+    "country": "HU",
+    "source": "curated"
+  },
+  {
     "id": "w_osm_30119736",
     "name": "Lanaye",
     "route": 0,
