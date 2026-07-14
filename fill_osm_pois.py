@@ -48,6 +48,10 @@ COUNTRY_BBOX = {
     'IT': (44.0,  6.5, 46.6, 13.6),  # northern Italy only — Po + Veneto
     'UK': (49.9, -8.5, 59.0,  1.8),
     'IE': (51.4, -10.6, 55.4, -5.9),
+    # Danube corridor only (Vienna→Budapest scope, PR #22) — like IT, the bbox
+    # limits extent to the navigable reach; attribution stays area-based.
+    'SK': (47.7, 16.8, 48.5, 18.9),
+    'HU': (47.3, 17.2, 47.9, 19.35),
 }
 
 ALL_COUNTRIES = list(COUNTRY_BBOX.keys())

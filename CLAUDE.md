@@ -23,13 +23,13 @@ French Canals/
 ├── fill_michelin.py                ← annual script to update MICHELIN_RESTAURANTS from ngshiheng/michelin-my-maps
 ├── patch_lyon_waterways.py         ← one-shot patch: fetched Miribel/Jonage/Rhône through Lyon
 ├── manifest.json                   ← PWA manifest (installable)
-├── sw.js                           ← Service worker: app shell precache + tile LRU cache (VERSION = fc-v21)
+├── sw.js                           ← Service worker: app shell precache + tile LRU cache (VERSION = fc-v22)
 ├── icon.svg                        ← PWA icon (vessel on canal)
 ├── extract_ienc.py                 ← GDAL-based extractor: VNF IENC S-57 zips → data/bridges.geojson
 ├── tests/test_extract_ienc.py      ← Pytest suite for extract_ienc (pure + one GDAL integration test)
 ├── data/
-│   ├── waypoints.json              ← 1,995 town/lock waypoints (429 curated FR + 1,523 OSM + 43 EU anchors)
-│   ├── moorings.json               ← 5,416 haltes + ports (114 curated + 5,302 OSM-imported)
+│   ├── waypoints.json              ← 2,002 town/lock waypoints (429 curated FR + 1,530 OSM + 43 EU anchors)
+│   ├── moorings.json               ← 5,444 haltes + ports (114 curated + 5,330 OSM-imported)
 │   ├── routes.json                 ← { routes: [178 entries], connections: [76 entries] }
 │   ├── waterway_constraints.json   ← 101 dimension limits keyed by OSM name
 │   ├── waterway_colors.json        ← 87 per-waterway colours (58 FR + 29 EU, extracted Wave 1)
@@ -69,8 +69,8 @@ Seven large data blocks that previously lived as `const` declarations inside `fr
 
 | File | Contents | Count |
 |------|----------|-------|
-| `data/waypoints.json` | Town + lock waypoints (array) | 1,995 (1,047 towns + 948 locks; 429 curated FR + 1,523 OSM + 43 EU anchors) |
-| `data/moorings.json` | Haltes + ports de plaisance (array) | 5,416 (114 curated + 5,302 OSM-imported) |
+| `data/waypoints.json` | Town + lock waypoints (array) | 2,002 (1,053 towns + 949 locks; 429 curated FR + 1,530 OSM + 43 EU anchors) |
+| `data/moorings.json` | Haltes + ports de plaisance (array) | 5,444 (114 curated + 5,330 OSM-imported) |
 | `data/routes.json` | `{ routes: [...], connections: [...] }` | 178 routes (61 curated + 117 auto-derived), 76 connections |
 | `data/waterway_constraints.json` | Dimension limits keyed by OSM name (object) | 101 waterways |
 | `data/waterway_colors.json` | Per-waterway hex colours (object) | 87 entries (58 FR + 29 EU) |
@@ -591,13 +591,13 @@ Country attribution comes from the OSM `admin_level=2` area filter in each query
 
 Every OSM-sourced entry has:
 - `source: 'osm'` (curated entries have either no `source` field or `'curated'`)
-- `country: 'BE' | 'NL' | 'DE' | 'CH' | 'AT' | 'IT' | 'LU' | 'UK' | 'IE'`
+- `country: 'BE' | 'NL' | 'DE' | 'CH' | 'AT' | 'IT' | 'LU' | 'UK' | 'IE' | 'SK' | 'HU'`
 - `osm_id: <integer>` — stable across re-syncs, used as the dedup key
 
 ### Re-syncing
 
 ```bash
-python3 fill_osm_pois.py                   # all 9 countries
+python3 fill_osm_pois.py                   # all 11 countries (SK/HU bboxes cover the Danube corridor only)
 python3 fill_osm_pois.py --countries NL DE # subset
 python3 fill_osm_pois.py --dry-run         # print plan, no network calls
 python3 fill_osm_pois.py --prune-stale     # also drop OSM entries no longer matched by any
