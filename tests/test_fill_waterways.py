@@ -156,3 +156,42 @@ def test_bridge_empty_and_single():
     assert bridge_chain_gaps([]) == []
     one = [[[7.7, 48.4], [7.8, 48.5]]]
     assert bridge_chain_gaps(one) == one
+
+# ── Per-waterway clip-bbox override (Danube Wave 2, 2026-07) ─────────────────
+
+from fill_waterways import (_extract_ways, CLIP_BBOX_OVERRIDES, DANUBE_BBOX,
+                            EU_BBOX)
+
+
+def _way(lon, lat):
+    return {'type': 'way', 'geometry': [
+        {'lon': lon, 'lat': lat}, {'lon': lon + 0.01, 'lat': lat + 0.01}]}
+
+
+def test_extract_ways_default_clips_at_eu_bbox():
+    els = [_way(2.0, 48.0),      # Paris — inside EU_BBOX
+           _way(20.45, 44.82),   # Belgrade — east of EU_BBOX east edge 19.3
+           _way(28.03, 44.34)]   # Cernavodă
+    out = _extract_ways(els)
+    assert len(out) == 1
+    assert out[0][0] == [2.0, 48.0]
+
+
+def test_extract_ways_danube_bbox_keeps_eastern_reach():
+    els = [_way(2.0, 48.0),      # Paris — west of DANUBE_BBOX west edge 8.0
+           _way(20.45, 44.82),   # Belgrade
+           _way(28.03, 44.34)]   # Cernavodă
+    out = _extract_ways(els, DANUBE_BBOX)
+    assert len(out) == 2
+    assert out[0][0] == [20.45, 44.82]
+
+
+def test_clip_overrides_only_danube_corridor():
+    assert CLIP_BBOX_OVERRIDES == {
+        'Danube': DANUBE_BBOX,
+        'Canalul Dunăre-Marea Neagră': DANUBE_BBOX,
+    }
+    # sanity: the override box actually reaches the Black Sea and Budapest
+    s, w, n, e = DANUBE_BBOX
+    assert e >= 30.0 and s <= 43.5 and n >= 48.0
+    assert EU_BBOX[3] == 19.3  # unchanged for everything else

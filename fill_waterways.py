@@ -101,6 +101,10 @@ OSM_NAME_MAP = {
     # actually named 'Dunajský kanál' is a ~100 m stub at the lock —
     # do not add a name-based entry for it.
     'Danube':                        ['Danube', 'Donau'],
+    # Danube–Black Sea Canal (RO, Cernavodă → Agigea/Constanța). No OSM
+    # relation — mapped as 8 ways under this exact hyphenated name
+    # (probed 2026-07); fetched via the way fallback with DANUBE_BBOX.
+    'Canalul Dunăre-Marea Neagră':   ['Canalul Dunăre-Marea Neagră'],
     'Standing Mast Route':           ['Staande Mastroute'],
     'IJsselmeer':                    ['IJsselmeer'],
     'Markermeer':                    ['Markermeer'],
@@ -183,6 +187,7 @@ WATERWAY_ROUTES = {
     'Main':                           0,
     'Main-Donau-Kanal':               0,
     'Danube':                         0,  # incl. Gabčíkovo bypass (relation member ways)
+    'Canalul Dunăre-Marea Neagră':   78,  # Danube–Black Sea Canal (curated route 78)
     'Standing Mast Route':            0,
     'IJsselmeer':                     0,
     'Markermeer':                     0,
@@ -526,17 +531,19 @@ def _overpass_query(ql, retries=3):
                 raise
 
 
-def _extract_ways(elements):
+def _extract_ways(elements, clip_bbox=None):
     """
     Extract [lon, lat] way coordinate lists from Overpass elements.
     Overpass `out geom` embeds geometry directly in each way element.
 
-    Ways starting outside EU_BBOX are dropped: global relation queries can
-    return same-named or member ways far outside app scope (the full Danube
-    to the Black Sea, an Arizona 'Grand Canal') which previously had to be
-    clipped by hand after the sweep.
+    Ways starting outside clip_bbox (default EU_BBOX) are dropped: global
+    relation queries can return same-named or member ways far outside app
+    scope (an Arizona 'Grand Canal') which previously had to be clipped by
+    hand after the sweep. Waterways listed in CLIP_BBOX_OVERRIDES (the
+    Danube and the Danube–Black Sea Canal) use a wider clip so the reach
+    east of EU_BBOX is kept.
     """
-    s, w, n, e = EU_BBOX
+    s, w, n, e = clip_bbox if clip_bbox is not None else EU_BBOX
     ways = []
     for el in elements:
         if el.get('type') != 'way':
@@ -561,6 +568,17 @@ def _extract_ways(elements):
 # (Novi Sad 19.85), which is deliberately out of scope.
 EU_BBOX = (35.0, -11.0, 60.0, 19.3)
 
+# Wider clip for the Danube corridor (Wave 2, 2026-07): Budapest → Black Sea.
+# EU_BBOX's east edge (19.3) deliberately excludes the Serbian reach for every
+# OTHER waterway; only the waterways listed in CLIP_BBOX_OVERRIDES get this
+# extended box (east 30.5 covers Constanța 28.6 and the Sulina arm 29.7).
+DANUBE_BBOX = (42.0, 8.0, 50.5, 30.5)
+
+CLIP_BBOX_OVERRIDES = {
+    'Danube':                       DANUBE_BBOX,
+    'Canalul Dunăre-Marea Neagră':  DANUBE_BBOX,  # Danube–Black Sea Canal (RO)
+}
+
 
 def fetch_waterway(app_name, osm_names, bbox=EU_BBOX):
     """
@@ -578,7 +596,10 @@ def fetch_waterway(app_name, osm_names, bbox=EU_BBOX):
 
     Returns list of ways (each a list of [lon, lat] pairs), or [] if nothing found.
     """
-    s, w, n, e = bbox
+    # Per-waterway clip override: the Danube (+ Danube–Black Sea Canal) keep
+    # ways east of EU_BBOX; every other waterway is byte-identical to before.
+    clip_bbox = CLIP_BBOX_OVERRIDES.get(app_name, bbox)
+    s, w, n, e = clip_bbox
     bbox_str = f'({s},{w},{n},{e})'
 
     for osm_name in osm_names:
@@ -599,7 +620,7 @@ def fetch_waterway(app_name, osm_names, bbox=EU_BBOX):
 out geom;'''
         try:
             data = _overpass_query(ql_relation)
-            ways = _extract_ways(data.get('elements', []))
+            ways = _extract_ways(data.get('elements', []), clip_bbox)
             if ways:
                 print(f'  {app_name}: {len(ways)} ways via relation[name="{osm_name}"]', flush=True)
                 return ways
@@ -616,7 +637,7 @@ way(r);
 out geom;'''
         try:
             data = _overpass_query(ql_route)
-            ways = _extract_ways(data.get('elements', []))
+            ways = _extract_ways(data.get('elements', []), clip_bbox)
             if ways:
                 print(f'  {app_name}: {len(ways)} ways via route-relation[name="{osm_name}"]', flush=True)
                 return ways
@@ -630,7 +651,7 @@ way[waterway][name="{osm_name}"]{bbox_str};
 out geom;'''
         try:
             data = _overpass_query(ql_ways)
-            ways = _extract_ways(data.get('elements', []))
+            ways = _extract_ways(data.get('elements', []), clip_bbox)
             if ways:
                 print(f'  {app_name}: {len(ways)} ways via way[name="{osm_name}"]', flush=True)
                 return ways
