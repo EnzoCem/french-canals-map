@@ -195,3 +195,9 @@ def test_clip_overrides_only_danube_corridor():
     s, w, n, e = DANUBE_BBOX
     assert e >= 30.0 and s <= 43.5 and n >= 48.0
     assert EU_BBOX[3] == 19.3  # unchanged for everything else
+
+
+def test_extra_way_names_only_danube():
+    from fill_waterways import EXTRA_WAY_NAMES
+    assert set(EXTRA_WAY_NAMES) == {'Danube'}
+    assert 'Dunav/Dunărea' in EXTRA_WAY_NAMES['Danube']

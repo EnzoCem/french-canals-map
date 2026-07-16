@@ -579,6 +579,16 @@ CLIP_BBOX_OVERRIDES = {
     'Canalul Dunăre-Marea Neagră':  DANUBE_BBOX,  # Danube–Black Sea Canal (RO)
 }
 
+# Extra way-name unions for the relation query. The Danube relation is
+# missing chunks of the RS/RO/BG main stem whose ways only carry local
+# names (probed 2026-07: the Đerdap I dam reach is 'Dunav/Dunărea', the
+# RO/BG border reach 'Dunărea - Дунав'); union them in so the rendered
+# line stays continuous. Empty for every other waterway — their relation
+# query strings are byte-identical to before.
+EXTRA_WAY_NAMES = {
+    'Danube': ['Dunav', 'Dunărea', 'Dunav/Dunărea', 'Dunărea - Дунав', 'Дунав'],
+}
+
 
 def fetch_waterway(app_name, osm_names, bbox=EU_BBOX):
     """
@@ -611,11 +621,14 @@ def fetch_waterway(app_name, osm_names, bbox=EU_BBOX):
         # the rendered line. Unioning way[name=…] within EU_BBOX captures
         # every segment that carries the waterway's name regardless of
         # relation membership. Overpass dedupes the union by element id.
+        extra_clauses = ''.join(
+            f'\n  way[waterway][name="{n}"]{bbox_str};'
+            for n in EXTRA_WAY_NAMES.get(app_name, []))
         ql_relation = f'''[out:json][timeout:180];
 (
   relation[type=waterway][name="{osm_name}"];
   way(r);
-  way[waterway][name="{osm_name}"]{bbox_str};
+  way[waterway][name="{osm_name}"]{bbox_str};{extra_clauses}
 );
 out geom;'''
         try:
