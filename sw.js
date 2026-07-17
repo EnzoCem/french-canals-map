@@ -14,7 +14,7 @@
  * Bump `VERSION` to force every client to re-install.
  */
 
-const VERSION    = 'fc-v24';
+const VERSION    = 'fc-v25';
 const SHELL      = `fc-shell-${VERSION}`;
 const TILES      = `fc-tiles-${VERSION}`;
 const TILES_CAP  = 400; // roughly: 400 × 50 KB ≈ 20 MB

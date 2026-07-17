@@ -23,7 +23,7 @@ French Canals/
 ├── fill_michelin.py                ← annual script to update MICHELIN_RESTAURANTS from ngshiheng/michelin-my-maps
 ├── patch_lyon_waterways.py         ← one-shot patch: fetched Miribel/Jonage/Rhône through Lyon
 ├── manifest.json                   ← PWA manifest (installable)
-├── sw.js                           ← Service worker: app shell precache + tile LRU cache (VERSION = fc-v24)
+├── sw.js                           ← Service worker: app shell precache + tile LRU cache (VERSION = fc-v25)
 ├── icon.svg                        ← PWA icon (vessel on canal)
 ├── extract_ienc.py                 ← GDAL-based extractor: VNF IENC S-57 zips → data/bridges.geojson
 ├── tests/test_extract_ienc.py      ← Pytest suite for extract_ienc (pure + one GDAL integration test)
@@ -402,6 +402,7 @@ Navigation closures live in `data/closures.json` as a single array, country-tagg
 - 🇧🇪 BE — DVW (Visuris.be for Flanders) + SPW (voies-hydrauliques.wallonie.be for Wallonia)
 - 🇦🇹 AT — viadonau DoRIS
 - 🇸🇰 SK — Dopravný úrad plavebné opatrenia (`https://plavba.nsat.sk/category/plavebne-opatrenia/`; details in per-notice PDFs)
+- 🇭🇷🇷🇸🇷🇴🇧🇬 HR/RS/RO/BG — joint Danube FTM portal (`https://www.danubeportal.com/noticesToSkippers`; server-rendered, per-country notice ids like "RS 2026/42" with rkm + validity)
 - 🇭🇺 HU — PannonRIS HSZH (`https://pannonris.hu/hszh`; currently deep-link only — in-scope notices are standing traffic regs, not closures)
 
 **Out-of-scope countries** (no curated closures, deep-link only via the data-sources panel "Closures (not curated)" section): 🇬🇧 UK (CRT), 🇮🇪 IE (Waterways Ireland), 🇮🇹 IT (AIPo), 🇨🇭 CH (Port of Switzerland), 🇱🇺 LU (covered by 🇩🇪 DE WSV on the Moselle), 🇭🇷 HR (Vodni putovi NtS), 🇷🇸 RS (Plovput), 🇷🇴 RO (AFDJ danubeportal.com), 🇧🇬 BG (BULRIS).

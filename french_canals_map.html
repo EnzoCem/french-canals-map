@@ -3960,7 +3960,7 @@ let CLOSURES = [];
 
 function buildClosuresMarkers() {
   closuresGroup.clearLayers();
-  var FLAG = { FR:'🇫🇷', NL:'🇳🇱', DE:'🇩🇪', BE:'🇧🇪', AT:'🇦🇹', SK:'🇸🇰', HU:'🇭🇺' };
+  var FLAG = { FR:'🇫🇷', NL:'🇳🇱', DE:'🇩🇪', BE:'🇧🇪', AT:'🇦🇹', SK:'🇸🇰', HU:'🇭🇺', HR:'🇭🇷', RS:'🇷🇸', RO:'🇷🇴', BG:'🇧🇬' };
   var now = new Date();
   CLOSURES.forEach(function(ch) {
     var startDate = new Date(ch.start);
@@ -4000,6 +4000,10 @@ function buildClosuresMarkers() {
                        : ch.country === 'AT' ? 'viadonau / DoRIS'
                        : ch.country === 'SK' ? 'Dopravný úrad'
                        : ch.country === 'HU' ? 'PannonRIS'
+                       : ch.country === 'HR' ? 'Vodni putovi / MMPI'
+                       : ch.country === 'RS' ? 'Plovput'
+                       : ch.country === 'RO' ? 'AFDJ / Danube FTM portal'
+                       : ch.country === 'BG' ? 'BULRIS'
                        : 'authority';
     var sourceUrl = ch.source_url || '#';
     var popupHtml = '<div style="min-width:210px">' +
@@ -4636,7 +4640,7 @@ function _getClosureWarnings(segments) {
 
 function _buildClosureCardHTML(closures) {
   if (!closures || !closures.length) return '';
-  var FLAG = { FR:'🇫🇷', NL:'🇳🇱', DE:'🇩🇪', BE:'🇧🇪', AT:'🇦🇹', SK:'🇸🇰', HU:'🇭🇺' };
+  var FLAG = { FR:'🇫🇷', NL:'🇳🇱', DE:'🇩🇪', BE:'🇧🇪', AT:'🇦🇹', SK:'🇸🇰', HU:'🇭🇺', HR:'🇭🇷', RS:'🇷🇸', RO:'🇷🇴', BG:'🇧🇬' };
   var rows = closures.map(function(ch) {
     var flag = FLAG[ch.country] || '🏳';
     var status = ch._active
@@ -5059,7 +5063,7 @@ function init() {
     TUNNELS = data;
     if (typeof buildTunnelMarkers === 'function') buildTunnelMarkers();
   });
-  _loadData('fc-closures-v3', './data/closures.json', function(data) {
+  _loadData('fc-closures-v4', './data/closures.json', function(data) {
     CLOSURES = data;
     if (layerState.closures && typeof buildClosuresMarkers === 'function') {
       buildClosuresMarkers();
