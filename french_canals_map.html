@@ -3315,10 +3315,11 @@ function vnfLinksHTML(section, fromName, toName) {
  * labels. Keyed by the `country` field present on OSM-sourced and anchor
  * waypoints; curated French waypoints have no country field (falsy → FR). */
 const COUNTRY_NAMES = { FR:'France', NL:'Netherlands', BE:'Belgium', DE:'Germany', CH:'Switzerland',
-  AT:'Austria', IT:'Italy', LU:'Luxembourg', UK:'UK', IE:'Ireland', SK:'Slovakia', HU:'Hungary' };
+  AT:'Austria', IT:'Italy', LU:'Luxembourg', UK:'UK', IE:'Ireland', SK:'Slovakia', HU:'Hungary',
+  HR:'Croatia', RS:'Serbia', RO:'Romania', BG:'Bulgaria' };
 const COUNTRY_LABELS = { NL:'🇳🇱 Netherlands', BE:'🇧🇪 Belgium', DE:'🇩🇪 Germany', CH:'🇨🇭 Switzerland',
   AT:'🇦🇹 Austria', IT:'🇮🇹 Italy', LU:'🇱🇺 Luxembourg', UK:'🇬🇧 United Kingdom', IE:'🇮🇪 Ireland',
-  SK:'🇸🇰 Slovakia', HU:'🇭🇺 Hungary' };
+  SK:'🇸🇰 Slovakia', HU:'🇭🇺 Hungary', HR:'🇭🇷 Croatia', RS:'🇷🇸 Serbia', RO:'🇷🇴 Romania', BG:'🇧🇬 Bulgaria' };
 
 const AUTHORITIES = {
   NL: { flag:'🇳🇱', name:'Rijkswaterstaat', notices:'https://www.vaarweginformatie.nl/', home:'https://www.rijkswaterstaat.nl/water' },
@@ -3332,6 +3333,10 @@ const AUTHORITIES = {
   IT: { flag:'🇮🇹', name:'AIPo', notices:'https://www.agenziapo.it/', home:'https://www.agenziapo.it/' },
   SK: { flag:'🇸🇰', name:'Dopravný úrad (plavba)', notices:'https://plavba.nsat.sk/category/plavebne-opatrenia/', home:'https://nsat.sk/' },
   HU: { flag:'🇭🇺', name:'RSOE PannonRIS', notices:'https://pannonris.hu/nts', home:'https://pannonris.hu/' },
+  HR: { flag:'🇭🇷', name:'Vodni putovi / MMPI', notices:'https://nts.vodniputovi.hr/', home:'https://www.vodniputovi.hr/' },
+  RS: { flag:'🇷🇸', name:'Plovput', notices:'https://www.plovput.rs/vesti', home:'https://www.plovput.rs/' },
+  RO: { flag:'🇷🇴', name:'AFDJ Galați / ACN', notices:'https://www.danubeportal.com/', home:'https://www.acn.ro/' },
+  BG: { flag:'🇧🇬', name:'APPD / BULRIS', notices:'https://www.bulris.bg/', home:'https://www.appd-bg.org/' },
 };
 
 function authorityLinksHTML(country) {
@@ -8481,6 +8486,10 @@ function clearGooglePlaces() {
       <li>🇮🇹 IT &mdash; <a href="https://www.agenziapo.it/" target="_blank" rel="noopener">AIPo (Po river authority)</a></li>
       <li>🇨🇭 CH &mdash; <a href="https://port-of-switzerland.ch/news-schifffahrt-2/" target="_blank" rel="noopener">Port of Switzerland (Rhine)</a></li>
       <li>🇭🇺 HU &mdash; <a href="https://pannonris.hu/hszh" target="_blank" rel="noopener">PannonRIS notices to skippers</a></li>
+      <li>🇭🇷 HR &mdash; <a href="https://nts.vodniputovi.hr/" target="_blank" rel="noopener">Vodni putovi notices to skippers</a></li>
+      <li>🇷🇸 RS &mdash; <a href="https://www.plovput.rs/vesti" target="_blank" rel="noopener">Plovput navigation news</a></li>
+      <li>🇷🇴 RO &mdash; <a href="https://www.danubeportal.com/" target="_blank" rel="noopener">Danube FTM portal (AFDJ notices)</a></li>
+      <li>🇧🇬 BG &mdash; <a href="https://www.bulris.bg/" target="_blank" rel="noopener">BULRIS notices to skippers</a></li>
       <li>🇱🇺 LU &mdash; Moselle covered under <strong>🇩🇪 WSV / ELWIS</strong> above</li>
     </ul>
   </div>
