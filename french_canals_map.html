@@ -4901,7 +4901,7 @@ function init() {
     // 2. In parallel, send a HEAD request to check if the server has a newer ETag
     // 3. If ETag differs → silently re-fetch, update cache, rebuild overlay
     // localStorage key stores the last-seen ETag for comparison.
-    var WATERWAYS_CACHE_VER = 'french-canals-waterways-v14';
+    var WATERWAYS_CACHE_VER = 'french-canals-waterways-v15';
     var WATERWAYS_URL = './waterways.geojson';
     var WATERWAYS_ETAG_KEY = 'french_canals_waterways_etag_v1';
     (async function() {
@@ -5031,15 +5031,15 @@ function init() {
     }
   }
 
-  _loadData('fc-waypoints-v7', './data/waypoints.json', function(data) {
+  _loadData('fc-waypoints-v8', './data/waypoints.json', function(data) {
     WAYPOINTS = data;
     buildMarkers();
   }, function() { showEditToast('⚠ Waypoints failed to load'); });
-  _loadData('fc-moorings-v4', './data/moorings.json', function(data) {
+  _loadData('fc-moorings-v5', './data/moorings.json', function(data) {
     MOORINGS = data;
     buildMooringMarkers();
   }, function() { showEditToast('⚠ Moorings failed to load'); });
-  _loadData('fc-routes-v6', './data/routes.json', function(data) {
+  _loadData('fc-routes-v7', './data/routes.json', function(data) {
     ROUTES = data.routes || [];
     ROUTE_CONNECTIONS = data.connections || [];
   }, function() { showEditToast('⚠ Routes failed to load'); });
@@ -5047,7 +5047,7 @@ function init() {
     WATERWAY_CONSTRAINTS = data;
     if (typeof buildWaterwayOverlay === 'function' && typeof WATERWAY_GEOJSON !== 'undefined' && WATERWAY_GEOJSON) buildWaterwayOverlay();
   });
-  _loadData('fc-colors-v3', './data/waterway_colors.json', function(data) {
+  _loadData('fc-colors-v4', './data/waterway_colors.json', function(data) {
     WATERWAY_COLORS = data;
     if (typeof buildWaterwayOverlay === 'function' && typeof WATERWAY_GEOJSON !== 'undefined' && WATERWAY_GEOJSON) buildWaterwayOverlay();
   });
