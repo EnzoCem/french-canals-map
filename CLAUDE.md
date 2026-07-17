@@ -23,7 +23,7 @@ French Canals/
 ├── fill_michelin.py                ← annual script to update MICHELIN_RESTAURANTS from ngshiheng/michelin-my-maps
 ├── patch_lyon_waterways.py         ← one-shot patch: fetched Miribel/Jonage/Rhône through Lyon
 ├── manifest.json                   ← PWA manifest (installable)
-├── sw.js                           ← Service worker: app shell precache + tile LRU cache (VERSION = fc-v25)
+├── sw.js                           ← Service worker: app shell precache + tile LRU cache (VERSION = fc-v26)
 ├── icon.svg                        ← PWA icon (vessel on canal)
 ├── extract_ienc.py                 ← GDAL-based extractor: VNF IENC S-57 zips → data/bridges.geojson
 ├── tests/test_extract_ienc.py      ← Pytest suite for extract_ienc (pure + one GDAL integration test)
@@ -36,7 +36,7 @@ French Canals/
 │   ├── tunnels.json                ← 5 tunnel entries, each with kind:"tunnel" (extracted Wave 1)
 │   ├── tidal.json                  ← { Garonne: {…} } tidal propagation table (extracted Wave 1)
 │   ├── bridges.geojson             ← 3,339 bridge air-clearance points (FR VNF + NL Rijkswaterstaat + DE WSV + BE/AT/CH/SK/HU/HR/RS/RO/BG from Inland ENC Europe 05.2022)
-│   ├── ienc_channel_axis.geojson   ← 9,620 dredged-channel centerline LineStrings (🧭 Channel layer)
+│   ├── ienc_channel_axis.geojson   ← 1,866 dredged-channel centerline LineStrings (per-cell snippets merged 2026-07: 9,620 → 1,866) (🧭 Channel layer)
 │   ├── ienc_obstructions.geojson   ← 2,119 navigation hazards (⚠ Hazards layer)
 │   ├── ienc_locks.geojson          ← 810 locks with dimensions (cherry-pick source, not rendered)
 │   └── ienc_moorings.geojson       ← 7,402 quays + pontoons (cherry-pick source, not rendered)
@@ -317,7 +317,7 @@ ienc/FR.zip  +  VNF Charts/*.zip  →  extract_ienc.py  →  data/bridges.geojso
 3,339 bridges total. Largest groups: Rhine 571 · NL waterways 379 (+ Amsterdam-Rijnkanaal 76, Maas 74, IJssel 20, Hollands Diep 19, Lek 13) · Donau 271 (incl. AT + SK + HU + HR + RS + RO + BG; plus Canalul Dunăre-Marea Neagră 21, Dunajský Kanál 2, Szentendrei-Duna 1) · Dunkerque–Escaut 185 · Seine 176 · Saar 152 · Main 151 · Main-Donau-Kanal 124 · BE waterways 120 (+ Albertkanaal 82, Kanaal Bocholt-Herentals 39, Zuid-Willemsvaart 33, Leie 30, …) · Moselle 100 · Rhône 99 · Mosel 88 · Saône 73 · Seine Amont 38 · Oise 32 · Garonne tidal 23 · Hochrhein 19.
 
 ### 🧭 Channel axis layer
-`data/ienc_channel_axis.geojson` — the official dredged navigation centerline (`wtwaxs` layer). On meandering rivers (Moselle hairpins, lower Seine, Bordeaux meander) this differs materially from the OSM river geometry.  Styled as a dashed polyline colour-coded per waterway. Fetched on first toggle (7.0 MB — the HU/RO Danube cells chop the axis into many short segments — NOT precached by the SW to keep first-install small; cached thereafter via stale-while-revalidate).
+`data/ienc_channel_axis.geojson` — the official dredged navigation centerline (`wtwaxs` layer). On meandering rivers (Moselle hairpins, lower Seine, Bordeaux meander) this differs materially from the OSM river geometry.  Styled as a dashed polyline colour-coded per waterway. Fetched on first toggle (5.5 MB — NOT precached by the SW to keep first-install small; cached thereafter via stale-while-revalidate).
 
 ### ⚠ Hazards layer
 `data/ienc_obstructions.geojson` — 2,119 OBSTRN records (rocks, snags, foul areas, islets, submerged structures). Marker border + popup title colour signals severity:
