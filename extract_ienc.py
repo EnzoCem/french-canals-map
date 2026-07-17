@@ -709,6 +709,67 @@ def dedupe_channel_axis(segments: list[dict]) -> list[dict]:
     return list(by_key.values())
 
 
+def merge_channel_axis(segments: list[dict]) -> list[dict]:
+    """Stitch touching channel-axis segments into continuous chains.
+
+    Some authorities (notably the HU/RO Danube cells) chop the axis into
+    hundreds of short per-cell snippets, bloating the GeoJSON ~5x. Segments
+    are grouped by (waterway, name) and joined wherever endpoints coincide
+    (5-decimal rounding, ~1 m). `inform` is kept only when every merged
+    constituent agrees; otherwise it becomes None rather than misattributing
+    one cell's km-range note to a longer chain.
+    """
+    def ekey(pt):
+        return (round(pt[0], 5), round(pt[1], 5))
+
+    by_group: dict[tuple, list[dict]] = defaultdict(list)
+    for s in segments:
+        by_group[(s["waterway"], s.get("name"))].append(s)
+
+    merged: list[dict] = []
+    for (waterway, name), group in by_group.items():
+        endpoint_index: dict[tuple, list[tuple[int, bool]]] = defaultdict(list)
+        for i, s in enumerate(group):
+            endpoint_index[ekey(s["coords"][0])].append((i, True))
+            endpoint_index[ekey(s["coords"][-1])].append((i, False))
+
+        visited = [False] * len(group)
+        for start in range(len(group)):
+            if visited[start]:
+                continue
+            visited[start] = True
+            chain = list(group[start]["coords"])
+            informs = {group[start].get("inform")}
+
+            # extend at both ends until no unvisited touching segment remains
+            grew = True
+            while grew:
+                grew = False
+                for end_is_tail in (True, False):
+                    k = ekey(chain[-1] if end_is_tail else chain[0])
+                    nxt = next(((i, at_start) for i, at_start in endpoint_index[k]
+                                if not visited[i]), None)
+                    if nxt is None:
+                        continue
+                    i, at_start = nxt
+                    visited[i] = True
+                    c = group[i]["coords"]
+                    informs.add(group[i].get("inform"))
+                    if end_is_tail:
+                        chain.extend(c[1:] if at_start else c[-2::-1])
+                    else:
+                        chain = (c[::-1][:-1] if at_start else c[:-1]) + chain
+                    grew = True
+
+            merged.append({
+                "waterway": waterway,
+                "name": name,
+                "inform": informs.pop() if len(informs) == 1 else None,
+                "coords": chain,
+            })
+    return merged
+
+
 def channel_axis_to_geojson(segments: list[dict]) -> dict:
     feats = []
     for s in segments:
@@ -865,77 +926,25 @@ def _haversine_m(lat1, lon1, lat2, lon2) -> float:
 
 
 def _parse_app_data(html_path: str) -> tuple[list[dict], list[dict]]:
-    """Extract waypoints (lock subset) and moorings from
-    `french_canals_map.html`. Uses json5 to handle the JS-literal syntax
-    (unquoted keys, trailing commas, // line comments) directly."""
-    import re as _re
-    if not os.path.exists(html_path):
-        return [], []
-    try:
-        import json5 as _json5
-    except ImportError:
-        print("WARN: json5 not installed — reconciliation disabled. "
-              "Install with: pip install json5", file=sys.stderr)
-        return [], []
-    with open(html_path) as f:
-        text = f.read()
+    """Load the app's waypoints and moorings for reconciliation.
 
-    def _extract_array(const_name: str) -> list[dict]:
-        m = _re.search(rf"const\s+{const_name}\s*=\s*\[", text)
-        if not m:
-            return []
-        # Walk brackets to find the matching close. Must be aware of
-        # JS string literals AND line comments (because `// ]` would
-        # otherwise fool the bracket counter).
-        start = m.end() - 1
-        depth = 0
-        in_str = False
-        str_ch = ""
-        i = start
-        L = len(text)
-        while i < L:
-            ch = text[i]
-            if in_str:
-                if ch == "\\" and i + 1 < L:
-                    i += 2
-                    continue
-                if ch == str_ch:
-                    in_str = False
-                i += 1
-                continue
-            # Skip // line comments
-            if ch == "/" and i + 1 < L and text[i + 1] == "/":
-                while i < L and text[i] != "\n":
-                    i += 1
-                continue
-            # Skip /* */ block comments
-            if ch == "/" and i + 1 < L and text[i + 1] == "*":
-                i += 2
-                while i + 1 < L and not (text[i] == "*" and text[i + 1] == "/"):
-                    i += 1
-                i += 2
-                continue
-            if ch in ("'", '"'):
-                in_str = True
-                str_ch = ch
-            elif ch == "[":
-                depth += 1
-            elif ch == "]":
-                depth -= 1
-                if depth == 0:
-                    i += 1
-                    break
-            i += 1
-        block = text[start:i]
-        try:
-            return _json5.loads(block)
-        except Exception as e:
-            print(f"WARN: failed to parse {const_name}: {e}", file=sys.stderr)
-            return []
-
-    waypoints = _extract_array("WAYPOINTS")
-    moorings = _extract_array("MOORINGS")
-    return waypoints, moorings
+    Since Wave 1 the data lives in JSON files next to the HTML
+    (data/waypoints.json, data/moorings.json) — the HTML no longer holds
+    the constants this function used to parse. The html_path argument is
+    kept for CLI compatibility; it anchors the directory lookup.
+    """
+    base = os.path.dirname(os.path.abspath(html_path))
+    wp_path = os.path.join(base, "data", "waypoints.json")
+    mo_path = os.path.join(base, "data", "moorings.json")
+    out: list[list[dict]] = []
+    for path in (wp_path, mo_path):
+        if not os.path.exists(path):
+            print(f"WARN: --reconcile source not found: {path}", file=sys.stderr)
+            out.append([])
+            continue
+        with open(path) as f:
+            out.append(json.load(f))
+    return out[0], out[1]
 
 
 def reconcile_locks(ienc_locks: list[dict], app_waypoints: list[dict],
@@ -1166,7 +1175,7 @@ def main() -> int:
 
     # ── Channel axis (optional) ───────────────────────────────────────
     if args.out_channel_axis:
-        deduped_axis = dedupe_channel_axis(all_raw_axis)
+        deduped_axis = merge_channel_axis(dedupe_channel_axis(all_raw_axis))
         os.makedirs(os.path.dirname(args.out_channel_axis) or ".", exist_ok=True)
         tmp_ax = args.out_channel_axis + ".tmp"
         with open(tmp_ax, "w") as f:

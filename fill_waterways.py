@@ -105,7 +105,10 @@ OSM_NAME_MAP = {
     # relation — mapped as 8 ways under this exact hyphenated name
     # (probed 2026-07); fetched via the way fallback with DANUBE_BBOX.
     'Canalul Dunăre-Marea Neagră':   ['Canalul Dunăre-Marea Neagră'],
-    'Standing Mast Route':           ['Staande Mastroute'],
+    # 'Standing Mast Route' removed 2026-07: it is a ROUTE over existing
+    # waterways (IJsselmeer, NL canals — all fetched separately), not a
+    # waterway; its OSM relation never yielded waterway ways. Curated
+    # route 67 covers it in the planner.
     'IJsselmeer':                    ['IJsselmeer'],
     'Markermeer':                    ['Markermeer'],
     'Amsterdam-Rijnkanaal':          ['Amsterdam-Rijnkanaal'],
@@ -188,7 +191,6 @@ WATERWAY_ROUTES = {
     'Main-Donau-Kanal':               0,
     'Danube':                         0,  # incl. Gabčíkovo bypass (relation member ways)
     'Canalul Dunăre-Marea Neagră':   78,  # Danube–Black Sea Canal (curated route 78)
-    'Standing Mast Route':            0,
     'IJsselmeer':                     0,
     'Markermeer':                     0,
     'Amsterdam-Rijnkanaal':           0,

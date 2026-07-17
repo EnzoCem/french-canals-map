@@ -485,3 +485,69 @@ def test_integration_fr_zip_produces_bridges():
         aggregated = ei.aggregate_bridges(raw)
         assert len(aggregated) > 0
         assert all(b["verclr_m"] is not None for b in aggregated)
+
+
+# ── merge_channel_axis (housekeeping wave, 2026-07) ──────────────────────────
+
+def test_merge_axis_joins_touching_segments():
+    segs = [
+        {"waterway": "Donau", "name": "axis", "inform": "km 10-20",
+         "coords": [[19.0, 47.0], [19.1, 47.1]]},
+        {"waterway": "Donau", "name": "axis", "inform": "km 20-30",
+         "coords": [[19.1, 47.1], [19.2, 47.2]]},
+    ]
+    out = ei.merge_channel_axis(segs)
+    assert len(out) == 1
+    assert out[0]["coords"] == [[19.0, 47.0], [19.1, 47.1], [19.2, 47.2]]
+    # mixed inform values collapse to None
+    assert out[0]["inform"] is None
+
+
+def test_merge_axis_keeps_equal_inform_and_reverses_orientation():
+    segs = [
+        {"waterway": "Saône", "name": "axe", "inform": "PK 0-219",
+         "coords": [[4.8, 45.8], [4.9, 45.9]]},
+        # head-to-head orientation: this segment's FIRST point touches
+        # the first segment's LAST point after reversal
+        {"waterway": "Saône", "name": "axe", "inform": "PK 0-219",
+         "coords": [[5.0, 46.0], [4.9, 45.9]]},
+    ]
+    out = ei.merge_channel_axis(segs)
+    assert len(out) == 1
+    assert len(out[0]["coords"]) == 3
+    assert out[0]["inform"] == "PK 0-219"
+
+
+def test_merge_axis_respects_waterway_and_name_boundaries():
+    segs = [
+        {"waterway": "Donau", "name": "a", "inform": None,
+         "coords": [[19.0, 47.0], [19.1, 47.1]]},
+        {"waterway": "Rhine", "name": "a", "inform": None,
+         "coords": [[19.1, 47.1], [19.2, 47.2]]},  # touches, but other waterway
+    ]
+    out = ei.merge_channel_axis(segs)
+    assert len(out) == 2
+
+
+def test_merge_axis_leaves_disjoint_segments_alone():
+    segs = [
+        {"waterway": "Maas", "name": "m", "inform": None,
+         "coords": [[5.0, 51.0], [5.1, 51.1]]},
+        {"waterway": "Maas", "name": "m", "inform": None,
+         "coords": [[6.0, 52.0], [6.1, 52.1]]},
+    ]
+    out = ei.merge_channel_axis(segs)
+    assert len(out) == 2
+
+
+def test_parse_app_data_reads_json_data_files(tmp_path):
+    import json as _json
+    (tmp_path / "data").mkdir()
+    (tmp_path / "data" / "waypoints.json").write_text(_json.dumps(
+        [{"id": "w1", "name": "Lock A", "lat": 47.0, "lon": 19.0, "is_lock": True}]))
+    (tmp_path / "data" / "moorings.json").write_text(_json.dumps(
+        [{"id": "m1", "name": "Port B", "lat": 47.1, "lon": 19.1, "type": "port"}]))
+    (tmp_path / "app.html").write_text("<html></html>")
+    wp, mo = ei._parse_app_data(str(tmp_path / "app.html"))
+    assert len(wp) == 1 and wp[0]["is_lock"] is True
+    assert len(mo) == 1 and mo[0]["type"] == "port"
