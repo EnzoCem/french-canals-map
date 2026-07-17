@@ -75,6 +75,36 @@ def test_waterway_for_cell_hungary_danube():
     assert ei._waterway_for_cell("1H7TI200") == "Unknown waterway"
 
 
+def test_waterway_for_cell_danube_wave2():
+    # HR/RS/RO/BG Danube (Danube Wave 2, Inland ENC Europe 05.2022 bundle).
+    assert ei._waterway_for_cell("5C7D1306") == "Donau"   # Croatia (km 1306–1433)
+    assert ei._waterway_for_cell("5C7D1433") == "Donau"
+    assert ei._waterway_for_cell("2P7D0866") == "Donau"   # Serbia (km 866–1433)
+    assert ei._waterway_for_cell("2P7D1433") == "Donau"
+    assert ei._waterway_for_cell("3B7D0375") == "Donau"   # Bulgaria (km 375–610)
+    assert ei._waterway_for_cell("3B7D0610") == "Donau"
+    assert ei._waterway_for_cell("3R7D0000") == "Donau"   # Romania mm/km route cells
+    assert ei._waterway_for_cell("3R7D1070") == "Donau"
+    assert ei._waterway_for_cell("3R7D94HM") == "Donau"   # harbour cell
+    assert ei._waterway_for_cell("3R7DBB01") == "Donau"   # Bala–Borcea side arm
+    assert ei._waterway_for_cell("3RACOB01") == "Donau"   # bathymetric overlay cells
+    assert ei._waterway_for_cell("3RABCT01") == "Donau"
+    assert ei._waterway_for_cell("3RADOB01") == "Donau"
+
+
+def test_waterway_for_cell_cdmn_before_generic_ro_danube():
+    # CDMN cells must be checked BEFORE the generic 3R7D Romania rule.
+    assert ei._waterway_for_cell("3R7DCC01") == "Canalul Dunăre-Marea Neagră"
+    assert ei._waterway_for_cell("3R7DCC07") == "Canalul Dunăre-Marea Neagră"
+    assert ei._waterway_for_cell("3RB4DCC3") == "Canalul Dunăre-Marea Neagră"
+    assert ei._waterway_for_cell("3RB4DCC4") == "Canalul Dunăre-Marea Neagră"
+    # Drava/Sava/Tisa and the Poarta Albă–Midia Năvodari branch are
+    # deliberately unmapped (their zips are not fed in — no map geometry):
+    assert ei._waterway_for_cell("2P7SA010") == "Unknown waterway"
+    assert ei._waterway_for_cell("2P7TI010") == "Unknown waterway"
+    assert ei._waterway_for_cell("3R7PAM01") == "Unknown waterway"
+
+
 def test_safe_str_drops_surrogate_garbage():
     """SK/HU cells carry raw binary junk in some text attributes; GDAL
     surfaces it with surrogateescape codepoints. Not text — must become

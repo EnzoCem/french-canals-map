@@ -52,6 +52,12 @@ COUNTRY_BBOX = {
     # limits extent to the navigable reach; attribution stays area-based.
     'SK': (47.7, 16.8, 48.5, 18.9),
     'HU': (47.3, 17.2, 47.9, 19.35),
+    # Danube corridor Budapest→Black Sea (Wave 2, 2026-07) — bboxes cover the
+    # navigable Danube reach (+ the Danube–Black Sea Canal in RO) only.
+    'HR': (45.1, 18.7, 45.8, 19.5),
+    'RS': (44.0, 19.0, 46.2, 23.0),
+    'RO': (43.6, 22.0, 45.5, 29.8),
+    'BG': (43.5, 22.6, 44.3, 28.7),
 }
 
 ALL_COUNTRIES = list(COUNTRY_BBOX.keys())
