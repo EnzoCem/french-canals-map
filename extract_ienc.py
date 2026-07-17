@@ -176,6 +176,32 @@ def _waterway_for_cell(cell_name: str) -> str:
         return "Szentendrei-Duna"
     if re.match(r"^1H7D\d{4}$", name):
         return "Donau"
+    # ── Romanian Danube + Danube–Black Sea Canal added Danube Wave 2
+    # (Jul 2026) — AFDJ/ACN IENC from the local "Inland ENC Europe
+    # 05.2022" bundle. 3R7DCC## = Canalul Dunăre-Marea Neagră (CDMN)
+    # route cells and 3RB4DCC# = its bathymetric overlay cells — both
+    # checked BEFORE the generic 3R7D rule below.
+    if name.startswith("3R7DCC") or name.startswith("3RB4DCC"):
+        return "Canalul Dunăre-Marea Neagră"
+    # 3R7D#### = mile/km-numbered Danube route cells (mm0 → km1075,
+    # incl. the 3R7D94HM harbour cell); 3R7DBB## = the navigable
+    # Bala–Borcea side arm (carries the Fetești bridges); 3RABCT /
+    # 3RACOB / 3RADOB = bathymetric overlay cells shipped inside the
+    # km610–845 zip. 3R7PAM (Poarta Albă–Midia Năvodari branch canal)
+    # is deliberately NOT mapped — its zip is not fed in (no map
+    # geometry in scope).
+    if name.startswith("3R7D") or name.startswith("3RA"):
+        return "Donau"
+    # ── Croatian / Serbian / Bulgarian Danube added Danube Wave 2 —
+    # 5C7D#### (HR, km 1306–1433), 2P7D#### (RS, km 866–1433),
+    # 3B7D#### (BG, km 375–610). The Drava/Sava (HR), Sava/Tisa (RS)
+    # zips are deliberately NOT fed in (no map geometry in scope).
+    if re.match(r"^5C7D\d{4}$", name):
+        return "Donau"
+    if re.match(r"^2P7D\d{4}$", name):
+        return "Donau"
+    if re.match(r"^3B7D\d{4}$", name):
+        return "Donau"
     # ── Swiss Hochrhein added Tier 2 — single cell 4C7RH149 (2021 ed.) ──
     if re.match(r"^4C7RH\d{3}$", name):
         return "Hochrhein"
